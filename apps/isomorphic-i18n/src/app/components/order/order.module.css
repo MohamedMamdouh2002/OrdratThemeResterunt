@@ -1,0 +1,16 @@
+.faqContainer{
+    background-color: #fff;
+    padding: 48px 0;
+  }
+  .faqContainer .faqWrapper{
+    max-width: 1312px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+  .faqContainer .faqTitle{
+    font-size: 32px;
+    font-weight: 600;
+    color: #404040;
+    margin-bottom: 24px;
+    letter-spacing: -1px;
+  }

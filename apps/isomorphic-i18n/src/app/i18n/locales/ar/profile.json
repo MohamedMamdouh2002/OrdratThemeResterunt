@@ -1,0 +1,38 @@
+{
+    "New-Address":"عنوان جديد",
+    "loading":"جاري التحميل ...",
+    "reset":"إعادة ضبط",
+    "Save":"حفظ",
+    "cancel":"الغاء",
+    "deleteId":"حذف",
+    "ok":"تأكيد",
+    "fName":"الاسم الاول",
+    "lName":"الاسم الاخير",
+    "email":"البريد الالكتروني",
+    "phone":"رقم الهاتف",
+    "deleted-successfully":"تم الحذف بنجاح",
+    "Failed-delete":"حدذ خطأ اثناء الحذف",
+    "My-addresses":"العناوين الخاصه بي",
+    "Account-Details":"تفاصيل الحساب",
+    "delete":"هل انت متأكد من حذف هذا العنوان ؟",
+    "delete-desc":"لن تتمكن من إعادة هذا العنوان مره اخري في حالة الحذف.",
+
+    "not-found":"لا يوجد عناوين",
+    "edit-address":"تعديل العنوان",
+    "new-address":"عنوان جديد",
+    "apt-lable":"رقم الشقة",
+    "floor-lable":"رقم الطابق",
+    "street-lable":"اسم الشارع",
+    "phoneNumber-lable":"رقم الهاتف",
+    "additionalDirections-lable":"اتجاهات إضافية",
+    "more-information":"معلومات اضافية",
+    "cancelAddressModal":"إلغاء",
+    "save":"حفظ",
+
+    "apartment":"شقة",
+    "home":"المنزل",
+    "office":"المكتب",
+
+    "Add-Address":"إضافة عنوان"
+
+}

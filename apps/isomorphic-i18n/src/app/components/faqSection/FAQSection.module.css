@@ -1,0 +1,267 @@
+.faqContainer{
+  background-color: #fff;
+  padding: 48px 0;
+}
+.faqContainer .faqWrapper{
+  max-width: 1312px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+.faqContainer .faqTitle{
+  font-size: 32px;
+  font-weight: 600;
+  color: #404040;
+  margin-bottom: 24px;
+  letter-spacing: -1px;
+}
+.faqContainer .faqCardsContainer{
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.faqContainer .faqCardsContainer .FindMore{
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 6px 16px 16px;
+  width: calc(25% - 12px);
+  min-height: 315px;
+  border-radius: 4px;
+  box-shadow: 0 5px 15px 0 rgba(78,78,78,.14);
+  /* background-image: linear-gradient(180deg,#e51937,#b41028); */
+  position: relative;
+  margin-bottom: 16px;
+}
+.faqContainer .faqCardsContainer .FindMore:before{
+  content: "";
+  background-image: url(../../../../public/assets/faq/faq/FindmoreBG.svg);
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  width: 82.7px;
+  height: 90px;
+  position: absolute;
+  right: 10px;
+}
+.faqContainer .faqCardsContainer .FindMore .FindMoreTopContainer .FindMoreTop{
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  border-bottom: 1px solid hsla(0,0%,100%,.45);
+  padding-bottom: 6px;
+  padding-top: 16px;
+}
+.faqContainer .faqCardsContainer .FindMore .FindMoreTopContainer .FindMoreTop img{
+  width: 24.4px;
+  height: 24.4px;
+  -o-object-fit: contain;
+  object-fit: contain;
+}
+.faqContainer .faqCardsContainer .FindMore .FindMoreTopContainer .FindMoreTop h2{
+  width: 50%;
+  font-size: 18px;
+  font-weight: 500;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: normal!important;
+  letter-spacing: normal;
+  color: #fff;
+}
+.faqContainer .faqCardsContainer .FindMore .FindMoreTopContainer .FindMoreCenter{
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-bottom: 14px;
+  padding-top: 14px;
+}
+.faqContainer .faqCardsContainer .FindMore .FindMoreTopContainer .FindMoreCenter p{ 
+  font-size: 11px;
+  font-weight: 400;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: 1.18 !important;
+  letter-spacing: normal;
+  color: #fff;
+}
+.faqContainer .faqCardsContainer .FindMore .FindMoreFooter .findmoreArrowBtn{
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 8px;
+  background-color: transparent;
+  padding: 0;
+}
+.faqContainer .faqCardsContainer .FindMore .FindMoreFooter .findmoreArrowBtn p{ font-size: 14px;
+  font-weight: 400;
+  font-stretch: normal;
+  font-style: normal;
+  letter-spacing: normal;
+  color: #fff;
+}
+.faqContainer .faqCardsContainer .FindMore .FindMoreFooter .findmoreArrowBtn:hover{
+  cursor: pointer;
+}
+.faqContainer .faqCardsContainer .faqCardWrapperContainer{
+  display: flex;
+  flex-direction: column;
+  cursor: pointer;
+  background-color: #f7f9fa;
+  border-radius: 4px;
+  border: 1px solid transparent;
+  padding: 16px;
+  width: calc(25% - 12px);
+  min-height: 315px;
+  margin-inline-end: 16px;
+  margin-bottom: 16px;
+  justify-content: space-between;
+}
+.faqContainer .faqCardsContainer .faqCardWrapperContainer:nth-child(4n+0){
+  margin-inline-end: 0;
+}
+.faqContainer .faqCardsContainer .faqCardWrapperContainer:hover{
+  background-color: #fff;
+  border-radius: 4px;
+  border: 1px solid #b8bfc5;
+  transform: all .3s ease-in-out;
+  cursor: pointer;
+}
+/* .faqContainer .faqCardsContainer .faqCardWrapperContainer:hover .faqCardBtn p{
+  color: #f97316;
+} */
+.faqContainer .faqCardsContainer .faqCardWrapperContainer:hover .faqCardBtn .arrow{
+  display: none;
+}
+.faqContainer .faqCardsContainer .faqCardWrapperContainer:hover .faqCardBtn .arrowHover{
+  display: inline-block;
+}
+.faqContainer .faqCardsContainer .faqCardWrapperContainer .faqCardWrapper{
+  width: 100%;
+}
+.faqContainer .faqCardsContainer .faqCardWrapperContainer .faqCardWrapper .faqCardHead{
+  display: flex;
+  margin-bottom: 16px;
+  min-height: 50px;
+  align-items: center !important;
+}
+.faqContainer .faqCardsContainer .faqCardWrapperContainer .faqCardWrapper .faqCardHead .iconWrapper img{
+  width: 50px;
+  height: 50px;
+  -o-object-fit: contain;
+  object-fit: contain;
+}
+.faqContainer .faqCardsContainer .faqCardWrapperContainer .faqCardWrapper .faqCardHead .faqCardTitle{
+  font-size: 17px;
+  font-weight: 600;
+  color: #404040;
+  line-height: 1.2;
+  margin: 0;
+}
+.faqContainer .faqCardsContainer .faqCardWrapperContainer .faqCardWrapper .faqCardBody .faqCardDescription{
+  font-size: 14px;
+  color: #404040;
+  line-height: 1.6;
+  margin-bottom: 8px;
+}
+.faqContainer .faqCardsContainer .faqCardWrapperContainer .faqCardBtn{
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 8px;
+  background-color: transparent;
+  padding: 0;
+}
+.faqContainer .faqCardsContainer .faqCardWrapperContainer .faqCardBtn p{
+  font-size: 14px;
+}
+.faqContainer .faqCardsContainer .faqCardWrapperContainer .faqCardBtn .arrowHover{
+  display: none;
+}
+.faqContainer .faqCardsContainer .faqCardWrapperContainer .faqCardBtn:hover{
+  cursor: pointer;
+}
+html[dir=rtl] .faqContainer .faqCardsContainer .FindMore{
+  min-height: 358px;
+}
+html[dir=rtl] .faqContainer .faqCardsContainer .FindMore:before{
+  right: unset !important;
+  left: 10px;
+}
+html[dir=rtl] .faqContainer .faqCardsContainer .FindMore .FindMoreFooter .findmoreArrowBtn .FindmoreArrow{
+  transform: rotate(180deg);
+}
+html[dir=rtl] .faqContainer .faqCardsContainer .faqCardWrapperContainer .faqCardBtn{
+  align-items: stretch;
+}
+html[dir=rtl] .faqContainer .faqCardsContainer .faqCardWrapperContainer .faqCardBtn .arrowHover,
+html[dir=rtl] .faqContainer .faqCardsContainer .faqCardWrapperContainer .faqCardBtn .arrow{
+  transform: rotate(180deg);
+}
+html[dir=rtl] .faqContainer .faqCardsContainer .faqCardWrapper{
+  min-height: 300px;
+}
+html[dir=rtl] .faqContainer .faqCardsContainer .faqCardWrapper .faqCardHead .faqCardTitle{
+  direction: ltr;
+}
+html[dir=rtl] .faqContainer .faqCardsContainer .faqCardWrapper .faqCardBody .faqCardDescription{
+  line-height: 1.8 !important;
+}
+@media(max-width: 1260px) {
+  .faqContainer .faqCardsContainer .faqCardWrapperContainer{
+    width:calc(33.3% - 11px);
+  }
+  .faqContainer .faqCardsContainer .faqCardWrapperContainer:nth-child(3n+0){
+    margin-inline-end: 0;
+  }
+  .faqContainer .faqCardsContainer .faqCardWrapperContainer:nth-child(4n+0){
+    margin-inline-end: auto;
+  }
+}
+@media(max-width: 1024px) {
+  .faqContainer{
+    padding: 100px 0;
+  }
+  .faqContainer .faqCardsContainer .FindMore{
+      width: 100%;
+  }
+}
+@media(max-width: 950px) {
+  .faqContainer .faqCardsContainer .faqCardWrapperContainer{
+    width:calc(50% - 8px);
+  }
+  .faqContainer .faqCardsContainer .faqCardWrapperContainer:nth-child(2n+0){
+    margin-inline-end: 0;
+  }
+  .faqContainer .faqCardsContainer .faqCardWrapperContainer:nth-child(3n+0),
+  .faqContainer .faqCardsContainer .faqCardWrapperContainer:nth-child(4n+0){
+    margin-inline-end: auto;
+  }
+}
+@media(max-width: 768px) {
+  .faqContainer .faqTitle{
+      font-size:28px;
+  }
+  .faqContainer .faqCardsContainer .faqCardWrapperContainer{
+    width: 100%;
+    margin-inline-end: 0;
+    position: relative;
+  }
+  .faqContainer .faqCardsContainer .faqCardWrapperContainer .faqCardWrapper .faqCardHead{
+    align-items: center !important;
+    gap: 0;
+  }
+  .faqContainer .faqCardsContainer .faqCardWrapperContainer .faqCardWrapper .faqCardHead .iconWrapper{
+    width: 35px;
+    height: 35px;
+  }
+  .faqContainer .faqCardsContainer .faqCardWrapperContainer .faqCardWrapper .faqCardHead .faqCardTitle{
+    font-size: 17px;
+  }
+  .faqContainer .faqCardsContainer .faqCardWrapperContainer .faqCardWrapper .faqCardBody .faqCardDescription{
+    font-size: 13px;
+    margin-bottom: 10px;
+  }
+  .faqContainer .faqCardsContainer .faqCardWrapperContainer .faqCardBtn{
+    position: absolute;
+    bottom: 20px;
+  }
+}

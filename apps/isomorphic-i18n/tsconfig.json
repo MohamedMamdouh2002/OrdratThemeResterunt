@@ -1,0 +1,45 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "target": "esnext", // Modern target for better support
+    "lib": ["dom", "dom.iterable", "esnext"], // Relevant libraries
+    "allowJs": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "noEmit": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "resolveJsonModule": true,
+    // "moduleResolution": "nodenext",
+    "isolatedModules": true,
+    "jsx": "preserve",
+    "incremental": true,
+    "paths": {
+      "@/*": ["src/*"],
+      "@public/*": ["public/*"],
+      "@ui/*": ["../../packages/isomorphic-core/src/ui/*"],
+      "@components/*": ["../../packages/isomorphic-core/src/components/*"],
+      "@shared/*": ["../../packages/isomorphic-core/src/shared/*"],
+      "@hooks/*": ["../../packages/isomorphic-core/src/hooks/*"],
+      "@utils/*": ["../../packages/isomorphic-core/src/utils/*"],
+      "@layouts/*": ["../../packages/isomorphic-core/src/layouts/*"]
+    },
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ]
+  },
+  "extends": "@repo/typescript-config/nextjs.json", // Ensure this file exists
+  "include": [
+    "next-env.d.ts",
+    "additional.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    "**/*.cjs",
+    "**/*.mjs",
+    ".next/types/**/*.ts"
+  ],
+  "exclude": ["node_modules"]
+}

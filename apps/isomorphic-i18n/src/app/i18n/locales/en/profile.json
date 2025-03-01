@@ -1,0 +1,38 @@
+{
+    "New-Address":"New Address",
+    "loading":"Loading...",
+    "reset":"Reset",
+    "Save":"Save",
+    "cancel":"cancel",
+    "deleteId":"delete",
+    "ok":"ok",
+    "fName":"First Name",
+    "lName":"Last Name",
+    "email":"Email",
+    "phone":"Phone Number",
+    "Failed-delete":"Failed to delete address.",
+    "deleted-successfully":"Address deleted successfully",
+    "My-addresses":"My Addresses",
+    "Account-Details":"Account Details",
+    "delete":"Are you sure you want to delete this address?",
+    "delete-desc":"You will not be able to retrieve this address again if it is deleted.",
+
+    "not-found":"Addresses Not Found",
+    "edit-address":"Edit Address",
+    "new-address":"New Address",
+    "apt-lable":"Apt Number.",
+    "floor-lable":"Floor",
+    "street-lable":"Street",
+    "phoneNumber-lable":"Phone Number",
+    "additionalDirections-lable":"additional directions",
+    "more-information":"more information",
+    "cancelAddressModal":"Cancel",
+    "save":"Save",
+
+    "apartment":"apartment",
+    "home":"Home",
+    "office":"Office",
+
+    "Add-Address":"Add Address"
+
+}
