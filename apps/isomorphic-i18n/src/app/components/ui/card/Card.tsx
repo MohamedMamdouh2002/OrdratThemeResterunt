@@ -39,7 +39,7 @@ import { toCurrency } from '@utils/to-currency';
             <div className="relative w-full h-[100px] xs:h-[200px] md:h-[200px] lg:h-[220px] xl:h-[270px] 2xl:h-[300px]">
               <Image
                 alt="card food"
-                src={data?.imageUrl||photo}
+                src={data?.images ? data?.images[0]?.imageUrl || photo : photo} 
                 layout="fill"
                 objectFit="cover"
                 quality={90}

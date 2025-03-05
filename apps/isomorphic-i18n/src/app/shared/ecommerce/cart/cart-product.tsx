@@ -8,15 +8,51 @@ import { AddToWishList } from '@components/wishlist-button';
 import RemoveItem from '@/app/shared/ecommerce/cart/remove-item';
 import QuantityInput from '@/app/shared/ecommerce/cart/quantity-input';
 import { routes } from '@/config/routes';
-import photo from '@public/assets/شاورما-عربي-لحمة-768x768.png'
+import photo from '@public/assets/شاورما-عربي-لحمة-768x768.png';
+
+function parseProductData(productString: string) {
+  const dataPairs = productString.split('&&');
+  
+  // Define an explicit type
+  const productData: Record<string, string> = {};
+
+  dataPairs.forEach(pair => {
+    const [key, value] = pair.split(':');
+    productData[key] = value;
+  });
+
+  return {
+    id: productData['id'],
+    nameAr: productData['nameAr'],
+    nameEn: productData['nameEn'],
+    descriptionEn: productData['descriptionEn'],
+    descriptionAr: productData['descriptionAr'],
+    metaDescriptionEn: productData['metaDescriptionEn'],
+    metaDescriptionAr: productData['metaDescriptionAr'],
+    variations: Object.keys(productData)
+      .filter(key => key.startsWith('variations['))
+      .reduce<Record<string, any>>((acc, key) => {
+        const match = key.match(/variations\[(.+?)\]\.(.+)/);
+        if (match) {
+          const [, variationId, field] = match;
+          acc[variationId] = acc[variationId] || { id: variationId };
+          acc[variationId][field] = productData[key];
+        }
+        return acc;
+      }, {})
+  };
+}
 
 export default function CartProduct({ product, lang , ifModal=false }: { product: CartItem; lang?:string; ifModal:boolean }) {
+  console.log("product: ",product);
+  console.log("data: ",parseProductData(product.id as string));
+  const realProductData = parseProductData(product.id as string);
   return (
     <div className="grid grid-cols-12 items-start gap-4 border-b border-muted py-6 first:pt-0 sm:flex sm:gap-6 2xl:py-8">
       <figure className="col-span-4 sm:max-w-[180px]">
         <Image
           src={product.image||photo}
-          alt={product.name}
+          alt={lang =='ar'? realProductData.nameAr : realProductData.nameEn}
           width={180}
           height={180}
           className="aspect-square w-full rounded-lg bg-gray-100 object-cover"
@@ -28,7 +64,7 @@ export default function CartProduct({ product, lang , ifModal=false }: { product
             as="h3"
             className="truncate text-base font-medium transition-colors hover:text-primary 3xl:text-lg"
           >
-            {product.name}
+            {lang =='ar'? realProductData.nameAr : realProductData.nameEn}
           </Title>
           <div className="">
 
@@ -45,26 +81,62 @@ export default function CartProduct({ product, lang , ifModal=false }: { product
           </div>
         </div>
         <Text className="mt-1 w-full max-w-xs truncate leading-6 2xl:max-w-lg">
-          {product.description}
+          {lang =='ar'? realProductData.descriptionAr : realProductData.descriptionEn}
         </Text>
 
-        <ul className="mt-2 grid grid-cols-1 sm:grid-cols-1 md:grid-cols-[1fr,1fr] gap-x-4 gap-y-3 sm:mt-4 sm:gap-x-8">
+        <ul className={`mt-2 grid grid-cols-1 sm:grid-cols-1 ${ifModal===true?'':'md:grid-cols-[1fr,1fr]'} gap-x-4 gap-y-3 sm:mt-4 sm:gap-x-8`}>
          
           {/* Map over orderItemVariations */}
           
-          {ifModal===false && product.orderItemVariations?.map((variation) => (
+          {ifModal===false && product.orderItemVariations?.map((variation, index) => (
             (variation.choices?.[0]?.choiceValue || variation.choices?.[0]?.inputValue) && (
               <li key={variation.variationId} className="flex items-center gap-3 text-gray-500">
-                <span>{variation.variationLable} :</span>
-                {variation.choices?.[0]?.choiceValue && (
-                  <span className="text-gray-1000">{variation.choices[0].choiceValue}</span>
+                {/* <span>{variation.variationLable} :</span> */}
+                <span>
+                  {lang == 'ar'
+                    ? realProductData.variations?.[variation.variationId]?.nameAr
+                    : realProductData.variations?.[variation.variationId]?.nameEn} :
+                </span>
+                {realProductData.variations?.[variation.variationId]?.choiceId && (
+                  <span className="text-gray-1000">{lang == 'ar'? realProductData.variations?.[variation.variationId]?.choiceValueAr : realProductData.variations?.[variation.variationId]?.choiceValueEn}</span>
                 )}
-                {variation.choices?.[0]?.inputValue && (
-                  <span className="text-gray-1000">{variation.choices[0].inputValue}</span>
+                {realProductData.variations?.[variation.variationId]?.inputValue && (
+                  <span className="text-gray-1000">{realProductData.variations?.[variation.variationId]?.inputValue}</span>
                 )}
               </li>
             )
           ))}
+          {ifModal === true && (
+            <div className="flex flex-wrap gap-2">
+              {product.orderItemVariations?.map((variation, index) =>
+                (variation.choices?.[0]?.choiceValue || variation.choices?.[0]?.inputValue) && (
+                  <div 
+                    key={variation.variationId} 
+                    className="flex items-center gap-3 text-gray-500"
+                  >
+                    {realProductData.variations?.[variation.variationId]?.choiceId && (
+                      <span 
+                        className="bg-gray-100 text-gray-700 px-1 py-[2px] rounded-[3px] max-w-[200px] truncate overflow-hidden inline-block"
+                        title={lang == 'ar' ? realProductData.variations?.[variation.variationId]?.choiceValueAr : realProductData.variations?.[variation.variationId]?.choiceValueEn}
+                      >
+                        {lang == 'ar' 
+                          ? realProductData.variations?.[variation.variationId]?.choiceValueAr 
+                          : realProductData.variations?.[variation.variationId]?.choiceValueEn}
+                      </span>
+                    )}
+                    {realProductData.variations?.[variation.variationId]?.inputValue && (
+                      <span 
+                        className="bg-gray-100 text-gray-700 px-1 py-[2px] rounded-[3px] max-w-[200px] truncate overflow-hidden inline-block"
+                        title={realProductData.variations?.[variation.variationId]?.inputValue}
+                      >
+                        {realProductData.variations?.[variation.variationId]?.inputValue}
+                      </span>
+                    )}
+                  </div>
+                )
+              )}
+            </div>
+          )}
         </ul>
         <div className="mt-3 hidden items-center justify-between xs:flex sm:mt-6">
           <QuantityInput product={product} />
