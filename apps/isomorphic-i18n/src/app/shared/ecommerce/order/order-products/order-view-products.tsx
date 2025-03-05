@@ -114,7 +114,7 @@ export default function OrderViewProducts({lang}:{lang:string}) {
           <div className="relative aspect-square w-12 overflow-hidden rounded-lg">
             <Image
               alt={product.name}
-              src={product.imageUrl}
+              src={product.images[0]?.imageUrl || ''}
               fill
               sizes="(max-width: 768px) 100vw"
               className="object-cover"

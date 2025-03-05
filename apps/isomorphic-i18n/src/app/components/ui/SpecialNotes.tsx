@@ -61,6 +61,13 @@ function SpecialNotes({ lang ,des, className, notes, setNotes }: Props) {
 									transition-all duration-200
 								"
 							></textarea>
+							<button
+								type="button"
+								onClick={() => setShowNoteInput(false)}
+								className="w-fit mt-2 bg-mainColor text-white font-bold py-1.5 px-3 rounded-md hover:bg-opacity-90 transition"
+							>
+								{t('Done')}
+							</button>
 						</div>
 					</Sheet.Content>
 				</Sheet.Container>

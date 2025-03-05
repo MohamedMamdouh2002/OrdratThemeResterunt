@@ -225,6 +225,7 @@ export type Food = {
     price: number
     oldPrice: number
     description: string
+    images?: OrderItemImages[];
     imageUrl: string
     isActive: boolean
     createdAt: string
@@ -285,6 +286,11 @@ export type Review = {
 };
 
 
+export type OrderItemImages = {
+  id: string;
+  imageUrl: string;
+  isPrimary: true;
+}
 export type OrderItem = {
   quantity: number;
   totalChoicesPrice: number;
@@ -292,7 +298,7 @@ export type OrderItem = {
   productId: string;
   product: {
     name: string;
-    imageUrl: string;
+    images: OrderItemImages[];
   };
 };
 

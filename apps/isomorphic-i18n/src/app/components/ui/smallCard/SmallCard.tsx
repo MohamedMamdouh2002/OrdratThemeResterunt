@@ -41,11 +41,12 @@ type Props = Food & {
         className="w-[115px] hover:cursor-pointer  sm:w-[120px] md:w-[150px] lg:w-[200px]  overflow-x-auto">
             <div className="relative">
                 <Image 
-                src={data?.imageUrl||photo} 
+                src={data?.images ? data?.images[0]?.imageUrl || photo : photo} 
                 // src={data?.imageUrl} 
                 width={200} 
                 height={180} 
-                className="md:w-[200px] p-2 sm:p-10 bg-[#E8E8E8]  h-[115px] md:h-40 rounded-2xl" 
+                objectFit="cover"
+                className="md:w-[200px] p-2 sm:p-10 bg-[#E8E8E8]  h-[115px] md:h-40 rounded-2xl object-cover" 
                 alt="" 
                 />
                 {data?.isTopRated || data?.isTopSelling ? (

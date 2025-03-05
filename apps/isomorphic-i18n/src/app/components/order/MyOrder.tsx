@@ -85,7 +85,7 @@ const MyOrder: React.FC<{ lang: string }> = ({ lang }) => {
                             <p>{t('items')}</p>
                             <div className="flex mt-3">
                               <div className="rounded-lg border w-24 h-[115px] border-dashed border-mainColor">
-                                <Image width={300} height={150} className="w-full h-[75%] rounded-t-lg" src={i.product.imageUrl} alt={i.product.name} />
+                                <Image width={300} height={150} className="w-full h-[75%] rounded-t-lg object-cover" src={i.product.images[0]?.imageUrl || ''} alt={i.product.name} />
                                 <span className="truncate-text mt-1 ms-1">
                                   {i.product.name}
                                 </span>

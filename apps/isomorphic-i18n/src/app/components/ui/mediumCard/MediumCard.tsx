@@ -65,11 +65,11 @@ function MediumCard(data:Props) {
             <div className="relative w-[160px] h-[130px] sm:w-4/12 4xl:w-3/12  sm:h-full rounded-lg sm:rounded-s-lg">
 
             <Image
-              src={data?.imageUrl||photo}
+              src={data?.images ? data?.images[0]?.imageUrl || photo : photo} 
                 layout="fill"
                 objectFit="cover"
-              className="rounded-lg sm:rounded-s-lg"
-              alt=""
+                className="rounded-lg sm:rounded-s-lg"
+                alt=""
               />
             </div>
           </div>

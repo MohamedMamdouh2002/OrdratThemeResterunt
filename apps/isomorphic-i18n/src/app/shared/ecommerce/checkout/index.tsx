@@ -43,6 +43,39 @@ type Address = {
   phoneNumber: string;
 };
 
+function parseProductData(productString: string) {
+  const dataPairs = productString.split('&&');
+  
+  // Define an explicit type
+  const productData: Record<string, string> = {};
+
+  dataPairs.forEach(pair => {
+    const [key, value] = pair.split(':');
+    productData[key] = value;
+  });
+
+  return {
+    id: productData['id'],
+    nameAr: productData['nameAr'],
+    nameEn: productData['nameEn'],
+    descriptionEn: productData['descriptionEn'],
+    descriptionAr: productData['descriptionAr'],
+    metaDescriptionEn: productData['metaDescriptionEn'],
+    metaDescriptionAr: productData['metaDescriptionAr'],
+    variations: Object.keys(productData)
+      .filter(key => key.startsWith('variations['))
+      .reduce<Record<string, any>>((acc, key) => {
+        const match = key.match(/variations\[(.+?)\]\.(.+)/);
+        if (match) {
+          const [, variationId, field] = match;
+          acc[variationId] = acc[variationId] || { id: variationId };
+          acc[variationId][field] = productData[key];
+        }
+        return acc;
+      }, {})
+  };
+}
+
 // main order form component for create and update order
 export default function CheckoutPageWrapper({
   className,
@@ -210,11 +243,12 @@ export default function CheckoutPageWrapper({
       formData.append('ShopId', shopId);
   
       items.forEach((item, index) => {
+        const realProductData = parseProductData(item.id as string)
         formData.append(`Items[${index}].quantity`, item.quantity.toString());
         if (item.notes) {
           formData.append(`Items[${index}].notes`, item.notes);
         }
-        formData.append(`Items[${index}].productId`, item.id.toString());
+        formData.append(`Items[${index}].productId`, realProductData.id.toString());
         item.orderItemVariations?.forEach((order, orderIndex) => {
           const hasValidChoice = order.choices?.some(
             (choice) => choice.choiceId || choice.inputValue || choice.image
