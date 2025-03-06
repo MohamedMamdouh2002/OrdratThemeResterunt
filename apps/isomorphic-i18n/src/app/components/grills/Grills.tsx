@@ -114,7 +114,7 @@ function Grills({lang} : {lang:string}) {
                     },
                 }}
                 >
-                  {sec.products.map((prod: React.JSX.IntrinsicAttributes & Food & { setCurrentItem: React.Dispatch<React.SetStateAction<{ type?: string; id: string } | null>> }) =>
+                  {sec.products.slice(0,8).map((prod: React.JSX.IntrinsicAttributes & Food & { setCurrentItem: React.Dispatch<React.SetStateAction<{ type?: string; id: string } | null>> }) =>
 
                     <SwiperSlide key={prod.id}>
                       <SmallCard  lang={lang} {...prod} />
@@ -124,7 +124,7 @@ function Grills({lang} : {lang:string}) {
               </div>
               </>
             ) : (
-              sec.products.map((prod: React.JSX.IntrinsicAttributes & Food & { setCurrentItem: React.Dispatch<React.SetStateAction<{ type?: string; id: string } | null>> }) =>
+              sec.products.slice(0,4).map((prod: React.JSX.IntrinsicAttributes & Food & { setCurrentItem: React.Dispatch<React.SetStateAction<{ type?: string; id: string } | null>> }) =>
                 sec.numberOfColumns === 1 ? (
                   <>
                     <MediumCard lang={lang} key={prod.id} {...prod} />

@@ -67,7 +67,7 @@ function MenuItems({ lang }: { lang?: string }) {
 }
 
 export default function BerylliumLeftSidebarFixed({ lang }: { lang?: string }) {
-  const pathname = usePathname();
+  const pathname:any = usePathname();
   const { width } = useWindowSize();
   const setMenuItems = useSetAtom(berylliumMenuItemAtom);
   const { expandedLeft, setExpandedLeft } = useBerylliumSidebars();

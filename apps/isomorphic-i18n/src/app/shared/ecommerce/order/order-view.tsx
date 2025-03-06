@@ -79,7 +79,7 @@ export default function OrderView({lang}:{lang:string}) {
   
   const [currentOrderStatus, setCurrentOrderStatus] = useState<number>();
   // const currentOrderStatus = order?.status;
-  const { id } = useParams();
+  const { id }:any = useParams();
   const phone=localStorage.getItem('phoneNumber')
   const transitions = [
     {

@@ -2,14 +2,10 @@
 
 const nextConfig = {
   images: {
+
+    
     domains: ['ordratuserbucket.s3.eu-north-1.amazonaws.com'],
     remotePatterns: [
-      {
-        protocol: 'http',
-        hostname: 'api.ordrat.com',
-        port: '',
-        pathname: '/images/**',
-      },
       {
         protocol: "https",
         hostname: "randomuser.me",
@@ -56,6 +52,28 @@ const nextConfig = {
       },
     ],
   },
+
+  async rewrites() {
+    return [
+      {
+        source: '/',
+        destination: '/ar', 
+      },
+      {
+        source: "/sitemap.xml",
+        destination: "/api/sitemap.xml",
+      },
+      {
+        source: '/post-sitemap.xml',
+        destination: '/api/post-sitemap.xml',
+      },
+      {
+        source: '/page-sitemap.xml',
+        destination: '/api/page-sitemap.xml',
+      },
+    ];
+  },
+
   reactStrictMode: true,
   transpilePackages: ["@isomorphic/core"],
 };

@@ -31,7 +31,7 @@ export default function FloatingCart({ className }: FloatingCartProps) {
   } = useCart();
 
   // Check if this page belongs to ecommerce.
-  const isECom = pathname.includes('ecommerce');
+  const isECom = pathname?.includes('ecommerce');
 
   // list of excluded pages
   const excludedPaths = [
@@ -41,7 +41,7 @@ export default function FloatingCart({ className }: FloatingCartProps) {
   ];
 
   // check if current page is cart or checkout
-  const isPathExcluded = excludedPaths.includes(pathname);
+  const isPathExcluded = excludedPaths.includes(pathname as any);
 
   /**
    * Display this floating cart on all e-commerce pages except for the cart, checkout and order view.

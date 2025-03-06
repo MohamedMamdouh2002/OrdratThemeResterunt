@@ -67,11 +67,9 @@ async function fetchShopData(shopId: string, lang:string) {
         cache: "no-store",
       }
     );
-
     if (!res.ok) {
       throw new Error("Failed to fetch shop details");
     }
-
     const shopData = await res.json();
     console.log("shopData: ",shopData);
     

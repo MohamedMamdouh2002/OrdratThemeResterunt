@@ -5,9 +5,9 @@ import Table, { HeaderCell } from '@/app/shared/table';
 import { useCart } from '@/store/quick-cart/cart.context';
 import { Title, Text } from 'rizzui';
 import { toCurrency } from '@utils/to-currency';
-import { CartItem ,Order,OrderItem } from '@/types';
+import { CartItem, Order, OrderItem } from '@/types';
 import { useEffect, useState } from 'react';
-import { useParams } from 'next/navigation'; 
+import { useParams } from 'next/navigation';
 import { useTranslation } from '@/app/i18n/client';
 import { API_BASE_URL } from '@/config/base-url';
 
@@ -97,16 +97,16 @@ import { API_BASE_URL } from '@/config/base-url';
 //   },
 // ];
 
-export default function OrderViewProducts({lang}:{lang:string}) {
+export default function OrderViewProducts({ lang }: { lang: string }) {
   const { items } = useCart();
-  const { id } = useParams();
+  const { id }: any = useParams();
   const [order, setOrder] = useState<Order | null>(null);
   const [loading, setLoading] = useState(true);
-	const { t } = useTranslation(lang ,'order');
+  const { t } = useTranslation(lang, 'order');
   const columns = [
     {
       title: <HeaderCell title={t('product')} />,
-      dataIndex: 'product', 
+      dataIndex: 'product',
       key: 'product',
       width: 250,
       render: (product: any) => (
@@ -130,7 +130,7 @@ export default function OrderViewProducts({lang}:{lang:string}) {
     },
     {
       title: <HeaderCell title={t('item-Price')} align="right" />,
-      dataIndex: 'itemPrice', 
+      dataIndex: 'itemPrice',
       key: 'itemPrice',
       width: 200,
       render: (itemPrice: number) => (
@@ -139,7 +139,7 @@ export default function OrderViewProducts({lang}:{lang:string}) {
     },
     {
       title: <HeaderCell title={t('Shipping-Fees')} align="right" />,
-      dataIndex: 'shippingFees', 
+      dataIndex: 'shippingFees',
       key: 'shippingFees',
       width: 200,
       render: (shippingFees: number) => (
@@ -212,12 +212,12 @@ export default function OrderViewProducts({lang}:{lang:string}) {
   }
   return (
     <Table
-    data={order.items.map(item => ({
-      ...order, 
-      product: item.product, 
-      itemPrice: item.itemPrice, 
-      quantity: item.quantity, 
-    }))}      // @ts-ignore
+      data={order.items.map(item => ({
+        ...order,
+        product: item.product,
+        itemPrice: item.itemPrice,
+        quantity: item.quantity,
+      }))}      // @ts-ignore
       columns={columns}
       className="text-sm"
       variant="minimal"

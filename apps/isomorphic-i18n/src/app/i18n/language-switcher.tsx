@@ -13,7 +13,7 @@ export default function LanguageSwitcher({ lang = "en", variant = "icon", classN
  
   const router = useRouter();
   const pathname = usePathname();
-  const newPathname = pathname.split("/").slice(2).join("/"); 
+  const newPathname = pathname?.split("/").slice(2).join("/"); 
   const [currentLang, setCurrentLang] = useState(lang);
 
   useEffect(() => {

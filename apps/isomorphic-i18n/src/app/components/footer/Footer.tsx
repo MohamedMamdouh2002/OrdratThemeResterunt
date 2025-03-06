@@ -30,7 +30,7 @@ type mediaProps = {
 
 type Props = {
 
-	lang: string; // إضافة خاصية اللغة
+  lang: string; // إضافة خاصية اللغة
 };
 function Footer({ lang }: Props) {
   const { t, i18n } = useTranslation(lang!, 'nav');
@@ -40,16 +40,22 @@ function Footer({ lang }: Props) {
   const [currentModal, setCurrentModal] = useState<'login' | 'register' | 'resetPassword'>('login');
   const [loginModal, setLoginModal] = useState(false);
   const [logoUrl, setLogoUrl] = useState<string | null>(null);
-  const [contact, setContact] = useState<any>('');
+  const [contact, setContact] = useState<any>({
+    facebookLink: "",
+    instagramLink: "",
+    whatsAppNumber: "",
+    xLink: ""
+  });
   const { shopId } = useUserContext();
   const [shopName, setShopName] = useState<string | null>(null);
+  const [description, setDescription] = useState<string | null>(null);
   const AccountBeforeLogin: linksProps[] = [
     {
       header: t('Account'),
       menu: [
         {
           title: t('login'),
-          action: () => setLoginModal(true), 
+          action: () => setLoginModal(true),
         },
       ],
     },
@@ -86,6 +92,7 @@ function Footer({ lang }: Props) {
         { title: t('search'), href: `/${lang}/search` },
         { title: t('review'), href: `/${lang}/reviews` },
         { title: t('faq'), href: `/${lang}/faq` },
+        { title: t('ordrat'), href: `https://ordrat.com/` },
       ],
     },
     {
@@ -97,7 +104,7 @@ function Footer({ lang }: Props) {
     },
   ];
 
-  const { facebookLink, instagramLink, whatsAppNumber, xLink } = { ...contact }
+  const { facebookLink, instagramLink, whatsAppNumber, xLink } = contact;
   const Links: mediaProps[] = [
     { link: faWhatsapp, color: '#1B8755', href: whatsAppNumber },
     { link: faXTwitter, color: 'black', href: xLink },
@@ -134,9 +141,11 @@ function Footer({ lang }: Props) {
     i18n.changeLanguage(lang);
     const storedLogo = localStorage.getItem("logoUrl");
     const storedName = localStorage.getItem("subdomainName");
+    const description = localStorage.getItem("description");
     if (storedLogo) {
-        setLogoUrl(storedLogo);
-        setShopName(storedName);
+      setLogoUrl(storedLogo);
+      setShopName(storedName);
+      setDescription(description)
     }
   }, [lang, i18n]);
 
@@ -151,18 +160,18 @@ function Footer({ lang }: Props) {
                 {/* <Image src={logo} alt="logo" className="max-w-[60px]" /> */}
                 {logoUrl ? (
                   <Image
-                      src={logoUrl}
-                      width={100}
-                      height={100}
-                      className="max-w-[60px]"
-                      alt="logo"
+                    src={logoUrl}
+                    width={100}
+                    height={100}
+                    className="max-w-[60px]"
+                    alt="logo"
                   />
-                  ) : (
+                ) : (
                   <div className="w-[60px] h-[60px] bg-gray-200 rounded-full"></div>
                 )}
                 <h3>{shopName}</h3>
               </div>
-              <p className="text-sm font-light">{t('desc')}</p>
+              <p className="text-sm font-light">{description}</p>
               <h4 className="mt-10">{t('Get-in-Touch')}</h4>
               <div className="flex items-center gap-2">
                 {Links.map((i, index) => (
@@ -225,41 +234,59 @@ function Footer({ lang }: Props) {
 
           <div className="border-t border-t-black/25 py-2 flex items-center justify-center text-center gap-2 bg-white">
             <p className="text-sm w-[90%] font-medium text-[#003049]">
-            {lang === "ar" ? (
-              <>© {new Date().getFullYear()} • تم برمجة وتصميم موقع {shopName} بواسطة <Link href="https://ordrat.com/" target="_blank" className="text-blue-600 hover:underline font-medium">Ordrat.com</Link> شركة أوردرات</>
-            ) : (
-              <>
-                © {new Date().getFullYear()} • {shopName} website was programmed and designed by <Link href="https://ordrat.com/" target="_blank" className="text-blue-600 hover:underline font-medium">Ordrat.com</Link> Ordrat™ Company
-              </>
-            )}
+              {lang === "ar" ? (
+                <>
+                  © {new Date().getFullYear()} • تم برمجة وتصميم موقع {shopName} بواسطة{" "}
+                  <a
+                    href="https://ordrat.com/"
+                    target="_blank"
+                    rel="noopener"
+                    className="text-blue-600 hover:underline font-medium"
+                  >
+                    Ordrat.com
+                  </a> شركة أوردرات
+                </>
+              ) : (
+                <>
+                  © {new Date().getFullYear()} • {shopName} website was programmed and designed by{" "}
+                  <a
+                    href="https://ordrat.com/"
+                    target="_blank"
+                    rel="noopener"
+                    className="text-blue-600 hover:underline font-medium"
+                  >
+                    Ordrat.com
+                  </a> Ordrat™ Company
+                </>
+              )}
             </p>
           </div>
         </div>
       </div>
 
       {/* Login Modal */}
-      
-      {loginModal && 
-      			<AnimatePresence mode="wait">
-            {loginModal && (
-              <Modal isOpen={loginModal} setIsOpen={setLoginModal}>
-                {currentModal === 'login' ? (
-                  <Login
-                    setCurrentModal={setCurrentModal}
-                    onLogin={() => {
-                      setLoginModal(false);
-                      setIsOpen(false as any );
-                      setHasAccount(true);
-                    }}
-                  />
-                ) : currentModal === 'register' ? (
-                  <></>
-                ) : (
-                  <></>
-                )}
-              </Modal>
-            )}
-          </AnimatePresence>
+
+      {loginModal &&
+        <AnimatePresence mode="wait">
+          {loginModal && (
+            <Modal isOpen={loginModal} setIsOpen={setLoginModal}>
+              {currentModal === 'login' ? (
+                <Login
+                  setCurrentModal={setCurrentModal}
+                  onLogin={() => {
+                    setLoginModal(false);
+                    setIsOpen(false as any);
+                    setHasAccount(true);
+                  }}
+                />
+              ) : currentModal === 'register' ? (
+                <></>
+              ) : (
+                <></>
+              )}
+            </Modal>
+          )}
+        </AnimatePresence>
       }
     </>
   );

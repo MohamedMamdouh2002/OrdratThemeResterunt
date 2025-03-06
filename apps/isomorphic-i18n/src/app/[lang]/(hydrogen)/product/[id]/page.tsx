@@ -31,7 +31,7 @@ export default function AllProduct({
     const fetchProducts = async () => {
       setLoading(true); 
       try {
-        const response = await fetch(`${API_BASE_URL}/api/Products/GetByCategoryId/${shopId}/${params.id}?PageNumber=${page}&PageSize=4`, {
+        const response = await fetch(`${API_BASE_URL}/api/Products/GetByCategoryId/${shopId}/${params?.id}?PageNumber=${page}&PageSize=4`, {
           headers: {
             // accept: '*/*',
             'Accept-Language': lang!,

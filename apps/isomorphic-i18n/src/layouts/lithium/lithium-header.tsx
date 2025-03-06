@@ -87,22 +87,25 @@ function HeaderMenuRight() {
 export default function Header({ lang }: { lang?: string }) {
   const [scrollY, setScrollY] = useState(0);
   const [isStickyVisible, setStickyVisible] = useState(false);
-  const [isOpen, setIsOpen] = useState(false); // حالة التحكم في ظهور الـ SideNav
-  const pathname = usePathname(); // استخدام usePathname للحصول على المسار الحالي
+  const [isOpen, setIsOpen] = useState(false); 
+  const pathname = usePathname(); 
   const { t, i18n } = useTranslation(lang!, 'nav');
   const [logoUrl, setLogoUrl] = useState<string | null>(null);
   const [shopName, setShopName] = useState<string | null>(null);
+  const [background, setBackground] = useState<string | null>(null);
+
   const [backgroundUrl, setBackgroundUrl] = useState<string | null>(null);
-  const background = localStorage.getItem("backgroundUrl");
   
   useEffect(() => {
     i18n.changeLanguage(lang);
     const storedLogo = localStorage.getItem("logoUrl");
+    const background = localStorage.getItem("backgroundUrl");
     const storedName = localStorage.getItem("subdomainName");
     if (storedLogo) {
         setBackgroundUrl(background);
         setLogoUrl(storedLogo);
         setShopName(storedName);
+        setBackground(background)
     }
   }, [lang, i18n]);
 
@@ -165,7 +168,6 @@ export default function Header({ lang }: { lang?: string }) {
             >
               <Logo iconOnly={true} />
             </Link>
-
 
             <Link href={`/${lang!}/search`}>
               {/* <Input
@@ -258,7 +260,7 @@ export default function Header({ lang }: { lang?: string }) {
     {!pathname || pathname === "/en" || pathname === "/ar" ? (
       <div className={`imgBg lg:hidden`}
         style={{
-          backgroundImage: photo ? `url(${photo.src})` : "none",
+          backgroundImage: background ? `url(${background})` : "none",
           backgroundSize: "cover",
           backgroundPosition: "center center",
           backgroundRepeat: "no-repeat",

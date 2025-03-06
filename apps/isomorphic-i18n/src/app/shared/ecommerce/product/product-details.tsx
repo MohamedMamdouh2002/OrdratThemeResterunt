@@ -14,7 +14,7 @@ export default function ProductDetails() {
   const params = useParams();
   const product =
     modernProductsGrid.find(
-      (item) => generateSlug(item.title) === params.slug
+      (item) => generateSlug(item.title) === params?.slug
     ) ?? modernProductsGrid[0];
 
   return (
