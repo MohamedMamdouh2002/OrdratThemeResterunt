@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
 
-const siteUrl = "http://localhost:3001";
+const siteUrl = "https://theme.ordrat.com";
 
 export default function handler(req: NextApiRequest, res: NextApiResponse) {
   try {
