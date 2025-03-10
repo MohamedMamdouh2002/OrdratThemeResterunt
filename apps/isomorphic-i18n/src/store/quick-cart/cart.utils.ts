@@ -16,7 +16,7 @@ export function addItemWithQuantity(
   if (existingItemIndex > -1) {
     const newItems = [...items];
     // console.log("newItems[existingItemIndex].quantity before: ",newItems[existingItemIndex].quantity);
-    newItems[existingItemIndex].quantity += (quantity/2);
+    newItems[existingItemIndex].quantity += quantity;
     // console.log("newItems[existingItemIndex].quantity after: ",newItems[existingItemIndex].quantity);
     
     return newItems;
