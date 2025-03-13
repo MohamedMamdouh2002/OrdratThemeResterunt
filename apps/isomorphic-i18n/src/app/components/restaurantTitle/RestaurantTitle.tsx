@@ -95,7 +95,7 @@ function RestaurantTitle({ lang }: { lang?: string; }) {
         const fetchOrders = async () => {
             try {
                 // setLoading(true);
-                const response = await axiosClient.get(`/api/Branch/GetByShopId/b1292443-b53f-4b32-bba9-4deacbf0390b`, {
+                const response = await axiosClient.get(`/api/Branch/GetByShopId/${shopId}`, {
                     headers: {
                         'Accept-Language': lang,
                     },

@@ -35,16 +35,17 @@ export async function generateStaticParams() {
   return languages.map((lang) => ({ lang }));
 }
 
+// function getServerSiteUrl() {
+//   const host = headers().get("host") || "localhost:3000";
+//   const protocol = process.env.NODE_ENV === "production" ? "https" : "http";
+//   return `${protocol}://${host}`;
+// } 
 function getServerSiteUrl() {
+  // const host = "theme.ordrat.com";
   const host = headers().get("host") || "localhost:3000";
   const protocol = process.env.NODE_ENV === "production" ? "https" : "http";
-  return `${protocol}://${host}`;
-} 
-// function getServerSiteUrl() {
-//   const host = "theme.ordrat.com";
-//   const protocol = process.env.NODE_ENV === "production" ? "https" : "http";
-//   return `${host}`;
-// }
+  return `${host}`;
+}
 // function getFullServerUrl() {
 //   const host = headers().get("host") || "localhost:3000";
 //   const protocol = process.env.NODE_ENV === "production" ? "https" : "http";
