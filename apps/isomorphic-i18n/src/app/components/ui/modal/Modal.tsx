@@ -272,9 +272,9 @@ function Modal({
     const selectedChoiceId = watch(variation.id);
     const selectedChoice = variation.choices.find((choice: Choice) => choice.id === selectedChoiceId);
     return total + (selectedChoice?.price || 0);
-  }, 0) * quantity || 0;
-  const finalPrice = (prodId?.price * quantity) + selectedChoicePrices;
-  const finalOldPrice = data?.oldPrice ? (prodId.oldPrice * quantity) + selectedChoicePrices : undefined;
+  }, 0) || 0;
+  const finalPrice = (prodId?.price * quantity ) + (selectedChoicePrices * quantity) ;
+  const finalOldPrice = data?.oldPrice ? (prodId.oldPrice * quantity) + (selectedChoicePrices * quantity)  : undefined;
   const onSubmit: SubmitHandler<ProductDetailsInput> = (data) => {
     console.log("supmitted Data: ", data);
 

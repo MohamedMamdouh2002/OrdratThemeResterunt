@@ -11,6 +11,7 @@ import { useUserContext } from '../context/UserContext';
 import CartProduct from '@/app/shared/ecommerce/cart/cart-product';
 import { Empty, EmptyProductBoxIcon } from 'rizzui';
 import { useCart } from '@/store/quick-cart/cart.context';
+import { CiShoppingCart } from "react-icons/ci";
 
 
 const ProgressBar = ({ totalPrice, freeShippingThreshold }: { totalPrice: number; freeShippingThreshold: number; }) => {
@@ -30,11 +31,11 @@ const ProgressBar = ({ totalPrice, freeShippingThreshold }: { totalPrice: number
         <div className="w-full px-4 my-4 ltr">
             <div className="w-full h-2 bg-gray-200 rounded-full relative">
                 <div
-                    className={`relative h-2 ${progress==100?'bg-green-700':'bg-red-500'} rounded-full transition-all duration-700 ease-out`}
+                    className={`relative h-2 ${progress == 100 ? 'bg-green-700' : 'bg-red-500'} rounded-full transition-all duration-700 ease-out`}
                     style={{ width: `${progress}%` }}
                 >
                     <span
-                        className={`absolute top-1/2 right-1 translate-x-1/2 -translate-y-1/2 text-xs font-bold ${progress==100?'text-green-700 border-green-700':'text-red-500 border-red-500'} bg-white border-2 rounded-full w-9 h-9 flex items-center justify-center`}
+                        className={`absolute top-1/2 right-1 translate-x-1/2 -translate-y-1/2 text-xs font-bold ${progress == 100 ? 'text-green-700 border-green-700' : 'text-red-500 border-red-500'} bg-white border-2 rounded-full w-9 h-9 flex items-center justify-center`}
                     >
                         {Math.round(progress)}%
                     </span>
@@ -114,7 +115,7 @@ function CartModal({ lang }: { lang?: string }) {
         if ((e.target as HTMLElement).id === 'modal-overlay') {
             setModal(false);
         }
-    }; 
+    };
     const { items } = useCart();
     const totalPrice = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
     const freeShippingThreshold = 2000;
@@ -125,14 +126,19 @@ function CartModal({ lang }: { lang?: string }) {
             <div className="relative">
             <div
                 onClick={() => setModal(true)}
-                className="bg-mainColor w-16 h-16 rounded-lg fixed top-[50%] right-0 z-[999] flex flex-col gap-4 items-center justify-center p-2 cursor-pointer"
+                className="bg-mainColor CartShadow w-[72px] h-16 rounded-lg fixed top-[50%] right-2 z-[999] flex flex-col gap-4 items-center justify-center p-2 cursor-pointer"
                 >
-                <div className="flex gap-2 text-white relative">
-                    <FontAwesomeIcon icon={faCartShopping as any} className="text-white text-lg" />
-                    <span className='absolute -left-2 -top-4 bg-white px-1 py-.5 rounded-full text-mainColor'>
+                <div className="">
+                    <CiShoppingCart  className="text-white text-2xl text-center mx-auto" />
+                    <div className="flex gap-1 items-center ">
 
-                    {items.length}
-                    </span>
+                    <p  className="text-white text-xs">
+                        {items.length}
+                    </p>
+                    <p  className="text-white text-xs">
+                         {items.length <=1 ? t('item') : t('items')}
+                    </p>
+                    </div>
                 </div>
             </div>
 
@@ -165,7 +171,7 @@ function CartModal({ lang }: { lang?: string }) {
                                 <div className="">
 
                                     <Empty
-                                        image={<EmptyProductBoxIcon  className='w-5/12 mx-auto'/>}
+                                        image={<EmptyProductBoxIcon className='w-5/12 mx-auto' />}
                                         text={t('cart-empty')}
                                     />
                                 </div>
@@ -216,11 +222,11 @@ function CartModal({ lang }: { lang?: string }) {
                             )} */}
                         </div>
 
-                        <div className={`sticky bottom-0 left-0 right-0 bg-white pt-3 ${lang=='ar'? 'shadow-[rgb(255,255,255)_44px_0px_30px_30px]' : 'shadow-[rgb(255,255,255)_-48px_0px_30px_30px]'}`}>
-                            {totalPrice !=0 &&(
+                        <div className={`sticky bottom-0 left-0 right-0 bg-white pt-3 ${lang == 'ar' ? 'shadow-[rgb(255,255,255)_44px_0px_30px_30px]' : 'shadow-[rgb(255,255,255)_-48px_0px_30px_30px]'}`}>
+                            {totalPrice != 0 && (
                                 <>
-                                    <ProgressBar totalPrice={totalPrice} freeShippingThreshold={freeShippingThreshold}/>
-                                    <FreeShippingMessage totalPrice={totalPrice} lang={lang!} freeShippingThreshold={freeShippingThreshold}/>
+                                    <ProgressBar totalPrice={totalPrice} freeShippingThreshold={freeShippingThreshold} />
+                                    <FreeShippingMessage totalPrice={totalPrice} lang={lang!} freeShippingThreshold={freeShippingThreshold} />
                                 </>
                             )}
                             <Link
