@@ -12,6 +12,7 @@ import CartProduct from '@/app/shared/ecommerce/cart/cart-product';
 import { Empty, EmptyProductBoxIcon } from 'rizzui';
 import { useCart } from '@/store/quick-cart/cart.context';
 import { CiShoppingCart } from "react-icons/ci";
+import { IoMdClose } from "react-icons/io";
 
 
 const ProgressBar = ({ totalPrice, freeShippingThreshold }: { totalPrice: number; freeShippingThreshold: number; }) => {
@@ -151,20 +152,21 @@ function CartModal({ lang }: { lang?: string }) {
                     onClick={closeModal}
                     className="fixed inset-0 z-[99999] right-0 bg-black bg-opacity-50 flex"
                 >
-                    <div className="h-full w-[320px] sm:w-[400px] bg-white relative ps-5 py-4 flex flex-col">
+                    <div className="h-full w-[320px] sm:w-[400px] bg-white relative py-4 flex flex-col">
                         <div className="flex justify-between items-center">
-                            <h2 className="text-2xl font-bold">{t('cart')}</h2>
+                            <h2 className="text-2xl font-medium ps-5 ">{t('cart')}</h2>
                             <button
                                 onClick={() => setModal(false)}
-                                className="text-textColor text-2xl px-3 py-2 rounded-lg"
+                                className="text-textColor text-xl mx-3  rounded-lg"
                             >
-                                <FontAwesomeIcon icon={faX as any} className='text-xl' />
+                                {/* <FontAwesomeIcon icon={faX as any} className='' /> */}
+                                <IoMdClose className='hover:text-mainColorHover' />
 
                             </button>
                         </div>
-                        <div className="w-full h-[1px] bg-black"></div>
+                        <div className="w-full h-[0.5px] mt-3 bg-[#bfbfbf]"></div>
 
-                        <div className="flex-1 overflow-y-auto pt-3 pe-2">
+                        <div className="flex-1 overflow-y-auto pt-3 ps-5  pe-5">
                             {items.length ? (
                                 items.map((item) => <CartProduct ifModal={true} key={item.id} product={item} lang={lang} />)
                             ) : (
@@ -229,12 +231,13 @@ function CartModal({ lang }: { lang?: string }) {
                                     <FreeShippingMessage totalPrice={totalPrice} lang={lang!} freeShippingThreshold={freeShippingThreshold} />
                                 </>
                             )}
-                            <Link
-                                href={`/${lang}/cart`}
-                                className="bg-mainColor  text-white rounded-lg text-center text-lg sm:text-xl font-medium w-11/12 mx-auto block py-3 sm:py-4"
-                            >
-                                {t('order-cart')}
-                            </Link>
+                         <Link
+                            href={`/${lang}/cart`}
+                            className="bg-mainColor text-white rounded-lg text-center text-sm sm:text-base font-medium w-11/12 mx-auto flex justify-between items-center py-2 mt-1 px-4"
+                        >
+                            <span>{t('order-cart')}</span>
+                            <span className='bg-white py-1 px-3 text-mainColor rounded-md'>{totalPrice}{" "}{t('currency')}</span>
+                        </Link>
                         </div>
                     </div>
                 </div>

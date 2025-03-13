@@ -12,10 +12,16 @@ import map from '@public/assets/map.png'
 
 import toast from 'react-hot-toast';
 import Image from 'next/image';
+import { IoMdClose } from 'react-icons/io';
+
 
 type Branchprops = {
     name: string;
     addressText: string;
+    openAt: string;
+    closedAt: string;
+    deliveryTime: string;
+
 }
 
 function Navbar({ className, lang }: { className?: string, lang?: string }) {
@@ -57,7 +63,7 @@ function Navbar({ className, lang }: { className?: string, lang?: string }) {
         const fetchOrders = async () => {
             try {
                 // setLoading(true);
-                const response = await axiosClient.get(`/api/Branch/GetByShopId/${shopId}`, {
+                const response = await axiosClient.get(`/api/Branch/GetByShopId/b1292443-b53f-4b32-bba9-4deacbf0390b`, {
                     headers: {
                         'Accept-Language': lang,
                     },
@@ -117,9 +123,9 @@ function Navbar({ className, lang }: { className?: string, lang?: string }) {
                         ))
                     }
                     <div className="flex items-center mx-auto gap-5">
-                        <div className="flex items-center gap-">
+                        {/* <div className="flex items-center gap-">
                             <Timer /> 24 {t('mins')}
-                        </div>
+                        </div> */}
                         <div className="flex items-center gap-2">
                             <FontAwesomeIcon icon={faMoneyBills as any} className='text-lg' />
                             {t('Cash')}
@@ -158,37 +164,82 @@ function Navbar({ className, lang }: { className?: string, lang?: string }) {
                                     onClick={() => setModal(false)}
                                     className="text-gray-600 hover:text-gray-900"
                                 >
-                                    <FontAwesomeIcon icon={faX as any} className='text-xl' />
+                            <IoMdClose className='hover:text-mainColorHover text-xl' />
                                 </button>
                             </div>
 
-                            <div className="flex-grow overflow-y-auto max-h-[400px]">
-                                <h4 className='text-black font-medium mt-4 mb-2 text-sm'>{t('aboutShop')}</h4>
-                                <div className="p-3 rounded-lg text-black bg-[#F2F4F7]">
-                                    <p>{description}</p>
-                                </div>
+                            <div className="flex-grow overflow-y-auto pe-5 max-h-[300px]">
+                        <h4 className='text-black font-medium mt-4 mb-2 text-sm'>{t('aboutShop')}</h4>
+                        <div className="p-3 rounded-lg text-black bg-[#F2F4F7]">
+                            <p>
+                                {description}
+                            </p>
+                        </div>
+                        {response
+                            .filter((i) => i.name === "Main Branch" || i.name === "الفرع الرئيسي")
+                            .map((i, index) => {
+                                const formatTime = (time: any) => {
+                                    if (!time) return ""; 
+                                    const [hours, minutes] = time.split(":"); 
+                                    let hour = parseInt(hours, 10);
+                                    const minute = minutes.padStart(2, "0"); 
+                                    const isPM = hour >= 12; 
+                                    const period = isPM ? (lang === 'ar' ? "مساءً" : "PM") : (lang === 'ar' ? "صباحًا" : "AM");
+                                
+                                    hour = hour % 12 || 12; 
+                                    return `${hour}:${minute} ${period}`;
+                                };
 
-                                <div className="text-[#212121] mt-5 space-y-4 mb-3">
-                                    <h2 className="text-black font-medium mt-4 mb-2 text-sm">{lang === 'ar' ? 'الفروع' : 'Branches'}</h2>
+                                return (
+                                    <div key={index}>
+                                        <h4 className='text-black font-medium mt-4 mb-2 text-sm'>{t('TimeShop')}</h4>
+                                        <div className="p-3  rounded-lg text-black bg-[#F2F4F7]">
+                                            <p>
+                                                {lang==='ar'?'من':'from'}{" "}
+                                                {formatTime(i.openAt)}
+                                                {" "}
+                                            {lang==='ar'?'الي':'to'}
+                                            {" "}
+                                                {formatTime(i.closedAt)}
+                                            </p>
+                                        </div>
 
-                                    <div className="flex flex-wrap gap-4 justify-center">
-                                        {response.map((i, index) => (
-                                            <div key={index} className="flex flex-col items-center bg-white p-4 rounded-lg shadow-md w-28">
-                                                <Image src={map} className='w-10' alt={i.name} />
-                                                <span className="text-sm font-medium text-[#212121] mt-2">{i.name}</span>
-                                                <a
-                                                    href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(i.addressText)}`}
-                                                    target="_blank"
-                                                    rel="noopener noreferrer"
-                                                    className="flex items-center gap-2 text-mainColor hover:underline bg-mainColor py-2 text-sm text-white w-11/12 mx-auto justify-center text-center rounded-md mt-3"
-                                                >
-                                                    {lang === 'ar' ? 'عرض' : 'View'}
-                                                </a>
-                                            </div>
-                                        ))}
+                                        {/* وقت التوصيل */}
+                                        <h4 className='text-black font-medium mt-4 mb-2 text-sm'>{t('deliveryShop')}</h4>
+                                        <div className="p-3 flex items-center justify-between rounded-lg text-black bg-[#F2F4F7]">
+                                            <p>
+                                                {i.deliveryTime}
+                                            </p>
+                                        </div>
                                     </div>
-                                </div>
+                                );
+                            })}
+
+
+
+
+                        <div className="text-[#212121] mt-5 space-y-4 mb-2">
+                            <h2 className="text-black font-medium mt-4 mb-2 text-sm">{lang === 'ar' ? 'الفروع' : 'Branches'}</h2>
+
+                            <div className="grid grid-cols-2 gap-4 w-full">
+                                {response.map((i, index) => (
+                                    <div key={index} className="flex flex-col items-center bg-white p-4 rounded-lg shadow-md w-full">
+                                        <Image src={map} className="w-10" alt={i.name} />
+                                        <span className="text-sm font-medium text-[#212121] mt-2">{i.name}</span>
+                                        <a
+                                            href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(i.addressText)}`}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="flex items-center gap-2 text-mainColor hover:underline bg-mainColor py-2 text-sm text-white w-full mx-auto justify-center text-center rounded-md mt-3"
+                                        >
+                                            {lang === 'ar' ? 'عرض' : 'View'}
+                                        </a>
+                                    </div>
+                                ))}
                             </div>
+
+                        </div>
+                    </div>
 
                             <button onClick={() => setModal(false)}
                                 className='w-full h-11 rounded-lg text-xl text-white bg-mainColor mt-auto'>

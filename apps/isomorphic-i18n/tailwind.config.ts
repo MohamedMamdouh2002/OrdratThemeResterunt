@@ -21,6 +21,7 @@ const config: Pick<Config, "prefix" | "presets" | "content" | "theme" |"plugins"
       fontFamily: {
         // rubik: ['Rubik', 'sans-serif'],
         // almarai: ['Almarai','sans-serif'],
+        elTajawal: ['var(--font-el-tajawal)', 'sans-serif'],
         NotoSansArabic: ['var(--font-NotoSansArabic)', 'sans-serif'],
       },
 

@@ -1,5 +1,5 @@
 import { siteConfig } from "@/config/site.config";
-import { inter, lexendDeca, NotoSansArabic } from "@/app/fonts";
+import { elTajawal, inter, lexendDeca, NotoSansArabic } from "@/app/fonts";
 import cn from "@utils/class-names";
 
 import "./[lang]/globals.css";
@@ -14,7 +14,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       <body
         // to prevent any warning that is caused by third party extensions like Grammerly
         suppressHydrationWarning={true}
-        className={cn(inter.variable, NotoSansArabic.variable, "font-NotoSansArabic")}
+        className={cn(elTajawal.variable ,'font-elTajawal')}
       >
         {children}
 

@@ -7,7 +7,7 @@ import GlobalDrawer from "@/app/shared/drawer-views/container";
 import GlobalModal from "@/app/shared/modal-views/container";
 import { ThemeProvider } from "@/app/shared/theme-provider";
 import { siteConfig, metaObject } from "@/config/site.config";
-import { inter, lexendDeca, NotoSansArabic } from "@/app/fonts";
+import { elTajawal, inter, lexendDeca, NotoSansArabic } from "@/app/fonts";
 import cn from "@utils/class-names";
 import { dir } from "i18next";
 import { languages } from "../i18n/settings";
@@ -35,16 +35,16 @@ export async function generateStaticParams() {
   return languages.map((lang) => ({ lang }));
 }
 
-// function getServerSiteUrl() {
-//   const host = headers().get("host") || "localhost:3000";
-//   const protocol = process.env.NODE_ENV === "production" ? "https" : "http";
-//   return `${protocol}://${host}`;
-// } 
 function getServerSiteUrl() {
-  const host = "theme.ordrat.com";
+  const host = headers().get("host") || "localhost:3000";
   const protocol = process.env.NODE_ENV === "production" ? "https" : "http";
-  return `${host}`;
-}
+  return `${protocol}://${host}`;
+} 
+// function getServerSiteUrl() {
+//   const host = "theme.ordrat.com";
+//   const protocol = process.env.NODE_ENV === "production" ? "https" : "http";
+//   return `${host}`;
+// }
 // function getFullServerUrl() {
 //   const host = headers().get("host") || "localhost:3000";
 //   const protocol = process.env.NODE_ENV === "production" ? "https" : "http";
@@ -208,7 +208,7 @@ export default async function RootLayout({
     >
       <body
         suppressHydrationWarning
-        className={cn(inter.variable, NotoSansArabic.variable, "font-NotoSansArabic")}
+        className={cn(elTajawal.variable ,'font-elTajawal')}
       >
         <style>
           {`

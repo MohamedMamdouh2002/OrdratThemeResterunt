@@ -168,7 +168,9 @@
    "PrivacyPolicy":"Privacy Policy",
    "refundPolicy":"Refund Policy",
   "showRate":"Show Ratings",
-   "quickLinks":"Quick Links",
+  "TimeShop":"Working Hours",
+  "DeliveryShop":"Delivery Time",
+  "quickLinks":"Quick Links",
    "contact":"Contact Us",
    "placeholder":"Are you looking for something?",
    "welcome-to-Karam-Elsham":"welcome to Karam Elsham"
