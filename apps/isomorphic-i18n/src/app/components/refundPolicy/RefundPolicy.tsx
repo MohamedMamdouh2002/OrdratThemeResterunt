@@ -38,7 +38,7 @@ function RefundPolicy({ lang }: { lang?: string }) {
   }
 
   return (
-    <div className="w-5/6 sm:w-8/12 mx-auto mb-10">
+    <div className="w-5/6 sm:w-8/12 mx-auto mb-10 lg:mt-0 mt-24 ">
       <div className="mt-10">
         <h2 className="text-3xl font-medium mb-8 text-center">{policy.title}</h2>
         <div className="mt-2 overflow-hidden text-base font-medium text-[#2b2b2b]">

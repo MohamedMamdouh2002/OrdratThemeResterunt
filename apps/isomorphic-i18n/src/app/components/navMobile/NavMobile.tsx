@@ -12,7 +12,7 @@ const NavMobile = ({ lang }: { lang: string }) => {
   const [home, setHome] = useState<any[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const navRef = useRef<HTMLUListElement>(null);
-  const [isNavigating, setIsNavigating] = useState(false); // حالة التنقل المباشر
+  const [isNavigating, setIsNavigating] = useState(false); 
   const { t, i18n } = useTranslation(lang!, 'nav');
   const [isSticky, setIsSticky] = useState(true);
 
@@ -30,8 +30,8 @@ const NavMobile = ({ lang }: { lang: string }) => {
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth >= 1024) {
-        setIsModalOpen(false); // اغلق المودال عند الشاشات الأكبر من lg
-        document.body.style.overflow = 'auto'; // تفعيل التمرير
+        setIsModalOpen(false); 
+        document.body.style.overflow = 'auto'; 
       }
     };
 
@@ -40,30 +40,28 @@ const NavMobile = ({ lang }: { lang: string }) => {
       window.removeEventListener('resize', handleResize);
     };
   }, []);
-
   useEffect(() => {
     const sections = home?.map(item => document.getElementById(item.id));
     const observer = new IntersectionObserver(
       (entries) => {
         if (!isNavigating) {
-          entries.forEach(entry => {
-            if (entry.isIntersecting) {
-              setActive(entry.target.id);
-              const index = home.findIndex(item => item.id === entry.target.id);
-              scrollToItem(index);
-            }
-          });
+          let firstVisibleSection = entries.find(entry => entry.isIntersecting);
+          if (firstVisibleSection) {
+            setActive(firstVisibleSection.target.id); // تعيين العنصر الفعلي
+            const index = home.findIndex(item => item.id === firstVisibleSection.target.id);
+            scrollToItem(index);
+          }
         }
       },
       { rootMargin: "0px", threshold: 0.5 }
     );
-
+  
     sections?.forEach(section => {
       if (section) {
         observer.observe(section);
       }
     });
-
+  
     return () => {
       sections?.forEach(section => {
         if (section) {
@@ -72,7 +70,7 @@ const NavMobile = ({ lang }: { lang: string }) => {
       });
     };
   }, [home, isNavigating]);
-
+  
   const scrollToItem = (index: number) => {
     if (navRef.current) {
       const itemWidth = navRef.current.scrollWidth / home.length;

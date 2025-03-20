@@ -225,14 +225,14 @@ function RestaurantTitle({ lang }: { lang?: string; }) {
                             .filter((i) => i.name === "Main Branch" || i.name === "الفرع الرئيسي")
                             .map((i, index) => {
                                 const formatTime = (time: any) => {
-                                    if (!time) return ""; 
-                                    const [hours, minutes] = time.split(":"); 
+                                    if (!time) return "";
+                                    const [hours, minutes] = time.split(":");
                                     let hour = parseInt(hours, 10);
-                                    const minute = minutes.padStart(2, "0"); 
-                                    const isPM = hour >= 12; 
+                                    const minute = minutes.padStart(2, "0");
+                                    const isPM = hour >= 12;
                                     const period = isPM ? (lang === 'ar' ? "مساءً" : "PM") : (lang === 'ar' ? "صباحًا" : "AM");
-                                
-                                    hour = hour % 12 || 12; 
+
+                                    hour = hour % 12 || 12;
                                     return `${hour}:${minute} ${period}`;
                                 };
 
@@ -241,11 +241,11 @@ function RestaurantTitle({ lang }: { lang?: string; }) {
                                         <h4 className='text-black font-medium mt-4 mb-2 text-sm'>{t('TimeShop')}</h4>
                                         <div className="p-3  rounded-lg text-black bg-[#F2F4F7]">
                                             <p>
-                                                {lang==='ar'?'من':'from'}{" "}
+                                                {lang === 'ar' ? 'من' : 'from'}{" "}
                                                 {formatTime(i.openAt)}
                                                 {" "}
-                                            {lang==='ar'?'الي':'to'}
-                                            {" "}
+                                                {lang === 'ar' ? 'الي' : 'to'}
+                                                {" "}
                                                 {formatTime(i.closedAt)}
                                             </p>
                                         </div>

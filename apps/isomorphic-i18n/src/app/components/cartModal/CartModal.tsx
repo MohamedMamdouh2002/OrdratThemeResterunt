@@ -127,7 +127,7 @@ function CartModal({ lang }: { lang?: string }) {
             <div className="relative">
             <div
                 onClick={() => setModal(true)}
-                className="bg-mainColor CartShadow w-[72px] h-16 rounded-lg fixed top-[50%] right-2 z-[999] flex flex-col gap-4 items-center justify-center p-2 cursor-pointer"
+                className={`bg-mainColor CartShadow w-[72px] h-16 rounded-lg fixed top-[50%]  z-[999] flex flex-col gap-4 items-center justify-center p-2 cursor-pointer end-2`}
                 >
                 <div className="">
                     <CiShoppingCart  className="text-white text-2xl text-center mx-auto" />

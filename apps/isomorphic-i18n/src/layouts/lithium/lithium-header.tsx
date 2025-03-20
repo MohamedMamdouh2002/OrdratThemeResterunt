@@ -257,7 +257,7 @@ export default function Header({ lang }: { lang?: string }) {
     </div>
   </div>
 </div> */}
-    {!pathname || pathname === "/en" || pathname === "/ar" ? (
+    {background && !pathname || pathname === "/en" || pathname === "/ar" ? (
       <div className={`imgBg lg:hidden`}
         style={{
           backgroundImage: background ? `url(${background})` : "none",
