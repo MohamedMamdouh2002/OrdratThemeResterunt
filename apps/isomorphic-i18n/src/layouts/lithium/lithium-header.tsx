@@ -264,7 +264,7 @@ export default function Header({ lang }: { lang?: string }) {
           backgroundSize: "cover",
           backgroundPosition: "center center",
           backgroundRepeat: "no-repeat",
-          height: "25vh",
+          height: "200px",
           zIndex: 2,
         }}
       >
