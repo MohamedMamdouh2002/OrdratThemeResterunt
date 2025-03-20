@@ -21,12 +21,20 @@ const NavMobile = ({ lang }: { lang: string }) => {
       const data = await GetHome({ lang });
       if (data && data.length > 0) {
         setHome(data);
-        setActive(data[0]?.id || "");
+  
+        setTimeout(() => {
+          const firstVisibleItem = data.find((item: { id: string; }) => {
+            const section = document.getElementById(item.id);
+            return section && section.getBoundingClientRect().top >= 0;
+          });
+  
+          setActive(firstVisibleItem?.id || data[0]?.id || "");
+        }, 100);
       }
     };
     fetchData();
   }, [GetHome, lang]);
-
+  
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth >= 1024) {
@@ -41,6 +49,8 @@ const NavMobile = ({ lang }: { lang: string }) => {
     };
   }, []);
   useEffect(() => {
+    if (home.length === 0) return;
+  
     const sections = home?.map(item => document.getElementById(item.id));
     const observer = new IntersectionObserver(
       (entries) => {
@@ -150,7 +160,7 @@ const NavMobile = ({ lang }: { lang: string }) => {
         </div>
 
       </nav>
-      {isModalOpen && (
+      {/* {isModalOpen && (
         <>
           <div className="fixed z-[9999] inset-0 bg-gray-600 bg-opacity-50" onClick={handleOutsideClick} />
           <motion.div
@@ -201,7 +211,7 @@ const NavMobile = ({ lang }: { lang: string }) => {
           </motion.div>
           <hr className="mx-2" />
         </>
-      )}
+      )} */}
     </>
   );
 };
