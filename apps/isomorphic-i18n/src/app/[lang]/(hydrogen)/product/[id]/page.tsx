@@ -82,7 +82,7 @@ export default function AllProduct({
     <>
       <div className="w-5/6 sm:w-[90%] mx-auto mt-20 mb-10">
         {products.map((prod: Food, index) =>
-          <h1 className='text-center mb-12'>{ index === 0 && prod.categoryName}</h1>
+          <h1 key={index} className='text-center mb-12'>{ index === 0 && prod.categoryName}</h1>
 
         )}
         <div className="grid lg:grid-cols-4 md:grid-cols-3 grid-cols-2 gap-5">
