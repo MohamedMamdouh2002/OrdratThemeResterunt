@@ -107,7 +107,7 @@ function Navbar({ className, lang }: { className?: string, lang?: string }) {
     return (
         <>
             <div className="hidden lg:block h-14 bg-mainColor text-white text-sm relative">
-                <div className="w-[90%] mx-auto grid grid-cols-9 *:col-span-3 items-center justify-between py-4">
+                <div className="w-[90%] mx-auto grid grid-cols-9 *:col-span-3 items-center justify-between py-2">
                     {coupon?.filter((i: any) => i.isBanner === true && i.isActive === true)
                         .slice(-1)
                         .map((banner: any) => (
@@ -118,7 +118,13 @@ function Navbar({ className, lang }: { className?: string, lang?: string }) {
                                     toast.success(t('code'));
                                 }}
                                 className="flex items-center gap-3 cursor-pointer">
-                                <TicketPercentIcon /><span>{t('select-item')}</span>
+                                <div className="flex items-center gap-3 ">
+
+                                    <TicketPercentIcon /><span>{t('select-item')}</span>
+                                </div>
+                                <div className="border-2 border-white rounded-lg text-white p-2">
+                                    {t('copy')}
+                                </div>
                             </div>
                         ))
                     }
@@ -164,82 +170,82 @@ function Navbar({ className, lang }: { className?: string, lang?: string }) {
                                     onClick={() => setModal(false)}
                                     className="text-gray-600 hover:text-gray-900"
                                 >
-                            <IoMdClose className='hover:text-mainColorHover text-xl' />
+                                    <IoMdClose className='hover:text-mainColorHover text-xl' />
                                 </button>
                             </div>
 
                             <div className="flex-grow overflow-y-auto pe-5 max-h-[300px]">
-                        <h4 className='text-black font-medium mt-4 mb-2 text-sm'>{t('aboutShop')}</h4>
-                        <div className="p-3 rounded-lg text-black bg-[#F2F4F7]">
-                            <p>
-                                {description}
-                            </p>
-                        </div>
-                        {response
-                            .filter((i) => i.name === "Main Branch" || i.name === "الفرع الرئيسي")
-                            .map((i, index) => {
-                                const formatTime = (time: any) => {
-                                    if (!time) return ""; 
-                                    const [hours, minutes] = time.split(":"); 
-                                    let hour = parseInt(hours, 10);
-                                    const minute = minutes.padStart(2, "0"); 
-                                    const isPM = hour >= 12; 
-                                    const period = isPM ? (lang === 'ar' ? "مساءً" : "PM") : (lang === 'ar' ? "صباحًا" : "AM");
-                                
-                                    hour = hour % 12 || 12; 
-                                    return `${hour}:${minute} ${period}`;
-                                };
+                                <h4 className='text-black font-medium mt-4 mb-2 text-sm'>{t('aboutShop')}</h4>
+                                <div className="p-3 rounded-lg text-black bg-[#F2F4F7]">
+                                    <p>
+                                        {description}
+                                    </p>
+                                </div>
+                                {response
+                                    .filter((i) => i.name === "Main Branch" || i.name === "الفرع الرئيسي")
+                                    .map((i, index) => {
+                                        const formatTime = (time: any) => {
+                                            if (!time) return "";
+                                            const [hours, minutes] = time.split(":");
+                                            let hour = parseInt(hours, 10);
+                                            const minute = minutes.padStart(2, "0");
+                                            const isPM = hour >= 12;
+                                            const period = isPM ? (lang === 'ar' ? "مساءً" : "PM") : (lang === 'ar' ? "صباحًا" : "AM");
 
-                                return (
-                                    <div key={index}>
-                                        <h4 className='text-black font-medium mt-4 mb-2 text-sm'>{t('TimeShop')}</h4>
-                                        <div className="p-3  rounded-lg text-black bg-[#F2F4F7]">
-                                            <p>
-                                                {lang==='ar'?'من':'from'}{" "}
-                                                {formatTime(i.openAt)}
-                                                {" "}
-                                            {lang==='ar'?'الي':'to'}
-                                            {" "}
-                                                {formatTime(i.closedAt)}
-                                            </p>
-                                        </div>
+                                            hour = hour % 12 || 12;
+                                            return `${hour}:${minute} ${period}`;
+                                        };
 
-                                        {/* وقت التوصيل */}
-                                        <h4 className='text-black font-medium mt-4 mb-2 text-sm'>{t('deliveryShop')}</h4>
-                                        <div className="p-3 flex items-center justify-between rounded-lg text-black bg-[#F2F4F7]">
-                                            <p>
-                                                {i.deliveryTime}
-                                            </p>
-                                        </div>
+                                        return (
+                                            <div key={index}>
+                                                <h4 className='text-black font-medium mt-4 mb-2 text-sm'>{t('TimeShop')}</h4>
+                                                <div className="p-3  rounded-lg text-black bg-[#F2F4F7]">
+                                                    <p>
+                                                        {lang === 'ar' ? 'من' : 'from'}{" "}
+                                                        {formatTime(i.openAt)}
+                                                        {" "}
+                                                        {lang === 'ar' ? 'الي' : 'to'}
+                                                        {" "}
+                                                        {formatTime(i.closedAt)}
+                                                    </p>
+                                                </div>
+
+                                                {/* وقت التوصيل */}
+                                                <h4 className='text-black font-medium mt-4 mb-2 text-sm'>{t('deliveryShop')}</h4>
+                                                <div className="p-3 flex items-center justify-between rounded-lg text-black bg-[#F2F4F7]">
+                                                    <p>
+                                                        {i.deliveryTime}
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        );
+                                    })}
+
+
+
+
+                                <div className="text-[#212121] mt-5 space-y-4 mb-2">
+                                    <h2 className="text-black font-medium mt-4 mb-2 text-sm">{lang === 'ar' ? 'الفروع' : 'Branches'}</h2>
+
+                                    <div className="grid grid-cols-2 gap-4 w-full">
+                                        {response.map((i, index) => (
+                                            <div key={index} className="flex flex-col items-center bg-white p-4 rounded-lg shadow-md w-full">
+                                                <Image src={map} className="w-10" alt={i.name} />
+                                                <span className="text-sm font-medium text-[#212121] mt-2">{i.name}</span>
+                                                <a
+                                                    href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(i.addressText)}`}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    className="flex items-center gap-2 text-mainColor hover:underline bg-mainColor py-2 text-sm text-white w-full mx-auto justify-center text-center rounded-md mt-3"
+                                                >
+                                                    {lang === 'ar' ? 'عرض' : 'View'}
+                                                </a>
+                                            </div>
+                                        ))}
                                     </div>
-                                );
-                            })}
 
-
-
-
-                        <div className="text-[#212121] mt-5 space-y-4 mb-2">
-                            <h2 className="text-black font-medium mt-4 mb-2 text-sm">{lang === 'ar' ? 'الفروع' : 'Branches'}</h2>
-
-                            <div className="grid grid-cols-2 gap-4 w-full">
-                                {response.map((i, index) => (
-                                    <div key={index} className="flex flex-col items-center bg-white p-4 rounded-lg shadow-md w-full">
-                                        <Image src={map} className="w-10" alt={i.name} />
-                                        <span className="text-sm font-medium text-[#212121] mt-2">{i.name}</span>
-                                        <a
-                                            href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(i.addressText)}`}
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                            className="flex items-center gap-2 text-mainColor hover:underline bg-mainColor py-2 text-sm text-white w-full mx-auto justify-center text-center rounded-md mt-3"
-                                        >
-                                            {lang === 'ar' ? 'عرض' : 'View'}
-                                        </a>
-                                    </div>
-                                ))}
+                                </div>
                             </div>
-
-                        </div>
-                    </div>
 
                             <button onClick={() => setModal(false)}
                                 className='w-full h-11 rounded-lg text-xl text-white bg-mainColor mt-auto'>

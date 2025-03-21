@@ -6,10 +6,21 @@ import UpdateProfileForm from '@/app/components/profile/UpdateProfileForm';
 import { unstable_setRequestLocale } from 'next-intl/server';
 import React from 'react';
 import { ProfileHeader } from '@/app/shared/account-settings/profile-settings';
+import { metaObject } from '@/config/site.config';
 
 
 
-
+export async function generateMetadata({ params }: { params: { lang: string } }) {
+	const lang = params.lang; 
+	return {
+	  ...metaObject(
+		lang === 'ar' ? 'حسابي | إدارة ملفك الشخصي بسهولة' : 'My Account | Manage Your Profile Easily',
+		lang,
+		undefined,
+		lang === 'ar' ? 'قم بتحديث بيانات حسابك، تتبع طلباتك، وحفظ عناوينك المفضلة في مكان واحد بكل سهولة.' : 'Update your account details, track your orders, and save your favorite addresses in one place effortlessly.',
+	),
+	};
+  }
 
 const translations = {
   accountDetails: { en: 'Account Details', ar: 'معلوماتي' },

@@ -224,6 +224,7 @@ export type Food = {
     name: string
     price: number
     oldPrice: number
+    categoryName?:string
     description: string
     images?: OrderItemImages[];
     imageUrl: string

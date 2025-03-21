@@ -3,9 +3,18 @@ import PageHeader from '@/app/shared/page-header';
 import CheckoutPageWrapper from '@/app/shared/ecommerce/checkout';
 import { metaObject } from '@/config/site.config';
 
-export const metadata = {
-  ...metaObject('Checkout'),
-};
+export async function generateMetadata({ params }: { params: { lang: string } }) {
+  const lang = params.lang; 
+  return {
+    ...metaObject(
+      lang === 'ar' ? 'الدفع | خطوات آمنة لإتمام الطلب' : 'Checkout | Secure Steps to Complete Your Order',
+      lang,
+      undefined,
+      lang === 'ar' ? 'أكمل عملية الدفع بأمان وسهولة باستخدام خيارات الدفع المختلفة واستمتع بتجربة تسوق مريحة.' : 'Complete your payment securely with various payment options and enjoy a smooth shopping experience.',
+    ),
+  };
+}
+
 
 export default function CheckoutPage({
   params: { lang },

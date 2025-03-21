@@ -223,7 +223,7 @@ function Footer({ lang }: Props) {
                 <ul className="space-y-3 text-TextColor">
                   {/* <li>{t('address')}</li> */}
                   <li className="hover:text-mainColor items-center duration-200 w-fit">
-                    <Link className="flex gap-2 items-center" href="">
+                    <Link className="flex gap-2 items-center" href={`tel:${whatsAppNumber}`}>
                       <span>{whatsAppNumber}</span>
                     </Link>
                   </li>

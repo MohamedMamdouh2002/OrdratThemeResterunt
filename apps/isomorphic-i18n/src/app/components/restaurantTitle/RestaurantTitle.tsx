@@ -184,14 +184,19 @@ function RestaurantTitle({ lang }: { lang?: string; }) {
             .map((banner: any) => (
                 <div
                     key={banner.id}
-                    className="flex lg:hidden bg-mainColorHover w-5/6 text-white items-center gap-3 mt-5 rounded-lg mx-auto px-4 h-16 cursor-pointer"
+                    className="flex  justify-between lg:hidden bg-mainColorHover w-5/6 text-white items-center gap-3 mt-5 rounded-lg mx-auto px-4 h-16 cursor-pointer"
                     onClick={() => {
                         navigator.clipboard.writeText(banner.code);
                         toast.success(t('code'));
                     }}
                 >
-                    <TicketPercentIcon />
-                    <span> {t('select-item')}</span>
+                    <div className="flex items-center gap-3">
+                        <TicketPercentIcon />
+                        <span> {t('select-item')}</span>
+                    </div>
+                    <div className="border-2 border-white rounded-lg text-white p-2">
+                        {t('copy')}
+                    </div>
                 </div>
             ))
         }

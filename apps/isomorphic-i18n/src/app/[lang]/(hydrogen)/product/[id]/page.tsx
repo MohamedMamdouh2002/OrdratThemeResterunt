@@ -1,25 +1,25 @@
 'use client';
 import { useUserContext } from '@/app/components/context/UserContext';
 import Card from '@/app/components/ui/card/Card';
-import MediumCard from '@/app/components/ui/mediumCard/MediumCard'; 
+import MediumCard from '@/app/components/ui/mediumCard/MediumCard';
 import { API_BASE_URL } from '@/config/base-url';
 // import { shopId } from '@/config/shopId';
 import { Food } from '@/types';
 import { Loader } from 'lucide-react';
 import { useParams } from 'next/navigation';
 import React, { useEffect, useState, useRef } from 'react';
-import { useMediaQuery } from 'react-responsive'; 
+import { useMediaQuery } from 'react-responsive';
 export default function AllProduct({
   params: { lang },
 }: {
   params: {
     lang: string;
   };
-}){ 
+}) {
   const [products, setProducts] = useState<Food[]>([]);
-  const [loading, setLoading] = useState(false); 
+  const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(1);
-  const [hasMore, setHasMore] = useState(true); 
+  const [hasMore, setHasMore] = useState(true);
   const params = useParams();
   const isMobile = useMediaQuery({ query: '(max-width: 640px)' });
   const { shopId } = useUserContext();
@@ -29,7 +29,7 @@ export default function AllProduct({
 
   useEffect(() => {
     const fetchProducts = async () => {
-      setLoading(true); 
+      setLoading(true);
       try {
         const response = await fetch(`${API_BASE_URL}/api/Products/GetByCategoryId/${shopId}/${params?.id}?PageNumber=${page}&PageSize=4`, {
           headers: {
@@ -51,11 +51,11 @@ export default function AllProduct({
         setLoading(false);
       } catch (error) {
         console.error(error);
-        setLoading(false); 
+        setLoading(false);
       }
     };
 
-    if (hasMore) { 
+    if (hasMore) {
       fetchProducts();
     }
   }, [page]);
@@ -81,21 +81,24 @@ export default function AllProduct({
   return (
     <>
       <div className="w-5/6 sm:w-[90%] mx-auto mt-20 mb-10">
+        {products.map((prod: Food, index) =>
+          <h1 className='text-center mb-12'>{ index === 0 && prod.categoryName}</h1>
+
+        )}
         <div className="grid lg:grid-cols-4 md:grid-cols-3 grid-cols-2 gap-5">
-          {products.map((prod: Food,index) => (
-            isMobile ? 
-            <div className="col-span-full" key={prod.id}>
-              <MediumCard lang={lang!} setCurrentItem={() => {}} {...prod} /> 
-              {index !== products.length - 1 && <hr />}
-            </div>
-            :
-             <Card lang={lang!} setCurrentItem={() => {}} key={prod.id} {...prod} />
+          {products.map((prod: Food, index) => (
+            isMobile ?
+              <div className="col-span-full" key={prod.id}>
+                <MediumCard lang={lang!} setCurrentItem={() => { }} {...prod} />
+                {index !== products.length - 1 && <hr />}
+              </div>
+              :
+              <Card lang={lang!} setCurrentItem={() => { }} key={prod.id} {...prod} />
           ))}
         </div>
         <div className="flex justify-center">
           {loading && <Loader className="animate-spin text-mainColor" />}
         </div>
-        {/* عنصر وهمي لمراقبة الوصول إلى نهاية القائمة */}
         <div ref={observerRef} className="h-1" />
       </div>
     </>

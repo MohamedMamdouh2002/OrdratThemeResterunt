@@ -9,6 +9,7 @@ import "slick-carousel/slick/slick-theme.css";
 // import { shopId } from '@/config/shopId';
 import { API_BASE_URL } from '@/config/base-url';
 import { useUserContext } from '../context/UserContext';
+import Link from 'next/link';
 type images={
     img:any
 }
@@ -67,16 +68,16 @@ function MainSlider() {
   return <>
 <div className="slider-container w-5/6 lg:w-[750px] cursor-grab border-none mt-10 mx-auto relative">
     <Slider {...settings}>
-        {banner.map((photo, index) => (
-            <div key={index}>
+        {banner&&banner.map((photo:Banner) => (
+            <Link href={photo?.actionString as string} target='_blank' key={photo.id}>
                 <Image 
                     width={800}
                     height={500}
                     src={photo.bannerUrl} 
                     alt='slider' 
-                    className='h-[150px] w-full sm:h-[300px] overflow-hidden image rounded-xl px-1 pointer-events-none' // استخدم rounded-lg هنا
+                    className='h-[150px] w-full sm:h-[300px] overflow-hidden image rounded-xl px-1 pointer-events-none' 
                 />
-            </div>
+            </Link>
         ))}
     </Slider>
 </div>
