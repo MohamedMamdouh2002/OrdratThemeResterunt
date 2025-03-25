@@ -103,9 +103,8 @@ export default function Header({ lang }: { lang?: string }) {
     if (storedLogo) {
         setLogoUrl(storedLogo);
         setShopName(storedName);
-      }
-      
-   background?setBackground(background):''
+        setBackground(background)
+    }
   }, [lang, i18n]);
 
   useEffect(() => {
@@ -257,7 +256,7 @@ export default function Header({ lang }: { lang?: string }) {
     </div>
   </div>
 </div> */}
-    {background && !pathname || pathname === "/en" || pathname === "/ar" ? (
+    {background && !pathname || pathname === "/en" || pathname === "/ar" || pathname === "/" ? (
       <div className={`imgBg lg:hidden`}
         style={{
           backgroundImage: background ? `url(${background})` : "none",
