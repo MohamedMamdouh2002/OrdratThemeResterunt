@@ -16,6 +16,7 @@ const NavMobile = ({ lang }: { lang: string }) => {
   const { t, i18n } = useTranslation(lang!, 'nav');
   const [isSticky, setIsSticky] = useState(true);
 
+  // Fetch home data
   useEffect(() => {
     const fetchData = async () => {
       const data = await GetHome({ lang });
@@ -23,7 +24,7 @@ const NavMobile = ({ lang }: { lang: string }) => {
         setHome(data);
 
         setTimeout(() => {
-          const firstVisibleItem = data.find((item: { id: string; }) => {
+          const firstVisibleItem = data.find((item: { id: string }) => {
             const section = document.getElementById(item.id);
             return section && section.getBoundingClientRect().top >= 0;
           });
@@ -35,6 +36,7 @@ const NavMobile = ({ lang }: { lang: string }) => {
     fetchData();
   }, [GetHome, lang]);
 
+  // Close modal on resize if viewport width >= 1024px
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth >= 1024) {
@@ -44,22 +46,21 @@ const NavMobile = ({ lang }: { lang: string }) => {
     };
 
     window.addEventListener('resize', handleResize);
-    return () => {
-      window.removeEventListener('resize', handleResize);
-    };
+    return () => window.removeEventListener('resize', handleResize);
   }, []);
+
+  // IntersectionObserver to update active nav item on scroll
   useEffect(() => {
     if (home.length === 0) return;
 
-    const sections = home?.map(item => document.getElementById(item.id));
+    const sections = home.map(item => document.getElementById(item.id));
     const observer = new IntersectionObserver(
       (entries) => {
         if (!isNavigating) {
           const visibleEntries = entries.filter(entry => entry.isIntersecting);
           if (visibleEntries.length > 0) {
-            // ترتيبهم تنازليًا حسب النسبة اللي ظهر بيها العنصر على الشاشة
+            // ترتيب العناصر حسب نسبة ظهورها من الأكبر للأقل
             visibleEntries.sort((a, b) => b.intersectionRatio - a.intersectionRatio);
-
             const topSection = visibleEntries[0];
             const id = topSection.target.id;
             const index = home.findIndex(item => item.id === id);
@@ -74,20 +75,21 @@ const NavMobile = ({ lang }: { lang: string }) => {
           }
         }
       },
-      { rootMargin: "0px", threshold: 0.5 }
+      { rootMargin: '-50% 0px -50% 0px', threshold: 0 }
     );
 
-    sections?.forEach(section => {
+    sections.forEach(section => {
       if (section) observer.observe(section);
     });
 
     return () => {
-      sections?.forEach(section => {
+      sections.forEach(section => {
         if (section) observer.unobserve(section);
       });
     };
   }, [home, isNavigating]);
 
+  // Function to scroll the nav to center the active item
   const scrollToItem = (index: number) => {
     if (navRef.current) {
       const itemWidth = navRef.current.scrollWidth / home.length;
@@ -111,20 +113,15 @@ const NavMobile = ({ lang }: { lang: string }) => {
     }
   };
 
+  // Sticky navbar handling based on scroll position
   useEffect(() => {
     const handleScroll = () => {
       const offset = window.scrollY;
-      if (offset > 290) {
-        setIsSticky(false);
-      } else {
-        setIsSticky(true);
-      }
+      setIsSticky(offset <= 290);
     };
 
     window.addEventListener('scroll', handleScroll);
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-    };
+    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   useEffect(() => {
@@ -141,7 +138,7 @@ const NavMobile = ({ lang }: { lang: string }) => {
             <AlignCenter />
           </button>
           <ul ref={navRef} className="flex bg-white items-center ps-5 gap-6 whitespace-nowrap overflow-x-auto flex-nowrap w-full h-16">
-            {home?.map((item, index) => (
+            {home.map((item, index) => (
               <li key={item.id} className="relative w-full h-full text-left">
                 <Link
                   to={item.id}
@@ -165,7 +162,6 @@ const NavMobile = ({ lang }: { lang: string }) => {
             ))}
           </ul>
         </div>
-
       </nav>
       {isModalOpen && (
         <>
@@ -183,10 +179,9 @@ const NavMobile = ({ lang }: { lang: string }) => {
                 <h2 className="text-lg font-medium">{t('menu')}</h2>
               </div>
               <ul className="flex flex-col gap-4">
-                {home?.map((item, index) => (
-                  <>
+                {home.map((item, index) => (
+                  <div key={item.id}>
                     <Link
-                      key={item.id}
                       to={item.id}
                       smooth={true}
                       duration={500}
@@ -209,7 +204,7 @@ const NavMobile = ({ lang }: { lang: string }) => {
                       )}
                     </Link>
                     <hr className="mx-2" />
-                  </>
+                  </div>
                 ))}
               </ul>
             </div>
