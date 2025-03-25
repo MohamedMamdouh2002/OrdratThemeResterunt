@@ -50,20 +50,23 @@ const NavMobile = ({ lang }: { lang: string }) => {
   }, []);
   useEffect(() => {
     if (home.length === 0) return;
-  
+
     const sections = home?.map(item => document.getElementById(item.id));
     const observer = new IntersectionObserver(
       (entries) => {
         if (!isNavigating) {
-          const firstVisibleSection = entries.find(entry => entry.isIntersecting);
-          if (firstVisibleSection) {
-            const id = firstVisibleSection.target.id;
+          const visibleEntries = entries.filter(entry => entry.isIntersecting);
+          if (visibleEntries.length > 0) {
+            // ترتيبهم تنازليًا حسب النسبة اللي ظهر بيها العنصر على الشاشة
+            visibleEntries.sort((a, b) => b.intersectionRatio - a.intersectionRatio);
+
+            const topSection = visibleEntries[0];
+            const id = topSection.target.id;
             const index = home.findIndex(item => item.id === id);
-  
-            // ✅ فقط لو تغير الـ active
+
             setActive((prevActive) => {
               if (prevActive !== id) {
-                scrollToItem(index); // ✨ تحريك السكروول في البداية أو عند التغيير
+                scrollToItem(index);
                 return id;
               }
               return prevActive;
@@ -73,18 +76,18 @@ const NavMobile = ({ lang }: { lang: string }) => {
       },
       { rootMargin: "0px", threshold: 0.5 }
     );
-  
+
     sections?.forEach(section => {
       if (section) observer.observe(section);
     });
-  
+
     return () => {
       sections?.forEach(section => {
         if (section) observer.unobserve(section);
       });
     };
   }, [home, isNavigating]);
-  
+
   const scrollToItem = (index: number) => {
     if (navRef.current) {
       const itemWidth = navRef.current.scrollWidth / home.length;
