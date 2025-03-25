@@ -94,7 +94,6 @@ export default function Header({ lang }: { lang?: string }) {
   const [shopName, setShopName] = useState<string | null>(null);
   const [background, setBackground] = useState<string | null>(null);
 
-  const [backgroundUrl, setBackgroundUrl] = useState<string | null>(null);
   
   useEffect(() => {
     i18n.changeLanguage(lang);
@@ -102,11 +101,11 @@ export default function Header({ lang }: { lang?: string }) {
     const background = localStorage.getItem("backgroundUrl");
     const storedName = localStorage.getItem("subdomainName");
     if (storedLogo) {
-        setBackgroundUrl(background);
         setLogoUrl(storedLogo);
         setShopName(storedName);
-        setBackground(background)
-    }
+      }
+      
+   background?setBackground(background):''
   }, [lang, i18n]);
 
   useEffect(() => {
@@ -128,6 +127,7 @@ export default function Header({ lang }: { lang?: string }) {
       window.removeEventListener("scroll", handleScroll);
     };
   }, [scrollY]);
+  
 
   return <>
     <Navbar lang={lang} className={`   ${isStickyVisible ? "hidden  " : " "}`} />

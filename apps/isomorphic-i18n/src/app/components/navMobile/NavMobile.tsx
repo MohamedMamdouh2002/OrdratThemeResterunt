@@ -89,7 +89,7 @@ const NavMobile = ({ lang }: { lang: string }) => {
           if (section) observer.unobserve(section);
         });
       };
-    }, 200); // ✅ 200ms كفاية علشان الـ DOM يبقى جاهز
+    }, 200); 
   
     return () => clearTimeout(timeout);
   }, [home, isNavigating]);
