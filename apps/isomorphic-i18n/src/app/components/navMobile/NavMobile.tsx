@@ -52,43 +52,48 @@ const NavMobile = ({ lang }: { lang: string }) => {
   // IntersectionObserver to update active nav item on scroll
   useEffect(() => {
     if (home.length === 0) return;
-
-    const sections = home.map(item => document.getElementById(item.id));
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (!isNavigating) {
-          const visibleEntries = entries.filter(entry => entry.isIntersecting);
-          if (visibleEntries.length > 0) {
-            // ترتيب العناصر حسب نسبة ظهورها من الأكبر للأقل
-            visibleEntries.sort((a, b) => b.intersectionRatio - a.intersectionRatio);
-            const topSection = visibleEntries[0];
-            const id = topSection.target.id;
-            const index = home.findIndex(item => item.id === id);
-
-            setActive((prevActive) => {
-              if (prevActive !== id) {
-                scrollToItem(index);
-                return id;
-              }
-              return prevActive;
-            });
+  
+    // ✅ استنى شوية بعد ما الأقسام تترندر فعليًا
+    const timeout = setTimeout(() => {
+      const sections = home.map(item => document.getElementById(item.id));
+      const observer = new IntersectionObserver(
+        (entries) => {
+          if (!isNavigating) {
+            const visibleEntries = entries.filter(entry => entry.isIntersecting);
+            if (visibleEntries.length > 0) {
+              visibleEntries.sort((a, b) => b.intersectionRatio - a.intersectionRatio);
+              const topSection = visibleEntries[0];
+              const id = topSection.target.id;
+              const index = home.findIndex(item => item.id === id);
+  
+              setActive((prevActive) => {
+                if (prevActive !== id) {
+                  scrollToItem(index);
+                  return id;
+                }
+                return prevActive;
+              });
+            }
           }
-        }
-      },
-      { rootMargin: '-50% 0px -50% 0px', threshold: 0 }
-    );
-
-    sections.forEach(section => {
-      if (section) observer.observe(section);
-    });
-
-    return () => {
+        },
+        { rootMargin: '-50% 0px -50% 0px', threshold: 0 }
+      );
+  
       sections.forEach(section => {
-        if (section) observer.unobserve(section);
+        if (section) observer.observe(section);
       });
-    };
+  
+      // cleanup
+      return () => {
+        sections.forEach(section => {
+          if (section) observer.unobserve(section);
+        });
+      };
+    }, 200); // ✅ 200ms كفاية علشان الـ DOM يبقى جاهز
+  
+    return () => clearTimeout(timeout);
   }, [home, isNavigating]);
-
+  
   // Function to scroll the nav to center the active item
   const scrollToItem = (index: number) => {
     if (navRef.current) {
