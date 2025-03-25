@@ -12,7 +12,7 @@ const NavMobile = ({ lang }: { lang: string }) => {
   const [home, setHome] = useState<any[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const navRef = useRef<HTMLUListElement>(null);
-  const [isNavigating, setIsNavigating] = useState(false); 
+  const [isNavigating, setIsNavigating] = useState(false);
   const { t, i18n } = useTranslation(lang!, 'nav');
   const [isSticky, setIsSticky] = useState(true);
 
@@ -21,25 +21,25 @@ const NavMobile = ({ lang }: { lang: string }) => {
       const data = await GetHome({ lang });
       if (data && data.length > 0) {
         setHome(data);
-  
+
         setTimeout(() => {
           const firstVisibleItem = data.find((item: { id: string; }) => {
             const section = document.getElementById(item.id);
             return section && section.getBoundingClientRect().top >= 0;
           });
-  
+
           setActive(firstVisibleItem?.id || data[0]?.id || "");
         }, 100);
       }
     };
     fetchData();
   }, [GetHome, lang]);
-  
+
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth >= 1024) {
-        setIsModalOpen(false); 
-        document.body.style.overflow = 'auto'; 
+        setIsModalOpen(false);
+        document.body.style.overflow = 'auto';
       }
     };
 
@@ -55,11 +55,19 @@ const NavMobile = ({ lang }: { lang: string }) => {
     const observer = new IntersectionObserver(
       (entries) => {
         if (!isNavigating) {
-          let firstVisibleSection = entries.find(entry => entry.isIntersecting);
+          const firstVisibleSection = entries.find(entry => entry.isIntersecting);
           if (firstVisibleSection) {
-            setActive(firstVisibleSection.target.id); // تعيين العنصر الفعلي
-            const index = home.findIndex(item => item.id === firstVisibleSection.target.id);
-            scrollToItem(index);
+            const id = firstVisibleSection.target.id;
+            const index = home.findIndex(item => item.id === id);
+  
+            // ✅ فقط لو تغير الـ active
+            setActive((prevActive) => {
+              if (prevActive !== id) {
+                scrollToItem(index); // ✨ تحريك السكروول في البداية أو عند التغيير
+                return id;
+              }
+              return prevActive;
+            });
           }
         }
       },
@@ -67,16 +75,12 @@ const NavMobile = ({ lang }: { lang: string }) => {
     );
   
     sections?.forEach(section => {
-      if (section) {
-        observer.observe(section);
-      }
+      if (section) observer.observe(section);
     });
   
     return () => {
       sections?.forEach(section => {
-        if (section) {
-          observer.unobserve(section);
-        }
+        if (section) observer.unobserve(section);
       });
     };
   }, [home, isNavigating]);
@@ -160,7 +164,7 @@ const NavMobile = ({ lang }: { lang: string }) => {
         </div>
 
       </nav>
-      {/* {isModalOpen && (
+      {isModalOpen && (
         <>
           <div className="fixed z-[9999] inset-0 bg-gray-600 bg-opacity-50" onClick={handleOutsideClick} />
           <motion.div
@@ -170,8 +174,6 @@ const NavMobile = ({ lang }: { lang: string }) => {
             transition={{ type: 'spring', stiffness: 300, damping: 30 }}
             className="fixed bottom-0 right-0 left-0 lg:hidden flex items-end z-[99991]"
           >
-
-
             <div className="bg-white rounded-t-lg shadow-lg py-6 w-full">
               <div className="flex items-center gap-3 mx-4 mb-6">
                 <X onClick={() => handleClose()} size={25} />
@@ -185,7 +187,7 @@ const NavMobile = ({ lang }: { lang: string }) => {
                       to={item.id}
                       smooth={true}
                       duration={500}
-                      offset={-145}
+                      offset={-150}
                       className={`text-sm relative cursor-pointer h-full flex justify-between items-center font-medium ${active === item.id ? "text-mainColor" : "text-gray-700"}`}
                       onClick={() => {
                         setIsNavigating(true);
@@ -211,7 +213,7 @@ const NavMobile = ({ lang }: { lang: string }) => {
           </motion.div>
           <hr className="mx-2" />
         </>
-      )} */}
+      )}
     </>
   );
 };

@@ -21,6 +21,10 @@ type UserContextType = {
   setOrderNote: React.Dispatch<React.SetStateAction<string>>;
   copone: string | null;
   setCopone: React.Dispatch<React.SetStateAction<string | null>>;
+  discountValue: number | null;
+  setDiscountValue: React.Dispatch<React.SetStateAction<number | null>>;
+  discountType: number | null;
+  setDiscountType: React.Dispatch<React.SetStateAction<number | null>>;
   profileUserName: string;
   setProfileUserName: React.Dispatch<React.SetStateAction<string>>;
   setPage: React.Dispatch<React.SetStateAction<number>>;
@@ -55,6 +59,9 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const [token, setToken] = useState<string | null>(null);
   const [orderNote, setOrderNote] = useState<string>('');
   const [copone, setCopone] = useState<string | null>(null);
+  const [discountValue , setDiscountValue] = useState<number | null>(null);
+  const [discountType, setDiscountType] = useState<number | null>(0);
+
   const [profileUserName, setProfileUserName] = useState<string>('User Name');
   const [userData, setUserData] = useState<boolean>(false);
   const [updateAddresses, setUpdateAddresses] = useState<boolean>(false);
@@ -132,6 +139,8 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       token,setToken, 
       orderNote, setOrderNote, 
       copone, setCopone, 
+      discountValue, setDiscountValue, 
+      discountType, setDiscountType, 
       profileUserName, setProfileUserName, 
       accessToken,setAccessToken, 
       userData, setUserData, 

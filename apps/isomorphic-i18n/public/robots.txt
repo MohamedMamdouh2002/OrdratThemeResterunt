@@ -2,4 +2,4 @@ User-agent: *
 Disallow:
 Allow: /
 
-Sitemap: https://theme.ordrat.com/sitemap.xml
+Sitemap: https://localhost:3001/sitemap.xml

@@ -86,7 +86,7 @@ export default function CheckoutPageWrapper({
 }) {
   const [isLoading, setLoading] = useState(false);
   const router = useRouter();
-  const { orderNote, setOrderNote, copone, setCopone, shopId } = useUserContext();
+  const { orderNote, setOrderNote, copone, setCopone, shopId , setDiscountValue,setDiscountType } = useUserContext();
   const { items, total, addItemToCart, removeItemFromCart, clearItemFromCart } =
     useCart();
   const { price: totalPrice } = usePrice({
@@ -110,6 +110,14 @@ export default function CheckoutPageWrapper({
   const [addresses, setAddresses] = useState<Address[]>([]);
 	const [isAddressApiLoading, setIsAddressApiLoading] = useState(false);
 	const { updateAddresses, setUpdateAddresses, branchZones } = useUserContext();
+
+  //summary بجيبها من ال ordersummary
+  const [summary, setSummary] = useState<{
+    finalTotal: number;
+    tax: number;
+    delivery: number;
+    discount: number;
+  } | null>(null);
   
   
   const fetchAddresses = async () => {
@@ -228,12 +236,15 @@ export default function CheckoutPageWrapper({
       const formData = new FormData();
       formData.append('paymentmethod', '0');
       formData.append('OrderType', '0');
-      formData.append('TotalPrice', '0');
-      formData.append('ShippingFees', '0');
+      formData.append('TotalPrice', String(summary?.finalTotal || 0));
+      formData.append('ShippingFees', String(summary?.delivery || 0));
+      formData.append('TotalVat', String(summary?.tax || 0));
   
       if (copone) {
         formData.append('CouponCode', copone);
       }
+
+ 
       if (orderNote) {
         formData.append('Notes', orderNote);
       }
@@ -283,6 +294,9 @@ export default function CheckoutPageWrapper({
         toast.success(<Text as="b">Order placed successfully!</Text>);
         setOrderNote("");
         setCopone("");
+        setDiscountValue(0);
+        setDiscountType(0);
+
         // Go to success page
         router.push(`/${lang}/`);
       } else {
@@ -358,6 +372,7 @@ export default function CheckoutPageWrapper({
 		);
 		
 	};
+  
   
   return (
     <div className='w-[90%] mx-auto mt-8'>
@@ -480,7 +495,8 @@ export default function CheckoutPageWrapper({
               </div>
             </div>
 
-            <OrderSummery lang={lang} isLoading={isLoading} isButtonDisabled={isButtonDisabled}/>
+            <OrderSummery lang={lang} isLoading={isLoading} isButtonDisabled={isButtonDisabled}   onSummaryCalculated={(summary:any) => setSummary(summary)}
+            />
           </div>
         </form>
       </FormProvider>

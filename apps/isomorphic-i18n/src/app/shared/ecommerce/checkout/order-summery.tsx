@@ -11,21 +11,34 @@ import { toCurrency } from '@utils/to-currency';
 import { useCart } from '@/store/quick-cart/cart.context';
 import { useTranslation } from '@/app/i18n/client';
 import { useEffect } from 'react';
+import { useUserContext } from '@/app/components/context/UserContext';
 
 export default function OrderSummery({
   isLoading,
   className,
   lang,
   isButtonDisabled,
+  onSummaryCalculated,
+
+  fees
 }: {
   className?: string;
   isLoading?: boolean;
   lang?: string;
+  fees?: number;
   isButtonDisabled?: boolean;
+  onSummaryCalculated?: (summary: {
+    finalTotal: number;
+    tax: number;
+    delivery: number;
+    discount: number;
+  }) => void;
 }) {
   const params = useParams();
   const { items, total, addItemToCart, removeItemFromCart, clearItemFromCart } =
     useCart();
+      const { orderNote, setOrderNote, copone, setCopone, discountValue,discountType } = useUserContext();
+    
   const { price: subtotal } = usePrice(
     items && {
       amount: total,
@@ -35,10 +48,32 @@ export default function OrderSummery({
     amount: total,
   });
   const { t, i18n } = useTranslation(lang!, 'order');
-
+  const TAX_PERCENTAGE = 14;
+  const taxValue = (TAX_PERCENTAGE / 100) * total;
+  fees= 10;
+  const totalWithFees = (total + taxValue + fees)  ;
+  const discount:any =
+  discountType === 0
+  ? (Number(discountValue) / 100) * totalWithFees 
+  : Number(discountValue);
+  const totalPricewithDiscount = totalWithFees-discount
   useEffect(() => {
     i18n.changeLanguage(lang);
   }, [lang, i18n]);
+
+  // ببعت القيم الي فيها لل checkout عشان ابعتها في ال api
+  useEffect(() => {
+    if (onSummaryCalculated) {
+      onSummaryCalculated({
+        finalTotal:totalWithFees,
+        tax: taxValue,
+        delivery: fees,
+        discount,
+      });
+    }
+  }, [totalWithFees, taxValue, fees, discount]);
+  
+
   return (
     <div
       className={cn(
@@ -81,19 +116,25 @@ export default function OrderSummery({
           <div className="mb-4 flex items-center justify-between last:mb-0">
             {t('Vat')}
             <Text as="span" className="font-medium text-gray-900">
-              {toCurrency(0, lang)}
+              {toCurrency(taxValue, lang)}
             </Text>
           </div>
           <div className="mb-4 flex items-center justify-between last:mb-0">
             {t('Shipping-Fees')}
             <Text as="span" className="font-medium text-gray-900">
-              {toCurrency(0, lang)}
+              {toCurrency(fees, lang)}
             </Text>
           </div>
+          {discount > 0 && (
+                    <div className="flex mb-4 items-center justify-between text-green-600">
+                      {t('Discount')}
+                      <span>- {toCurrency(discount, lang)}</span>
+                    </div>
+                  )}
           <div className="flex items-center justify-between border-t border-muted py-4 text-base font-bold text-gray-1000">
             {t('Total')}
             {/* <Text>{totalPrice}</Text> */}
-            <Text>{toCurrency(total, lang)}</Text>
+            <Text>{toCurrency(totalPricewithDiscount, lang)}</Text>
           </div>
 
           {items.length ? (
@@ -101,7 +142,7 @@ export default function OrderSummery({
               type="submit"
               isLoading={isLoading}
               disabled={isButtonDisabled}
-              className={`mt-3 w-full text-base @md:h-12 ${isButtonDisabled? "bg-gray-200 hover:bg-gray-200 text-gray-500 cursor-not-allowed" : "bg-mainColor hover:bg-mainColorHover"}`}
+              className={`mt-3 w-full text-base @md:h-12 ${isButtonDisabled ? "bg-gray-200 hover:bg-gray-200 text-gray-500 cursor-not-allowed" : "bg-mainColor hover:bg-mainColorHover"}`}
             >
               {params?.id ? `${t('Update-Order')}` : `${t('Place-Order')}`}
             </Button>
@@ -110,7 +151,7 @@ export default function OrderSummery({
               <Button
                 as="span"
                 className="mt-3 w-full text-base @md:h-12 bg-mainColor hover:bg-mainColorHover"
-              >{lang ==='ar'? 'العودة إلى المتجر': 'Back to Store'}</Button>
+              >{lang === 'ar' ? 'العودة إلى المتجر' : 'Back to Store'}</Button>
             </Link>
           )}
         </div>

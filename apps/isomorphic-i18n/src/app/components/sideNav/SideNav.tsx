@@ -30,16 +30,16 @@ export const SideNav = ({ isOpen, setIsOpen, lang }: Props) => {
 	const modalRef = useRef<HTMLDivElement>(null);
 	const { token, setToken } = useUserContext();
 	const [logoUrl, setLogoUrl] = useState<string | null>(null);
-    const [shopName, setShopName] = useState<string | null>(null);
-	
-    useEffect(() => {
+	const [shopName, setShopName] = useState<string | null>(null);
+
+	useEffect(() => {
 		const storedLogo = localStorage.getItem("logoUrl");
-        const storedName = localStorage.getItem("subdomainName");
+		const storedName = localStorage.getItem("subdomainName");
 		if (storedLogo) {
 			setLogoUrl(storedLogo);
-            setShopName(storedName);
+			setShopName(storedName);
 		}
-    }, [lang]);
+	}, [lang]);
 
 	const handleLog = () => {
 		setIsOpen(false);
@@ -85,7 +85,7 @@ export const SideNav = ({ isOpen, setIsOpen, lang }: Props) => {
 							{/* <Image width={60} height={60} src={Logo} alt="logo" /> */}
 							{logoUrl ? (
 								<Image src={logoUrl} width={60} height={60} alt="logo" />
-								) : (
+							) : (
 								<div className="w-[60px] h-[60px] bg-gray-200 rounded-full"></div>
 							)}
 							{localStorage.getItem('Token') ? (

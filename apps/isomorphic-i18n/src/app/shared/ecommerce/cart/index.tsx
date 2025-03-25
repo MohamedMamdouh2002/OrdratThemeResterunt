@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { SubmitHandler } from 'react-hook-form';
+import { SubmitHandler, useForm } from 'react-hook-form';
 import { Form } from '@ui/form';
 import { useRouter } from 'next/navigation';
 import { routes } from '@/config/routes';
@@ -19,44 +19,97 @@ import SpecialNotes from '@/app/components/ui/SpecialNotes';
 import { toCurrency } from '@utils/to-currency';
 import { useUserContext } from '@/app/components/context/UserContext';
 import { useTranslation } from '@/app/i18n/client';
+import axiosClient from '@/app/components/fetch/api';
+import toast from 'react-hot-toast';
 
 type FormValues = {
   couponCode: string;
 };
 
-function CheckCoupon({lang}:{lang?:string}) {
-  const [reset, setReset] = useState({});
-  const { orderNote, setOrderNote, copone, setCopone } = useUserContext();
-  const { t } = useTranslation(lang!, 'order');
 
-  const onSubmit: SubmitHandler<FormValues> = (data) => {
-    console.log("coupon: ",data.couponCode);
-    setCopone(data.couponCode);
-    setReset({ couponCode: copone });
+type CouponResponse = {
+  id: string;
+  code: string;
+  discountType: number;
+  discountValue: any;
+  expireDate: string;
+  isActive: boolean;
+  usageLimit: number;
+};
+
+const fetchCoupon = async (shopId: string, code: string): Promise<{ success: boolean; data?: CouponResponse }> => {
+  try {
+    const res = await axiosClient.get(`/api/Coupon/CheckCouponByCode/${shopId}?couponCode=${code}`);
+    console.log("Coupon API response:", res);
+
+    if (res.status === 200 && res.data?.code) {
+      return { success: true, data: res.data };
+    }
+    return { success: false };
+  } catch (error) {
+    console.error("Error validating coupon:", error);
+    return { success: false };
+  }
+};
+
+
+
+function CheckCoupon({ lang }: { lang?: string }) {
+  const [reset, setReset] = useState({});
+  const { copone, setCopone, setDiscountValue,setDiscountType } = useUserContext();
+  const { t } = useTranslation(lang!, 'order');
+  const { shopId } = useUserContext();
+  const form = useForm<FormValues>({
+    defaultValues: { couponCode: '' },
+  });
+
+  const couponCode = form.watch('couponCode');
+
+  useEffect(() => {
+    if (copone && couponCode !== copone) {
+      setCopone('');
+      setDiscountValue(0);
+      setDiscountType(0);
+    }
+  }, [couponCode]);
+  const onSubmit: SubmitHandler<FormValues> = async (data) => {
+    const result = await fetchCoupon(shopId,data.couponCode );
+  
+    if (result.success) {
+      toast.success(t('Coupon-applied-successfully'));
+      setCopone(data.couponCode);
+      setReset({ couponCode: data.couponCode });
+      setDiscountValue(result.data?.discountValue || 0);
+      setDiscountType(result.data?.discountType as any); 
+    } else {
+      toast.error(t('Invalid-coupon'));
+      setCopone('');
+      setDiscountValue(0);
+      setDiscountType(0); // reset
+    }
   };
-  console.log("copoc",copone);
+  
   
   return (
     <Form<FormValues>
-      // resetValues={reset}
       onSubmit={onSubmit}
       useFormProps={{
         defaultValues: { couponCode: '' },
       }}
       className="w-full"
-    >
-      {({ register, formState: { errors }, watch }) =>  {
+      >
+      {({ register, formState: { errors }, watch }) => {
+      
+         
         const couponCode = watch('couponCode');
+
         const isCouponEntered = couponCode !== copone;
-        // this for if you want that the input Empty then you can't apply any coupon
-        // const isCouponEntered = couponCode && couponCode !== copone;
+
         return (
-        <>
           <div className="relative flex items-end">
             <Input
               type="text"
               placeholder={t('promo-placeholder-code')}
-
               inputClassName="text-sm [&.is-hover]:border-mainColor [&.is-focus]:border-mainColor [&.is-focus]:ring-mainColor"
               className="w-full"
               label={<Text>{t('promo-code')}</Text>}
@@ -65,16 +118,14 @@ function CheckCoupon({lang}:{lang?:string}) {
             />
             <Button
               type="submit"
-
               className={`ms-3 ${isCouponEntered ? 'bg-mainColor hover:bg-mainColorHover dark:hover:bg-mainColor/90' : 'bg-muted/70'}`}
               disabled={!isCouponEntered}
             >
               {copone ? `${t('Edit')}` : `${t('Apply')}`}
-              {/* Apply */}
             </Button>
           </div>
-        </>
-      )}}
+        );
+      }}
     </Form>
   );
 }
@@ -89,11 +140,24 @@ function CartCalculations({fees, Tax ,lang}:{fees:number; Tax:number ,lang?:stri
 
   const router = useRouter();
   const { total } = useCart();
-  const totalWithFees = total + Tax + fees;
-  // const { price: totalPrice } = usePrice({
+  const { discountValue,discountType } = useUserContext();
+  const TAX_PERCENTAGE = 14;
+  const taxValue = (TAX_PERCENTAGE / 100) * total;
+  fees= 10;
+  const totalWithFees = total + taxValue + fees;
+  // const totalWithFees = total + Tax + fees;
+
+  const discount =
+  discountType === 0
+  ? (Number(discountValue) / 100) * totalWithFees
+  : Number(discountValue);
+
+const finalTotal = Math.max(totalWithFees - discount, 0);
+// const { price: totalPrice } = usePrice({
   //   amount: totalWithFees,
   // });
-
+ 
+  
   return (
     <div>
       <Title as="h2" className="border-b border-muted pb-4 text-lg font-medium">
@@ -106,16 +170,23 @@ function CartCalculations({fees, Tax ,lang}:{fees:number; Tax:number ,lang?:stri
         </div>
         <div className="flex items-center justify-between">
           {t('Vat')}
-          <span className="font-medium text-gray-1000">{toCurrency(Tax, lang)}</span>
+          <span className="font-medium text-gray-1000">{toCurrency(taxValue, lang)}</span>
+          {/* <span className="font-medium text-gray-1000">{toCurrency(Tax, lang)}</span> */}
         </div>
         <div className="flex items-center justify-between">
           {t('Shipping-Fees')}
           <span className="font-medium text-gray-1000">{toCurrency(fees, lang)}</span>
         </div>
+        {discount > 0 && (
+          <div className="flex items-center justify-between text-green-600">
+            {t('Discount')}
+            <span>- {toCurrency(discount, lang)}</span>
+          </div>
+        )}
         <CheckCoupon lang={lang} />
         <div className="mt-3 flex items-center justify-between border-t border-muted py-4 font-semibold text-gray-1000">
           {t('Total')}
-          <span className="font-medium text-gray-1000">{toCurrency(totalWithFees, lang)}</span>
+          <span className="font-medium text-gray-1000">{toCurrency(finalTotal, lang)}</span>
         </div>
         {totalWithFees === 0 ? (
           <Button

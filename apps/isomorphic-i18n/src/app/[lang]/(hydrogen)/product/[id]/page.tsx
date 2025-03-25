@@ -24,7 +24,6 @@ export default function AllProduct({
   const isMobile = useMediaQuery({ query: '(max-width: 640px)' });
   const { shopId } = useUserContext();
 
-  // ref لمراقبة الوصول إلى نهاية القائمة
   const observerRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {

@@ -1,58 +1,39 @@
+'use client';
+
 import Link from 'next/link';
 import Image from 'next/image';
-import { Title, Button } from 'rizzui';
-import { PiHouseLineBold } from 'react-icons/pi';
-import SocialItems from '@ui/social-shares';
-import { siteConfig } from '@/config/site.config';
-import NotFoundImg from '@public/not-found.png';
-
+import { usePathname } from 'next/navigation';
+import NotFoundImg from '@public/assets/notFoundPage.svg';
+import { metaObject } from '@/config/site.config';
+export async function generateMetadata({ params }: { params: { lang: string } }) {
+  const lang = params.lang; 
+  return {
+    ...metaObject(
+      lang === 'ar' ? 'البحث | اعثر على أفضل المنتجات والخدمات' : 'Search | Find the Best Products and Services',
+      lang,
+      undefined,
+      lang === 'ar' ? 'استخدم البحث للعثور على المطاعم، المتاجر، والمنتجات التي تناسب احتياجاتك بسرعة وسهولة.' : 'Use the search feature to find restaurants, stores, and products that suit your needs quickly and easily.'
+    ),
+  };
+}
 export default function NotFound() {
-  return (
-    <div className="flex min-h-screen flex-col bg-[#F8FAFC]">
-      <div className="sticky top-0 z-40 flex justify-center py-5 backdrop-blur-lg lg:backdrop-blur-none xl:py-10">
-        <Link href="/">
-          <Image
-            src={siteConfig.logo}
-            alt={siteConfig.title}
-            className="dark:invert"
-            priority
-          />
-        </Link>
-      </div>
+  const pathname = usePathname();
+  const lang = pathname?.split('/')[1] || 'en';
 
-      <div className="flex grow items-center px-6 xl:px-10">
-        <div className="mx-auto text-center">
-          <Image
-            src={NotFoundImg}
-            alt="not found"
-            className="mx-auto mb-8 aspect-[360/326] max-w-[256px] xs:max-w-[370px] lg:mb-12 2xl:mb-16"
-          />
-          <Title
-            as="h1"
-            className="text-[22px] font-bold leading-normal text-gray-1000 lg:text-3xl"
-          >
-            Sorry, the page not found
-          </Title>
-          <p className="mt-3 text-sm leading-loose text-gray-500 lg:mt-6 lg:text-base lg:leading-loose">
-            We have been spending long hours in order to launch our new website.
-            Join our
-            <br className="hidden sm:inline-block" />
-            mailing list or follow us on Facebook for get latest update.
-          </p>
-          <Link href={'/'}>
-            <Button
-              as="span"
-              size="xl"
-              color="primary"
-              className="mt-8 h-12 px-4 xl:h-14 xl:px-6"
-            >
-              <PiHouseLineBold className="mr-1.5 text-lg" />
-              Back to home
-            </Button>
-          </Link>
-        </div>
-      </div>
-      <SocialItems />
+  return (
+    <div className="my-10 text-center">
+      <Image src={NotFoundImg} alt="Not Found" className="mx-auto" />
+      <p className="font-medium text-xl">
+        {lang === "ar"
+          ? "الصفحه غير موجوده برجاء العوده الي الصفحة الرئيسية"
+          : "The page does not exist. Please return to the home page."}
+      </p>
+      <Link
+        href={`/${lang}/`}
+        className="flex justify-center items-center bg-black w-fit py-2 px-8 hover:bg-transparent hover:text-mainColor duration-200 hover:border-2 hover:border-mainColor gap-3 rounded-full cursor-pointer mx-auto text-white mt-3"
+      >
+        {lang === "ar" ? "الرئيسية" : "Home"}
+      </Link>
     </div>
   );
 }
