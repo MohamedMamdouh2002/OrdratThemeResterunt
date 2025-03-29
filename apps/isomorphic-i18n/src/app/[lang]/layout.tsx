@@ -45,8 +45,8 @@ export async function generateStaticParams() {
 //   return `${protocol}://${host}`;
 // } 
 function getServerSiteUrl() {
-  const host = "theme.ordrat.com";
-  // const host = headers().get("host") || "localhost:3000";
+  // const host = "theme.ordrat.com";
+  const host = headers().get("host") || "localhost:3000";
   const protocol = process.env.NODE_ENV === "production" ? "https" : "http";
   return `${host}`;
 }
@@ -148,17 +148,31 @@ export async function fetchSellerPlanStatus(sellerId: string) {
       throw new Error("Failed to fetch seller plan status");
     }
 
-    const data = await res.json();
+    const response = await res.json();
 
-    const isFreeTrial = Array.isArray(data) && data.some(plan => plan.freeTrial === true);
-    const isActive = Array.isArray(data) && data.some(plan => plan.subscriptionStatus !== 0);
+    // إذا كان فيه data جوه object، فكها
+    const plans =
+    Array.isArray(response) ? response :
+    Array.isArray(response?.data) ? response.data :
+    [];
+  
+    console.log("⛳ Plans Data:", plans);
+
+    const isFreeTrial = plans.some((plan: { freeTrial: boolean; }) => plan.freeTrial === true);
+
+    const isActive = plans.some((plan: { subscriptionStatus: number; }) => plan.subscriptionStatus === 0 );
+    console.log("🔥 Full response:", response);
+
+    console.log("✅ isFreeTrial:", isFreeTrial);
+    console.log("✅ isActive:", isActive);
 
     return { isFreeTrial, isActive };
   } catch (error) {
-    console.error("Error fetching seller plan status:", error);
+    console.error("❌ Error fetching seller plan status:", error);
     return { isFreeTrial: false, isActive: false };
   }
 }
+
 
 
 async function fetchSubdomain(subdomain: string) {
@@ -244,7 +258,7 @@ export default async function RootLayout({
     if (!shopId || !shopId.id) throw new Error("Invalid subdomain");
 
     shopData = await fetchShopData(shopId.id, lang);
-    const { isFreeTrial, isActive } = await fetchSellerPlanStatus(shopId.id);
+    const { isFreeTrial, isActive } = await fetchSellerPlanStatus(shopId.sellerId);
 
     if (isFreeTrial) {
       showTrialModal = true;
