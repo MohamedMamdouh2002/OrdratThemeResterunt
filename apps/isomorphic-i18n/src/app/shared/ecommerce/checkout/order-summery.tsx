@@ -10,22 +10,33 @@ import cn from '@utils/class-names';
 import { toCurrency } from '@utils/to-currency';
 import { useCart } from '@/store/quick-cart/cart.context';
 import { useTranslation } from '@/app/i18n/client';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useUserContext } from '@/app/components/context/UserContext';
-
+import axiosClient from '@/app/components/fetch/api';
+type Branchprops = {
+  name: string;
+  addressText: string;
+  openAt: string;
+  closedAt: string;
+  deliveryCharge: number;
+  minimumDeliveryCharge: number;
+  deliveryPerKilo: number;
+  isFixedDelivery: boolean;
+  deliveryTime: string;
+}
 export default function OrderSummery({
   isLoading,
   className,
   lang,
   isButtonDisabled,
   onSummaryCalculated,
-
   fees
 }: {
   className?: string;
   isLoading?: boolean;
+ 
   lang?: string;
-  fees?: number;
+  fees: number;
   isButtonDisabled?: boolean;
   onSummaryCalculated?: (summary: {
     finalTotal: number;
@@ -35,10 +46,12 @@ export default function OrderSummery({
   }) => void;
 }) {
   const params = useParams();
+  const [response, setResponse] = useState<Branchprops[]>([]);
+
   const { items, total, addItemToCart, removeItemFromCart, clearItemFromCart } =
     useCart();
-      const { orderNote, setOrderNote, copone, setCopone, discountValue,discountType } = useUserContext();
-    
+  const { orderNote, shopId, setOrderNote, copone, setCopone, discountValue, discountType } = useUserContext();
+
   const { price: subtotal } = usePrice(
     items && {
       amount: total,
@@ -48,15 +61,28 @@ export default function OrderSummery({
     amount: total,
   });
   const { t, i18n } = useTranslation(lang!, 'order');
-  const TAX_PERCENTAGE = 14;
-  const taxValue = (TAX_PERCENTAGE / 100) * total;
-  fees= 10;
-  const totalWithFees = (total + taxValue + fees)  ;
-  const discount:any =
-  discountType === 0
-  ? (Number(discountValue) / 100) * totalWithFees 
-  : Number(discountValue);
-  const totalPricewithDiscount = totalWithFees-discount
+
+
+  const storedVat = typeof window !== "undefined" ? Number(localStorage.getItem("vat")) || 0 : 0;
+  const storedVatType = typeof window !== "undefined" ? Number(localStorage.getItem("vatType")) || 0 : 0;
+
+  const taxValue = storedVatType === 0
+    ? (storedVat / 100) * total
+    : storedVat;
+
+
+  const totalWithFees = total + taxValue + fees;
+
+  const discount =
+    discountType === 0
+      ? (Number(discountValue) / 100) * totalWithFees
+      : Number(discountValue);
+
+  const finalTotal = Math.max(totalWithFees - discount, 0);
+  // discountType === 0
+  // ? (Number(discountValue) / 100) * totalWithFees 
+  // : Number(discountValue);
+  // const totalPricewithDiscount = totalWithFees-discount
   useEffect(() => {
     i18n.changeLanguage(lang);
   }, [lang, i18n]);
@@ -65,23 +91,41 @@ export default function OrderSummery({
   useEffect(() => {
     if (onSummaryCalculated) {
       onSummaryCalculated({
-        finalTotal:totalWithFees,
+        finalTotal: totalWithFees,
         tax: taxValue,
         delivery: fees,
         discount,
       });
     }
   }, [totalWithFees, taxValue, fees, discount]);
-  
 
+  useEffect(() => {
+    const fetchOrders = async () => {
+      try {
+        // setLoading(true);
+        const response = await axiosClient.get(`/api/Branch/GetByShopId/${shopId}`, {
+          headers: {
+            'Accept-Language': lang,
+          },
+        });
+        setResponse(response.data);
+      } catch (error) {
+        console.error('Error fetching orders:', error);
+      } finally {
+        // setLoading(false);
+      }
+    };
+
+    fetchOrders();
+  }, [lang]);
   return (
     <div
       className={cn(
-        'sticky top-24 mt-8 @5xl:col-span-4 @5xl:mt-0 @6xl:col-span-3 2xl:top-28',
+        'sticky top-24 mt-8 mb-5 @5xl:col-span-4 @5xl:mt-0 @6xl:col-span-3 2xl:top-28',
         className
       )}
     >
-      <Title as="h4" className="font-semibold">
+      <Title as="h4" className="font-semibold my-2">
         {t('Your-Order')}
       </Title>
       <div className="rounded-lg border border-muted p-4 @xs:p-6 pt-0 @xs:pt-0 @5xl:rounded-none @5xl:border-none @5xl:px-0">
@@ -121,20 +165,33 @@ export default function OrderSummery({
           </div>
           <div className="mb-4 flex items-center justify-between last:mb-0">
             {t('Shipping-Fees')}
-            <Text as="span" className="font-medium text-gray-900">
+            {/* <Text as="span" className="font-medium text-gray-900">
               {toCurrency(fees, lang)}
-            </Text>
+            </Text> */}
+            {(() => {
+              const mainBranch = response.find(
+                (i) => i.name === "Main Branch" || i.name === "الفرع الرئيسي"
+              );
+              if (mainBranch?.isFixedDelivery) {
+                return <span>{toCurrency(mainBranch?.deliveryCharge ?? 0, lang)}</span>;
+              }
+              else {
+                return <span>{toCurrency(fees, lang)}</span>;
+              }
+            })()}
+
+
           </div>
           {discount > 0 && (
-                    <div className="flex mb-4 items-center justify-between text-green-600">
-                      {t('Discount')}
-                      <span>- {toCurrency(discount, lang)}</span>
-                    </div>
-                  )}
+            <div className="flex mb-4 items-center justify-between text-green-600">
+              {t('Discount')}
+              <span>- {toCurrency(discount, lang)}</span>
+            </div>
+          )}
           <div className="flex items-center justify-between border-t border-muted py-4 text-base font-bold text-gray-1000">
             {t('Total')}
             {/* <Text>{totalPrice}</Text> */}
-            <Text>{toCurrency(totalPricewithDiscount, lang)}</Text>
+            <Text>{toCurrency(finalTotal, lang)}</Text>
           </div>
 
           {items.length ? (

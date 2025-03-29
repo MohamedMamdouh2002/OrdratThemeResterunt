@@ -23,7 +23,19 @@
     "more_to_reach": "more to reach",
     "free_shipping": "FREE SHIPPING!",
     "currency": "EGP",
-    "congrats_free_shipping": "Congratulations! You qualify for FREE SHIPPING! 🚀"
-
+    "congrats_free_shipping": "Congratulations! You qualify for FREE SHIPPING! 🚀",
+    "feedback":"Feedback", 
+    "feel":"How are you feeling ?", 
+    "feeldesc": "Your input is valuable in helping us better understand your needs and tailor our service accordingly.",
+    "comment":"Add a comment",
+    "Subbmit":"Submit Now",
+    "Excellent":"Excellent",
+    "Good":"Good",
+    "Medium":"Medium",
+    "Bad":"Bad",
+    "VeryBad":"VeryBad",
+    "order-sec":"Your order has been successfully registered",
+    "order-id":"Order number: ",
+    "order-btn":"Track Order"   
 
 }

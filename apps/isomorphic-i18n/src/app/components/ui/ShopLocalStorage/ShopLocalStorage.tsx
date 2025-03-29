@@ -3,7 +3,7 @@
 import { useEffect } from "react";
 import { useUserContext } from "../../context/UserContext";
 
-export default function ShopLocalStorage({ backgroud, subdomainName, description, logoUrl, branchZones, shopId }: { backgroud: string; subdomainName: string; description: string; logoUrl: string;   branchZones: { lat: number; lng: number; zoonRadius: number }[]; shopId:string;
+export default function ShopLocalStorage({ backgroud,vat,vatType, subdomainName, description, logoUrl, branchZones, shopId }: { backgroud: string; vatType: number;  vat: number; subdomainName: string; description: string; logoUrl: string;   branchZones: { lat: number; lng: number; zoonRadius: number }[]; shopId:string;
 }) {
   const { setBranchZones, setshopId } = useUserContext(); 
   
@@ -17,6 +17,8 @@ export default function ShopLocalStorage({ backgroud, subdomainName, description
       localStorage.setItem("subdomainName", subdomainName);
       localStorage.setItem("description", description);
       localStorage.setItem("logoUrl", logoUrl);
+      localStorage.setItem("vatType", vatType.toString());
+      localStorage.setItem("vat", vat as any);
       // console.log("branchZones: ",branchZones);
       setBranchZones(branchZones);
     }

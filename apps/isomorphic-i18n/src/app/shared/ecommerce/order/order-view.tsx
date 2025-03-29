@@ -174,7 +174,7 @@ export default function OrderView({lang}:{lang:string}) {
           {orderNote && (
             <div className="">
               <span className="mb-1.5 block text-sm font-medium text-gray-700">
-                Notes About Order
+             {lang==='ar'?  'تفاصيل عن الطلب':    'Notes About Order'}
               </span>
               <div className="rounded-xl border border-muted px-5 py-3 text-sm leading-[1.85]">
                 {orderNote}
@@ -187,16 +187,35 @@ export default function OrderView({lang}:{lang:string}) {
             <div className="border-t border-muted pt-7 @5xl:mt-3">
             <div className="ms-auto max-w-lg space-y-6">
                 <div className="flex justify-between font-medium">
-                  {t('Subtotal')} <span>{order?.totalPrice}</span>
+                  {t('Subtotal')} <span>
+                    
+                  {toCurrency( Number(order?.price).toFixed(2) as any -  parseFloat(Number(order?.totalVat || 0).toFixed(2)) , lang)}
+                  </span>
+
                 </div>
                 <div className="flex justify-between font-medium">
-                  {t('Shipping-Fees')} <span>{order?.shippingFees}</span>
+                  {t('Shipping-Fees')} 
+                  <span>
+               
+                  {toCurrency(Number(order?.shippingFees).toFixed(2) as any , lang)}
+                  </span>
                 </div>
                 <div className="flex justify-between font-medium">
-                  {t('Vat')} <span>{order?.totalVat}</span>
+                  {t('Vat')} <span>
+                    
+                  {toCurrency(Number(order?.totalVat).toFixed(2) as any , lang)}
+                  </span>
+
+                </div>
+                <div className="flex justify-between font-medium">
+                  {t('Discount')} <span>
+                    
+                 - {toCurrency(Number(order?.discount).toFixed(2) as any , lang)}
+                  </span>
+
                 </div>
                 <div className="flex justify-between border-t border-muted pt-5 text-base font-semibold">
-                  {t('Total')} <span>{toCurrency((order?.totalPrice || 0) + (order?.shippingFees || 0) + (order?.totalVat || 0) , lang)}</span>
+                  {t('Total')} <span>{toCurrency(order?.totalPrice as any , lang)}</span>
                 </div>
               </div>
             </div>

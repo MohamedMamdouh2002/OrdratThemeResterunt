@@ -7,16 +7,17 @@ import Link from 'next/link';
 import Title from '@/app/components/ui/title/Title';
 import { Order } from '@/types';
 // import { photos } from '../fetch/api'; // يمكنك إعداد الصور هنا إذا لزم الأمر
-import axiosClient from '../fetch/api'; 
+import axiosClient from '../fetch/api';
 import { EmptyProductBoxIcon } from 'rizzui';
 import { useTranslation } from '@/app/i18n/client';
 import fetchClient from '../fetch/api';
+import { toCurrency } from '@utils/to-currency';
 
 const MyOrder: React.FC<{ lang: string }> = ({ lang }) => {
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(false);
   const [logoUrl, setLogoUrl] = useState<string | null>(null);
-  const [shopName, setShopName] = useState<string | null>(null); 
+  const [shopName, setShopName] = useState<string | null>(null);
   const { t } = useTranslation(lang, 'order');
 
   useEffect(() => {
@@ -35,13 +36,12 @@ const MyOrder: React.FC<{ lang: string }> = ({ lang }) => {
         setLoading(false);
       }
     };
-
     fetchOrders();
     const storedLogo = localStorage.getItem("logoUrl");
     const storedName = localStorage.getItem("subdomainName");
     if (storedLogo) {
-        setLogoUrl(storedLogo);
-        setShopName(storedName);
+      setLogoUrl(storedLogo);
+      setShopName(storedName);
     }
   }, [lang]);
 
@@ -59,13 +59,15 @@ const MyOrder: React.FC<{ lang: string }> = ({ lang }) => {
               <div className="w-5/6 mx-auto mb-10">
                 {orders.map((order) => (
                   <Link key={order.id} href={`/${lang}/orders/${order.id}`}>
-                    <div className="relative bg-slate-100 hover:bg-orange-50 transition-all duration-100 px-4 py-4 border rounded-lg mb-4">
+                    <div className="relative bg-slate-100 hover:bg-Color30 transition-all duration-100 px-4 py-4 border rounded-lg mb-4">
                       <div className="flex justify-between">
                         <div className="flex items-center gap-1">
                           <h2 className="text-mainColor text-sm sm:text-base">{t('order-id')}</h2>
-                          <h2 className="text-mainColor text-sm sm:text-base">{order.id}</h2>
+                          <h2 className="text-mainColor text-sm sm:text-base">{order.orderNumber}</h2>
                         </div>
-                        <h3 className="text-mainColor">${order.totalPrice}</h3>
+                        <h3 className="text-mainColor">
+                          {toCurrency(order?.totalPrice as any, lang)}
+                        </h3>
                       </div>
                       <div className="py-5">
                         <div className="flex gap-1 mt-3">
@@ -74,7 +76,9 @@ const MyOrder: React.FC<{ lang: string }> = ({ lang }) => {
                         </div>
                         <div className="flex gap-1 mt-3">
                           <p>{t('total-choice-prices')}</p>
-                          <span>{order.totalChoicePrices}</span>
+                          <span>
+                            
+                          {toCurrency(order.totalChoicePrices as any, lang)}</span>
                         </div>
                         {order.items.map((i, index) => (
                           <React.Fragment key={index}>
@@ -83,7 +87,7 @@ const MyOrder: React.FC<{ lang: string }> = ({ lang }) => {
                               <span>{i.quantity}</span>
                             </div>
                             <p>{t('items')}</p>
-                            <div className="flex mt-3">
+                            <div className="flex flex-wrap gap-3 mt-3">
                               <div className="rounded-lg border w-24 h-[115px] border-dashed border-mainColor">
                                 <Image width={300} height={150} className="w-full h-[75%] rounded-t-lg object-cover" src={i.product.images[0]?.imageUrl || ''} alt={i.product.name} />
                                 <span className="truncate-text mt-1 ms-1">
@@ -93,7 +97,9 @@ const MyOrder: React.FC<{ lang: string }> = ({ lang }) => {
                             </div>
                             <div className="flex gap-1 mt-3">
                               <p>{t('item-price')}</p>
-                              <span>{i.itemPrice}</span>
+                              <span>
+                                {toCurrency(i.itemPrice as any, lang)}
+                              </span>
                             </div>
                           </React.Fragment>
                         ))}
@@ -106,10 +112,10 @@ const MyOrder: React.FC<{ lang: string }> = ({ lang }) => {
                           </div>
                         </div>
                         <div className="absolute end-3 bottom-4">
-                          <Image width={60} height={60} src={Logo} alt="logo" />
+                          {/* <Image width={60} height={60} src={Logo} alt="logo" /> */}
                           {logoUrl ? (
                             <Image src={logoUrl} width={60} height={60} alt="logo" />
-                            ) : (
+                          ) : (
                             <div className="w-[60px] h-[60px] bg-gray-200 rounded-full"></div>
                           )}
                         </div>

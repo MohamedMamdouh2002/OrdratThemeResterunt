@@ -45,7 +45,7 @@ type Address = {
 
 function parseProductData(productString: string) {
   const dataPairs = productString.split('&&');
-  
+
   // Define an explicit type
   const productData: Record<string, string> = {};
 
@@ -75,7 +75,17 @@ function parseProductData(productString: string) {
       }, {})
   };
 }
-
+type Branchprops = {
+  name: string;
+  addressText: string;
+  openAt: string;
+  closedAt: string;
+  deliveryCharge: number;
+  minimumDeliveryCharge: number;
+  deliveryPerKilo: number;
+  isFixedDelivery: boolean;
+  deliveryTime: string;
+}
 // main order form component for create and update order
 export default function CheckoutPageWrapper({
   className,
@@ -86,9 +96,11 @@ export default function CheckoutPageWrapper({
 }) {
   const [isLoading, setLoading] = useState(false);
   const router = useRouter();
-  const { orderNote, setOrderNote, copone, setCopone, shopId , setDiscountValue,setDiscountType } = useUserContext();
+  const { orderNote, setOrderNote, copone, setCopone, shopId, setDiscountValue, setDiscountType } = useUserContext();
   const { items, total, addItemToCart, removeItemFromCart, clearItemFromCart } =
     useCart();
+  const [response, setResponse] = useState<Branchprops[]>([]);
+
   const { price: totalPrice } = usePrice({
     amount: total,
   });
@@ -96,9 +108,10 @@ export default function CheckoutPageWrapper({
   const [loginModal, setLoginModal] = useState(false);
   const [currentModal, setCurrentModal] = useState<'login' | 'register' | 'resetPassword'>('login');
   const accessToken = localStorage.getItem('accessToken');
-  
+
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [isAddressOpen, setIsAddressOpen] = useState<boolean>(false);
+  const [deliveryBerKelo, setDeliveryBerKelo] = useState<any>('');
 
   const methods = useForm<MadeOrderInput>({
     mode: 'onChange',
@@ -108,8 +121,8 @@ export default function CheckoutPageWrapper({
   const { t } = useTranslation(lang!, 'profile');
   // Sample addresses
   const [addresses, setAddresses] = useState<Address[]>([]);
-	const [isAddressApiLoading, setIsAddressApiLoading] = useState(false);
-	const { updateAddresses, setUpdateAddresses, branchZones } = useUserContext();
+  const [isAddressApiLoading, setIsAddressApiLoading] = useState(false);
+  const { updateAddresses, setUpdateAddresses, branchZones } = useUserContext();
 
   //summary بجيبها من ال ordersummary
   const [summary, setSummary] = useState<{
@@ -118,21 +131,23 @@ export default function CheckoutPageWrapper({
     delivery: number;
     discount: number;
   } | null>(null);
-  
-  
+
+  // const totalPricing: any = summary
+  //   ? summary.finalTotal - (summary.tax + summary.delivery)
+  //   : 0;
   const fetchAddresses = async () => {
     setIsAddressApiLoading(true);
-  
+
     try {
       const response = await axiosClient.get('/api/Address/GetEndUserAddresses', {
         headers: {
           'Content-Type': 'application/json',
         },
       });
-  
+
       const data = response.data;
-  
-      const mappedAddresses = data.map((a:any) => ({
+
+      const mappedAddresses = data.map((a: any) => ({
         id: a.id,
         additionalDirections: a.additionalDirections,
         apartmentNumber: a.apartmentNumber,
@@ -142,7 +157,7 @@ export default function CheckoutPageWrapper({
         longtude: a.longtude,
         buildingType: a.buildingType,
       }));
-  
+
       setAddresses(mappedAddresses);
       setUserLocation({
         lat: mappedAddresses[mappedAddresses.length - 1]?.latitude,
@@ -155,7 +170,7 @@ export default function CheckoutPageWrapper({
       setIsAddressApiLoading(false);
     }
   };
-  
+
   useEffect(() => {
     fetchAddresses();
     if (updateAddresses === true) {
@@ -163,6 +178,53 @@ export default function CheckoutPageWrapper({
       setUpdateAddresses(false);
     }
   }, [updateAddresses]);
+
+
+
+  useEffect(() => {
+    const fetchOrders = async () => {
+      try {
+        // setLoading(true);
+        const response = await axiosClient.get(`/api/Branch/GetByShopId/${shopId}`, {
+          headers: {
+            'Accept-Language': lang,
+          },
+        });
+        setResponse(response.data);
+      } catch (error) {
+        console.error('Error fetching orders:', error);
+      } finally {
+        // setLoading(false);
+      }
+    };
+
+    fetchOrders();
+  }, [lang]);
+  //حساب سعر التوصيل
+  async function fetchDeliveryCharge(shopId: string, addressId: string) {
+    try {
+      const response = await fetch(
+        `https://testapi.ordrat.com/api/Order/GetDeliveryCharge/${shopId}/${addressId}`,
+        {
+          method: 'GET',
+          headers: {
+            Accept: '*/*',
+          },
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error('فشل في الحصول على قيمة التوصيل');
+      }
+
+      const data = await response.json();
+      setDeliveryBerKelo(data.message);
+
+    } catch (error) {
+      console.error('خطأ في استدعاء قيمة التوصيل:', error);
+      return null;
+    }
+  }
 
   //  const addresses = [
   //   {
@@ -197,6 +259,16 @@ export default function CheckoutPageWrapper({
   const [selectedAddressId, setSelectedAddressId] = useState<string | null>(addresses[addresses?.length - 1]?.id || null);
   const [selectedAddress, setSelectedAddress] = useState<any>();
 
+  // ببعت القيم للفانكشن عشان احسب التوصيل
+  useEffect(() => {
+    const getCharge = async () => {
+      if (!shopId || !selectedAddressId) return;
+      const charge = await fetchDeliveryCharge(shopId, selectedAddressId);
+      console.log('قيمة التوصيل:', charge);
+    };
+
+    getCharge();
+  }, [shopId, selectedAddressId as any]);
   // Handle location change from the map
   const handleLocationChange = (newLocation: { lat: number; lng: number }) => {
     setUserLocation(newLocation); // Update user location when the marker is moved
@@ -219,32 +291,35 @@ export default function CheckoutPageWrapper({
   // ];
   const colors = ["#FF0000", "#00FF00", "#0000FF", "#FFFF00", "#FFA500", "#800080"];
 
-  const zones = useMemo(() => 
+  const zones = useMemo(() =>
     branchZones.map((zone, index) => ({
       center: { lat: zone.lat, lng: zone.lng },
       radius: zone.zoonRadius,
       color: colors[index % colors.length]
-    })), 
+    })),
     [branchZones]
   );
 
-  console.log("errors: ",methods.formState.errors);
-  
+  console.log("errors: ", methods.formState.errors);
+
   const onSubmit: SubmitHandler<MadeOrderInput> = async (data) => {
     setLoading(true);
     try {
       const formData = new FormData();
       formData.append('paymentmethod', '0');
       formData.append('OrderType', '0');
-      formData.append('TotalPrice', String(summary?.finalTotal || 0));
+      formData.append('TotalPrice', "0");
       formData.append('ShippingFees', String(summary?.delivery || 0));
-      formData.append('TotalVat', String(summary?.tax || 0));
-  
+      formData.append('TotalVat', "0");
+      // formData.append('ShippingFees',fees);
+      // formData.append('TotalPrice', String(total || 0));
+      // formData.append('TotalVat', String(summary?.tax || 0));
+
       if (copone) {
         formData.append('CouponCode', copone);
       }
 
- 
+
       if (orderNote) {
         formData.append('Notes', orderNote);
       }
@@ -252,7 +327,11 @@ export default function CheckoutPageWrapper({
         formData.append('AddressId', selectedAddressId);
       }
       formData.append('ShopId', shopId);
-  
+      const now = new Date();
+      const formattedDate = now.toISOString().slice(0, 19).replace('T', ' '); 
+      
+      formData.append('CreatedAt', formattedDate);
+      
       items.forEach((item, index) => {
         const realProductData = parseProductData(item.id as string)
         formData.append(`Items[${index}].quantity`, item.quantity.toString());
@@ -280,13 +359,13 @@ export default function CheckoutPageWrapper({
           })
         });
       });
-  
+
       formData.forEach((value, key) => {
         console.log(`${key}: ${value}`);
       });
-  
+
       const response = await axiosClient.post('/api/Order/Create', formData);
-  
+
       if (response.status === 200) {
         // Clear the cart items
         items.forEach(item => clearItemFromCart(item.id));
@@ -296,9 +375,16 @@ export default function CheckoutPageWrapper({
         setCopone("");
         setDiscountValue(0);
         setDiscountType(0);
+        const orderId = response.data.id;
+        const orderNumber = response.data.orderNumber;
 
-        // Go to success page
-        router.push(`/${lang}/`);
+        if (orderNumber) {
+          localStorage.setItem('orderNumber', orderNumber.toString());
+        }     
+        if (orderId) {
+          localStorage.setItem('orderId', orderId.toString());
+        }    
+        router.push(`/${lang}/thank-you`);
       } else {
         console.error('Error creating order:', response.data);
         toast.error(<Text as="b">Failed to place order. Please try again.</Text>);
@@ -317,65 +403,65 @@ export default function CheckoutPageWrapper({
     setLoginModal(true);
   };
   const handleAddNewAddress = () => {
-		const phoneNumber = localStorage.getItem('phoneNumber');
-		navigator.geolocation.getCurrentPosition(
-			(position) => {
-				setSelectedAddress({
-					lat: position.coords.latitude,
-					lng: position.coords.longitude,
-					phoneNumber: phoneNumber,
-				});
-				setIsOpen(true);
-			},
-			(error) => {
-				console.error('Error fetching user location:', error);
-				setSelectedAddress({
-					lat: 30.023173855111207,
-					lng: 31.185028997638923,
-					phoneNumber: phoneNumber,
-				});
-				setIsOpen(true);
-			},
-			{
-				enableHighAccuracy: true,
-				timeout: 5000,
-				maximumAge: 0,
-			}
-		);
-		
-	};
+    const phoneNumber = localStorage.getItem('phoneNumber');
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        setSelectedAddress({
+          lat: position.coords.latitude,
+          lng: position.coords.longitude,
+          phoneNumber: phoneNumber,
+        });
+        setIsOpen(true);
+      },
+      (error) => {
+        console.error('Error fetching user location:', error);
+        setSelectedAddress({
+          lat: 30.023173855111207,
+          lng: 31.185028997638923,
+          phoneNumber: phoneNumber,
+        });
+        setIsOpen(true);
+      },
+      {
+        enableHighAccuracy: true,
+        timeout: 5000,
+        maximumAge: 0,
+      }
+    );
+
+  };
   const handleAddAddress = () => {
-		const phoneNumber = localStorage.getItem('phoneNumber');
-		navigator.geolocation.getCurrentPosition(
-			(position) => {
-				setSelectedAddress({
-					lat: position.coords.latitude,
-					lng: position.coords.longitude,
-					phoneNumber: phoneNumber,
-				});
-				setIsAddressOpen(true);
-			},
-			(error) => {
-				console.error('Error fetching user location:', error);
-				setSelectedAddress({
-					lat: 30.023173855111207,
-					lng: 31.185028997638923,
-					phoneNumber: phoneNumber,
-				});
-				setIsAddressOpen(true);
-			},
-			{
-				enableHighAccuracy: true,
-				timeout: 5000,
-				maximumAge: 0,
-			}
-		);
-		
-	};
-  
-  
+    const phoneNumber = localStorage.getItem('phoneNumber');
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        setSelectedAddress({
+          lat: position.coords.latitude,
+          lng: position.coords.longitude,
+          phoneNumber: phoneNumber,
+        });
+        setIsAddressOpen(true);
+      },
+      (error) => {
+        console.error('Error fetching user location:', error);
+        setSelectedAddress({
+          lat: 30.023173855111207,
+          lng: 31.185028997638923,
+          phoneNumber: phoneNumber,
+        });
+        setIsAddressOpen(true);
+      },
+      {
+        enableHighAccuracy: true,
+        timeout: 5000,
+        maximumAge: 0,
+      }
+    );
+
+  };
+
+
   return (
-    <div className='w-[90%] mx-auto mt-8'>
+    <div className='w-[90%] mx-auto lg:mt-8 mt-24'>
       <FormProvider {...methods}>
         <form
           // @ts-ignore
@@ -419,27 +505,26 @@ export default function CheckoutPageWrapper({
                     <RadioGroup.Option key={address.id} value={address.id}>
                       {({ checked }) => (
                         <div
-                          className={`px-1 sm:px-3 py-2 flex items-center gap-1 sm:gap-2 w-full capitalize cursor-pointer rounded-lg transition duration-150 ${
-                            checked ? 'bg-mainColor text-white' : 'bg-gray-200'
-                          }`}
+                          className={`px-1 sm:px-3 py-2 flex items-center gap-1 sm:gap-2 w-full capitalize cursor-pointer rounded-lg transition duration-150 ${checked ? 'bg-mainColor text-white' : 'bg-gray-200'
+                            }`}
                         >
                           {/* <p>{`Apartment No: ${address.apartmentNumber}, Street: ${address.street}`}</p>
                           <p>{`Floor: ${address.floor}, Directions: ${address.additionalDirections}`}</p> */}
                           <div className={cn('flex flex-col gap-2 max-w-full', className)}>
                             <span className={`px-3 py-2 rounded-lg transition duration-150 flex items-center gap-2 max-w-full`}>
                               {address.buildingType === 0 ? (
-                                <Building className={`pt-1 ${checked ?'text-white':'text-mainColor'}`} />
+                                <Building className={`pt-1 ${checked ? 'text-white' : 'text-mainColor'}`} />
                               ) : address.buildingType === 1 ? (
-                                <Home className={`pt-1 ${checked ?'text-white':'text-mainColor'}`} />
+                                <Home className={`pt-1 ${checked ? 'text-white' : 'text-mainColor'}`} />
                               ) : (
-                                <BriefcaseBusiness className={`pt-1 ${checked ?'text-white':'text-mainColor'}`} />
+                                <BriefcaseBusiness className={`pt-1 ${checked ? 'text-white' : 'text-mainColor'}`} />
                               )}
                               <span className='whitespace-nowrap overflow-hidden truncate max-w-[200px] sm:max-w-[80%]'>
                                 {address.apartmentNumber}, {address.floor ? address.floor + ', ' : ''}
                                 {address.street}
                               </span>
                             </span>
-                            <p className={`px-6 ${checked ?'text-white/80':'text-black/50'} text-sm font-bold sm:whitespace-nowrap sm:overflow-hidden sm:truncate max-w-full`}>
+                            <p className={`px-6 ${checked ? 'text-white/80' : 'text-black/50'} text-sm font-bold sm:whitespace-nowrap sm:overflow-hidden sm:truncate max-w-full`}>
                               {/* {address.phoneNumber}
                               <br /> */}
                               {address.additionalDirections}
@@ -458,21 +543,21 @@ export default function CheckoutPageWrapper({
                     className="w-fit col-span-full large:self-start flex gap-1 items-center px-3 py-2 rounded-lg text-white border border-transparent hover:border-mainColor bg-mainColor hover:bg-transparent hover:text-mainColor  transition duation-150"
                   >
                     <Plus />
-                    {t('Add-Address')} 
+                    {t('Add-Address')}
                   </button>
                 ) : (
                   // <Link href={`/${lang}/profile`}>
-                    <button
-                      type='button'
-                      onClick={handleAddAddress}
-                      className="w-fit col-span-full large:self-start flex gap-1 items-center px-3 py-2 rounded-lg text-white border border-transparent hover:border-mainColor bg-mainColor hover:bg-transparent hover:text-mainColor  transition duation-150"
-                    >
-                      <Plus />
-                      {t('New-Address')}
-                    </button>
+                  <button
+                    type='button'
+                    onClick={handleAddAddress}
+                    className="w-fit col-span-full large:self-start flex gap-1 items-center px-3 py-2 rounded-lg text-white border border-transparent hover:border-mainColor bg-mainColor hover:bg-transparent hover:text-mainColor  transition duation-150"
+                  >
+                    <Plus />
+                    {t('New-Address')}
+                  </button>
                   // </Link>
                 )}
-                
+
                 {/* <Link href={`/${lang}/profile`}>
                   <button
                     className="self-center col-span-full w-40 large:self-start flex gap-1 items-center px-3 py-2 rounded-lg text-white border border-transparent hover:border-mainColor bg-mainColor hover:bg-transparent hover:text-mainColor  transition duation-150"
@@ -495,7 +580,7 @@ export default function CheckoutPageWrapper({
               </div>
             </div>
 
-            <OrderSummery lang={lang} isLoading={isLoading} isButtonDisabled={isButtonDisabled}   onSummaryCalculated={(summary:any) => setSummary(summary)}
+            <OrderSummery lang={lang} isLoading={isLoading} isButtonDisabled={isButtonDisabled} onSummaryCalculated={(summary: any) => setSummary(summary)} fees={deliveryBerKelo}
             />
           </div>
         </form>
@@ -514,8 +599,8 @@ export default function CheckoutPageWrapper({
         </Modal>
       )} */}
       <AnimatePresence mode="wait">
-				{isOpen && <AddressModalWithLogin lang={lang} isOpen={isOpen} setIsOpen={setIsOpen} address={selectedAddress} />}
-			</AnimatePresence>
+        {isOpen && <AddressModalWithLogin lang={lang} isOpen={isOpen} setIsOpen={setIsOpen} address={selectedAddress} />}
+      </AnimatePresence>
       <AnimatePresence mode="wait">
         {isAddressOpen && <AddressModal lang={lang} isOpen={isAddressOpen} setIsOpen={setIsAddressOpen} address={selectedAddress} />}
       </AnimatePresence>

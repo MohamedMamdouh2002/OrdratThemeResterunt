@@ -108,53 +108,69 @@ function Navbar({ className, lang }: { className?: string, lang?: string }) {
         <>
             <div className="hidden lg:block h-14 bg-mainColor text-white text-sm relative">
                 <div className="w-[90%] mx-auto grid grid-cols-9 *:col-span-3 items-center justify-between py-2">
-                    {coupon?.filter((i: any) => i.isBanner === true && i.isActive === true)
-                        .slice(-1)
-                        .map((banner: any) => (
-                            <div
-                                key={banner.id}
-                                onClick={() => {
-                                    navigator.clipboard.writeText(banner.code);
-                                    toast.success(t('code'));
-                                }}
-                                className="flex items-center gap-3 cursor-pointer">
-                                <div className="flex items-center gap-3 ">
+                {
+  (() => {
+    const banners = coupon?.filter((i: any) => i.isBanner === true && i.isActive === true).slice(-1);
 
-                                    <TicketPercentIcon /><span>{t('select-item')}</span>
-                                </div>
-                                <div className="border-2 border-white rounded-lg text-white p-2">
-                                    {t('copy')}
-                                </div>
-                            </div>
-                        ))
-                    }
+    return banners && banners.length > 0 ? (
+      banners.map((banner: any) => (
+        <div
+          key={banner.id}
+          onClick={() => {
+            navigator.clipboard.writeText(banner.code);
+            toast.success(t('code'));
+          }}
+          className="flex items-center gap-3 cursor-pointer"
+        >
+          <div className="flex items-center gap-3 ">
+            <TicketPercentIcon />
+            <span>{t('select-item')}</span>
+          </div>
+          <div className="border-2 border-white rounded-lg text-white p-2">
+            {t('copy')}
+          </div>
+        </div>
+      ))
+    ) : (
+      // عنصر بديل محجوز بنفس الحجم
+      <div className="flex items-center gap-3 invisible">
+        <div className="flex items-center gap-3 ">
+          <TicketPercentIcon />
+          <span>{t('select-item')}</span>
+        </div>
+        <div className="border-2 border-white rounded-lg text-white p-2">
+          {t('copy')}
+        </div>
+      </div>
+    );
+  })()
+}
+
                     <div className="flex items-center mx-auto gap-5">
-                        {/* <div className="flex items-center gap-">
-                            <Timer /> 24 {t('mins')}
-                        </div> */}
                         <div className="flex items-center gap-2">
-                            <FontAwesomeIcon icon={faMoneyBills as any} className='text-lg' />
+                            <FontAwesomeIcon icon={faMoneyBills as any} className="text-lg" />
                             {t('Cash')}
                         </div>
                     </div>
+
                     <div className="flex items-center gap-5 justify-end w-full col-span-3 relative">
                         <div className={'flex items-center gap-1 text-sm'}>
                             <Star className="fill-[#f1d045] text-[#f1d045]" size={14} />
                             <span className="">4.3</span>
                             <Link href={`/${lang!}/reviews`} className="underline font-light">
-                                (<bdi>{t('showRate')}</bdi> )
-                                {/* {t('ratings')}) */}
+                                (<bdi>{t('showRate')}</bdi>)
                             </Link>
                         </div>
                         <div className="relative">
-                            <Info size={16}
-
+                            <Info
+                                size={16}
                                 onClick={() => setModal(true)}
                                 className="cursor-pointer text-base relative z-10"
                             />
                         </div>
                     </div>
                 </div>
+
                 {modal && (
                     <div
                         onClick={() => setModal(false)}

@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { SubmitHandler, useForm } from 'react-hook-form';
@@ -53,80 +53,71 @@ const fetchCoupon = async (shopId: string, code: string): Promise<{ success: boo
 };
 
 
+export function CheckCoupon({ lang }: { lang?: string }) {
+  const { copone, setCopone, setDiscountValue, setDiscountType, shopId } = useUserContext();
+  const { t } = useTranslation(lang!, "order");
 
-function CheckCoupon({ lang }: { lang?: string }) {
-  const [reset, setReset] = useState({});
-  const { copone, setCopone, setDiscountValue,setDiscountType } = useUserContext();
-  const { t } = useTranslation(lang!, 'order');
-  const { shopId } = useUserContext();
-  const form = useForm<FormValues>({
-    defaultValues: { couponCode: '' },
-  });
+  const form = useForm<FormValues>({ defaultValues: { couponCode: "" } });
+  const couponCode = form.watch("couponCode");
 
-  const couponCode = form.watch('couponCode');
+  // 🧠 استخدم useRef لتخزين الكود اللي اتطبق
+  const appliedCouponRef = useRef("");
 
   useEffect(() => {
-    if (copone && couponCode !== copone) {
-      setCopone('');
+    // لو المستخدم عدل أو مسح الكود بعد التطبيق
+    if (
+      appliedCouponRef.current &&
+      couponCode !== appliedCouponRef.current
+    ) {
+      setCopone("");
       setDiscountValue(0);
       setDiscountType(0);
+      appliedCouponRef.current = "";
     }
   }, [couponCode]);
-  const onSubmit: SubmitHandler<FormValues> = async (data) => {
-    const result = await fetchCoupon(shopId,data.couponCode );
-  
+
+  const onSubmit = async (data: FormValues) => {
+    const result = await fetchCoupon(shopId, data.couponCode);
+
     if (result.success) {
-      toast.success(t('Coupon-applied-successfully'));
+      toast.success(lang==='ar'? 'تم تطبيق الخصم بنجاح':'Coupon-applied-successfully');
       setCopone(data.couponCode);
-      setReset({ couponCode: data.couponCode });
       setDiscountValue(result.data?.discountValue || 0);
-      setDiscountType(result.data?.discountType as any); 
+      setDiscountType(result.data?.discountType as any);
+      appliedCouponRef.current = data.couponCode; 
     } else {
-      toast.error(t('Invalid-coupon'));
-      setCopone('');
+      toast.error(lang==='ar'? 'كوبون غير صحيح':'Invalid-coupon');
+
+      // toast.error(t("Invalid-coupon"));
+      setCopone("");
       setDiscountValue(0);
-      setDiscountType(0); // reset
+      setDiscountType(0);
+      appliedCouponRef.current = "";
     }
   };
-  
-  
+
   return (
-    <Form<FormValues>
-      onSubmit={onSubmit}
-      useFormProps={{
-        defaultValues: { couponCode: '' },
-      }}
-      className="w-full"
-      >
-      {({ register, formState: { errors }, watch }) => {
-      
-         
-        const couponCode = watch('couponCode');
-
-        const isCouponEntered = couponCode !== copone;
-
-        return (
-          <div className="relative flex items-end">
-            <Input
-              type="text"
-              placeholder={t('promo-placeholder-code')}
-              inputClassName="text-sm [&.is-hover]:border-mainColor [&.is-focus]:border-mainColor [&.is-focus]:ring-mainColor"
-              className="w-full"
-              label={<Text>{t('promo-code')}</Text>}
-              {...register('couponCode')}
-              error={errors.couponCode?.message}
-            />
-            <Button
-              type="submit"
-              className={`ms-3 ${isCouponEntered ? 'bg-mainColor hover:bg-mainColorHover dark:hover:bg-mainColor/90' : 'bg-muted/70'}`}
-              disabled={!isCouponEntered}
-            >
-              {copone ? `${t('Edit')}` : `${t('Apply')}`}
-            </Button>
-          </div>
-        );
-      }}
-    </Form>
+    <form onSubmit={form.handleSubmit(onSubmit)} className="w-full">
+      <div className="relative flex items-end">
+        <Input
+          type="text"
+          placeholder={t("promo-placeholder-code")}
+          inputClassName="text-sm [&.is-hover]:border-mainColor [&.is-focus]:border-mainColor [&.is-focus]:ring-mainColor"
+          className="w-full"
+          label={<Text>{t("promo-code")}</Text>}
+          {...form.register("couponCode")}
+        />
+        <Button
+          type="submit"
+          className={`ms-3 ${
+            couponCode ? "bg-mainColor text-white hover:bg-mainColorHover" : "bg-muted/70"
+          }`}
+          disabled={!couponCode || couponCode === appliedCouponRef.current}
+        >
+          {copone ? t("Edit") : t("Apply")}
+        </Button>
+      </div>
+    </form>
   );
 }
 
@@ -135,29 +126,65 @@ function CheckCoupon({ lang }: { lang?: string }) {
 // cart product card
 
 // total cart balance calculation
-function CartCalculations({fees, Tax ,lang}:{fees:number; Tax:number ,lang?:string}) {
+
+
+type Branchprops = {
+  name: string;
+  addressText: string;
+  openAt: string;
+  closedAt: string;
+  deliveryTime: string;
+  deliveryCharge: number;
+
+}
+function CartCalculations({ fees, Tax, lang }: { fees: number; Tax: number, lang?: string }) {
   const { t } = useTranslation(lang!, 'order');
 
   const router = useRouter();
   const { total } = useCart();
-  const { discountValue,discountType } = useUserContext();
-  const TAX_PERCENTAGE = 14;
-  const taxValue = (TAX_PERCENTAGE / 100) * total;
-  fees= 10;
-  const totalWithFees = total + taxValue + fees;
-  // const totalWithFees = total + Tax + fees;
+  const { discountValue, discountType, shopId } = useUserContext();
+  const [response, setResponse] = useState<Branchprops[]>([]);
+
+  const storedVat = typeof window !== "undefined" ? Number(localStorage.getItem("vat")) || 0 : 0;
+  const storedVatType = typeof window !== "undefined" ? Number(localStorage.getItem("vatType")) || 0 : 0;
+
+  const taxValue = storedVatType === 0
+    ? (storedVat / 100) * total
+    : storedVat;
+
+
+  const totalWithFees = total + taxValue ;
 
   const discount =
-  discountType === 0
-  ? (Number(discountValue) / 100) * totalWithFees
-  : Number(discountValue);
+    discountType === 0
+      ? (Number(discountValue) / 100) * totalWithFees
+      : Number(discountValue);
 
-const finalTotal = Math.max(totalWithFees - discount, 0);
-// const { price: totalPrice } = usePrice({
+  const finalTotal = Math.max(totalWithFees - discount, 0);
+
+  // const { price: totalPrice } = usePrice({
   //   amount: totalWithFees,
   // });
- 
-  
+  useEffect(() => {
+    const fetchOrders = async () => {
+      try {
+        // setLoading(true);
+        const response = await axiosClient.get(`/api/Branch/GetByShopId/${shopId}`, {
+          headers: {
+            'Accept-Language': lang,
+          },
+        });
+        setResponse(response.data);
+      } catch (error) {
+        console.error('Error fetching orders:', error);
+      } finally {
+        // setLoading(false);
+      }
+    };
+
+    fetchOrders();
+  }, [lang]);
+
   return (
     <div>
       <Title as="h2" className="border-b border-muted pb-4 text-lg font-medium">
@@ -173,16 +200,24 @@ const finalTotal = Math.max(totalWithFees - discount, 0);
           <span className="font-medium text-gray-1000">{toCurrency(taxValue, lang)}</span>
           {/* <span className="font-medium text-gray-1000">{toCurrency(Tax, lang)}</span> */}
         </div>
-        <div className="flex items-center justify-between">
-          {t('Shipping-Fees')}
-          <span className="font-medium text-gray-1000">{toCurrency(fees, lang)}</span>
-        </div>
-        {discount > 0 && (
+        {/* <div className="flex items-center justify-between w-full mb-2">
+          <span className="text-sm text-gray-600">
+            {t('Shipping-Fees')}
+          </span>
+          <span className="font-semibold text-gray-800">
+            {toCurrency(
+              response.find((i) => i.name === "Main Branch" || i.name === "الفرع الرئيسي")?.deliveryCharge ?? 5,
+              lang
+            )}
+          </span>
+        </div> */}
+
+        {discount ?(
           <div className="flex items-center justify-between text-green-600">
             {t('Discount')}
             <span>- {toCurrency(discount, lang)}</span>
           </div>
-        )}
+        ):''}
         <CheckCoupon lang={lang} />
         <div className="mt-3 flex items-center justify-between border-t border-muted py-4 font-semibold text-gray-1000">
           {t('Total')}
@@ -229,8 +264,8 @@ const finalTotal = Math.max(totalWithFees - discount, 0);
   );
 }
 
-export default function CartPageWrapper({lang}:{lang?:string}) {
-  const { t ,i18n} = useTranslation(lang!, 'order');
+export default function CartPageWrapper({ lang }: { lang?: string }) {
+  const { t, i18n } = useTranslation(lang!, 'order');
 
   // const items = [
   //   {
@@ -325,11 +360,11 @@ export default function CartPageWrapper({lang}:{lang?:string}) {
   //   },
   // ];
 
-  const { items } = useCart();  
-  console.log("items: ",items);
-   
+  const { items } = useCart();
+  console.log("items: ", items);
+
   const [notes, setNotes] = useState('');
-  const { orderNote, setOrderNote} = useUserContext();
+  const { orderNote, setOrderNote } = useUserContext();
   useEffect(() => {
     i18n.changeLanguage(lang);
   }, [lang, i18n]);
@@ -365,7 +400,7 @@ export default function CartPageWrapper({lang}:{lang?:string}) {
           </div>
         </div>
       </div>
-{/* 
+      {/* 
 
       <ProductCarousel
         title={'Recommendations'}

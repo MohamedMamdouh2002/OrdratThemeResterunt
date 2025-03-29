@@ -21,21 +21,20 @@ const NavMobile = ({ lang }: { lang: string }) => {
     const fetchData = async () => {
       const data = await GetHome({ lang });
       if (data && data.length > 0) {
-        setHome(data);
-
-        setTimeout(() => {
-          const firstVisibleItem = data.find((item: { id: string }) => {
-            const section = document.getElementById(item.id);
-            return section && section.getBoundingClientRect().top >= 0;
-          });
-
-          setActive(firstVisibleItem?.id || data[0]?.id || "");
-        }, 100);
+        // فرّز حسب الـ priority
+        const sortedData = data
+          .filter((item: any) => item.isActive)
+          .sort((a: any, b: any) => a.priority - b.priority);
+  
+        setHome(sortedData);
+  
+        // ✅ أول عنصر بناءً على الـ priority مش على مكانه في الشاشة
+        setActive(sortedData[0]?.id || "");
       }
     };
     fetchData();
   }, [GetHome, lang]);
-
+  
   // Close modal on resize if viewport width >= 1024px
   useEffect(() => {
     const handleResize = () => {
@@ -97,16 +96,22 @@ const NavMobile = ({ lang }: { lang: string }) => {
   // Function to scroll the nav to center the active item
   const scrollToItem = (index: number) => {
     if (navRef.current) {
-      const itemWidth = navRef.current.scrollWidth / home.length;
-      const scrollAmount = index * itemWidth;
-      const centerOffset = (navRef.current.clientWidth - itemWidth) / 2;
-
-      navRef.current.scrollTo({
-        left: scrollAmount - centerOffset,
-        behavior: "smooth",
-      });
+      const navItems = navRef.current.children;
+      const item = navItems[index] as HTMLElement;
+  
+      if (item) {
+        const itemOffsetLeft = item.offsetLeft;
+        const itemWidth = item.offsetWidth;
+        const centerOffset = (navRef.current.clientWidth - itemWidth) / 2;
+  
+        navRef.current.scrollTo({
+          left: itemOffsetLeft - centerOffset,
+          behavior: "smooth",
+        });
+      }
     }
   };
+  
 
   const handleClose = () => {
     setIsModalOpen(false);
@@ -143,7 +148,7 @@ const NavMobile = ({ lang }: { lang: string }) => {
             <AlignCenter />
           </button>
           <ul ref={navRef} className="flex bg-white items-center ps-5 gap-6 whitespace-nowrap overflow-x-auto flex-nowrap w-full h-16">
-            {home.map((item, index) => (
+            {home.filter((sec) => sec.isActive).sort((a, b) => a.priority - b.priority).map((item, index) => (
               <li key={item.id} className="relative w-full h-full text-left">
                 <Link
                   to={item.id}
@@ -184,7 +189,7 @@ const NavMobile = ({ lang }: { lang: string }) => {
                 <h2 className="text-lg font-medium">{t('menu')}</h2>
               </div>
               <ul className="flex flex-col gap-4">
-                {home.map((item, index) => (
+                {home.filter((sec) => sec.isActive).sort((a, b) => a.priority - b.priority).map((item, index) => (
                   <div key={item.id}>
                     <Link
                       to={item.id}

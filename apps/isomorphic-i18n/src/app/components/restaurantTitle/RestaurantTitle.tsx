@@ -17,6 +17,7 @@ import toast from 'react-hot-toast'
 import axiosClient from '../fetch/api'
 import map from '@public/assets/map.png'
 import { IoMdClose } from 'react-icons/io'
+import { toCurrency } from '@utils/to-currency'
 
 
 type Branchprops = {
@@ -24,8 +25,11 @@ type Branchprops = {
     addressText: string;
     openAt: string;
     closedAt: string;
+    deliveryCharge: number;
+    minimumDeliveryCharge: number;
+    deliveryPerKilo: number;
+    isFixedDelivery: boolean;
     deliveryTime: string;
-
 }
 function RestaurantTitle({ lang }: { lang?: string; }) {
     const { t, i18n } = useTranslation(lang!, 'nav');
@@ -154,24 +158,64 @@ function RestaurantTitle({ lang }: { lang?: string; }) {
             <div className="flex flex-col  w-5/6 mx-auto py-5  z-10 rounded-lg">
                 <div className="flex pt-2">
                     <div className="basis-1/3 flex flex-col items-center justify-center font-light text-sm border-e pe-2">
-                        <strong className="font-light text-stone-800 text-center text-xs">
+                        <strong className="font-light text-stone-800 text-center text-xs ">
                             {t('deliveryFee')}
                         </strong>
-                        <span className=" font-light text-xs"> 33.99</span>
+                        <span className="text-sm font-light text-center mt-2">
+
+                            {(() => {
+                                const mainBranch = response.find(
+                                    (i) => i.name === "Main Branch" || i.name === "الفرع الرئيسي"
+                                );
+
+                                if (!mainBranch) {
+                                    return <span>{lang === "ar" ? "غير متاح" : "Not available"}</span>;
+                                }
+
+                                if (mainBranch.isFixedDelivery && mainBranch?.deliveryCharge === 0) {
+                                    return <span>{lang ==='ar'? 'مجانا':'Free'}</span>;
+                                }
+                                if (mainBranch.isFixedDelivery) {
+                                    return <span>{toCurrency(mainBranch.deliveryCharge ?? 0, lang)}</span>;
+                                }
+
+                                return (
+                                    <span>
+                                     {toCurrency(mainBranch.deliveryPerKilo ?? 0, lang)} {lang === "ar" ? "/كيلو" : "/km"}
+                                    </span>
+                                );
+                            })()}
+
+
+                        </span>
+
                     </div>
                     <div className="basis-1/3 flex flex-col items-center justify-center border-e px-2">
                         <strong className="text-stone-800 text-center font-light text-xs">
                             {t('delivery-Time')}
                         </strong>
-                        <span className="text-xs font-light">60 {t('mins')}</span>
+
+                        {response.some(i => i.name === "Main Branch" || i.name === "الفرع الرئيسي") ? (
+                            response
+                                .filter(i => i.name === "Main Branch" || i.name === "الفرع الرئيسي")
+                                .map((i, index) => (
+                                    <p key={index} className="text-sm mt-2 text-black">
+                                        {i.deliveryTime}
+                                    </p>
+                                ))
+                        ) : (
+                            <p className="text-sm mt-2 text-black">
+                                {lang === 'ar' ? '10 دقائق' : '10 minutes'}
+                            </p>
+                        )}
                     </div>
-                    <div className="basis-1/3 flex flex-col items-center justify-center">
-                        <strong className="font-light text-stone-800 text-center text-xs">
-                            deliveryBy
+                    <div className="basis-1/3 flex flex-col items-center justify-center ms-1">
+                        <strong className="font-light text-stone-800 text-center text-xs ">
+                            {lang === 'ar' ? 'التوصيل بواسطة' : 'delivery By'}
                         </strong>
+                        <span className="text-sm font-light text-center mt-2">{t('Restaurant')}</span>
                         <span className="flex items-center gap-1">
-                            <span className="text-xs font-light text-center">{t('Restaurant')}</span>
-                            <Info className="text-stone-700" size={14} />
+                            {/* <Info className="text-stone-700" size={14} /> */}
                         </span>
                     </div>
                 </div>

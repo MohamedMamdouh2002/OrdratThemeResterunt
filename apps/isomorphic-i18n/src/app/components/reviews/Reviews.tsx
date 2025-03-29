@@ -17,7 +17,7 @@ function Reviews({ lang }: { lang: string }) {
         const fetchData = async () => {
         const data = await GetRewiew({lang});
 		setLoading(false)
-        const review =data.entities
+        const review =data?.entities
         setReviews(review)
         console.log('review Data:', review);
         
@@ -34,7 +34,7 @@ function Reviews({ lang }: { lang: string }) {
       :
       <>
         <div className="grid xl:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 grid-cols-1 justify-center gap-6 mb-5 ">
-        {reviews.map((review)=><>
+        {reviews?.map((review)=><>
             <div className="border border-dashed group border-mainColor p-3 rounded-lg transition-all duration-700 hover:cursor-pointer hover:border-solid">
                 <div className="flex items-center gap-3">
                     <Image src={`https://isomorphic-furyroad.s3.amazonaws.com/public/avatars/avatar-01.webp`}

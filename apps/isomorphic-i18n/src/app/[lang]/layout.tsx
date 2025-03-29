@@ -13,6 +13,7 @@ import { dir } from "i18next";
 import { languages } from "../i18n/settings";
 import { CartProvider } from "@/store/quick-cart/cart.context";
 import { UserProvider } from "../components/context/UserContext";
+import logo from '@public/assets/orderLogo.svg'
 
 import { MantineProvider } from "@mantine/core";
 
@@ -21,7 +22,10 @@ import ShopLocalStorage from "../components/ui/ShopLocalStorage/ShopLocalStorage
 // import { shopId } from "@/config/shopId";
 import { headers } from "next/headers";
 import { Metadata } from "next";
-
+import AutoModal from "../components/modalAds/ModalAds";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faFacebookF, faSquareFacebook, faWhatsapp } from "@fortawesome/free-brands-svg-icons";
+import Image from "next/image";
 const NextProgress = dynamic(() => import("@components/next-progress"), {
   ssr: false,
 });
@@ -52,7 +56,7 @@ function getServerSiteUrl() {
 //   const pathname = headers().get("referer") || "/";
 //   return `${protocol}://${host}${new URL(pathname).pathname}`;
 // }
-async function fetchShopData(shopId: string, lang:string) {
+async function fetchShopData(shopId: string, lang: string) {
   const siteUrl = getServerSiteUrl();
   // const fullSiteUrl = getFullServerUrl();
   // console.log("Fetching full SiteUrl from:", fullSiteUrl);
@@ -72,19 +76,21 @@ async function fetchShopData(shopId: string, lang:string) {
       throw new Error("Failed to fetch shop details");
     }
     const shopData = await res.json();
-    console.log("shopData: ",shopData);
-    
+    console.log("shopData: ", shopData);
+
     return {
-      ...shopData, 
+      ...shopData,
       // mainColor:  "#003049",
       // mainColorHover: "#003049",
       mainColor: shopData.mainColor || "#003049",
       mainColorHover: shopData.secondaryColor || "#003049",
-      subdomainName: lang === 'ar'? shopData.nameAr : shopData.nameEn || "",
+      subdomainName: lang === 'ar' ? shopData.nameAr : shopData.nameEn || "",
       logoUrl: shopData.logoUrl || "",
-      title: lang === 'ar'? shopData.titleAr : shopData.titleEn || "",
-      metaDescription: lang === 'ar'? shopData.metaDescriptionAr : shopData.metaDescriptionEn || "",
-      description: lang === 'ar'? shopData.descriptionAr : shopData.descriptionEn || "",
+      title: lang === 'ar' ? shopData.titleAr : shopData.titleEn || "",
+      metaDescription: lang === 'ar' ? shopData.metaDescriptionAr : shopData.metaDescriptionEn || "",
+      description: lang === 'ar' ? shopData.descriptionAr : shopData.descriptionEn || "",
+      vat:  shopData.vat || "",
+      vatType:  shopData.vatType ,
     };
   } catch (error) {
     console.error("Error fetching shop details:", error);
@@ -125,6 +131,35 @@ async function fetchBranchZones(shopId: string) {
     return [];
   }
 }
+export async function fetchSellerPlanStatus(sellerId: string) {
+  try {
+    const res = await fetch(
+      `https://testapi.ordrat.com/api/SellerPlanSubscription/GetSellerPlanActiveSubscription/${sellerId}`,
+      {
+        headers: {
+          Accept: '*/*',
+          "Accept-Language": "en",
+        },
+        cache: 'no-store',
+      }
+    );
+
+    if (!res.ok) {
+      throw new Error("Failed to fetch seller plan status");
+    }
+
+    const data = await res.json();
+
+    const isFreeTrial = Array.isArray(data) && data.some(plan => plan.freeTrial === true);
+    const isActive = Array.isArray(data) && data.some(plan => plan.subscriptionStatus !== 0);
+
+    return { isFreeTrial, isActive };
+  } catch (error) {
+    console.error("Error fetching seller plan status:", error);
+    return { isFreeTrial: false, isActive: false };
+  }
+}
+
 
 async function fetchSubdomain(subdomain: string) {
   try {
@@ -155,9 +190,9 @@ export const generateMetadata = async ({ params }: { params: { lang: string } })
   const realPath = getServerSiteUrl();
   const shopId = await fetchSubdomain(realPath);
   const shopData = await fetchShopData(shopId.id, params.lang);
-  
+
   return metaObject(
-    shopData.subdomainName, 
+    shopData.subdomainName,
     params.lang,
     {
       title: shopData.title,
@@ -196,10 +231,124 @@ export default async function RootLayout({
   params: any;
 }) {
   const realPath = getServerSiteUrl(); // Get the real site URL
-  const shopId = await fetchSubdomain(realPath);
+  let shopId = null;
+  let shopData = null;
+  let branchZones = [];
+  let showTrialModal = false;
   const session = await getServerSession(authOptions);
-  const shopData = await fetchShopData(shopId.id, lang);
-  const branchZones = await fetchBranchZones(shopId.id);
+
+  try {
+    shopId = await fetchSubdomain(realPath);
+
+    // Check if shopId or shopId.id is invalid
+    if (!shopId || !shopId.id) throw new Error("Invalid subdomain");
+
+    shopData = await fetchShopData(shopId.id, lang);
+    const { isFreeTrial, isActive } = await fetchSellerPlanStatus(shopId.id);
+
+    if (isFreeTrial) {
+      showTrialModal = true;
+    }
+    // Check if the shop is not active
+    if (!isActive) {
+      return (
+
+        <div className="min-h-screen w-screen flex items-center justify-center bg-[#E3E3E5] text-center">
+          <div className="p-6 w-screen ">
+        <div className="w-44 mb-3 mx-auto">
+          <a href='https://ordrat.com' target='_blank' className="">
+
+              <Image width={100} height={70} src={logo} className='w-full h-full' alt='اوردرات - أفضل منصة إنشاء متجر إلكتروني ومنيو باركود احترافي'/>
+          </a>
+          </div>    
+            <h1 className="md:text-4xl text-2xl font-bold text-red-500 mb-4">المتجر غير مفعل</h1>
+            <p className="text-mainColorHover md:text-2xl text-lg font-medium mb-2">
+              نعتذر عن عدم الوصول لعدم تجديد الاشتراك من قبل المالك
+            </p>
+            <p className="text-mainColorHover bg-white  md:px-40 px-5 w-fit my-2 mx-auto rounded-lg  md:py-5 py-4 text-2xl font-medium mb-2">
+              {" "}   {realPath || ''} {" "}
+
+            </p>
+            <p className="text-mainColorHover md:text-2xl text-lg font-medium mb-4">
+              اذا كنت المالك وحدثت المشكلة يمكنك الدخول لحسابك من هنا
+              وتجديد الاشتراك
+            </p>
+            <button
+              className="bg-[#E84654] font-bold w-fit px-5 my-2 mx-auto py-3 text-white rounded-lg"
+            >
+              تجديد الاشتراك
+            </button>
+
+            <p className="text-mainColorHover md:text-xl text-base font-medium my-2">
+              او قم بالتواصل مع الدعم الفنى عبر احد القنوات
+            </p>
+
+            <div className="flex justify-center items-center gap-5 mt-4 mx-2">
+              <a
+                href="https://wa.me/201055516150"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <FontAwesomeIcon icon={faWhatsapp} className='md:text-xl text-2xl md:w-10 w-8 text-green-500' />
+              </a>
+
+              <a href="https://www.facebook.com/ordratofficial/">
+
+                <FontAwesomeIcon icon={faSquareFacebook} className='md:text-xl text-2xl md:w-10 w-8 text-blue-500' />
+              </a>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    branchZones = await fetchBranchZones(shopId.id);
+
+    // Optional extra check
+    if (!shopData || !shopData.subdomainName) throw new Error("Invalid shop data");
+
+  } catch (error) {
+    console.error("Error loading shop layout:", error);
+    return <>
+      <div className="min-h-screen w-screen flex items-center justify-center bg-[#E3E3E5] text-center">
+        <div className="p-6 w-screen ">
+        <div className="w-44 mb-3 mx-auto">
+          <a href='https://ordrat.com' target='_blank' className="">
+
+              <Image width={100} height={70} src={logo} className='w-full h-full' alt='اوردرات - أفضل منصة إنشاء متجر إلكتروني ومنيو باركود احترافي'/>
+          </a>
+          </div> 
+          <h1 className="md:text-4xl text-2xl font-bold text-red-500 mb-4">تهانينا</h1>
+          <p className="text-mainColorHover md:text-2xl text-lg font-medium mb-4">
+            الرابط متاح يمكنك انشاء متجرك
+          </p>
+          <p className="text-mainColorHover bg-white md:px-40 px-5 w-fit my-2 mx-auto rounded-lg  md:py-5 py-3 md:text-2xl text-lg font-medium mb-2">
+            {" "}   {realPath || ''} {" "}
+
+          </p>
+
+          <p className="text-mainColorHover  md:text-xl text-lg font-medium my-2">
+            قم بزيارة أوردرات لانشاء متجرك الان مجانا
+          </p>
+          <a href="https://ordrat.com/ar/%D8%A7%D9%84%D8%AA%D8%B3%D8%B9%D9%8A%D8%B1" target='_blank'>
+
+            <button
+              className="bg-[#E84654] font-bold w-fit px-5 my-2 mx-auto py-3 text-white rounded-lg"
+            >
+              أنشئ متجرك الإلكتروني الآن
+
+
+            </button>
+
+          </a>
+        </div>
+      </div >
+    </>
+
+
+
+  }
+
 
   return (
     <html
@@ -207,10 +356,10 @@ export default async function RootLayout({
       dir={dir(lang)}
       suppressHydrationWarning
     >
-      <body
-        suppressHydrationWarning
-        className={cn(elTajawal.variable ,'font-elTajawal')}
-      >
+      <head>
+        <link rel="icon" href={shopData.logoUrl} type="image/x-icon" />
+      </head>
+      <body suppressHydrationWarning className={cn(elTajawal.variable, 'font-elTajawal')}>
         <style>
           {`
             :root {
@@ -224,17 +373,26 @@ export default async function RootLayout({
             }
           `}
         </style>
-        {/* Save subdomainName and logoUrl to localStorage on client-side */}
 
         <MantineProvider>
-
           <AuthProvider session={session}>
             <SessionContextProvider>
               <CartProvider>
                 <ThemeProvider>
                   <UserProvider>
                     <NextProgress />
-                    <ShopLocalStorage backgroud={shopData.backgroundUrl} subdomainName={shopData.subdomainName} description={shopData.description} logoUrl={shopData.logoUrl} branchZones={branchZones} shopId={shopId.id} />
+                    {showTrialModal && <AutoModal />} 
+                    {/* <AutoModal /> */}
+                    <ShopLocalStorage
+                      vat={shopData.vat}
+                      vatType={shopData.vatType}
+                      backgroud={shopData.backgroundUrl}
+                      subdomainName={shopData.subdomainName}
+                      description={shopData.description}
+                      logoUrl={shopData.logoUrl}
+                      branchZones={branchZones}
+                      shopId={shopId.id}
+                    />
                     {children}
                     <Toaster />
                     <GlobalDrawer />
@@ -249,3 +407,4 @@ export default async function RootLayout({
     </html>
   );
 }
+

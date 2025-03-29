@@ -317,7 +317,10 @@ export type orderAdress = {
 export type Order = {
   id: string;
   totalPrice: number;
+  orderNumber: number;
+  price: number;
   totalVat: number;
+  discount: number;
   shippingFees: number;
   createdAt: string;
   status: number;
