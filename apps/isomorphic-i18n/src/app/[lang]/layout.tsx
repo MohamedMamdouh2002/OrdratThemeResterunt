@@ -299,7 +299,7 @@ export default async function RootLayout({
 
             <div className="flex justify-center items-center gap-5 mt-4 mx-2">
               <a
-                href="https://wa.me/201055516150"
+                href="https://wa.me/201069937931"
                 target="_blank"
                 rel="noopener noreferrer"
               >

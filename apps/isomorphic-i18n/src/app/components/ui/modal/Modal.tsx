@@ -521,8 +521,8 @@ function Modal({
                                                                       {...register(variation.id)}
                                                                       {...field}
                                                                       placeholder={variation.name}
-                                                                      inputClassName="text-sm [&.is-hover]:border-mainColor [&.is-focus]:border-mainColor [&.is-focus]:ring-mainColor"
-                                                                      className="w-full"
+                                                                      inputClassName="text-[16px] [&.is-hover]:border-mainColor [&.is-focus]:border-mainColor [&.is-focus]:ring-mainColor"
+                                                                      className="input-placeholder text-[16px] w-full" 
                                                                       error={String(methods.formState.errors[variation.id]?.message || '')}
                                                                   />
                                                               )}
@@ -597,8 +597,8 @@ function Modal({
                                                                       {...register(variation.id)}
                                                                       {...field}
                                                                       placeholder={variation.name}
-                                                                      inputClassName="text-sm [&.is-hover]:border-mainColor [&.is-focus]:border-mainColor [&.is-focus]:ring-mainColor"
-                                                                      className="w-full"
+                                                                      inputClassName="text-[16px] [&.is-hover]:border-mainColor [&.is-focus]:border-mainColor [&.is-focus]:ring-mainColor"
+                                                                      className="input-placeholder text-[16px] w-full" 
                                                                       error={String(methods.formState.errors[variation.id]?.message || '')}
                                                                   />
                                                               )}
@@ -846,8 +846,8 @@ function Modal({
                                           {...register(variation.id)}
                                           {...field}
                                           placeholder={variation.name}
-                                          inputClassName="text-sm [&.is-hover]:border-mainColor [&.is-focus]:border-mainColor [&.is-focus]:ring-mainColor"
-                                          className="w-full"
+                                          inputClassName="text-[16px] [&.is-hover]:border-mainColor [&.is-focus]:border-mainColor [&.is-focus]:ring-mainColor"
+                                          className="input-placeholder text-[16px] w-full" 
                                           error={String(methods.formState.errors[variation.id]?.message || '')}
                                         />
                                       )}
@@ -920,8 +920,8 @@ function Modal({
                                           {...register(variation.id)}
                                           {...field}
                                           placeholder={variation.name}
-                                          inputClassName="text-sm [&.is-hover]:border-mainColor [&.is-focus]:border-mainColor [&.is-focus]:ring-mainColor"
-                                          className="w-full"
+                                          inputClassName="text-[16px] [&.is-hover]:border-mainColor [&.is-focus]:border-mainColor [&.is-focus]:ring-mainColor"
+                                          className="input-placeholder w-full text-[16px]" 
                                           error={String(methods.formState.errors[variation.id]?.message || '')}
                                         />
                                       )}
