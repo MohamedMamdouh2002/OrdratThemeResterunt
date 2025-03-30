@@ -47,7 +47,7 @@ export const SideNav = ({ isOpen, setIsOpen, lang }: Props) => {
 		localStorage.removeItem('accessToken');
 		localStorage.removeItem('phoneNumber');
 		localStorage.removeItem('userData');
-		router.push('/');
+		router.push(`${lang}/`);
 	};
 
 	const login = [

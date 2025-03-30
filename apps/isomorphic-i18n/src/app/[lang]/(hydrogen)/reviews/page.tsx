@@ -1,6 +1,7 @@
 import Reviews from '@/app/components/reviews/Reviews';
 import React from 'react';
 import { metaObject } from '@/config/site.config';
+import Link from 'next/link';
 
 export async function generateMetadata({ params }: { params: { lang: string } }) {
   const lang = params.lang; 
@@ -18,6 +19,7 @@ export async function generateMetadata({ params }: { params: { lang: string } })
 function Review({ params: { lang } }: { params: { lang: string } }) {
   return (
     <div className="w-[90%] mx-auto">
+     
       <Reviews lang={lang} />
     </div>
   );

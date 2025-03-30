@@ -31,21 +31,26 @@ type Props = {
 };
 
 function Login({ onLogin, setCurrentModal }: Props, { lang }: { lang?: string }) {
-	const { t } = useTranslation(lang!, 'nav');
+	const { t,i18n } = useTranslation(lang!, 'nav');
 
 	const { accessToken, setAccessToken, token, setToken, shopId } = useUserContext()
 	const [loading, setLoading] = useState(false);
 	const [logoUrl, setLogoUrl] = useState<string | null>(null);
     const [shopName, setShopName] = useState<string | null>(null);
     
-    useEffect(() => {
-        const storedLogo = localStorage.getItem("logoUrl");
-        const storedName = localStorage.getItem("subdomainName");
-        if (storedLogo) {
-            setLogoUrl(storedLogo);
-            setShopName(storedName);
-        }
-    }, [lang]);
+  const [description, setDescription] = useState<string | null>(null);
+
+  useEffect(() => {
+    i18n.changeLanguage(lang);
+    const storedLogo = localStorage.getItem("logoUrl");
+    const storedName = localStorage.getItem("subdomainName");
+    const description = localStorage.getItem("description");
+    if (storedLogo) {
+      setLogoUrl(storedLogo);
+      setShopName(storedName);
+      setDescription(description)
+    }
+  }, [lang, i18n]);
 	// const { setSession } = useContext(SessionContext);
 	// const loginSchema = useLoginValidation({});
 	// const [submittedSuccessfully, setSubmittedSuccessfully] = useState(false);
@@ -145,7 +150,7 @@ function Login({ onLogin, setCurrentModal }: Props, { lang }: { lang?: string })
 					) : (
 					<div className="w-[60px] h-[60px] bg-gray-200 rounded-full"></div>
                 )}
-				<p className="text-sm font-light truncate-text">{t('desc')}</p>
+				<p className="text-sm font-light truncate-text">{description}</p>
 			</div>
 				<form onSubmit={formik.handleSubmit}>
 					<div className=" flex justify-between w-full">

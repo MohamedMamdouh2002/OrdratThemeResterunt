@@ -31,10 +31,17 @@
     "Subbmit": "ارسل الان",
     "Excellent": "ممتاز",
     "Good": "جيد",
+    "expire":"لم يتنهي بعد",
+    "coupon":"تم نسخ الكوبون بنجاح",
     "Medium": "متوسط",
     "Bad": "سيئ",
     "VeryBad": "سيئ جدًا",
     "order-sec":"تم تسجيل طلبك بنجاح",
     "order-id":"رقم الطلب: ",
-    "order-btn":"تتبع الطلب"
+    "order-btn":"تتبع الطلب",
+    "select_available_coupon": "اختر قسيمة متاحة",
+"discount": "خصم",
+"never_expire": "لا تنتهي صلاحيته",
+"have_coupon": "هل لديك رمز قسيمة؟",
+"apply": "تطبيق"
 }

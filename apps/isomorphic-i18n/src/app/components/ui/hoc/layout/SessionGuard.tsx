@@ -4,16 +4,17 @@ import React, { useEffect, useState } from 'react';
 
 type Props = {
 	children: React.ReactNode;
+	lang?:string
 };
 
-const SessionGuard = ({ children }: Props) => {
+const SessionGuard = ({ children,lang }: Props) => {
 	const [loading, setLoading] = useState(true);
 	const router = useRouter();
 
 	useEffect(() => {
 		const token = localStorage.getItem('Token');
 		if (!token) {
-			router.push('/');
+			router.push(`/${lang}/`);
 			// setLoading(false);
 		} else {
 			setLoading(false);

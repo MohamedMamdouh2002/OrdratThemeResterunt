@@ -6,6 +6,7 @@ import ScrollToTop from '@/app/components/ui/ScrollToTop';
 import { API_BASE_URL } from '@/config/base-url';
 import { Food } from '@/types';
 import { Loader } from 'lucide-react';
+import Image from 'next/image';
 import { useParams } from 'next/navigation';
 import React, { useEffect, useState, useRef } from 'react';
 import { useMediaQuery } from 'react-responsive';
@@ -99,8 +100,10 @@ export default function AllProduct({
         <ScrollToTop/>
   
     <div className="w-5/6 sm:w-[90%] mx-auto mt-20 mb-10">
-    {products.map((prod: Food, index) =>
+    {products.map((prod: Food, index) =><>
+      <Image src={prod.bannerUrl} alt={'s'} />
       <h1 key={index} className='text-center mb-12'>{ index === 0 && prod.categoryName}</h1>
+    </>
     )}
     <div className="grid lg:grid-cols-4 md:grid-cols-3 grid-cols-2 gap-5">
       {products.map((prod: Food, index) => (

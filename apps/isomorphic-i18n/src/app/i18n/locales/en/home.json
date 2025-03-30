@@ -36,6 +36,14 @@
     "VeryBad":"VeryBad",
     "order-sec":"Your order has been successfully registered",
     "order-id":"Order number: ",
-    "order-btn":"Track Order"   
+    "order-btn":"Track Order"   ,
+    "coupon":"The coupon was copied successfully",
+    "expire":"Not expired yet",
+        "select_available_coupon": "Select an available coupon",
+        "discount": "Discount",
+        "never_expire": "Never expire",
+        "have_coupon": "Have a coupon code?",
+        "apply": "Apply"
+      
 
 }

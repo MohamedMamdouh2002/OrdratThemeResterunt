@@ -9,11 +9,13 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useUserContext } from '../context/UserContext';
 import CartProduct from '@/app/shared/ecommerce/cart/cart-product';
-import { Empty, EmptyProductBoxIcon } from 'rizzui';
+import { Empty, EmptyProductBoxIcon, Tooltip } from 'rizzui';
 import { useCart } from '@/store/quick-cart/cart.context';
-import { CiShoppingCart } from "react-icons/ci";
+import { CiDiscount1, CiShoppingCart } from "react-icons/ci";
 import { IoMdClose } from "react-icons/io";
-
+import CouponModal from '../modalCoupon/ModalCoupon';
+import { MdLocalOffer } from "react-icons/md";
+import { IoIosArrowForward } from "react-icons/io";
 
 const ProgressBar = ({ totalPrice, freeShippingThreshold }: { totalPrice: number; freeShippingThreshold: number; }) => {
     const [progress, setProgress] = useState(0);
@@ -74,6 +76,7 @@ function CartModal({ lang }: { lang?: string }) {
     const [productDetailsArray, setProductDetailsArray] = useState([]);
     const { userData, setUserData } = useUserContext();
     const pathname = usePathname();
+    const [showCouponModal, setShowCouponModal] = useState(false);
 
     const loadProductDetails = () => {
         const data = JSON.parse(localStorage.getItem('productDetails') || '[]');
@@ -111,6 +114,16 @@ function CartModal({ lang }: { lang?: string }) {
     //     localStorage.setItem('productDetails', JSON.stringify(updatedArray));
     //     loadProductDetails();
     // };
+    useEffect(() => {
+        if (showCouponModal) {
+            document.body.style.overflow = 'hidden';
+        } else {
+            document.body.style.overflow = 'auto';
+        }
+        return () => {
+            document.body.style.overflow = 'auto';
+        };
+    }, [showCouponModal]);
 
     const closeModal = (e: React.MouseEvent) => {
         if ((e.target as HTMLElement).id === 'modal-overlay') {
@@ -125,23 +138,23 @@ function CartModal({ lang }: { lang?: string }) {
         <>
             {/* {productDetailsArray.length > 0 && ( */}
             <div className="relative">
-            <div
-                onClick={() => setModal(true)}
-                className={`bg-mainColor CartShadow w-[72px] h-16 rounded-lg fixed top-[50%]  z-[999] flex flex-col gap-4 items-center justify-center p-2 cursor-pointer end-2`}
+                <div
+                    onClick={() => setModal(true)}
+                    className={`bg-mainColor CartShadow w-[72px] h-16 rounded-lg fixed top-[50%]  z-[999] flex flex-col gap-4 items-center justify-center p-2 cursor-pointer end-2`}
                 >
-                <div className="">
-                    <CiShoppingCart  className="text-white text-2xl text-center mx-auto" />
-                    <div className="flex gap-1 items-center ">
+                    <div className="">
+                        <CiShoppingCart className="text-white text-2xl text-center mx-auto" />
+                        <div className="flex gap-1 items-center ">
 
-                    <p  className="text-white text-xs">
-                        {items.length}
-                    </p>
-                    <p  className="text-white text-xs">
-                         {items.length <=1 ? t('item') : t('items')}
-                    </p>
+                            <p className="text-white text-xs">
+                                {items.length}
+                            </p>
+                            <p className="text-white text-xs">
+                                {items.length <= 1 ? t('item') : t('items')}
+                            </p>
+                        </div>
                     </div>
                 </div>
-            </div>
 
             </div>
             {/* )} */}
@@ -227,17 +240,95 @@ function CartModal({ lang }: { lang?: string }) {
                         <div className={`sticky bottom-0 left-0 right-0 bg-white pt-3 ${lang == 'ar' ? 'shadow-[rgb(255,255,255)_44px_0px_30px_30px]' : 'shadow-[rgb(255,255,255)_-48px_0px_30px_30px]'}`}>
                             {totalPrice != 0 && (
                                 <>
+                                    {/* <div className="w-full h-[0.5px] bg-[#7a7a7a] my-2"></div> */}
+                                    <div className="flex items-center justify-center border-t border-b border-gray-200 py-3">
+                                        {/* <button
+    onClick={() => setShowCouponModal(true)}
+    className="flex flex-col items-center text-gray-700 hover:text-mainColor transition"
+  >
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      viewBox="0 0 24 24"
+      strokeWidth={1.5}
+      stroke="currentColor"
+      className="w-6 h-6 mb-1"
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M9.813 6.75h4.374m-7.188 9h9.002M4.5 5.25h15a.75.75 0 01.75.75v1.128a2.25 2.25 0 010 4.344v1.128a2.25 2.25 0 010 4.344V18a.75.75 0 01-.75.75H4.5a.75.75 0 01-.75-.75v-1.128a2.25 2.25 0 010-4.344v-1.128a2.25 2.25 0 010-4.344V6a.75.75 0 01.75-.75z"
+      />
+    </svg>
+    <span className="text-sm font-medium">{lang==='ar'?'كوبون':'Coupon'}</span>
+  </button> */}
+                                        {/* <Tooltip
+                                            size="sm"
+                                            content={lang === 'ar' ? 'عرض الكوبونات المتاحة' : 'View available coupons'}
+                                            placement="top"
+                                            color="success"
+                                        >
+                                            <button
+                                                onClick={() => setShowCouponModal(true)}
+                                                className="flex items-center justify-between w-full px-4 py-3 hover:bg-gray-100 transition rounded-md cursor-pointer"
+                                            >
+                                                <div className="flex items-center gap-2">
+                                                    <MdLocalOffer className="text-mainColor w-5 h-5" />
+                                                    <span className="font-semibold text-sm text-gray-800">
+                                                        {lang === 'ar' ? 'عرض الكوبونات' : 'View coupons'}
+                                                    </span>
+                                                </div>
+                                                <IoIosArrowForward className="text-gray-500 w-4 h-4" />
+                                            </button>
+                                        </Tooltip> */}
+                                        <button
+                                            onClick={() => setShowCouponModal(true)}
+                                            className="flex items-center justify-between w-full px-4 py-3 hover:bg-gray-100 transition rounded-md cursor-pointer"
+                                        >
+
+                                            <div className="flex items-center gap-2">
+                                                <MdLocalOffer lang={lang} className="text-mainColor w-5 h-5" />
+                                                <span className="font-semibold text-sm text-gray-800">
+                                                    {lang === 'ar' ? 'عرض الكوبونات' : 'View coupons'}
+                                                </span>
+                                            </div>
+
+                                            {lang === 'ar' ?
+
+                                                <IoIosArrowForward className="text-gray-500 w-4 h-4 rotate-180" />
+                                                :
+
+                                                <IoIosArrowForward className="text-gray-500 w-4 h-4" />
+                                            }
+                                        </button>
+
+                                    </div>
+
+
+
+
+
+
+
+
+                                    {/* <div className="w-full h-[0.5px] bg-[#7a7a7a] my-2"></div> */}
                                     <ProgressBar totalPrice={totalPrice} freeShippingThreshold={freeShippingThreshold} />
                                     <FreeShippingMessage totalPrice={totalPrice} lang={lang!} freeShippingThreshold={freeShippingThreshold} />
                                 </>
                             )}
-                         <Link
-                            href={`/${lang}/cart`}
-                            className="bg-mainColor text-white rounded-lg text-center text-sm sm:text-base font-medium w-11/12 mx-auto flex justify-between items-center py-2 mt-1 px-4"
-                        >
-                            <span>{t('order-cart')}</span>
-                            <span className='bg-white py-1 px-3 text-mainColor rounded-md'>{totalPrice}{" "}{t('currency')}</span>
-                        </Link>
+                            {showCouponModal && (
+                                <CouponModal lang={lang!} onClose={() => setShowCouponModal(false)} />
+
+                            )}
+
+
+                            <Link
+                                href={`/${lang}/cart`}
+                                className="bg-mainColor text-white rounded-lg text-center text-sm sm:text-base font-medium w-11/12 mx-auto flex justify-between items-center py-2 mt-1 px-4"
+                            >
+                                <span>{t('order-cart')}</span>
+                                <span className='bg-white py-1 px-3 text-mainColor rounded-md'>{totalPrice}{" "}{t('currency')}</span>
+                            </Link>
                         </div>
                     </div>
                 </div>

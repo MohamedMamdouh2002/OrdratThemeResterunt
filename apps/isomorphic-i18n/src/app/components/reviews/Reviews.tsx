@@ -5,12 +5,14 @@ import Title from '../ui/title/Title';
 import Image from 'next/image';
 import { Icon, Loader, Star } from 'lucide-react';
 import { useTranslation } from '@/app/i18n/client';
+import Link from 'next/link';
 
 function Reviews({ lang }: { lang: string }) {
     const { GetRewiew } = useUserContext();
     const [reviews, setReviews] = useState<any[]>([])
     const { t } = useTranslation(lang!, 'nav');
     const [loading, setLoading] = useState(false);
+    const id = localStorage.getItem('orderId') 
 
     useEffect(() => {
 	    setLoading(true)
@@ -70,6 +72,9 @@ function Reviews({ lang }: { lang: string }) {
 
         </>
         )}
+         {/* <Link href={`/${lang}/reviews/${id}`}>
+               ssss
+              </Link> */}
         </div>
       </>
     }
