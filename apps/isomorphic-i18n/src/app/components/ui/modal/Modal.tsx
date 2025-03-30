@@ -216,38 +216,6 @@ function Modal({
     fetchData();
   }, [GetProduct, modalId]);
 
-  useEffect(() => {
-    let scrollY = 0;
-    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
-  
-    if (modalId) {
-      scrollY = window.scrollY;
-      document.body.style.position = 'fixed';
-      document.body.style.top = `-${scrollY}px`;
-      document.body.style.left = '0';
-      document.body.style.right = '0';
-      document.body.style.overflow = 'hidden';
-      document.body.dataset.scrollY = scrollY.toString();
-    }
-  
-    return () => {
-      if (isIOS) {
-        const storedY = parseInt(document.body.dataset.scrollY || '0');
-        document.body.style.position = '';
-        document.body.style.top = '';
-        document.body.style.left = '';
-        document.body.style.right = '';
-        document.body.style.overflow = '';
-        window.scrollTo(0, storedY);
-      } else {
-        document.body.style.position = '';
-        document.body.style.top = '';
-        document.body.style.left = '';
-        document.body.style.right = '';
-        document.body.style.overflow = '';
-      }
-    };
-  }, [modalId]);
   const handleAddToCart = () => {
     if (!prodCartItem) return;
     const cartItem: CartItem = {
@@ -274,26 +242,6 @@ function Modal({
   const handleClose = () => {
     setIsModalOpen(false);
   };
-  useEffect(() => {
-    const preventScroll = (e: TouchEvent) => {
-      // لو الحدث مش داخل المودال → امنع السكورل
-      const modal = document.getElementById('modal-content');
-      if (modal && !modal.contains(e.target as Node)) {
-        e.preventDefault();
-      }
-    };
-  
-    if (modalId) {
-      document.body.style.overflow = 'hidden';
-      document.body.addEventListener('touchmove', preventScroll, { passive: false });
-    }
-  
-    return () => {
-      document.body.style.overflow = 'auto';
-      document.body.removeEventListener('touchmove', preventScroll);
-    };
-  }, [modalId]);
-  
   
   const handleOutsideClick = (e: React.MouseEvent<HTMLDivElement>) => {
     if (e.target === e.currentTarget) {
@@ -607,8 +555,8 @@ function Modal({
                                                                       country="us"
                                                                       value={value}
                                                                       labelClassName='font-medium'
-                                                                      inputClassName="text-sm hover:!border-mainColor focus:!border-mainColor focus:!ring-mainColor text-sm [&.is-hover]:border-mainColor [&.is-focus]:border-mainColor [&.is-focus]:ring-mainColor"
-                                                                      className="w-full"
+                                                                      inputClassName="text-[16px] hover:!border-mainColor focus:!border-mainColor focus:!ring-mainColor text-sm [&.is-hover]:border-mainColor [&.is-focus]:border-mainColor [&.is-focus]:ring-mainColor"
+                                                                      className="input-placeholder text-[16px] w-full" 
                                                                       {...methods.register(variation.id)}
                                                                       onChange={onChange}
                                                                       // @ts-ignore
@@ -738,14 +686,11 @@ function Modal({
           animate={{ y: 0 }}
           exit={{ y: '100%' }}
           transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-          
-          className="fixed bottom-0 right-0  left-0 md:hidden  flex items-end z-[10000] "
+          className="fixed bottom-0 right-0 left-0 md:hidden  flex items-end z-[10000] "
         >
           <div
             ref={scrollContainerRef}
             onScroll={handleScroll}
-            id="modal-content"
-
             className="bg-white rounded-lg b-4 w-full max-h-svh flex flex-col overflow-y-auto custom-scroll">
             <FormProvider {...methods}>
               <form className="" onSubmit={methods.handleSubmit(onSubmit)}>
