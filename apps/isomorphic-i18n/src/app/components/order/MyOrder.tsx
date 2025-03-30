@@ -12,6 +12,7 @@ import { EmptyProductBoxIcon } from 'rizzui';
 import { useTranslation } from '@/app/i18n/client';
 import fetchClient from '../fetch/api';
 import { toCurrency } from '@utils/to-currency';
+import { useUserContext } from '../context/UserContext';
 
 const MyOrder: React.FC<{ lang: string }> = ({ lang }) => {
   const [orders, setOrders] = useState<Order[]>([]);
@@ -19,14 +20,19 @@ const MyOrder: React.FC<{ lang: string }> = ({ lang }) => {
   const [logoUrl, setLogoUrl] = useState<string | null>(null);
   const [shopName, setShopName] = useState<string | null>(null);
   const { t } = useTranslation(lang, 'order');
+  const { shopId } = useUserContext();
 
   useEffect(() => {
     const fetchOrders = async () => {
       try {
+        const token = localStorage.getItem('accessToken');
+
         setLoading(true);
-        const response = await axiosClient.get(`/api/Order/GetAllUserOrders`, {
+        const response = await axiosClient.get(`/api/Order/GetAllUserOrders/GetAll/${shopId}`, {
           headers: {
             'Accept-Language': lang,
+            'Authorization': `Bearer ${token}`,
+
           },
         });
         setOrders(response.data);

@@ -148,16 +148,24 @@ export default function OrderView({lang}:{lang:string}) {
   }, []);
   return (
     <div className="@container mb-5">
-      <div className="flex flex-wrap justify-center border-b border-t border-gray-300 py-4 font-medium text-gray-700 @5xl:justify-start">
+            <div className="flex flex-wrap lg:mt-0 mt-20 justify-center border-b border-t border-gray-300 py-4 font-medium text-gray-700 @5xl:justify-start">
         <span className="my-2 border-r border-muted px-5 py-0.5 first:ps-0 last:border-r-0">
+            <p className='text-base'>
+  {t('order-id')} {order?. orderNumber}
+  
+            </p>
           {/* October 22, 2022 at 10:30 pm */}
-          <div>
-            {t('ordered-At')}: {order?.createdAt ? new Date(order.createdAt).toLocaleDateString('en-US', {
-              year: 'numeric',
-              month: 'long',
-              day: 'numeric',
-            }) : 'N/A'}
-          </div>
+          <p className='text-base'>
+          {t('ordered-At')}: {order?.createdAt ? new Date(order.createdAt).toLocaleString('en-US', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+  hour: 'numeric',
+  minute: 'numeric',
+  second: 'numeric',
+  hour12: true, // لو عايز AM/PM، أو خليه false لو 24 ساعة
+}) : 'N/A'}
+          </p> 
         </span>
         {/* <span className="my-2 border-r border-muted px-5 py-0.5 first:ps-0 last:border-r-0">
           {totalItems} Items
@@ -169,6 +177,62 @@ export default function OrderView({lang}:{lang:string}) {
           Paid
         </span> */}
       </div>
+<div className="block xl:hidden space-y-7 pt-8">
+            <WidgetCard
+            title={t('Order-Status')}
+            childrenWrapperClass="py-5 @5xl:py-8 flex"
+          >
+            <div className="ms-2 w-full space-y-7 border-s-2 border-gray-100">
+              {/* عرض حالة الـ id === 0 فقط إذا كان currentOrderStatus === 0 */}
+              {currentOrderStatus === 0 &&
+                orderStatus
+                  .filter((item) => item.id === 0)
+                  .map((item) => (
+                    <div
+                      key={item.id}
+                      className={cn(
+                        "relative ps-6 text-sm font-medium before:absolute before:-start-[9px] before:top-px before:h-5 before:w-5 before:-translate-x-px before:rounded-full before:bg-gray-100 before:content-[''] after:absolute after:-start-px after:top-5 after:h-10 after:w-0.5 after:bg-gray-100 last:after:hidden",
+                        'text-red-500 before:bg-red-500' 
+                      )}
+                    >
+                        
+                        <span className={`absolute ${lang ==='en' ? `-start-1.5`:`-start-1`} top-1 text-white`}>
+                          <FaTimes  className="h-auto w-3" />
+                        </span>
+                    
+                      {item.label}
+                    </div>
+                  ))}
+
+              {currentOrderStatus !== 0 &&
+                orderStatus
+                  .filter((item) => item.id !== 0)
+                  .map((item) => (
+                    <div
+                      key={item.id}
+                      className={cn(
+                        "relative ps-6 text-sm font-medium before:absolute before:-start-[9px] before:top-px before:h-5 before:w-5 before:-translate-x-px before:rounded-full before:bg-gray-100 before:content-[''] after:absolute after:-start-px after:top-5 after:h-10 after:w-0.5 after:bg-gray-100 last:after:hidden",
+                        (currentOrderStatus ?? 1) >= item.id
+                          ? 'before:bg-teal-500 after:bg-teal-500' // باقي الحالات
+                          : 'after:hidden', // إخفاء after للحالات الأخرى
+                        currentOrderStatus === item.id && 'before:bg-teal-500 after:hidden' // الحالة الحالية
+                      )}
+                    >
+                      {(currentOrderStatus ?? 0) >= item.id && item.id !== 0 ? (
+                        <span className={`absolute ${lang ==='en' ? `-start-1.5`:`-start-1`} top-1 text-white`}>
+                          <PiCheckBold className="h-auto w-3" />
+                        </span>
+                      ) : null}
+
+                      {item.label}
+                    </div>
+                  ))}
+            </div>
+          </WidgetCard>
+
+     
+         </div>
+
       <div className="items-start pt-10 @5xl:grid @5xl:grid-cols-12 @5xl:gap-7 @6xl:grid-cols-10 @7xl:gap-10">
         <div className="space-y-7 @5xl:col-span-8 @5xl:space-y-10 @6xl:col-span-7">
           {orderNote && (
@@ -287,57 +351,60 @@ export default function OrderView({lang}:{lang:string}) {
           </div>
         </div>
         <div className="space-y-7 pt-8 @container @5xl:col-span-4 @5xl:space-y-10 @5xl:pt-0 @6xl:col-span-3">
-          <WidgetCard
-            title={t('Order-Status')}
-            childrenWrapperClass="py-5 @5xl:py-8 flex"
-          >
-            <div className="ms-2 w-full space-y-7 border-s-2 border-gray-100">
-              {/* عرض حالة الـ id === 0 فقط إذا كان currentOrderStatus === 0 */}
-              {currentOrderStatus === 0 &&
-                orderStatus
-                  .filter((item) => item.id === 0)
-                  .map((item) => (
-                    <div
-                      key={item.id}
-                      className={cn(
-                        "relative ps-6 text-sm font-medium before:absolute before:-start-[9px] before:top-px before:h-5 before:w-5 before:-translate-x-px before:rounded-full before:bg-gray-100 before:content-[''] after:absolute after:-start-px after:top-5 after:h-10 after:w-0.5 after:bg-gray-100 last:after:hidden",
-                        'text-red-500 before:bg-red-500' 
-                      )}
-                    >
+          <div className="hidden xl:block">
+
+            <WidgetCard
+                title={t('Order-Status')}
+                childrenWrapperClass="py-5 @5xl:py-8 flex"
+              >
+                <div className="ms-2 w-full space-y-7 border-s-2 border-gray-100">
+                  {/* عرض حالة الـ id === 0 فقط إذا كان currentOrderStatus === 0 */}
+                  {currentOrderStatus === 0 &&
+                    orderStatus
+                      .filter((item) => item.id === 0)
+                      .map((item) => (
+                        <div
+                          key={item.id}
+                          className={cn(
+                            "relative ps-6 text-sm font-medium before:absolute before:-start-[9px] before:top-px before:h-5 before:w-5 before:-translate-x-px before:rounded-full before:bg-gray-100 before:content-[''] after:absolute after:-start-px after:top-5 after:h-10 after:w-0.5 after:bg-gray-100 last:after:hidden",
+                            'text-red-500 before:bg-red-500' 
+                          )}
+                        >
+                            
+                            <span className={`absolute ${lang ==='en' ? `-start-1.5`:`-start-1`} top-1 text-white`}>
+                              <FaTimes  className="h-auto w-3" />
+                            </span>
                         
-                        <span className={`absolute ${lang ==='en' ? `-start-1.5`:`-start-1`} top-1 text-white`}>
-                          <FaTimes  className="h-auto w-3" />
-                        </span>
-                    
-                      {item.label}
-                    </div>
-                  ))}
+                          {item.label}
+                        </div>
+                      ))}
 
-              {currentOrderStatus !== 0 &&
-                orderStatus
-                  .filter((item) => item.id !== 0)
-                  .map((item) => (
-                    <div
-                      key={item.id}
-                      className={cn(
-                        "relative ps-6 text-sm font-medium before:absolute before:-start-[9px] before:top-px before:h-5 before:w-5 before:-translate-x-px before:rounded-full before:bg-gray-100 before:content-[''] after:absolute after:-start-px after:top-5 after:h-10 after:w-0.5 after:bg-gray-100 last:after:hidden",
-                        (currentOrderStatus ?? 1) >= item.id
-                          ? 'before:bg-teal-500 after:bg-teal-500' // باقي الحالات
-                          : 'after:hidden', // إخفاء after للحالات الأخرى
-                        currentOrderStatus === item.id && 'before:bg-teal-500 after:hidden' // الحالة الحالية
-                      )}
-                    >
-                      {(currentOrderStatus ?? 0) >= item.id && item.id !== 0 ? (
-                        <span className={`absolute ${lang ==='en' ? `-start-1.5`:`-start-1`} top-1 text-white`}>
-                          <PiCheckBold className="h-auto w-3" />
-                        </span>
-                      ) : null}
+                  {currentOrderStatus !== 0 &&
+                    orderStatus
+                      .filter((item) => item.id !== 0)
+                      .map((item) => (
+                        <div
+                          key={item.id}
+                          className={cn(
+                            "relative ps-6 text-sm font-medium before:absolute before:-start-[9px] before:top-px before:h-5 before:w-5 before:-translate-x-px before:rounded-full before:bg-gray-100 before:content-[''] after:absolute after:-start-px after:top-5 after:h-10 after:w-0.5 after:bg-gray-100 last:after:hidden",
+                            (currentOrderStatus ?? 1) >= item.id
+                              ? 'before:bg-teal-500 after:bg-teal-500' // باقي الحالات
+                              : 'after:hidden', // إخفاء after للحالات الأخرى
+                            currentOrderStatus === item.id && 'before:bg-teal-500 after:hidden' // الحالة الحالية
+                          )}
+                        >
+                          {(currentOrderStatus ?? 0) >= item.id && item.id !== 0 ? (
+                            <span className={`absolute ${lang ==='en' ? `-start-1.5`:`-start-1`} top-1 text-white`}>
+                              <PiCheckBold className="h-auto w-3" />
+                            </span>
+                          ) : null}
 
-                      {item.label}
-                    </div>
-                  ))}
-            </div>
-          </WidgetCard>
+                          {item.label}
+                        </div>
+                      ))}
+                </div>
+              </WidgetCard>
+          </div>
 
           <WidgetCard
             title={t('Customer-Details')}

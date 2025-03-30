@@ -8,10 +8,23 @@ import { useRouter } from 'next/navigation';
 import { Text, Badge, Loader } from 'rizzui';
 
 function SeccessPage({lang}:{lang?:string}) {
-  const orderId = localStorage.getItem('orderNumber');
+ 
   const router = useRouter(); 
   const [isLoading, setLoading] = useState(false);
-
+  const [orderId, setOrderId] = useState<string | null>(null);
+  const [order, setOrder] = useState<string | null>(null);
+  
+  useEffect(() => {
+    const id = localStorage.getItem('orderNumber');
+    const orderVal = localStorage.getItem('orderId');
+    setOrderId(id);
+    setOrder(orderVal);
+  
+    if (!id || !orderVal) {
+      router.push(`/${lang}`);
+    }
+  }, [router, lang]);
+  
     const { t,i18n } = useTranslation(lang!, "home");
     useEffect(() => {
         i18n.changeLanguage(lang);
@@ -23,7 +36,7 @@ function SeccessPage({lang}:{lang?:string}) {
         localStorage.removeItem('orderNumber');
         console.log('Order removed successfully');
         
-        router.push(`/${lang}/orders`);
+        router.push(`/${lang}/orders/${order}`);
         setLoading(false); 
   
       } catch (error) {
