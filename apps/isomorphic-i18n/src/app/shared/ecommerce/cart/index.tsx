@@ -103,7 +103,7 @@ export function CheckCoupon({ lang }: { lang?: string }) {
           type="text"
           placeholder={t("promo-placeholder-code")}
           inputClassName="text-sm [&.is-hover]:border-mainColor [&.is-focus]:border-mainColor [&.is-focus]:ring-mainColor"
-          className="w-full"
+          className="w-full input-placeholder text-[16px]"
           label={<Text>{t("promo-code")}</Text>}
           {...form.register("couponCode")}
         />
