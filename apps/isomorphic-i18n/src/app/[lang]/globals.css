@@ -1658,6 +1658,9 @@ div[style='z-index: 1000001;'],
 } */
 
 
-input::placeholder{
+.input-placeholder::placeholder {
   font-size: 16px;
+}
+.rizzui-input-field::placeholder {
+  font-size: 16px !important;
 }
