@@ -115,15 +115,14 @@ function CartModal({ lang }: { lang?: string }) {
     //     loadProductDetails();
     // };
     useEffect(() => {
-        if (showCouponModal) {
-            document.body.style.overflow = 'hidden';
-        } else {
-            document.body.style.overflow = 'auto';
-        }
+        const shouldLockScroll = modal || showCouponModal;
+        document.body.style.overflow = shouldLockScroll ? 'hidden' : 'auto';
+      
         return () => {
-            document.body.style.overflow = 'auto';
+          document.body.style.overflow = 'auto';
         };
-    }, [showCouponModal]);
+      }, [modal, showCouponModal]);
+      
 
     const closeModal = (e: React.MouseEvent) => {
         if ((e.target as HTMLElement).id === 'modal-overlay') {
