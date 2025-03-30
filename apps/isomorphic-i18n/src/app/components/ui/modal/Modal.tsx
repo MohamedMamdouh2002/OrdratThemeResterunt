@@ -242,6 +242,22 @@ function Modal({
   const handleClose = () => {
     setIsModalOpen(false);
   };
+  useEffect(() => {
+    const preventScroll = (e: TouchEvent) => {
+      e.preventDefault();
+    };
+  
+    if (modalId) {
+      document.body.style.overflow = 'hidden';
+      document.body.addEventListener('touchmove', preventScroll, { passive: false });
+    }
+  
+    return () => {
+      document.body.style.overflow = 'auto';
+      document.body.removeEventListener('touchmove', preventScroll);
+    };
+  }, [modalId]);
+  
   const handleOutsideClick = (e: React.MouseEvent<HTMLDivElement>) => {
     if (e.target === e.currentTarget) {
       handleClose();
