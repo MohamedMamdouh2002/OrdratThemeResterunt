@@ -1,4 +1,3 @@
-import { string } from 'zod';
 import type { CouponType } from "@/config/enums";
 import { StaticImageData } from "next/image";
 
@@ -224,7 +223,6 @@ export type Food = {
     isTopRated: boolean
     name: string
     price: number;
-    bannerUrl:string;
     oldPrice: number
     categoryName?:string
     description: string
