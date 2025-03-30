@@ -241,7 +241,7 @@ function CartModal({ lang }: { lang?: string }) {
                             {totalPrice != 0 && (
                                 <>
                                     {/* <div className="w-full h-[0.5px] bg-[#7a7a7a] my-2"></div> */}
-                                    <div className="flex items-center justify-center border-t border-b border-gray-200 py-3">
+                                    <div className="flex items-center justify-center border-t border-b border-gray-200 ">
                                         {/* <button
     onClick={() => setShowCouponModal(true)}
     className="flex flex-col items-center text-gray-700 hover:text-mainColor transition"
@@ -283,7 +283,7 @@ function CartModal({ lang }: { lang?: string }) {
                                         </Tooltip> */}
                                         <button
                                             onClick={() => setShowCouponModal(true)}
-                                            className="flex items-center justify-between w-full px-4 py-3 hover:bg-gray-100 transition rounded-md cursor-pointer"
+                                            className="flex items-center justify-between w-full px-4 py-5 hover:bg-gray-100 transition rounded-md cursor-pointer"
                                         >
 
                                             <div className="flex items-center gap-2">
