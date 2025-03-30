@@ -244,7 +244,11 @@ function Modal({
   };
   useEffect(() => {
     const preventScroll = (e: TouchEvent) => {
-      e.preventDefault();
+      // لو الحدث مش داخل المودال → امنع السكورل
+      const modal = document.getElementById('modal-content');
+      if (modal && !modal.contains(e.target as Node)) {
+        e.preventDefault();
+      }
     };
   
     if (modalId) {
@@ -257,6 +261,7 @@ function Modal({
       document.body.removeEventListener('touchmove', preventScroll);
     };
   }, [modalId]);
+  
   
   const handleOutsideClick = (e: React.MouseEvent<HTMLDivElement>) => {
     if (e.target === e.currentTarget) {
@@ -701,11 +706,14 @@ function Modal({
           animate={{ y: 0 }}
           exit={{ y: '100%' }}
           transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-          className="fixed bottom-0 right-0 left-0 md:hidden  flex items-end z-[10000] "
+          
+          className="fixed bottom-0 right-0  left-0 md:hidden  flex items-end z-[10000] "
         >
           <div
             ref={scrollContainerRef}
             onScroll={handleScroll}
+            id="modal-content"
+
             className="bg-white rounded-lg b-4 w-full max-h-svh flex flex-col overflow-y-auto custom-scroll">
             <FormProvider {...methods}>
               <form className="" onSubmit={methods.handleSubmit(onSubmit)}>
