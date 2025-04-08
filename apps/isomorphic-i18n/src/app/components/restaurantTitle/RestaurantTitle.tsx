@@ -18,6 +18,7 @@ import axiosClient from '../fetch/api'
 import map from '@public/assets/map.png'
 import { IoMdClose } from 'react-icons/io'
 import { toCurrency } from '@utils/to-currency'
+import CustomImage from '../ui/CustomImage'
 
 
 type Branchprops = {
@@ -36,6 +37,7 @@ function RestaurantTitle({ lang }: { lang?: string; }) {
     const [logoUrl, setLogoUrl] = useState<string | null>(null);
     const [shopName, setShopName] = useState<string | null>(null);
     const [description, setDescription] = useState<string | null>(null);
+    const [rate, setrate] = useState<any| null>(null);
     const [coupon, setCoupon] = useState<[] | null>([]);
     const [response, setResponse] = useState<Branchprops[]>([]);
     const { shopId } = useUserContext();
@@ -47,10 +49,12 @@ function RestaurantTitle({ lang }: { lang?: string; }) {
         const storedLogo = localStorage.getItem("logoUrl");
         const storedName = localStorage.getItem("subdomainName");
         const description = localStorage.getItem("description");
+        const rate = localStorage.getItem("rate");
         if (storedLogo) {
             setLogoUrl(storedLogo);
             setShopName(storedName);
             setDescription(description)
+            setrate(rate)
         }
     }, [lang, i18n]);
     const [modal, setModal] = useState(false);
@@ -122,7 +126,7 @@ function RestaurantTitle({ lang }: { lang?: string; }) {
                     {/* <Image src={logo} width={100} height={100} className='-mt-5 w-[80px] h-[80px] sm:w-[100px] sm:h-[100px]' alt='logo' /> */}
                     {logoUrl ? (
                         <div className="w-[90px] h-[80px] mt-5 ms-3  ">
-                            <Image
+                            <CustomImage
                                 src={logoUrl}
                                 width={100}
                                 height={100}
@@ -138,7 +142,7 @@ function RestaurantTitle({ lang }: { lang?: string; }) {
                         <h2 className='xs:text-sm text-xs font-normal truncate-text '>{description}</h2>
                         <div className={'flex items-center gap-1 text-sm'}>
                             <Star className="fill-[#f1d045] text-[#f1d045]" size={14} />
-                            <span className="">4.3</span>
+                            <span className="">{rate}</span>
                             <Link href={`/${lang!}/reviews`} className="underline font-light">
                                 (<bdi>{t('showRate')}</bdi> )
                                 {/* {t('ratings')}) */}

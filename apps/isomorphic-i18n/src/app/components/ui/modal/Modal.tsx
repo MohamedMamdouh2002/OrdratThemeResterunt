@@ -34,6 +34,7 @@ import { Data } from '@react-google-maps/api';
 
 import SpecialNotes from '@/app/components/ui/SpecialNotes';
 import { useTranslation } from '@/app/i18n/client';
+import CustomImage from '../CustomImage';
 
 // type Props = {
 
@@ -397,7 +398,7 @@ function Modal({
                       <div className={`sticky mb-5 rounded-t-lg ${isScrolled ? `secShadow` : `shadow-none`} top-0 bg-white z-50 `}>
                         <div className={`flex mb-4 `}>
                           <div className="">
-                            <Image
+                            <CustomImage
                               src={prodId.imageUrl || photo}
                               width={500}
                               height={300}
@@ -437,7 +438,7 @@ function Modal({
                                                           <div className="flex flex-col justify-center items-center">
                                                               {choice.imageUrl ? (
                                                                   <>
-                                                                      <Image
+                                                                      <CustomImage
                                                                           src={choice.imageUrl}
                                                                           alt={choice.name || "Radio"}
                                                                           width={600}
@@ -653,7 +654,7 @@ function Modal({
                                           <h3 className="font-medium text-lg mb-2">{t('RelatedProduct')}:</h3>
                                           {item.relatedProduct && (
                                               <div className=" border border-dashed border-mainColor rounded-lg p-2 w-28">
-                                                  <Image
+                                                  <CustomImage
                                                       src={item.relatedProduct.imageUrl}
                                                       width={200}
                                                       height={300}
@@ -730,7 +731,7 @@ function Modal({
                 <div className="relative ">
                   {isImageVisible ? (
                     <div className="w-full h-60">
-                      <Image
+                      <CustomImage
                         src={prodId.imageUrl || photo}
                         // width={900}
                         // height={600}
@@ -770,7 +771,7 @@ function Modal({
                                   <div className="flex flex-col justify-center items-center">
                                     {choice.imageUrl ? (
                                       <>
-                                        <Image
+                                        <CustomImage
                                           src={choice.imageUrl}
                                           alt={choice.name || "Radio"}
                                           width={600}
@@ -972,7 +973,7 @@ function Modal({
                             <h3 className="font-bold mb-2">Related Product:</h3>
                             {item.relatedProduct && (
                               <div className=" border border-dashed border-mainColor rounded-lg p-2 w-28">
-                                <Image
+                                <CustomImage
                                   src={item.relatedProduct.imageUrl}
                                   width={200}
                                   height={300}

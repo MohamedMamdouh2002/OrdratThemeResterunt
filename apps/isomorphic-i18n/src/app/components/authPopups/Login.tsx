@@ -23,6 +23,7 @@ import { ErrorMessage, Field, Form, Formik } from 'formik';
 import { useTranslation } from '@/app/i18n/client';
 import toast from 'react-hot-toast';
 import { PhoneNumber } from '@ui/phone-input';
+import CustomImage from '../ui/CustomImage';
 
 type Props = {
 
@@ -145,7 +146,7 @@ function Login({ onLogin, setCurrentModal }: Props, { lang }: { lang?: string })
 			<div className="flex flex-col items-center justify-center">
 				{/* <Image width={60} height={60} src={Logo} alt="logo" /> */}
 				{logoUrl ? (
-					<Image
+					<CustomImage
 						src={logoUrl} width={60} height={60} alt="logo" />
 					) : (
 					<div className="w-[60px] h-[60px] bg-gray-200 rounded-full"></div>

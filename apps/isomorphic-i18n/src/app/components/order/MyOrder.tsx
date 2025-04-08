@@ -13,6 +13,7 @@ import { useTranslation } from '@/app/i18n/client';
 import fetchClient from '../fetch/api';
 import { toCurrency } from '@utils/to-currency';
 import { useUserContext } from '../context/UserContext';
+import CustomImage from '../ui/CustomImage';
 
 const MyOrder: React.FC<{ lang: string }> = ({ lang }) => {
   const [orders, setOrders] = useState<Order[]>([]);
@@ -95,7 +96,7 @@ const MyOrder: React.FC<{ lang: string }> = ({ lang }) => {
                             <p>{t('items')}</p>
                             <div className="flex flex-wrap gap-3 mt-3">
                               <div className="rounded-lg border w-24 h-[115px] border-dashed border-mainColor">
-                                <Image width={300} height={150} className="w-full h-[75%] rounded-t-lg object-cover" src={i.product.images[0]?.imageUrl || ''} alt={i.product.name} />
+                                <CustomImage width={300} height={150} className="w-full h-[75%] rounded-t-lg object-cover" src={i.product.images[0]?.imageUrl || ''} alt={i.product.name} />
                                 <span className="truncate-text mt-1 ms-1">
                                   {i.product.name}
                                 </span>
@@ -120,7 +121,7 @@ const MyOrder: React.FC<{ lang: string }> = ({ lang }) => {
                         <div className="absolute end-3 bottom-4">
                           {/* <Image width={60} height={60} src={Logo} alt="logo" /> */}
                           {logoUrl ? (
-                            <Image src={logoUrl} width={60} height={60} alt="logo" />
+                            <CustomImage src={logoUrl} width={60} height={60} alt="logo" />
                           ) : (
                             <div className="w-[60px] h-[60px] bg-gray-200 rounded-full"></div>
                           )}

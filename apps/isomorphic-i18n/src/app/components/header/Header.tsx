@@ -5,6 +5,7 @@ import React, { useEffect, useState } from 'react'
 import logPhoto from '@public/assets/landing.webp'
 import Link from 'next/link'
 import { useTranslation } from '@/app/i18n/client';
+import CustomImage from '../ui/CustomImage'
 
 function Header({ lang }: { lang?: string }) {
   const { t, i18n } = useTranslation(lang!, 'home');
@@ -42,7 +43,7 @@ function Header({ lang }: { lang?: string }) {
             </Link>
           </div>
           <div className="absolute bottom-0 end-0 xl:end-12 p-5 w-[250px] xl:w-[400px] h-96 ">
-          <Image
+          <CustomImage
   src={shopLogo as any}
   width={900}
   height={500}

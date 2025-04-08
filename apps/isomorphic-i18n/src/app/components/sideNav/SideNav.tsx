@@ -13,6 +13,7 @@ import Link from 'next/link';
 import { useUserContext } from '../context/UserContext';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPersonCircleQuestion, faStar } from '@fortawesome/free-solid-svg-icons';
+import CustomImage from '../ui/CustomImage';
 
 type Props = {
 	isOpen: boolean;
@@ -84,7 +85,7 @@ export const SideNav = ({ isOpen, setIsOpen, lang }: Props) => {
 						<div className="w-full flex flex-col gap-5">
 							{/* <Image width={60} height={60} src={Logo} alt="logo" /> */}
 							{logoUrl ? (
-								<Image src={logoUrl} width={60} height={60} alt="logo" />
+								<CustomImage src={logoUrl} width={60} height={60} alt="logo" />
 							) : (
 								<div className="w-[60px] h-[60px] bg-gray-200 rounded-full"></div>
 							)}

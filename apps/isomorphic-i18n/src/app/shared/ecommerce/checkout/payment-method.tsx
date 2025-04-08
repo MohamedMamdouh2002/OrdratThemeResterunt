@@ -22,6 +22,7 @@ import {
   PiLockKeyLight,
 } from 'react-icons/pi';
 import { paymentMethodData } from '@/data/checkout-data';
+import CustomImage from '@/app/components/ui/CustomImage';
 
 type CardExpiredType = NumberInputProps & {
   isMask?: boolean;
@@ -201,7 +202,7 @@ export default function PaymentMethod({ className }: { className?: string }) {
                 >
                   <span className="flex flex-col gap-4 py-6 ps-3.5 @md:flex-row @md:items-center @md:gap-6">
                     <span className="inline-flex @md:shrink-0">
-                      <Image
+                      <CustomImage
                         src={item.image}
                         alt={item.name}
                         height={60}

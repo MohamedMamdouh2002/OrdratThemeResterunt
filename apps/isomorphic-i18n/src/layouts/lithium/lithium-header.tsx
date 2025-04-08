@@ -35,6 +35,7 @@ import path from "path";
 import { useRouter } from "next/router";
 import { usePathname } from "next/navigation";
 import { useTranslation } from "@/app/i18n/client";
+import CustomImage from "@/app/components/ui/CustomImage";
 
 function HeaderMenuRight() {
   return (
@@ -146,7 +147,7 @@ export default function Header({ lang }: { lang?: string }) {
           >
             {/* <Image src={logo} alt="logo" className="max-w-[60px]" /> */}
             {logoUrl ? (
-              <Image
+              <CustomImage
                   src={logoUrl} width={60} height={60} alt="logo" className="max-w-[60px]" />
               ) : (
               <div className="w-[60px] h-[60px] bg-gray-200 rounded-full"></div>

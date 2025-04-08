@@ -45,8 +45,8 @@ export async function generateStaticParams() {
 //   return `${protocol}://${host}`;
 // } 
 function getServerSiteUrl() {
-  const host = "theme.ordrat.com";
-  // const host = headers().get("host") || "localhost:3000";
+  // const host = "theme.ordrat.com";
+  const host = headers().get("host") || "localhost:3000";
   const protocol = process.env.NODE_ENV === "production" ? "https" : "http";
   return `${host}`;
 }
@@ -91,6 +91,7 @@ async function fetchShopData(shopId: string, lang: string) {
       description: lang === 'ar' ? shopData.descriptionAr : shopData.descriptionEn || "",
       vat:  shopData.vat || "",
       vatType:  shopData.vatType ,
+      rate:  shopData.rate ,
     };
   } catch (error) {
     console.error("Error fetching shop details:", error);
@@ -406,6 +407,7 @@ export default async function RootLayout({
                       logoUrl={shopData.logoUrl}
                       branchZones={branchZones}
                       shopId={shopId.id}
+                      rate={shopId.rate}
                     />
                     {children}
                     <Toaster />

@@ -11,6 +11,7 @@ import { AnimatePresence } from 'framer-motion';
 import Modal from '../ui/Modal';
 import { API_BASE_URL } from '@/config/base-url';
 import { useUserContext } from '../context/UserContext';
+import CustomImage from '../ui/CustomImage';
 
 type linksProps = {
   header: string;
@@ -159,7 +160,7 @@ function Footer({ lang }: Props) {
               <div className="w-fit flex items-center gap-4">
                 {/* <Image src={logo} alt="logo" className="max-w-[60px]" /> */}
                 {logoUrl ? (
-                  <Image
+                  <CustomImage
                     src={logoUrl}
                     width={100}
                     height={100}

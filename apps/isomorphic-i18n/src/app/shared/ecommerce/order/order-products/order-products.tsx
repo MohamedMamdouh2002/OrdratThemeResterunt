@@ -6,6 +6,7 @@ import Table, { HeaderCell } from '@/app/shared/table';
 import { Checkbox, Loader, Title, Text } from 'rizzui';
 import { useTable } from '@hooks/use-table';
 import DeletePopover from '@/app/shared/delete-popover';
+import CustomImage from '@/app/components/ui/CustomImage';
 
 const initialData = [
   {
@@ -90,7 +91,7 @@ export const getColumns = ({
     render: (product: any) => (
       <div className="flex items-center">
         <div className="relative aspect-square w-12 overflow-hidden rounded-lg">
-          <Image
+          <CustomImage
             alt={product.name}
             src={product.image}
             fill

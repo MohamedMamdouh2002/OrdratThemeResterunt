@@ -9,6 +9,7 @@ import hamburger from '@public/assets/hamburger.png'
 import potato from '@public/assets/شاورما-عراقي-لحمة-مع-بطاطا.png'
 import Modal from '../modal/Modal';
 import { toCurrency } from '@utils/to-currency';
+import CustomImage from '../CustomImage';
 type Props = Food & {
     lang:string;
     setCurrentItem: Dispatch<
@@ -40,7 +41,7 @@ type Props = Food & {
         onClick={handleOpenModal} 
         className="w-[115px] hover:cursor-pointer  sm:w-[120px] md:w-[150px] lg:w-[200px]  overflow-x-auto">
             <div className="relative">
-                <Image 
+                <CustomImage 
                 src={data?.images ? data?.images[0]?.imageUrl || photo : photo} 
                 // src={data?.imageUrl} 
                 width={200} 

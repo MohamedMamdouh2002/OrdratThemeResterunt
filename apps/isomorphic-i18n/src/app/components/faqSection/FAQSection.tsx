@@ -22,6 +22,7 @@ import { useUserContext } from '../context/UserContext';
 // import { shopId } from '@/config/shopId';
 import { useTranslation } from '@/app/i18n/client';
 import { Loader } from 'lucide-react';
+import CustomImage from '../ui/CustomImage';
 
 function FAQSection({ lang }: { lang: string }) {
   // const faq = [
@@ -201,7 +202,7 @@ function FAQSection({ lang }: { lang: string }) {
                     <div className={style.faqCardWrapper}>
                       <div className={style.faqCardHead} style={{ alignItems: 'center' }}>
                         <div className={style.iconWrapper} style={{ width: '50px', marginInlineEnd: '5px' }}>
-                          <Image
+                          <CustomImage
                             src={item.imageUrl || images[index]}
                             width="50"
                             height="50"

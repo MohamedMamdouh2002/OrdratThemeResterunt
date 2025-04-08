@@ -9,6 +9,7 @@ import RemoveItem from '@/app/shared/ecommerce/cart/remove-item';
 import QuantityInput from '@/app/shared/ecommerce/cart/quantity-input';
 import { routes } from '@/config/routes';
 import photo from '@public/assets/شاورما-عربي-لحمة-768x768.png';
+import CustomImage from '@/app/components/ui/CustomImage';
 
 function parseProductData(productString: string) {
   const dataPairs = productString.split('&&');
@@ -50,7 +51,7 @@ export default function CartProduct({ product, lang , ifModal=false }: { product
   return (
     <div className="grid grid-cols-12 items-start gap-4 border-b border-muted py-6 first:pt-0 sm:flex sm:gap-6 2xl:py-8">
       <figure className="col-span-4 sm:max-w-[180px]">
-        <Image
+        <CustomImage
           src={product.image||photo}
           alt={lang =='ar'? realProductData.nameAr : realProductData.nameEn}
           width={180}

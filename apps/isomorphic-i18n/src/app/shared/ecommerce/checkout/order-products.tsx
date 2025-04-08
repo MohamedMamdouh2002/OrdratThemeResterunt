@@ -8,6 +8,7 @@ import { generateSlug } from '@utils/generate-slug';
 import SimpleBar from '@ui/simplebar';
 import { Empty, Title } from 'rizzui';
 import cn from '@utils/class-names';
+import CustomImage from '@/app/components/ui/CustomImage';
 
 export default function OrderProducts({
   items,
@@ -49,7 +50,7 @@ export default function OrderProducts({
           >
             <div className="flex items-center pe-3">
               <figure className="relative aspect-[4/4.5] w-16 shrink-0 overflow-hidden rounded-lg bg-gray-100">
-                <Image
+                <CustomImage
                   src={item.image}
                   alt={item.name}
                   fill

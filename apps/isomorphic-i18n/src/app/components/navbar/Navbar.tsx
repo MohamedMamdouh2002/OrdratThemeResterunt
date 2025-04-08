@@ -31,6 +31,7 @@ function Navbar({ className, lang }: { className?: string, lang?: string }) {
     const [modal, setModal] = useState(false);
     const [coupon, setCoupon] = useState<[] | null>([]);
     const [description, setDescription] = useState<string | null>(null);
+    const [rate, setrate] = useState<any | null>(null);
 
     const { shopId } = useUserContext();
     useEffect(() => {
@@ -99,9 +100,11 @@ function Navbar({ className, lang }: { className?: string, lang?: string }) {
         i18n.changeLanguage(lang);
 
         const description = localStorage.getItem("description");
+        const rate = localStorage.getItem("rate");
         if (description) {
 
             setDescription(description)
+            setrate(rate)
         }
     }, [lang, i18n]);
     return (
@@ -156,7 +159,7 @@ function Navbar({ className, lang }: { className?: string, lang?: string }) {
                     <div className="flex items-center gap-5 justify-end w-full col-span-3 relative">
                         <div className={'flex items-center gap-1 text-sm'}>
                             <Star className="fill-[#f1d045] text-[#f1d045]" size={14} />
-                            <span className="">4.3</span>
+                            <span className="">{rate}</span>
                             <Link href={`/${lang!}/reviews`} className="underline font-light">
                                 (<bdi>{t('showRate')}</bdi>)
                             </Link>

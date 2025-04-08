@@ -3,6 +3,7 @@ import Price from './Price';
 import AddToCartButton from './AddToCartButton';
 import { FullProduct } from '@/types';
 import Image from 'next/image';
+import CustomImage from '../CustomImage';
 
 type Props = {
 	data: FullProduct['frequentlyOrderedWith'];
@@ -18,7 +19,7 @@ function OftenOrderedWith({ data }: Props) {
 				{data.map((rp, i) => (
 					<div key={rp.productId} className="flex rounded-lg flex-col gap-8 justify-between border">
 						<div className="flex flex-col gap-3">
-							<Image
+							<CustomImage
 								src={rp.relatedProduct.imageUrl}
 								alt={'image'}
 								className="relative w-[150px] h-[100px] rounded-t-lg"

@@ -86,26 +86,27 @@ export default function AutoModal() {
 
                     {/* للموبايل */}
                     <div className="fixed inset-0 bg-black bg-opacity-50 flex md:hidden justify-center items-center z-[9999]">
-                        <div className="bg-white relative rounded-lg shadow-xl w-[350px] h-[400px] text-center">
-                            <div className="w-[350px] h-[350px] rounded-t-lg">
-                                <Image src={MOBILEAD} alt="MOBILEAD" className="w-full h-full rounded-t-lg" />
-                            </div>
-                            <div className="flex justify-between items-center gap-5 mt-2 mx-2">
-                                <button
-                                    onClick={handleCreateStore}
-                                    className="bg-[#E84654] font-medium w-1/2 py-2 text-white rounded-lg"
-                                >
-                                    أنشئ متجرك الإلكتروني الآن
+                    <div className="bg-white relative rounded-lg shadow-xl w-[350px] h-[400px] text-center">
+  <div className="w-[350px] h-[350px] rounded-t-lg">
+    <Image src={PcAD} alt="MOBILEAD" className="w-full h-full rounded-t-lg" />
+  </div>
 
-                                </button>
-                                <button
-                                    onClick={handleClose}
-                                    className="bg-[#003049] w-1/2 py-2 font-medium text-white rounded-lg"
-                                >
-                                    اغلاق
-                                </button>
-                            </div>
-                        </div>
+  <div className="grid grid-cols-12 justify-between items-center gap-4 mt-2 px-4 w-full">
+    <button
+      onClick={handleCreateStore}
+      className="bg-[#E84654] font-medium col-span-8 flex-1 py-2  text-sm text-white rounded-lg"
+    >
+      أنشئ متجرك الإلكتروني الآن
+    </button>
+    <button
+      onClick={handleClose}
+      className="bg-[#003049] flex-1 py-2 col-span-4 font-medium text-sm text-white rounded-lg"
+    >
+      اغلاق
+    </button>
+  </div>
+</div>
+
                     </div>
                 </>
             )}

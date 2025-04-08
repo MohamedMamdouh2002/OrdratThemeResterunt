@@ -10,6 +10,7 @@ import "slick-carousel/slick/slick-theme.css";
 import { API_BASE_URL } from '@/config/base-url';
 import { useUserContext } from '../context/UserContext';
 import Link from 'next/link';
+import CustomImage from '../ui/CustomImage';
 type images={
     img:any
 }
@@ -70,7 +71,7 @@ function MainSlider() {
     <Slider {...settings}>
         {banner&&banner.map((photo:Banner) => (
             <Link href={photo?.actionString as string} target='_blank' key={photo.id}>
-                <Image 
+                <CustomImage 
                     width={800}
                     height={500}
                     src={photo.bannerUrl} 

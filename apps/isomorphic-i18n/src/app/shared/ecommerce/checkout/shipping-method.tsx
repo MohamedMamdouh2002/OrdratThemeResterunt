@@ -6,6 +6,7 @@ import { PiCheckCircleFill, PiQuestionFill } from 'react-icons/pi';
 import { shippingMethodData, shippingSpeedData } from '@/data/checkout-data';
 import { AdvancedRadio, FieldError, Title, Text } from 'rizzui';
 import cn from '@utils/class-names';
+import CustomImage from '@/app/components/ui/CustomImage';
 
 export default function ShippingMethod({ className }: { className?: string }) {
   const {
@@ -43,7 +44,7 @@ export default function ShippingMethod({ className }: { className?: string }) {
                   {...register('shippingMethod')}
                   className="flex shrink-0 items-center rounded border-muted/80 hover:cursor-pointer peer-checked:ring-[0.5px] [&_.rizzui-advanced-checkbox:hover]:border-primary [&_.rizzui-advanced-checkbox]:min-w-[unset] [&_.rizzui-advanced-checkbox]:p-0 [&_img]:h-[45px] [&_img]:w-[60px] [&_img]:rounded-md [&_input:checked~.rizzui-advanced-checkbox]:border-primary [&_input:checked~.rizzui-advanced-checkbox]:ring-primary"
                 >
-                  <Image
+                  <CustomImage
                     src={item.image}
                     alt={item.name}
                     height={45}

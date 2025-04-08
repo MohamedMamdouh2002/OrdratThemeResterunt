@@ -10,6 +10,7 @@ import hamburger from '@public/assets/hamburger.png'
 import potato from '@public/assets/شاورما-عراقي-لحمة-مع-بطاطا.png'
   import { Star, Flame } from 'lucide-react';
 import { toCurrency } from '@utils/to-currency';
+import CustomImage from '../CustomImage';
 
   type Props = Food & {
     lang:string;
@@ -37,7 +38,7 @@ import { toCurrency } from '@utils/to-currency';
       <>     
           <div onClick={handleOpenModal} className="hover:scale-105 hover:cursor-pointer  w-[100%] duration-200">
             <div className="relative w-full h-[100px] xs:h-[200px] md:h-[200px] lg:h-[220px] xl:h-[270px] 2xl:h-[300px]">
-              <Image
+              <CustomImage
                 alt="card food"
                 src={data?.images ? data?.images[0]?.imageUrl || photo : photo} 
                 layout="fill"
