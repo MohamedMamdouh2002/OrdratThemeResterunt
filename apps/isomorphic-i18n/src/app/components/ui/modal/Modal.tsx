@@ -270,7 +270,7 @@ function Modal({
       methods.reset(defaults);
     }
   }, [prodId, methods.reset]);
-    
+     
   const { watch, setValue, register, handleSubmit, control } = methods;
   useEffect(() => {
     const subscription = watch((values) => {

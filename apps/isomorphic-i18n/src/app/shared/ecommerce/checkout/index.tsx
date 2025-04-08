@@ -431,7 +431,7 @@ export default function CheckoutPageWrapper({
   const isButtonDisabled = !selectedAddressId || !localStorage.getItem('accessToken') || total === 0 || locationOutOfZone;
 
   const toggleLoginModal = () => {
-    setLoginModal(true);
+    setLoginModal(true); 
   };
   const handleAddNewAddress = () => {
     const phoneNumber = localStorage.getItem('phoneNumber');
