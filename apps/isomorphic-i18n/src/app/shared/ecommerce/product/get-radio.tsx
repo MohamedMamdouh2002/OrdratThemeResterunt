@@ -26,6 +26,7 @@ export default function GetRadio({ name, options }: GetRadioProps) {
         control={control}
         name={name}
         render={({ field: { value, onChange, ref } }) => {
+          
           return (
             <RadioGroup
               value={value}

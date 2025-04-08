@@ -79,7 +79,7 @@ function Login({ onLogin, setCurrentModal }: Props, { lang }: { lang?: string })
 			phoneNumber:values.phoneNumber,
 			shopId:values.shopId
 		}
-		let res = await fetch(`${API_BASE_URL}/api/Auth/EndUserLogin`, {
+		let res = await fetch(`${API_BASE_URL}/api/Auth/EndUserLogin/${values.shopId}`, {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',

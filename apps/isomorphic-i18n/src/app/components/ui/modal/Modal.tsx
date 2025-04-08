@@ -116,6 +116,8 @@ function Modal({
   useEffect(() => {
     const fetchData = async () => {
       const data = await GetProduct({ lang, id: modalId });
+      console.log("data id: ",data);
+      
       const formattedData: FoodId = {
         id: data.id,
         name: lang === 'ar' ? data.nameAr : data.nameEn,
@@ -251,7 +253,24 @@ function Modal({
   const methods = useForm<ProductDetailsInput>({
     mode: 'onChange',
     resolver: zodResolver(buildProductDetailsSchema(prodId?.variations || [])),
+    defaultValues: {}, // initially empty
   });
+  useEffect(() => {
+    if (prodId) {
+      const defaults: Record<string, any> = {};
+      prodId.variations.forEach((variation: any) => {
+        if (variation.buttonType === 0 || variation.buttonType === 1) {
+          const defaultChoice = variation.choices.find((choice: any) => choice.isDefault);
+          if (defaultChoice) {
+            defaults[variation.id] = defaultChoice.id;
+          }
+        }
+      });
+  
+      methods.reset(defaults);
+    }
+  }, [prodId, methods.reset]);
+    
   const { watch, setValue, register, handleSubmit, control } = methods;
   useEffect(() => {
     const subscription = watch((values) => {
@@ -303,6 +322,10 @@ function Modal({
       notes: notes || "",
       orderItemVariations: prodId?.variations.map((variation: Variation) => {
         const variationData = data[variation.id];
+        // Skip choice-based variation if it's not required and has no selected value
+        if ((variation.buttonType === 0 || variation.buttonType === 1) && !variationData && !variation.isRequired) {
+          return [];
+        }
         if (variation.buttonType === 0 || variation.buttonType === 1) {
           const selectedChoice = variation.choices.find(choice => choice.id === variationData);
           return {
@@ -333,8 +356,10 @@ function Modal({
     
     prodId?.variations.forEach((variation: Variation) => {
       const variationData = data[variation.id];
+      console.log("variation: ",variation);
+      
       if (variation.buttonType === 0 || variation.buttonType === 1) {
-        if (variationData) {
+        if (variationData || !variation.isRequired) {
           isItemAdded = true;
         }
       } else {
@@ -342,6 +367,10 @@ function Modal({
       }
     });
     
+    if (prodId?.variations.length == 0) {
+      isItemAdded = true;
+    }
+
     if (isItemAdded) {
       addItemToCart(cartItem, quantity);
       setIsModalOpen(false);

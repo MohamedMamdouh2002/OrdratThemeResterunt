@@ -258,6 +258,7 @@ export default function CheckoutPageWrapper({
   // Active selected address ID
   const [selectedAddressId, setSelectedAddressId] = useState<string | null>(addresses[addresses?.length - 1]?.id || null);
   const [selectedAddress, setSelectedAddress] = useState<any>();
+  const [locationOutOfZone, setLocationOutOfZone] = useState(false);
 
   // ببعت القيم للفانكشن عشان احسب التوصيل
   useEffect(() => {
@@ -299,6 +300,36 @@ export default function CheckoutPageWrapper({
     })),
     [branchZones]
   );
+
+  useEffect(() => {
+    const isInsideAnyZone = zones.some((zone) => {
+      const distance = getDistanceFromLatLonInMeters(
+        userLocation.lat,
+        userLocation.lng,
+        zone.center.lat,
+        zone.center.lng
+      );
+      return distance <= zone.radius;
+    });
+  
+    setLocationOutOfZone(!isInsideAnyZone);
+  }, [userLocation, zones]);
+  
+  function getDistanceFromLatLonInMeters(lat1: number, lon1: number, lat2: number, lon2: number) {
+    const R = 6371e3; // Earth radius in meters
+    const toRad = (x: number) => (x * Math.PI) / 180;
+  
+    const dLat = toRad(lat2 - lat1);
+    const dLon = toRad(lon2 - lon1);
+    const a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) *
+      Math.sin(dLon / 2) * Math.sin(dLon / 2);
+  
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    return R * c;
+  }
+  
 
   console.log("errors: ", methods.formState.errors);
 
@@ -397,7 +428,7 @@ export default function CheckoutPageWrapper({
     }
   };
 
-  const isButtonDisabled = !selectedAddressId || !localStorage.getItem('accessToken') || total === 0;
+  const isButtonDisabled = !selectedAddressId || !localStorage.getItem('accessToken') || total === 0 || locationOutOfZone;
 
   const toggleLoginModal = () => {
     setLoginModal(true);
@@ -535,11 +566,16 @@ export default function CheckoutPageWrapper({
                     </RadioGroup.Option>
                   ))}
                 </RadioGroup>
+                {locationOutOfZone && addresses.length != 0 && (
+                  <p className="text-red-700 font-bold mt-2">
+                    {lang === 'ar' ? "الموقع خارج نطاق التوصيل" : "Location is outside the delivery zones"}
+                  </p>
+                )}
 
                 {!accessToken ? (
                   <button
                     type='button'
-                    onClick={handleAddNewAddress}
+                    onClick={toggleLoginModal}
                     className="w-fit col-span-full large:self-start flex gap-1 items-center px-3 py-2 rounded-lg text-white border border-transparent hover:border-mainColor bg-mainColor hover:bg-transparent hover:text-mainColor  transition duation-150"
                   >
                     <Plus />
@@ -585,7 +621,7 @@ export default function CheckoutPageWrapper({
           </div>
         </form>
       </FormProvider>
-      {/* {loginModal && (
+      {loginModal && (
         <Modal isOpen={loginModal} setIsOpen={setLoginModal}>
           {currentModal === 'login' && (
             <Login
@@ -597,10 +633,10 @@ export default function CheckoutPageWrapper({
             />
           )}
         </Modal>
-      )} */}
-      <AnimatePresence mode="wait">
+      )}
+      {/* <AnimatePresence mode="wait">
         {isOpen && <AddressModalWithLogin lang={lang} isOpen={isOpen} setIsOpen={setIsOpen} address={selectedAddress} />}
-      </AnimatePresence>
+      </AnimatePresence> */}
       <AnimatePresence mode="wait">
         {isAddressOpen && <AddressModal lang={lang} isOpen={isAddressOpen} setIsOpen={setIsAddressOpen} address={selectedAddress} />}
       </AnimatePresence>

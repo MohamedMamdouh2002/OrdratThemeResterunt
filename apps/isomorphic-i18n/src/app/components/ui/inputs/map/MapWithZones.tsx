@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useEffect } from 'react';
+import React, { useCallback, useState, useEffect, useRef } from 'react';
 import { GoogleMap, Marker, useLoadScript, Circle } from '@react-google-maps/api';
 
 interface MapWithZonesProps {
@@ -20,6 +20,7 @@ const MapWithZones: React.FC<MapWithZonesProps> = ({
   zones = [],
 }) => {
   const [selectedLocation, setSelectedLocation] = useState<{ lat: number; lng: number }>(initialLocation);
+  const mapRef = useRef<google.maps.Map | null>(null);
   const API_KEY = 'AIzaSyCPQicAmrON3EtFwOmHvSZQ9IbONbLQmtA'; 
   const { isLoaded, loadError } = useLoadScript({
     googleMapsApiKey: API_KEY,
@@ -42,6 +43,15 @@ const MapWithZones: React.FC<MapWithZonesProps> = ({
     setSelectedLocation(initialLocation);
   }, [initialLocation]);
 
+  useEffect(() => {
+    if (mapRef.current) {
+      window.setTimeout(() => {
+        google.maps.event.trigger(mapRef.current!, "resize");
+        mapRef.current!.panTo(selectedLocation);
+      }, 100);
+    }
+  }, [selectedLocation, isLoaded]);
+
   if (loadError) return <div>Error loading map</div>;
   if (!isLoaded) return <div>Loading map...</div>;
 
@@ -51,6 +61,9 @@ const MapWithZones: React.FC<MapWithZonesProps> = ({
       zoom={14}
       center={selectedLocation}
     //   onClick={handleMapClick}
+      onLoad={(map) => {
+        mapRef.current = map;
+      }}
     >
       <Marker position={selectedLocation} />
 

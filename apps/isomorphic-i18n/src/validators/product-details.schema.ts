@@ -44,7 +44,7 @@ const getSchemaByButtonType = (buttonType: number, isOptional: boolean) => {
 export const buildProductDetailsSchema = (variations: { id: string; name: string; buttonType: number; isActive: boolean; isRequired: boolean; }[]) => {
   const schema = variations.reduce((acc, variation) => {
     // If isActive or isRequired is false, make the field optional
-    const isOptional = !variation.isActive || !variation.isRequired;
+    const isOptional = !variation.isRequired;
     const fieldSchema = getSchemaByButtonType(variation.buttonType, isOptional);
     acc[variation.id] = fieldSchema;
     return acc;

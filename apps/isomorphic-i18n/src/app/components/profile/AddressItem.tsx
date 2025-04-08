@@ -30,7 +30,7 @@ function AddressItem({ address, i, setIsOpen, lang,setSelectedAddress }: Props) 
 			return;
 		}
 		try {
-			const response = await fetch(`${API_BASE_URL}/api/Address/DeleteEndUserAddress?id=${address.id}`, {
+			const response = await fetch(`${API_BASE_URL}/api/Address/DeleteEndUserAddressظ${address.id}`, {
 				method: 'DELETE',
 				headers: {
 					'Authorization': `Bearer ${token}`,

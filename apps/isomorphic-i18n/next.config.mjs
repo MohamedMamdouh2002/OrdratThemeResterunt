@@ -4,7 +4,10 @@ const nextConfig = {
   images: {
 
     
-    domains: ['ordratuserbucket.s3.eu-north-1.amazonaws.com'],
+    domains: [
+      'ordratuserbucket.s3.eu-north-1.amazonaws.com',
+      'cdn.ordrat.com',
+    ],
     remotePatterns: [
       {
         protocol: "https",
