@@ -84,6 +84,8 @@ import { AnimatePresence } from 'framer-motion';
 
         {isModalOpen && (
           <Modal
+    
+
           lang={data.lang} 
           modalId={data.id}
           setIsModalOpen={handleCloseModal}

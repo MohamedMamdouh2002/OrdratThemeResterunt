@@ -99,6 +99,8 @@ function SmallCard(data: Props) {
     <AnimatePresence mode='wait'>
     {isModalOpen && (
       <Modal
+    
+
         lang={data.lang}
         modalId={data.id}
         setIsModalOpen={setIsModalOpen} // تأكد من تمرير الحالة
