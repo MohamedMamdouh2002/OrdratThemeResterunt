@@ -262,7 +262,7 @@ export default function HeaderMenuLeft({ lang }: { lang?: string }) {
           <NavMenu.Trigger  className={`flex items-center text-sm  gap-1 pt-2 ${isStickyVisible?"hover:text-black":"hover:text-mainColor"}`}>
             <Link  lang={lang} href={`/${lang!}/`}>
             <p>
-              Home
+             {lang==='ar'?'الرئيسية':'Home'} 
               </p>
             </Link>
           </NavMenu.Trigger>
@@ -280,7 +280,7 @@ export default function HeaderMenuLeft({ lang }: { lang?: string }) {
         <NavMenu.Trigger  className={`flex items-center text-sm  gap-1 pt-2 ${isStickyVisible?"hover:text-black":"hover:text-mainColor"}`}>
             <Link href={`/${lang!}/reviews`}>
             <p>
-               Reviews
+                {lang==='ar'?'التقييمات':'Reviews'}
               </p>
             </Link>
           </NavMenu.Trigger>
@@ -298,7 +298,7 @@ export default function HeaderMenuLeft({ lang }: { lang?: string }) {
         <NavMenu.Trigger  className={`flex items-center text-sm  gap-1 pt-2 ${isStickyVisible?"hover:text-black":"hover:text-mainColor"}`}>
               <Link lang={lang} href={`/${lang!}/faq`}>
               <p>
-                 FAQ 
+                   {lang==='ar'?'الاسئلة الشائعة':'FAQ'}
                 </p>
             </Link>
           </NavMenu.Trigger>

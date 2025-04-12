@@ -26,6 +26,7 @@ import { PhoneNumber } from '@ui/phone-input';
 import RoleSelect from '../inputs/selectInput/SelectInput';
 import SpecialNotes from '@/app/components/ui/SpecialNotes';
 import { useTranslation } from '@/app/i18n/client';
+import CustomImage from '../CustomImage';
 
 // Type definitions remain the same as in your original code
 interface Variation {
@@ -185,7 +186,6 @@ function Modal({
         price: data.price,
         oldPrice: data.oldPrice
       };
-      
       const formattedData2 = {
         id: data.id,
         nameEn: data.nameEn,
@@ -228,6 +228,8 @@ function Modal({
         price: data.price,
         oldPrice: data.oldPrice
       };
+      
+    
       
       setProdId(formattedData);
       setProductData(formattedData2);
@@ -486,22 +488,260 @@ function Modal({
                         </div>
                       </div>
                     </div>
+                    </div>
                     
                     {/* PC Product Variations */}
-                    <div className="overflow-y-auto max-h-[350px]">
-                      <div className="">
-                        {prodId?.variations && (
-                          <>
-                            <div className="flex flex-col gap-3 pb-4">
-                              {prodId.variations.map((variation: Variation) => {
-                                /* Variations rendering code omitted for brevity */
-                                return null;
-                              })}
-                            </div>
-                          </>
-                        )}
-                      </div>
-                    </div>
+                                   {/* PC Product Variations */}
+                                   <div className="overflow-y-auto  max-h-[350px]">
+                        <div className="">
+                          {prodId?.variations && (
+                              <>
+                                  <div className="flex flex-col gap-3 pb-4">
+                                      {prodId.variations.filter((variation: any) => variation.isActive).map((variation: Variation) => {
+                                          {/* PC Product Variation buttonType 0 */}
+                                          if (variation.buttonType === 0 && (variation.isActive)) {
+                                              const options: Option[] = variation.choices.map((choice: Choice) => ({
+                                                  label: (
+                                                      <>
+                                                          {/* PC Product Variation Choices */}
+                                                          <div className="flex flex-col justify-center items-center">
+                                                              {choice.imageUrl ? (
+                                                                  <>
+                                                                      <CustomImage
+                                                                          src={choice.imageUrl}
+                                                                          alt={choice.name || "Radio"}
+                                                                          width={600}
+                                                                          height={350}
+                                                                          className="w-20 h-20 object-cover"
+                                                                      />
+                                                                      <div className="">
+                                                                          <p>{choice.name}</p>
+                                                                          {choice.price && <small>{abbreviation&&toCurrency(choice.price,lang,abbreviation)}</small>}
+                                                                      </div>
+                                                                  </>
+                                                              ) : (
+                                                                  <div className="h-10">
+                                                                      <p>{choice.name}</p>
+                                                                      {choice.price && <small>{abbreviation&&toCurrency(choice.price,lang,abbreviation)}</small>}
+                                                                  </div>
+
+                                                              )
+                                                              }
+                                                          </div>
+                                                      </>
+                                                  ),
+                                                  value: choice.id,
+                                              }));
+                                              return (
+                                                  <div key={variation.id} className="flex px-4">
+                                                      <div className="w-full flex flex-col gap-1">
+                                                          <div className="flex items-end justify-between">
+                                                              {/* PC Product Variation Name */}
+                                                              <strong>{t('choiceof')} {variation.name}</strong>
+                                                              {/* PC Product Variation isRequired */}
+                                                              {variation.isRequired && (
+                                                                  <div className="text-white bg-mainColor px-2 py-1 rounded-full text-sm">
+                                                                      {t('req')}
+                                                                  </div>
+                                                              )}
+                                                          </div>
+                                                          <span className="text-black/75">{t('Choose1')}</span>
+                                                          {/* PC Product Variation choice */}
+                                                          <div className='mt-2'>
+                                                              <GetRadio name={variation.id} options={options} />
+                                                          </div>
+                                                      </div>
+                                                  </div>
+                                              );
+                                          }
+                                          {/* PC Product Variation buttonType 1 */}
+                                          if (variation.buttonType === 1 && (variation.isActive)) {
+                                              return <>
+                                                  <div key={variation.id} className="flex z-10 px-4 pt-0">
+                                                      <div className="w-full flex flex-col gap-1">
+                                                          <div className="flex items-end justify-between">
+                                                              {/* PC Product Variation Name */}
+                                                              <strong>{t('choiceof')} {variation.name}</strong>
+                                                              {variation.isRequired && (
+                                                                  <div className="text-white bg-mainColor px-2 py-1 rounded-full text-sm">
+                                                                      {t('req')}
+                                                                  </div>
+                                                              )}
+                                                          </div>
+                                                          <Controller
+                                                              key={variation.id}
+                                                              name={variation.id}
+                                                              control={methods.control}
+                                                              render={({ field, fieldState }) => (
+                                                                  <RoleSelect
+                                                                      label={variation.name}
+                                                                      options={variation.choices as { id: string; name: string }[]}
+                                                                      field={{
+                                                                          ...field,
+                                                                          value: typeof field.value === "string" ? field.value : "",
+                                                                      }}
+                                                                      error={String(methods.formState.errors[variation.id]?.message || '')}
+                                                                      placeholder={variation.name}
+                                                                  />
+                                                              )}
+                                                          />
+                                                      </div>
+                                                  </div>
+                                              </>
+                                          }
+                                          {/* PC Product Variation buttonType 3 */}
+                                          if (variation.buttonType === 3&& (variation.isActive)) {
+                                              return (
+                                                  <div key={variation.id} className="flex px-4 pt-0">
+                                                      <div className="w-full flex flex-col gap-1">
+                                                          <div className="flex items-end justify-between">
+                                                              {/* <strong>Your choice of: {variation.name}</strong> */}
+                                                              {variation.isRequired && (
+                                                                  <div className="text-white bg-mainColor px-2 py-1 rounded-full text-sm">
+                                                                      {t('req')}
+
+                                                                  </div>
+                                                              )}
+                                                          </div>
+                                                          {/* <Input
+                                              key={variation.id}
+                                              label={variation.name}
+                                              placeholder={variation.name}
+                                              inputClassName="text-sm [&.is-hover]:border-mainColor [&.is-focus]:border-mainColor [&.is-focus]:ring-mainColor"
+                                              className="w-full"
+                                              {...methods.register(variation.id)}
+                                              error={String(methods.formState.errors[variation.id]?.message || '')}
+                                          /> */}
+                                                          <Controller
+                                                              control={control}
+                                                              name={variation.id}
+                                                              render={({ field }) => (
+                                                                  <Input
+                                                                      label={variation.name}
+                                                                      {...register(variation.id)}
+                                                                      {...field}
+                                                                      placeholder={variation.name}
+                                                                      inputClassName="text-[16px] [&.is-hover]:border-mainColor [&.is-focus]:border-mainColor [&.is-focus]:ring-mainColor"
+                                                                      className="input-placeholder text-[16px] w-full" 
+                                                                      error={String(methods.formState.errors[variation.id]?.message || '')}
+                                                                  />
+                                                              )}
+                                                          />
+                                                      </div>
+                                                  </div>
+                                              );
+                                          }
+                                          if (variation.buttonType === 4&& (variation.isActive)) {
+                                              return (
+                                                  <div key={variation.id} className="flex px-4 pt-0">
+                                                      <div className="w-full flex flex-col gap-1">
+                                                          <div className="flex items-end justify-between">
+                                                              {/* <strong>Your choice of: {variation.name}</strong> */}
+                                                              {variation.isRequired && (
+                                                                  <div className="text-white bg-mainColor px-2 py-1 rounded-full text-sm">
+                                                                          {t('req')}
+
+                                                                  </div>
+                                                              )}
+                                                          </div>
+                                                          <Controller
+                                                              key={variation.id}
+                                                              name={variation.id}
+                                                              control={methods.control}
+                                                              render={({ field: { value, onChange } }) => (
+                                                                  <PhoneNumber
+                                                                      label={t('phoneNumber')}
+                                                                      country="us"
+                                                                      value={value}
+                                                                      labelClassName='font-medium'
+                                                                      inputClassName="text-[16px] hover:!border-mainColor focus:!border-mainColor focus:!ring-mainColor text-sm [&.is-hover]:border-mainColor [&.is-focus]:border-mainColor [&.is-focus]:ring-mainColor"
+                                                                      className="input-placeholder text-[16px] w-full" 
+                                                                      {...methods.register(variation.id)}
+                                                                      onChange={onChange}
+                                                                      // @ts-ignore
+                                                                      error={methods.formState.errors[variation.id]?.message}
+                                                                  />
+                                                              )}
+                                                          />
+                                                      </div>
+                                                  </div>
+                                              );
+                                          }
+                                          if (variation.buttonType === 5&& (variation.isActive)) {
+                                              return (
+                                                  <div key={variation.id} className="flex px-4 pt-0">
+                                                      <div className="w-full flex flex-col gap-1">
+                                                          <div className="flex items-end justify-between">
+                                                              {/* <strong>Your choice of: {variation.name}</strong> */}
+                                                              {variation.isRequired && (
+                                                                  <div className="text-white bg-mainColor px-2 py-1 rounded-full text-sm">
+                                                                      {t('req')}
+                                                                  </div>
+                                                              )}
+                                                          </div>
+                                                          {/* <Input
+                                              key={variation.id}
+                                              label={variation.name}
+                                              placeholder={variation.name}
+                                              inputClassName="text-sm [&.is-hover]:border-mainColor [&.is-focus]:border-mainColor [&.is-focus]:ring-mainColor"
+                                              className="w-full"
+                                              {...methods.register(variation.id)}
+                                              error={String(methods.formState.errors[variation.id]?.message || '')}
+                                          /> */}
+                                                          <Controller
+                                                              control={control}
+                                                              name={variation.id}
+                                                              render={({ field }) => (
+                                                                  <Input
+                                                                      label={variation.name}
+                                                                      {...register(variation.id)}
+                                                                      {...field}
+                                                                      placeholder={variation.name}
+                                                                      inputClassName="text-[16px] [&.is-hover]:border-mainColor [&.is-focus]:border-mainColor [&.is-focus]:ring-mainColor"
+                                                                      className="input-placeholder text-[16px] w-full" 
+                                                                      error={String(methods.formState.errors[variation.id]?.message || '')}
+                                                                  />
+                                                              )}
+                                                          />
+                                                      </div>
+                                                  </div>
+                                              );
+                                          }
+                                          return null;
+                                      })}
+                                  </div>
+                              </>
+                          )}
+                          {prodId?.frequentlyOrderedWith && (
+                              <div className=''>
+                                  {prodId.frequentlyOrderedWith.map((item: {
+                                      FoodId: string | number | bigint | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | Promise<React.AwaitedReactNode> | Iterable<React.ReactNode> | null | undefined; relatedProductId: string | number | bigint | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | Promise<React.AwaitedReactNode> | Iterable<React.ReactNode> | null | undefined; relatedProduct: {
+                                          oldPrice: string; imageUrl: string | StaticImport; name: string | number | bigint | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | Promise<React.AwaitedReactNode> | Iterable<React.ReactNode> | null | undefined; price: string | number | bigint | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | Promise<React.AwaitedReactNode> | Iterable<React.ReactNode> | null | undefined;
+                                      };
+                                  }, index: React.Key | null | undefined) => (
+                                      <div key={index} className='p-4'>
+                                          <h3 className="font-medium text-lg mb-2">{t('RelatedProduct')}:</h3>
+                                          {item.relatedProduct && (
+                                              <div className=" border border-dashed border-mainColor rounded-lg p-2 w-28">
+                                                  <CustomImage
+                                                      src={item.relatedProduct.imageUrl}
+                                                      width={200}
+                                                      height={300}
+                                                      alt="s"
+                                                      className="w-40"
+                                                  />
+                                                  <p className='text-sm mb-1 font-medium'> {item.relatedProduct.name}</p>
+                                                  <div className="flex gap-3">
+                                                      <p className='text-[10px] text-mainColor'> {item.relatedProduct.price} {t('EGP')}</p>
+                                                      <del className='text-[10px]'>{item.relatedProduct.oldPrice} {t('EGP')} </del>
+                                                  </div>
+                                              </div>
+                                          )}
+                                      </div>
+                                  ))}
+                              </div>
+                          )}
+
                   </div>
                   
                   <div className="grid grid-cols-3 justify-between items-center gap-5 p-3 bg-white w-full">
@@ -512,12 +752,13 @@ function Modal({
                       <ItemPrice
                         type={type}
                         buttonType="submit"
-                        price={`${finalPrice} ${t('EGP')}`}
-                        oldPrice={finalOldPrice ? `${finalOldPrice} ${t('EGP')}` : undefined}
+                        price={abbreviation&&toCurrency(finalPrice,lang,abbreviation)}
+                        oldPrice={finalOldPrice ? abbreviation&&toCurrency(finalOldPrice,lang,abbreviation):''}
                         className={cn('rounded-none rounded-br-lg rtl:rounded-bl-lg rtl:rounded-br-none', { 'rounded-br-none rtl:rounded-bl-none': hasMoreDetails })}
                       />
                     </div>
                   </div>
+                </div>
                 </div>
               </motion.div>
             </motion.div>
@@ -599,7 +840,249 @@ function Modal({
                   
                   {/* Variations rendering for mobile */}
                   <div className="pt-6">
-                    {/* Variations rendering code omitted for brevity */}
+                    {prodId?.variations && (
+                      <>
+                        <div className="flex flex-col gap-3">
+                          {prodId.variations.map((variation: Variation) => {
+                            {/* PC Product Variation buttonType 0 */}
+                            if (variation.buttonType === 0 && (variation.isActive)) {
+                              const options: Option[] = variation.choices.map((choice: Choice) => ({
+                                label: (
+                                  <div className="flex flex-col justify-center items-center">
+                                    {choice.imageUrl ? (
+                                      <>
+                                        <CustomImage
+                                          src={choice.imageUrl}
+                                          alt={choice.name || "Radio"}
+                                          width={600}
+                                          height={350}
+                                          className="w-20 h-20 object-cover"
+                                        />
+                                        <div className="">
+                                          <p>{choice.name}</p>
+                                          {choice.price && <small>{abbreviation&&toCurrency(choice.price,lang,abbreviation)}</small>}
+                                        </div>
+                                      </>
+                                    ) : (
+                                      <div className="h-10">
+                                        <p>{choice.name}</p>
+                                        {choice.price && <small>{abbreviation&&toCurrency(choice.price,lang,abbreviation)}</small>}
+                                      </div>
+                                    )
+                                    }
+                                  </div>
+                                ),
+                                value: choice.id,
+                              }));
+                              return (
+                                  <div key={variation.id} className="flex">
+                                      <div className="w-full flex flex-col gap-1">
+                                          <div className="flex items-end justify-between">
+                                              <strong>{t('choiceof')} {variation.name}</strong>
+                                              {variation.isRequired && (
+                                                  <div className="text-white bg-mainColor px-2 py-1 rounded-full text-sm">
+                                                      {t('req')}
+                                                  </div>
+                                              )}
+                                          </div>
+                                          <span className="text-black/75">{t('Choose1')}</span>
+                                          <div>
+                                              <GetRadio name={variation.id} options={options} />
+                                          </div>
+                                      </div>
+                                  </div>
+                              );
+                            }
+                            if (variation.buttonType === 1 && (variation.isActive)) {
+                              return <>
+                                <div key={variation.id} className="flex pt-0">
+                                  <div className="w-full flex flex-col gap-1">
+                                    <div className="flex items-end justify-between">
+                                        {/* <strong>Your choice of: {variation.name}</strong> */}
+                                        {variation.isRequired && (
+                                          <div className="text-white bg-mainColor px-2 py-1 rounded-full text-sm">
+                                            {t('req')}
+                                          </div>
+                                        )}
+                                    </div>
+                                    <Controller
+                                      key={variation.id}
+                                      name={variation.id}
+                                      control={methods.control}
+                                      render={({ field, fieldState }) => (
+                                        <RoleSelect
+                                          label={variation.name}
+
+                                          options={variation.choices as { id: string; name: string }[]}
+                                          field={{
+                                            ...field,
+                                            value: typeof field.value === "string" ? field.value : "", // Ensure field.value is a string
+                                          }}
+                                          error={String(methods.formState.errors[variation.id]?.message || '')}
+                                          placeholder={variation.name}
+                                        />
+                                      )}
+                                    />
+                                  </div>
+                                </div>
+                              </>
+                            }
+                            if (variation.buttonType === 3 && (variation.isActive)) {
+                              return (
+                                <div key={variation.id} className="flex pt-0">
+                                  <div className="w-full flex flex-col gap-1">
+                                    <div className="flex items-end justify-between">
+                                      {/* <strong>Your choice of: {variation.name}</strong> */}
+                                      {variation.isRequired && (
+                                        <div className="text-white bg-mainColor px-2 py-1 rounded-full text-sm">
+                                          {t('req')}
+                                        </div>
+                                      )}
+                                    </div>
+                                    {/* <Input
+                                      key={variation.id}
+                                      label={variation.name}
+                                      placeholder={variation.name}
+                                      inputClassName="text-sm [&.is-hover]:border-mainColor [&.is-focus]:border-mainColor [&.is-focus]:ring-mainColor"
+                                      className="w-full"
+                                      {...methods.register(variation.id)}
+                                      error={String(methods.formState.errors[variation.id]?.message || '')}
+                                    /> */}
+                                    <Controller
+                                      control={control}
+                                      name={variation.id}
+                                      render={({ field }) => (
+                                        <Input
+                                          label={variation.name}
+                                          {...register(variation.id)}
+                                          {...field}
+                                          placeholder={variation.name}
+                                          inputClassName="text-[16px] [&.is-hover]:border-mainColor [&.is-focus]:border-mainColor [&.is-focus]:ring-mainColor"
+                                          className="input-placeholder text-[16px] w-full" 
+                                          error={String(methods.formState.errors[variation.id]?.message || '')}
+                                        />
+                                      )}
+                                    />
+                                  </div>
+                                </div>
+                              );
+                            }
+                            if (variation.buttonType === 4 && (variation.isActive)) {
+                              return (
+                                <div key={variation.id} className="flex pt-0">
+                                  <div className="w-full flex flex-col gap-1">
+                                    <div className="flex items-end justify-between">
+                                      {/* <strong>Your choice of: {variation.name}</strong> */}
+                                      {variation.isRequired && (
+                                        <div className="text-white bg-mainColor px-2 py-1 rounded-full text-sm">
+                                          {t('req')}
+                                        </div>
+                                      )}
+                                    </div>
+                                    <Controller
+                                      key={variation.id}
+                                      name={variation.id}
+                                      control={methods.control}
+                                      render={({ field: { value, onChange } }) => (
+                                        <PhoneNumber
+                                          label={t('phoneNumber')}
+                                          country="us"
+                                          value={value}
+                                          inputClassName="text-sm hover:!border-mainColor focus:!border-mainColor focus:!ring-mainColor text-sm [&.is-hover]:border-mainColor [&.is-focus]:border-mainColor [&.is-focus]:ring-mainColor"
+                                          className="w-full"
+                                          {...methods.register(variation.id)}
+                                          onChange={onChange}
+                                          // @ts-ignore
+                                          error={methods.formState.errors[variation.id]?.message}
+                                        />
+                                      )}
+                                    />
+                                  </div>
+                                </div>
+                              );
+                            }
+                            if (variation.buttonType === 5 && (variation.isActive)) {
+                              return (
+                                <div key={variation.id} className="flex pt-0">
+                                  <div className="w-full flex flex-col gap-1">
+                                    <div className="flex items-end justify-between">
+                                      {/* <strong>Your choice of: {variation.name}</strong> */}
+                                      {variation.isRequired && (
+                                        <div className="text-white bg-mainColor px-2 py-1 rounded-full text-sm">
+                                          {t('req')}
+                                        </div>
+                                      )}
+                                    </div>
+                                    {/* <Input
+                                      key={variation.id}
+                                      label={variation.name}
+                                      placeholder={variation.name}
+                                      inputClassName="text-sm [&.is-hover]:border-mainColor [&.is-focus]:border-mainColor [&.is-focus]:ring-mainColor"
+                                      className="w-full"
+                                      {...methods.register(variation.id)}
+                                      error={String(methods.formState.errors[variation.id]?.message || '')}
+                                    /> */}
+                                    <Controller
+                                      control={control}
+                                      name={variation.id}
+                                      render={({ field }) => (
+                                        <Input
+                                          label={variation.name}
+                                          {...register(variation.id)}
+                                          {...field}
+                                          placeholder={variation.name}
+                                          inputClassName="text-[16px] [&.is-hover]:border-mainColor [&.is-focus]:border-mainColor [&.is-focus]:ring-mainColor"
+                                          className="input-placeholder w-full text-[16px]" 
+                                          error={String(methods.formState.errors[variation.id]?.message || '')}
+                                        />
+                                      )}
+                                    />
+                                  </div>
+                                </div>
+                              );
+                            }
+                            return null;
+                          })}
+                        </div>
+                      </>
+                    )}
+                    {prodId?.frequentlyOrderedWith && (
+                      <div>
+                        {prodId.frequentlyOrderedWith.map((item: { relatedProduct: { imageUrl: string | StaticImport; name: string | number | bigint | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | Promise<React.AwaitedReactNode> | Iterable<React.ReactNode> | null | undefined; price: string | number | bigint | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | Promise<React.AwaitedReactNode> | Iterable<React.ReactNode> | null | undefined; oldPrice: string | number | bigint | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | Promise<React.AwaitedReactNode> | Iterable<React.ReactNode> | null | undefined; }; }, index: React.Key | null | undefined) => (
+                          <div key={index}>
+                            <h3 className="font-bold mb-2">Related Product:</h3>
+                            {item.relatedProduct && (
+                              <div className=" border border-dashed border-mainColor rounded-lg p-2 w-28">
+                                <CustomImage
+                                  src={item.relatedProduct.imageUrl}
+                                  width={200}
+                                  height={300}
+                                  alt="s"
+                                  className="w-40"
+                                />
+                                <p className='text-sm mb-1 font-medium'> {item.relatedProduct.name}</p>
+                                <div className="flex gap-3">
+                                  <p className='text-[10px] text-mainColor'> {item.relatedProduct.price} {t('EGP')} </p>
+                                  <del className='text-[10px]'> {item.relatedProduct.oldPrice} {t('EGP')} </del>
+                                </div>
+                              </div>
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                    {/* {prodId?.reviews && prodId.reviews.length > 0 && (
+                      <div>
+                        <h3 className="font-bold">Reviews:</h3>
+                        {prodId.reviews.map((review: { endUser: { name: string | number | bigint | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | Promise<React.AwaitedReactNode> | Iterable<React.ReactNode> | null | undefined; }; rate: any; reviewText: string | number | bigint | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | Promise<React.AwaitedReactNode> | Iterable<React.ReactNode> | null | undefined; }, index: React.Key | null | undefined) => (
+                          <div key={index}>
+                            <p>User: {review.endUser?.name}</p>
+                            <p className='flex'>Rating: <Badge Icon={Star} title={`${review.rate} `} className="ms-1" /></p>
+                            <p>Review: {review.reviewText}</p>
+                          </div>
+                        ))}
+                      </div>
+                    )} */}
                   </div>
                   
                   <SpecialNotes
@@ -619,8 +1102,8 @@ function Modal({
                       <ItemPrice
                         type={type}
                         buttonType="submit"
-                        price={`${finalPrice} ${t('EGP')}`}
-                        oldPrice={finalOldPrice ? `${finalOldPrice} ${t('EGP')}` : undefined}
+                        price={abbreviation&&toCurrency(finalPrice,lang,abbreviation)}
+                        oldPrice={finalOldPrice ? abbreviation&&toCurrency(finalOldPrice,lang,abbreviation):''}
                         className={cn('rounded-none rounded-br-lg rtl:rounded-bl-lg rtl:rounded-br-none', { 'rounded-br-none rtl:rounded-bl-none': hasMoreDetails })}
                       />
                     </div>
