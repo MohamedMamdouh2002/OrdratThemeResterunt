@@ -5,10 +5,11 @@ import Modal from '../modal/Modal';
 import Badge from '../Badge';
 import { Star, Flame } from 'lucide-react';
 import TextTruncate from '../../ui/TruncateText';
-import { toCurrency } from '@utils/to-currency';
+import useCurrencyAbbreviation, { toCurrency } from '@utils/to-currency';
 import photo from '@public/assets/شاورما-عربي-لحمة-768x768.png'
 import hamburger from '@public/assets/hamburger.png'
 import potato from '@public/assets/شاورما-عراقي-لحمة-مع-بطاطا.png'
+import { AnimatePresence } from 'framer-motion';
 type Props = Food & {
   lang:string;
   setCurrentItem: Dispatch<
@@ -22,6 +23,7 @@ type Props = Food & {
 function MediumCard(data:Props) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [quantity, setQuantity] = useState(1);
+    const abbreviation = useCurrencyAbbreviation({ lang: data.lang });
 
   const handleOpenModal = () => {
     setIsModalOpen(true);
@@ -53,11 +55,11 @@ function MediumCard(data:Props) {
               <TextTruncate text={data.description} limit={10} />
               <div className="mt-2 flex items-center font-semibold text-mainColor absolute bottom-2">
                 <span>
-                  {toCurrency(data.price, data.lang)}
+                  {abbreviation&&toCurrency(data.price, data.lang,abbreviation)}
                 </span>
                 {data.oldPrice && (
                   <del className="ps-1.5 text-[13px] font-normal text-gray-500">
-                    {toCurrency(data.oldPrice, data.lang)}
+                    {abbreviation&&toCurrency(data.oldPrice, data.lang,abbreviation)}
                   </del>
                 )}
               </div>
@@ -74,20 +76,22 @@ function MediumCard(data:Props) {
             </div>
           </div>
         </div>
-  
+  <AnimatePresence>
+
   {isModalOpen && (
     <Modal
-      lang={data.lang}
-      modalId={data.id}
-      setIsModalOpen={handleCloseModal}
-      quantity={quantity}
+    lang={data.lang}
+    modalId={data.id}
+    setIsModalOpen={handleCloseModal}
+    quantity={quantity}
       setQuantity={setQuantity}
       // setShowItem={function (val: boolean): void {
-      //   throw new Error('Function not implemented.');
-      // } }
-    />
-  )}
+        //   throw new Error('Function not implemented.');
+        // } }
+        />
+      )}
 
+      </AnimatePresence>
 {/* <hr className='mt-3 sm:hidden flex'/> */}
 
             

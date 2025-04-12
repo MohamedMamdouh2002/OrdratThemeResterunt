@@ -18,6 +18,15 @@ const config: Pick<Config, "prefix" | "presets" | "content" | "theme" |"plugins"
         Color90:"var(--color-90)",
         Color50:"var(--color-50)",
       },
+      animation: {
+        blink: 'blink 1.5s infinite',
+      },
+      keyframes: {
+        blink: {
+          '0%, 100%': { opacity: 1 as any },
+          '50%': { opacity: 0.2 as any },
+        },
+      },
       fontFamily: {
         // rubik: ['Rubik', 'sans-serif'],
         // almarai: ['Almarai','sans-serif'],

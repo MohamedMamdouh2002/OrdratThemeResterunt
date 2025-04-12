@@ -346,6 +346,15 @@ export default function CheckoutPageWrapper({
       // formData.append('TotalPrice', String(total || 0));
       // formData.append('TotalVat', String(summary?.tax || 0));
 
+      // formData.append('ShopId', '');
+      // formData.append('EndUserId', '');
+      formData.append('Discount', '0');
+      formData.append('GrossProfit', '0');
+      formData.append('IsPaid', 'false');
+      // formData.append('OrderNumber', 'ORD123456');
+      // formData.append('TableNumber', '5');
+      formData.append('Status', '1');
+
       if (copone) {
         formData.append('CouponCode', copone);
       }
@@ -357,7 +366,7 @@ export default function CheckoutPageWrapper({
       if (selectedAddressId) {
         formData.append('AddressId', selectedAddressId);
       }
-      formData.append('ShopId', shopId);
+      // formData.append('ShopId', shopId);
       const now = new Date();
       const formattedDate = now.toISOString().slice(0, 19).replace('T', ' '); 
       
@@ -395,7 +404,7 @@ export default function CheckoutPageWrapper({
         console.log(`${key}: ${value}`);
       });
 
-      const response = await axiosClient.post('/api/Order/Create', formData);
+      const response = await axiosClient.post(`/api/Order/Create/${shopId}`, formData);
 
       if (response.status === 200) {
         // Clear the cart items

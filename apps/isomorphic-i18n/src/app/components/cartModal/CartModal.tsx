@@ -16,6 +16,7 @@ import { IoMdClose } from "react-icons/io";
 import CouponModal from '../modalCoupon/ModalCoupon';
 import { MdLocalOffer } from "react-icons/md";
 import { IoIosArrowForward } from "react-icons/io";
+import useCurrencyAbbreviation, { toCurrency } from '@utils/to-currency';
 
 const ProgressBar = ({ totalPrice, freeShippingThreshold }: { totalPrice: number; freeShippingThreshold: number; }) => {
     const [progress, setProgress] = useState(0);
@@ -77,11 +78,14 @@ function CartModal({ lang }: { lang?: string }) {
     const { userData, setUserData } = useUserContext();
     const pathname = usePathname();
     const [showCouponModal, setShowCouponModal] = useState(false);
-
+    const coupon = JSON.parse(localStorage.getItem("showAllCouponsInSideBar") ?? "false");
+    const free_shipping = JSON.parse(localStorage.getItem("applyFreeShppingOnTarget") ?? "false");
+    const currencyName = localStorage.getItem("currencyName");
     const loadProductDetails = () => {
         const data = JSON.parse(localStorage.getItem('productDetails') || '[]');
         setProductDetailsArray(data);
     };
+    const abbreviation = useCurrencyAbbreviation({ lang } as any);
 
     useEffect(() => {
         loadProductDetails();
@@ -117,12 +121,12 @@ function CartModal({ lang }: { lang?: string }) {
     useEffect(() => {
         const shouldLockScroll = modal || showCouponModal;
         document.body.style.overflow = shouldLockScroll ? 'hidden' : 'auto';
-      
+
         return () => {
-          document.body.style.overflow = 'auto';
+            document.body.style.overflow = 'auto';
         };
-      }, [modal, showCouponModal]);
-      
+    }, [modal, showCouponModal]);
+
 
     const closeModal = (e: React.MouseEvent) => {
         if ((e.target as HTMLElement).id === 'modal-overlay') {
@@ -131,7 +135,8 @@ function CartModal({ lang }: { lang?: string }) {
     };
     const { items } = useCart();
     const totalPrice = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
-    const freeShippingThreshold = 2000;
+    // const freeShippingThreshold = 2000;
+    const freeShippingThreshold= localStorage.getItem('freeShppingTarget')
 
     return (
         <>
@@ -280,6 +285,8 @@ function CartModal({ lang }: { lang?: string }) {
                                                 <IoIosArrowForward className="text-gray-500 w-4 h-4" />
                                             </button>
                                         </Tooltip> */}
+
+                                        { coupon &&
                                         <button
                                             onClick={() => setShowCouponModal(true)}
                                             className="flex items-center justify-between w-full px-4 py-5 hover:bg-gray-100 transition rounded-md cursor-pointer"
@@ -300,19 +307,14 @@ function CartModal({ lang }: { lang?: string }) {
                                                 <IoIosArrowForward className="text-gray-500 w-4 h-4" />
                                             }
                                         </button>
-
+                                        }
                                     </div>
-
-
-
-
-
-
-
-
                                     {/* <div className="w-full h-[0.5px] bg-[#7a7a7a] my-2"></div> */}
-                                    <ProgressBar totalPrice={totalPrice} freeShippingThreshold={freeShippingThreshold} />
-                                    <FreeShippingMessage totalPrice={totalPrice} lang={lang!} freeShippingThreshold={freeShippingThreshold} />
+                                    {free_shipping && <>
+                                    <ProgressBar totalPrice={totalPrice} freeShippingThreshold={freeShippingThreshold as any} />
+                                    <FreeShippingMessage totalPrice={totalPrice} lang={lang!} freeShippingThreshold={freeShippingThreshold as any} />
+                                    </>
+                                    }
                                 </>
                             )}
                             {showCouponModal && (
@@ -326,7 +328,8 @@ function CartModal({ lang }: { lang?: string }) {
                                 className="bg-mainColor text-white rounded-lg text-center text-sm sm:text-base font-medium w-11/12 mx-auto flex justify-between items-center py-2 mt-1 px-4"
                             >
                                 <span>{t('order-cart')}</span>
-                                <span className='bg-white py-1 px-3 text-mainColor rounded-md'>{totalPrice}{" "}{t('currency')}</span>
+                                <span className='bg-white py-1 px-3 text-mainColor rounded-md'>{abbreviation&&toCurrency(totalPrice, lang as any,abbreviation)}
+                                </span>
                             </Link>
                         </div>
                     </div>

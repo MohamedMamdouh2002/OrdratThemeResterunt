@@ -107,7 +107,7 @@ function Footer({ lang }: Props) {
 
   const { facebookLink, instagramLink, whatsAppNumber, xLink } = contact;
   const Links: mediaProps[] = [
-    { link: faWhatsapp, color: '#1B8755', href: whatsAppNumber },
+    { link: faWhatsapp, color: '#1B8755', href: `https://wa.me/${whatsAppNumber.replace(/\D/g, '')}` },
     { link: faXTwitter, color: 'black', href: xLink },
     { link: faFacebookF, color: '#0866FF', href: facebookLink },
     { link: faInstagram, color: '#F400D1', href: instagramLink },

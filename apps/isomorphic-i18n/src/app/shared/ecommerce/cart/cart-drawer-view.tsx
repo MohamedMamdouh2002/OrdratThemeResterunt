@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import isEmpty from 'lodash/isEmpty';
 import OrderProducts from '@/app/shared/ecommerce/checkout/order-products';
-import { toCurrency } from '@utils/to-currency';
+import useCurrencyAbbreviation, { toCurrency } from '@utils/to-currency';
 import { Title, Text, Button, EmptyProductBoxIcon } from 'rizzui';
 import cn from '@utils/class-names';
 import { routes } from '@/config/routes';
@@ -29,6 +29,8 @@ export default function CartDrawerView({
   setOpenDrawer,
 }: CartDrawerViewProps) {
   const isCartEmpty = isEmpty(items);
+  const abbreviation = useCurrencyAbbreviation({ lang:'en' });
+
   return (
     <div className="flex h-full w-full flex-col">
       <DrawerHeader
@@ -75,7 +77,7 @@ export default function CartDrawerView({
         >
           Checkout
           <span className="-mr-3 inline-flex rounded-md bg-primary-lighter p-2 px-4 text-primary-dark">
-            {toCurrency(total)}
+            {abbreviation&&toCurrency(total,'en',abbreviation)}
           </span>
         </Link>
       )}

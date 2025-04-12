@@ -9,8 +9,9 @@
 import hamburger from '@public/assets/hamburger.png'
 import potato from '@public/assets/شاورما-عراقي-لحمة-مع-بطاطا.png'
   import { Star, Flame } from 'lucide-react';
-import { toCurrency } from '@utils/to-currency';
+import useCurrencyAbbreviation, { toCurrency } from '@utils/to-currency';
 import CustomImage from '../CustomImage';
+import { AnimatePresence } from 'framer-motion';
 
   type Props = Food & {
     lang:string;
@@ -25,7 +26,8 @@ import CustomImage from '../CustomImage';
   const Card = (data:Props) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [quantity, setQuantity] = useState(1);
-    
+    const abbreviation = useCurrencyAbbreviation({ lang: data.lang });
+
     const handleOpenModal = () => {
       setIsModalOpen(true);
     };
@@ -39,8 +41,8 @@ import CustomImage from '../CustomImage';
           <div onClick={handleOpenModal} className="hover:scale-105 hover:cursor-pointer  w-[100%] duration-200">
             <div className="relative w-full h-[100px] xs:h-[200px] md:h-[200px] lg:h-[220px] xl:h-[270px] 2xl:h-[300px]">
               <CustomImage
-                alt="card food"
-                src={data?.images ? data?.images[0]?.imageUrl || photo : photo} 
+                alt="card food1"
+                src={data?.images && data?.images[0]?.imageUrl} 
                 layout="fill"
                 objectFit="cover"
                 quality={90}
@@ -69,28 +71,30 @@ import CustomImage from '../CustomImage';
               {data.description}
             </Text>
             <div className="mt-2 flex items-center font-semibold text-mainColor">
-              {toCurrency(data.price, data.lang)}
+              {abbreviation&&toCurrency(data.price, data.lang,abbreviation)}
 
               {data.oldPrice && (
                 <del className="ps-1.5 text-[13px] font-normal text-gray-500">
-                  {toCurrency(data.oldPrice, data.lang)}
+                  {abbreviation&&toCurrency(data.oldPrice, data.lang,abbreviation)}
                 </del>
               )}
             </div>
           </div>
-       
+       <AnimatePresence>
+
         {isModalOpen && (
           <Modal
-            lang={data.lang} 
-            modalId={data.id}
-            setIsModalOpen={handleCloseModal}
-            quantity={quantity}
-            setQuantity={setQuantity}
-            // setShowItem={function (val: boolean): void {
+          lang={data.lang} 
+          modalId={data.id}
+          setIsModalOpen={handleCloseModal}
+          quantity={quantity}
+          setQuantity={setQuantity}
+          // setShowItem={function (val: boolean): void {
             //   throw new Error('Function not implemented.');
             // } }
-          />
-        )}
+            />
+          )}
+          </AnimatePresence>
       </>
     );
   };

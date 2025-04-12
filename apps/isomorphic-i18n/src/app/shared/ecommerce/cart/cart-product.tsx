@@ -2,7 +2,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { CartItem } from '@/types';
 import isEmpty from 'lodash/isEmpty';
-import { toCurrency } from '@utils/to-currency';
+import useCurrencyAbbreviation, { toCurrency } from '@utils/to-currency';
 import { Title, Text } from 'rizzui';
 import { AddToWishList } from '@components/wishlist-button';
 import RemoveItem from '@/app/shared/ecommerce/cart/remove-item';
@@ -48,6 +48,8 @@ export default function CartProduct({ product, lang , ifModal=false }: { product
   console.log("product: ",product);
   console.log("data: ",parseProductData(product.id as string));
   const realProductData = parseProductData(product.id as string);
+  const abbreviation = useCurrencyAbbreviation({ lang } as any);
+
   return (
     <div className="grid grid-cols-12 items-start gap-4 border-b border-muted py-6 first:pt-0 sm:flex sm:gap-6 2xl:py-8">
       <figure className="col-span-4 sm:max-w-[180px]">
@@ -70,12 +72,12 @@ export default function CartProduct({ product, lang , ifModal=false }: { product
           <div className="">
 
             <span className="inline-block text-sm font-semibold text-gray-1000 sm:font-medium md:text-base 3xl:text-lg">
-              {toCurrency(product.price, lang)}
+              {abbreviation&&toCurrency(product.price,lang as any,abbreviation)}
             </span>
             {product.oldPrice?
               <li className={`flex items-center gap-3 text-gray-500`}>
                 {/* <span>Old Price :</span> */}
-                <del className="text-gray-1000 ">{toCurrency(product.oldPrice, lang)}</del>
+                <del className="text-gray-1000 ">{abbreviation&&toCurrency(product.oldPrice,lang as any,abbreviation)}</del>
               </li>
               :''
             }

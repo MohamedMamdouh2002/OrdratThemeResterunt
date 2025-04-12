@@ -6,19 +6,30 @@ export default function Text({
 	name,
 	label,
 	placeholder,
+	disabled,
 	...props
 }: {
 	name: string;
 	label: string;
-	placeholder?: string; 
+	placeholder?: string;
 	IsTextarea?: boolean;
 	min?: string;
 	type?: string;
 	required?: boolean;
 	autoComplete?: string;
+	disabled?: boolean;
 	props?: any[];
 }) {
-	return <FormikInput name={name} label={label} InputComponent={TextInput} placeholder={placeholder} {...props} />;
+	return (
+		<FormikInput
+			name={name}
+			label={label}
+			placeholder={placeholder}
+			InputComponent={TextInput}
+			disabled={disabled}
+			{...props}
+		/>
+	);
 }
 
 const TextInput = ({
@@ -29,6 +40,7 @@ const TextInput = ({
 	handleOnBlur,
 	IsTextarea = false,
 	inputClasses,
+	disabled,
 	...props
 }: {
 	id: string;
@@ -38,11 +50,9 @@ const TextInput = ({
 	handleOnBlur: () => void;
 	IsTextarea: boolean;
 	inputClasses?: string;
+	disabled?: boolean;
 	props?: any[];
 }) => {
-	const baseClasses = 'w-full p-3 rounded-lg border px-3 py-2 border-[rgb(227,227,227)]';
-  const focusClasses = 'focus:border-[#2563eb] focus:outline-none focus:ring-2 focus:ring-[#2563eb] focus:ring-offset-2';
-
 	return IsTextarea ? (
 		<textarea
 			value={value}
@@ -50,8 +60,9 @@ const TextInput = ({
 			placeholder={placeholder}
 			onChange={e => handleOnChange(e.target.value)}
 			onBlur={handleOnBlur}
+			disabled={disabled}
 			className={cn(
-				'w-full  p-3 rounded-lg outline-0 min-h-[140px] resize-none border border-[rgb(227,227,227,1)] px-3 py-2 focus-within:border-dotted focus-within:border-mainColor focus-within:outline-none disabled:text-stone-400 focus:border-mainColor focus:outline-none focus:ring-2 focus:ring-transparent focus:ring-offset-0',
+				'w-full p-3 rounded-lg outline-0 min-h-[140px] resize-none border border-[rgb(227,227,227,1)] px-3 py-2 focus-within:border-dotted focus-within:border-mainColor focus-within:outline-none disabled:text-stone-400 focus:border-mainColor focus:outline-none focus:ring-2 focus:ring-transparent focus:ring-offset-0',
 				inputClasses
 			)}
 			{...props}
@@ -63,9 +74,11 @@ const TextInput = ({
 			placeholder={placeholder}
 			onChange={e => handleOnChange(e.target.value)}
 			onBlur={handleOnBlur}
-			className={
-				'w-full p-3 rounded-lg outline-0 border border-[rgb(227,227,227,1)] px-3 py-2 focus-within:border-dotted focus-within:border-mainColor  focus-within:outline-none disabled:text-stone-400 focus:border-mainColor focus:outline-none focus:ring-2 focus:ring-transparent focus:ring-offset-0'
-			}
+			disabled={disabled}
+			className={cn(
+				'w-full p-3 rounded-lg outline-0 border border-[rgb(227,227,227,1)] px-3 py-2 focus-within:border-dotted focus-within:border-mainColor focus-within:outline-none disabled:text-stone-400 focus:border-mainColor focus:outline-none focus:ring-2 focus:ring-transparent focus:ring-offset-0',
+				inputClasses
+			)}
 			{...props}
 		/>
 	);

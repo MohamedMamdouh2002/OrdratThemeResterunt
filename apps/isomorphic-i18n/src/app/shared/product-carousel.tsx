@@ -99,7 +99,7 @@ export default function ProductCarousel({
       >
         {data.map((product) => (
           <SwiperSlide key={product.id}>
-            <ProductModernCard product={product} routes={routes} />
+            <ProductModernCard lang='en' product={product} routes={routes} />
           </SwiperSlide>
         ))}
       </Swiper>

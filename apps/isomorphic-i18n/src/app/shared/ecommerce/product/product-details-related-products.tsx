@@ -19,7 +19,7 @@ export default function ProductDetailsRelatedProducts() {
       </header>
       <div className="grid grid-cols-1 gap-x-5 gap-y-6 @md:grid-cols-2 @xl:grid-cols-3 @xl:gap-y-9 @5xl:grid-cols-4 @5xl:gap-x-7 @7xl:grid-cols-5">
         {similarProducts.map((product) => (
-          <ProductModernCard key={product.id} product={product} routes={routes} />
+          <ProductModernCard lang='en' key={product.id} product={product} routes={routes} />
         ))}
       </div>
     </section>

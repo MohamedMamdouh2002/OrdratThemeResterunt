@@ -20,7 +20,7 @@ export default function Content({lang}: { lang?: string }) {
 	const [totalPages, setTotalPages] = useState(0);
 	const [errorMessage, setErrorMessage] = useState('');
 	const [isLoading, setIsLoading] = useState(false);
-	const [isSearching, setIsSearching] = useState(false); // New state for searching
+	const [isSearching, setIsSearching] = useState(false); 
 	const [hasMore, setHasMore] = useState(true);
 	const observerRef = useRef<HTMLDivElement | null>(null);
 	const { t } = useTranslation(lang!, 'search');
@@ -136,6 +136,7 @@ export default function Content({lang}: { lang?: string }) {
 										createdAt={product.createdAt}
 										lastUpdatedAt={product.lastUpdatedAt}
 										isOffer={false}
+										{...product}
 										setCurrentItem={() => {}}
 									/>
 								))}

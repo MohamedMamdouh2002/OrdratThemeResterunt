@@ -7,7 +7,7 @@ import usePrice from '@hooks/use-price';
 import OrderProducts from './order-products';
 import { Button, Title, Text } from 'rizzui';
 import cn from '@utils/class-names';
-import { toCurrency } from '@utils/to-currency';
+import useCurrencyAbbreviation, { toCurrency } from '@utils/to-currency';
 import { useCart } from '@/store/quick-cart/cart.context';
 import { useTranslation } from '@/app/i18n/client';
 import { useEffect, useState } from 'react';
@@ -46,6 +46,8 @@ export default function OrderSummery({
   }) => void;
 }) {
   const params = useParams();
+  const abbreviation = useCurrencyAbbreviation({ lang } as any);
+
   const [response, setResponse] = useState<Branchprops[]>([]);
 
   const { items, total, addItemToCart, removeItemFromCart, clearItemFromCart } =
@@ -154,29 +156,29 @@ export default function OrderSummery({
             {t('Subtotal')}
             <Text as="span" className="font-medium text-gray-900">
               {/* {subtotal} */}
-              {toCurrency(total, lang)}
+              {abbreviation&&toCurrency(total, lang as any,abbreviation)}
             </Text>
           </div>
           <div className="mb-4 flex items-center justify-between last:mb-0">
             {t('Vat')}
             <Text as="span" className="font-medium text-gray-900">
-              {toCurrency(taxValue, lang)}
+              {abbreviation&&toCurrency(taxValue, lang as any,abbreviation)}
             </Text>
           </div>
           <div className="mb-4 flex items-center justify-between last:mb-0">
             {t('Shipping-Fees')}
             {/* <Text as="span" className="font-medium text-gray-900">
-              {toCurrency(fees, lang)}
+              {abbreviation&&toCurrency(fees, lang)}
             </Text> */}
             {(() => {
               const mainBranch = response.find(
                 (i) => i.name === "Main Branch" || i.name === "الفرع الرئيسي"
               );
               if (mainBranch?.isFixedDelivery) {
-                return <span>{toCurrency(mainBranch?.deliveryCharge ?? 0, lang)}</span>;
+                return <span>{abbreviation&&toCurrency(mainBranch?.deliveryCharge ?? 0, lang as any,abbreviation)}</span>;
               }
               else {
-                return <span>{toCurrency(fees, lang)}</span>;
+                return <span>{abbreviation&&toCurrency(fees, lang as any,abbreviation)}</span>;
               }
             })()}
 
@@ -185,13 +187,13 @@ export default function OrderSummery({
           {discount > 0 && (
             <div className="flex mb-4 items-center justify-between text-green-600">
               {t('Discount')}
-              <span>- {toCurrency(discount, lang)}</span>
+              <span>- {abbreviation&&toCurrency(discount, lang as any,abbreviation)}</span>
             </div>
           )}
           <div className="flex items-center justify-between border-t border-muted py-4 text-base font-bold text-gray-1000">
             {t('Total')}
             {/* <Text>{totalPrice}</Text> */}
-            <Text>{toCurrency(finalTotal, lang)}</Text>
+            <Text>{abbreviation&&toCurrency(finalTotal, lang as any,abbreviation)}</Text>
           </div>
 
           {items.length ? (

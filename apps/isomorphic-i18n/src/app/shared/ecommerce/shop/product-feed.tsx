@@ -33,7 +33,7 @@ export default function ProductFeed() {
         {filteredData
           ?.slice(0, nextPage)
           ?.map((product, index) => (
-            <ProductModernCard key={product.id} product={product} routes={routes} />
+            <ProductModernCard lang='en' key={product.id} product={product} routes={routes} />
           ))}
       </div>
 

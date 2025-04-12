@@ -4,7 +4,7 @@ import Image from 'next/image';
 import Table, { HeaderCell } from '@/app/shared/table';
 import { useCart } from '@/store/quick-cart/cart.context';
 import { Title, Text } from 'rizzui';
-import { toCurrency } from '@utils/to-currency';
+import useCurrencyAbbreviation, { toCurrency } from '@utils/to-currency';
 import { CartItem, Order, OrderItem } from '@/types';
 import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
@@ -103,6 +103,8 @@ export default function OrderViewProducts({ lang }: { lang: string }) {
   const [order, setOrder] = useState<Order | null>(null);
   const [loading, setLoading] = useState(true);
   const { t } = useTranslation(lang, 'order');
+    const abbreviation = useCurrencyAbbreviation({ lang } as any);
+  
   const columns = [
     {
       title: <HeaderCell title={t('product')} />,
@@ -134,7 +136,7 @@ export default function OrderViewProducts({ lang }: { lang: string }) {
       key: 'itemPrice',
       width: 200,
       render: (itemPrice: number) => (
-        <Text className="text-end text-sm">{toCurrency(itemPrice, lang)}</Text>
+        <Text className="text-end text-sm">{abbreviation&&toCurrency(itemPrice, lang,abbreviation)}</Text>
       ),
     },
     {
@@ -143,7 +145,7 @@ export default function OrderViewProducts({ lang }: { lang: string }) {
       key: 'shippingFees',
       width: 200,
       render: (shippingFees: number) => (
-        <Text className="text-end text-sm">{toCurrency(shippingFees, lang)}</Text>
+        <Text className="text-end text-sm">{abbreviation&&toCurrency(shippingFees, lang,abbreviation)}</Text>
       ),
     },
     {
@@ -161,7 +163,7 @@ export default function OrderViewProducts({ lang }: { lang: string }) {
       key: 'totalChoicePrices',
       width: 200,
       render: (totalChoicePrices: number) => (
-        <Text className="text-end text-sm">{toCurrency(totalChoicePrices, lang)}</Text>
+        <Text className="text-end text-sm">{abbreviation&&toCurrency(totalChoicePrices, lang,abbreviation)}</Text>
       ),
     },
     {
@@ -170,7 +172,7 @@ export default function OrderViewProducts({ lang }: { lang: string }) {
       key: 'totalPrice',
       width: 200,
       render: (totalPrice: number) => (
-        <Text className="text-end text-sm">{toCurrency(totalPrice, lang)}</Text>
+        <Text className="text-end text-sm">{abbreviation&&toCurrency(totalPrice, lang,abbreviation)}</Text>
       ),
     },
   ];

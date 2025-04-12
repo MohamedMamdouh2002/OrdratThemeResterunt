@@ -45,8 +45,8 @@ export async function generateStaticParams() {
 //   return `${protocol}://${host}`;
 // } 
 function getServerSiteUrl() {
-  // const host = "theme.ordrat.com";
-  const host = headers().get("host") || "localhost:3000";
+  const host = "theme.ordrat.com";
+  // const host = headers().get("host") || "localhost:3000";
   const protocol = process.env.NODE_ENV === "production" ? "https" : "http";
   return `${host}`;
 }
@@ -92,6 +92,10 @@ async function fetchShopData(shopId: string, lang: string) {
       vat:  shopData.vat || "",
       vatType:  shopData.vatType ,
       rate:  shopData.rate ,
+      showAllCouponsInSideBar:  shopData.showAllCouponsInSideBar ,
+      applyFreeShppingOnTarget:  shopData.applyFreeShppingOnTarget ,
+      freeShppingTarget:  shopData.freeShppingTarget ,
+      currencyId:  shopData.currencyId ,
     };
   } catch (error) {
     console.error("Error fetching shop details:", error);
@@ -245,7 +249,7 @@ export default async function RootLayout({
   children: React.ReactNode;
   params: any;
 }) {
-  const realPath = getServerSiteUrl(); // Get the real site URL
+  const realPath = getServerSiteUrl();
   let shopId = null;
   let shopData = null;
   let branchZones = [];
@@ -408,6 +412,10 @@ export default async function RootLayout({
                       branchZones={branchZones}
                       shopId={shopId.id}
                       rate={shopId.rate}
+                      showAllCouponsInSideBar={shopId.showAllCouponsInSideBar}
+                      applyFreeShppingOnTarget={shopId.applyFreeShppingOnTarget}
+                      freeShppingTarget={shopId.freeShppingTarget}
+                      currencyId={shopId.currencyId}
                     />
                     {children}
                     <Toaster />

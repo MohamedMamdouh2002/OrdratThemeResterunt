@@ -198,12 +198,12 @@ function FAQSection({ lang }: { lang: string }) {
               item.faQs.length > 0 && (
                 
                 <div key={index} className={`${style.faqCardWrapperContainer} group`}>
-                  <Link href={routes.faq.details(`${index}`)} onClick={() => setFaqs([item])}>
+                  <Link href={`/${lang}${routes.faq.details(`${index}`)}`} onClick={() => setFaqs([item])}>
                     <div className={style.faqCardWrapper}>
                       <div className={style.faqCardHead} style={{ alignItems: 'center' }}>
                         <div className={style.iconWrapper} style={{ width: '50px', marginInlineEnd: '5px' }}>
                           <CustomImage
-                            src={item.imageUrl || images[index]}
+                            src={item?.imageUrl}
                             width="50"
                             height="50"
                             alt={item.name}

@@ -11,7 +11,7 @@ import axiosClient from '../fetch/api';
 import { EmptyProductBoxIcon } from 'rizzui';
 import { useTranslation } from '@/app/i18n/client';
 import fetchClient from '../fetch/api';
-import { toCurrency } from '@utils/to-currency';
+import useCurrencyAbbreviation, { toCurrency } from '@utils/to-currency';
 import { useUserContext } from '../context/UserContext';
 import CustomImage from '../ui/CustomImage';
 
@@ -22,6 +22,8 @@ const MyOrder: React.FC<{ lang: string }> = ({ lang }) => {
   const [shopName, setShopName] = useState<string | null>(null);
   const { t } = useTranslation(lang, 'order');
   const { shopId } = useUserContext();
+  const abbreviation = useCurrencyAbbreviation({ lang });
+
 
   useEffect(() => {
     const fetchOrders = async () => {
@@ -73,7 +75,7 @@ const MyOrder: React.FC<{ lang: string }> = ({ lang }) => {
                           <h2 className="text-mainColor text-sm sm:text-base">{order.orderNumber}</h2>
                         </div>
                         <h3 className="text-mainColor">
-                          {toCurrency(order?.totalPrice as any, lang)}
+                          {abbreviation && toCurrency(order?.totalPrice as any, lang, abbreviation)}
                         </h3>
                       </div>
                       <div className="py-5">
@@ -84,8 +86,9 @@ const MyOrder: React.FC<{ lang: string }> = ({ lang }) => {
                         <div className="flex gap-1 mt-3">
                           <p>{t('total-choice-prices')}</p>
                           <span>
-                            
-                          {toCurrency(order.totalChoicePrices as any, lang)}</span>
+                            {abbreviation && toCurrency(order?.totalChoicePrices as any, lang, abbreviation)}
+                          </span>
+
                         </div>
                         {order.items.map((i, index) => (
                           <React.Fragment key={index}>
@@ -105,7 +108,8 @@ const MyOrder: React.FC<{ lang: string }> = ({ lang }) => {
                             <div className="flex gap-1 mt-3">
                               <p>{t('item-price')}</p>
                               <span>
-                                {toCurrency(i.itemPrice as any, lang)}
+                                {abbreviation && toCurrency(i?.itemPrice as any, lang, abbreviation)}
+
                               </span>
                             </div>
                           </React.Fragment>

@@ -245,7 +245,7 @@ export default function AddressModal({
 												<div className="grid sm:grid-cols-2 grid-cols-1 gap-x-3  me-1 md:me-0">
 													<Text name="aptNo" label={t('apt-lable')} placeholder={t('apt-lable')} required={true} />
 													<Text name="floor" label={t('floor-lable')} placeholder={t('floor-lable')} required={true}/>
-													<Text name="street" label={t('street-lable')} placeholder={t('street-lable')} required={true} />
+													<Text name="street" disabled  label={t('street-lable')} placeholder={t('street-lable')} required={true} />
 													<Phone disabled={true} name="phoneNumber" label={t('phoneNumber-lable')} placeholder={t('phoneNumber-lable')} required={true} />
 													<div className="col-span-full">
 														<Text

@@ -1,6 +1,6 @@
 import Image from 'next/image';
 import { PiMinus, PiPlus, PiTrash } from 'react-icons/pi';
-import { toCurrency } from '@utils/to-currency';
+import useCurrencyAbbreviation, { toCurrency } from '@utils/to-currency';
 import { CartItem } from '@/types';
 import Link from 'next/link';
 import { routes } from '@/config/routes';
@@ -29,6 +29,8 @@ export default function OrderProducts({
   removeItemFromCart: (id: number | string) => void;
   lang?:string;
 }) {
+  const abbreviation = useCurrencyAbbreviation({ lang } as any);
+
   if (!items.length) {
     return (
       <div className="pb-3">
@@ -96,7 +98,7 @@ export default function OrderProducts({
               </div>
             </div>
             <div className="flex items-center gap-3 font-medium text-gray-700">
-              {toCurrency(item.price * item.quantity, lang)}
+              {abbreviation&&toCurrency(item.price * item.quantity, lang as any,abbreviation)}
             </div>
           </div>
         ))}

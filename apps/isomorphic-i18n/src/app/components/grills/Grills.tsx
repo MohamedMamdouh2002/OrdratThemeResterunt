@@ -21,8 +21,8 @@ type Props = { data?: AllCategories; initialCategory?: string };
 
 function Grills({ lang }: { lang: string }) {
   const { GetHome } = useUserContext();
-  const [currentSlide, setCurrentSlide] = useState(0);
   const [home, setHome] = useState<any[]>([])
+  const [currentSlide, setCurrentSlide] = useState(0);
   const { t } = useTranslation(lang!, 'home');
   const swiperRefs = useRef<{ [key: string]: SwiperType | null }>({});
 

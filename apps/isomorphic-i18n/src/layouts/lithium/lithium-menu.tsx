@@ -261,7 +261,9 @@ export default function HeaderMenuLeft({ lang }: { lang?: string }) {
         <NavMenu.Item >
           <NavMenu.Trigger  className={`flex items-center text-sm  gap-1 pt-2 ${isStickyVisible?"hover:text-black":"hover:text-mainColor"}`}>
             <Link  lang={lang} href={`/${lang!}/`}>
-            <MenuTriggerButton  name="Home" lang={lang}/>
+            <p>
+              Home
+              </p>
             </Link>
           </NavMenu.Trigger>
           {/* <NavMenu.Content className="border border-[red] bg-white dark:bg-gray-100">
@@ -277,7 +279,9 @@ export default function HeaderMenuLeft({ lang }: { lang?: string }) {
         <NavMenu.Item >
         <NavMenu.Trigger  className={`flex items-center text-sm  gap-1 pt-2 ${isStickyVisible?"hover:text-black":"hover:text-mainColor"}`}>
             <Link href={`/${lang!}/reviews`}>
-            <MenuTriggerButton name="Reviews"  />
+            <p>
+               Reviews
+              </p>
             </Link>
           </NavMenu.Trigger>
           {/* <NavMenu.Content>
@@ -293,7 +297,9 @@ export default function HeaderMenuLeft({ lang }: { lang?: string }) {
         <NavMenu.Item>
         <NavMenu.Trigger  className={`flex items-center text-sm  gap-1 pt-2 ${isStickyVisible?"hover:text-black":"hover:text-mainColor"}`}>
               <Link lang={lang} href={`/${lang!}/faq`}>
-              <MenuTriggerButton name="FAQ"  />
+              <p>
+                 FAQ 
+                </p>
             </Link>
           </NavMenu.Trigger>
           {/* <NavMenu.Content>
@@ -311,34 +317,36 @@ export default function HeaderMenuLeft({ lang }: { lang?: string }) {
   );
 }
 
-function MenuTriggerButton({
-  name,
-  lang,
-}: {
-  name: LithiumMenuItemsKeys;
-  lang?: string;
-}) {
-  const { t } = useTranslation(lang!, "nav");
-  const { isActive } = useActivePathname();
-  return (
-    <>
-      <span
-        className={cn(
-          "inline-block 4xl:text-xl w-full overflow-hidden whitespace-nowrap pe-1.5 ps-0 text-sm  leading-5 font-montserrat  font-monbold   transition-all duration-200",
-          isActive(lithiumMenuItems[name].name!) ?
-           "text-yellow-500 hover:text-mainColor" : " text-darkGreenColor dark:text-mainText hover:text-greenColor dark:hover:text-greenColor"
-        )}
-      >
-        {t(lithiumMenuItems[name].name)}
-      </span>
-      {/* <span
-        className={cn(
-          "text-mainText duration-200",
-          isActive(lithiumMenuItems[name].dropdownItems!) && "text-primary"
-        )}
-      >
-        <PiCaretDownBold />
-      </span> */}
-    </>
-  );
-}
+// function p>
+// ({
+// </p>
+//   name,
+//   lang,
+// }: {
+//   name: LithiumMenuItemsKeys;
+//   lang?: string;
+// }) {
+//   const { t } = useTranslation(lang!, "nav");
+//   const { isActive } = useActivePathname();
+//   return (
+//     <>
+//       <span
+//         className={cn(
+//           "inline-block 4xl:text-xl w-full overflow-hidden whitespace-nowrap pe-1.5 ps-0 text-sm  leading-5 font-montserrat  font-monbold   transition-all duration-200",
+//           isActive(lithiumMenuItems[name].name!) ?
+//            "text-yellow-500 hover:text-mainColor" : " text-darkGreenColor dark:text-mainText hover:text-greenColor dark:hover:text-greenColor"
+//         )}
+//       >
+//         {t(lithiumMenuItems[name].name)}
+//       </span>
+//       {/* <span
+//         className={cn(
+//           "text-mainText duration-200",
+//           isActive(lithiumMenuItems[name].dropdownItems!) && "text-primary"
+//         )}
+//       >
+//         <PiCaretDownBold />
+//       </span> */}
+//     </>
+//   );
+// }

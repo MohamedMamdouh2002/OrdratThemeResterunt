@@ -5,7 +5,7 @@ import { useAtomValue } from 'jotai';
 import isEmpty from 'lodash/isEmpty';
 import { PiCheckBold } from 'react-icons/pi';
 import { FaTimes } from 'react-icons/fa';
-import { useParams } from 'next/navigation'; 
+import { useParams } from 'next/navigation';
 
 import {
   billingAddressAtom,
@@ -16,7 +16,7 @@ import OrderViewProducts from '@/app/shared/ecommerce/order/order-products/order
 import { useCart } from '@/store/quick-cart/cart.context';
 import { Title, Text } from 'rizzui';
 import cn from '@utils/class-names';
-import { toCurrency } from '@utils/to-currency';
+import useCurrencyAbbreviation, { toCurrency } from '@utils/to-currency';
 import { formatDate } from '@utils/format-date';
 import usePrice from '@hooks/use-price';
 import { useEffect, useState } from 'react';
@@ -41,12 +41,13 @@ function WidgetCard({
   children: React.ReactNode;
   childrenWrapperClass?: string;
 }) {
+
   return (
     <div className={className}>
       <Title
         as="h3"
         className="mb-3.5 text-base font-semibold @5xl:mb-5 4xl:text-lg"
-        >
+      >
         {title}
       </Title>
       <div
@@ -54,15 +55,17 @@ function WidgetCard({
           'rounded-lg border border-muted px-5 @sm:px-7 @5xl:rounded-xl',
           childrenWrapperClass
         )}
-        >
+      >
         {children}
       </div>
     </div>
   );
 }
 
-export default function OrderView({lang}:{lang:string}) {
+export default function OrderView({ lang }: { lang: string }) {
   const { items, total, totalItems } = useCart();
+  const abbreviation = useCurrencyAbbreviation({ lang } as any);
+
   const { price: subtotal } = usePrice(
     items && {
       amount: total,
@@ -75,18 +78,18 @@ export default function OrderView({lang}:{lang:string}) {
   const billingAddress = useAtomValue(billingAddressAtom);
   const shippingAddress = useAtomValue(shippingAddressAtom);
   const [order, setOrder] = useState<Order | null>(null);
-	const { t } = useTranslation(lang! ,'order');
-  
+  const { t } = useTranslation(lang!, 'order');
+
   const [currentOrderStatus, setCurrentOrderStatus] = useState<number>();
   // const currentOrderStatus = order?.status;
-  const { id }:any = useParams();
-  const phone=localStorage.getItem('phoneNumber')
+  const { id }: any = useParams();
+  const phone = localStorage.getItem('phoneNumber')
   const transitions = [
     {
       id: 1,
       paymentMethod: {
         name: `${t('cash-on-delivery')}`,
-        image:<BadgeCent className="text-mainColor" />
+        image: <BadgeCent className="text-mainColor" />
       },
       // price: '$1575.00',
     },
@@ -134,7 +137,7 @@ export default function OrderView({lang}:{lang:string}) {
           throw new Error('Failed to fetch order');
         }
         const data: Order = await response.json();
-        setCurrentOrderStatus(data?.status); 
+        setCurrentOrderStatus(data?.status);
 
         setOrder(data);
       } catch (error) {
@@ -148,24 +151,24 @@ export default function OrderView({lang}:{lang:string}) {
   }, []);
   return (
     <div className="@container mb-5">
-            <div className="flex flex-wrap lg:mt-0 mt-20 justify-center border-b border-t border-gray-300 py-4 font-medium text-gray-700 @5xl:justify-start">
+      <div className="flex flex-wrap lg:mt-0 mt-20 justify-center border-b border-t border-gray-300 py-4 font-medium text-gray-700 @5xl:justify-start">
         <span className="my-2 border-r border-muted px-5 py-0.5 first:ps-0 last:border-r-0">
-            <p className='text-base'>
-  {t('order-id')} {order?. orderNumber}
-  
-            </p>
+          <p className='text-base'>
+            {t('order-id')} {order?.orderNumber}
+
+          </p>
           {/* October 22, 2022 at 10:30 pm */}
           <p className='text-base'>
-          {t('ordered-At')}: {order?.createdAt ? new Date(order.createdAt).toLocaleString('en-US', {
-  year: 'numeric',
-  month: 'long',
-  day: 'numeric',
-  hour: 'numeric',
-  minute: 'numeric',
-  second: 'numeric',
-  hour12: true, // لو عايز AM/PM، أو خليه false لو 24 ساعة
-}) : 'N/A'}
-          </p> 
+            {t('ordered-At')}: {order?.createdAt ? new Date(order.createdAt).toLocaleString('en-US', {
+              year: 'numeric',
+              month: 'long',
+              day: 'numeric',
+              hour: 'numeric',
+              minute: 'numeric',
+              second: 'numeric',
+              hour12: true, // لو عايز AM/PM، أو خليه false لو 24 ساعة
+            }) : 'N/A'}
+          </p>
         </span>
         {/* <span className="my-2 border-r border-muted px-5 py-0.5 first:ps-0 last:border-r-0">
           {totalItems} Items
@@ -177,68 +180,68 @@ export default function OrderView({lang}:{lang:string}) {
           Paid
         </span> */}
       </div>
-<div className="block xl:hidden space-y-7 pt-8">
-            <WidgetCard
-            title={t('Order-Status')}
-            childrenWrapperClass="py-5 @5xl:py-8 flex"
-          >
-            <div className="ms-2 w-full space-y-7 border-s-2 border-gray-100">
-              {/* عرض حالة الـ id === 0 فقط إذا كان currentOrderStatus === 0 */}
-              {currentOrderStatus === 0 &&
-                orderStatus
-                  .filter((item) => item.id === 0)
-                  .map((item) => (
-                    <div
-                      key={item.id}
-                      className={cn(
-                        "relative ps-6 text-sm font-medium before:absolute before:-start-[9px] before:top-px before:h-5 before:w-5 before:-translate-x-px before:rounded-full before:bg-gray-100 before:content-[''] after:absolute after:-start-px after:top-5 after:h-10 after:w-0.5 after:bg-gray-100 last:after:hidden",
-                        'text-red-500 before:bg-red-500' 
-                      )}
-                    >
-                        
-                        <span className={`absolute ${lang ==='en' ? `-start-1.5`:`-start-1`} top-1 text-white`}>
-                          <FaTimes  className="h-auto w-3" />
-                        </span>
-                    
-                      {item.label}
-                    </div>
-                  ))}
+      <div className="block xl:hidden space-y-7 pt-8">
+        <WidgetCard
+          title={t('Order-Status')}
+          childrenWrapperClass="py-5 @5xl:py-8 flex"
+        >
+          <div className="ms-2 w-full space-y-7 border-s-2 border-gray-100">
+            {/* عرض حالة الـ id === 0 فقط إذا كان currentOrderStatus === 0 */}
+            {currentOrderStatus === 0 &&
+              orderStatus
+                .filter((item) => item.id === 0)
+                .map((item) => (
+                  <div
+                    key={item.id}
+                    className={cn(
+                      "relative ps-6 text-sm font-medium before:absolute before:-start-[9px] before:top-px before:h-5 before:w-5 before:-translate-x-px before:rounded-full before:bg-gray-100 before:content-[''] after:absolute after:-start-px after:top-5 after:h-10 after:w-0.5 after:bg-gray-100 last:after:hidden",
+                      'text-red-500 before:bg-red-500'
+                    )}
+                  >
 
-              {currentOrderStatus !== 0 &&
-                orderStatus
-                  .filter((item) => item.id !== 0)
-                  .map((item) => (
-                    <div
-                      key={item.id}
-                      className={cn(
-                        "relative ps-6 text-sm font-medium before:absolute before:-start-[9px] before:top-px before:h-5 before:w-5 before:-translate-x-px before:rounded-full before:bg-gray-100 before:content-[''] after:absolute after:-start-px after:top-5 after:h-10 after:w-0.5 after:bg-gray-100 last:after:hidden",
-                        (currentOrderStatus ?? 1) >= item.id
-                          ? 'before:bg-teal-500 after:bg-teal-500' // باقي الحالات
-                          : 'after:hidden', // إخفاء after للحالات الأخرى
-                        currentOrderStatus === item.id && 'before:bg-teal-500 after:hidden' // الحالة الحالية
-                      )}
-                    >
-                      {(currentOrderStatus ?? 0) >= item.id && item.id !== 0 ? (
-                        <span className={`absolute ${lang ==='en' ? `-start-1.5`:`-start-1`} top-1 text-white`}>
-                          <PiCheckBold className="h-auto w-3" />
-                        </span>
-                      ) : null}
+                    <span className={`absolute ${lang === 'en' ? `-start-1.5` : `-start-1`} top-1 text-white`}>
+                      <FaTimes className="h-auto w-3" />
+                    </span>
 
-                      {item.label}
-                    </div>
-                  ))}
-            </div>
-          </WidgetCard>
+                    {item.label}
+                  </div>
+                ))}
 
-     
-         </div>
+            {currentOrderStatus !== 0 &&
+              orderStatus
+                .filter((item) => item.id !== 0)
+                .map((item) => (
+                  <div
+                    key={item.id}
+                    className={cn(
+                      "relative ps-6 text-sm font-medium before:absolute before:-start-[9px] before:top-px before:h-5 before:w-5 before:-translate-x-px before:rounded-full before:bg-gray-100 before:content-[''] after:absolute after:-start-px after:top-5 after:h-10 after:w-0.5 after:bg-gray-100 last:after:hidden",
+                      (currentOrderStatus ?? 1) >= item.id
+                        ? 'before:bg-teal-500 after:bg-teal-500' // باقي الحالات
+                        : 'after:hidden', // إخفاء after للحالات الأخرى
+                      currentOrderStatus === item.id && 'before:bg-teal-500 after:hidden' // الحالة الحالية
+                    )}
+                  >
+                    {(currentOrderStatus ?? 0) >= item.id && item.id !== 0 ? (
+                      <span className={`absolute ${lang === 'en' ? `-start-1.5` : `-start-1`} top-1 text-white`}>
+                        <PiCheckBold className="h-auto w-3" />
+                      </span>
+                    ) : null}
+
+                    {item.label}
+                  </div>
+                ))}
+          </div>
+        </WidgetCard>
+
+
+      </div>
 
       <div className="items-start pt-10 @5xl:grid @5xl:grid-cols-12 @5xl:gap-7 @6xl:grid-cols-10 @7xl:gap-10">
         <div className="space-y-7 @5xl:col-span-8 @5xl:space-y-10 @6xl:col-span-7">
           {orderNote && (
             <div className="">
               <span className="mb-1.5 block text-sm font-medium text-gray-700">
-             {lang==='ar'?  'تفاصيل عن الطلب':    'Notes About Order'}
+                {lang === 'ar' ? 'تفاصيل عن الطلب' : 'Notes About Order'}
               </span>
               <div className="rounded-xl border border-muted px-5 py-3 text-sm leading-[1.85]">
                 {orderNote}
@@ -249,37 +252,37 @@ export default function OrderView({lang}:{lang:string}) {
           <div className="pb-5">
             <OrderViewProducts lang={lang} />
             <div className="border-t border-muted pt-7 @5xl:mt-3">
-            <div className="ms-auto max-w-lg space-y-6">
+              <div className="ms-auto max-w-lg space-y-6">
                 <div className="flex justify-between font-medium">
                   {t('Subtotal')} <span>
-                    
-                  {toCurrency( Number(order?.price).toFixed(2) as any -  parseFloat(Number(order?.totalVat || 0).toFixed(2)) , lang)}
+
+                    {abbreviation && toCurrency(Number(order?.price).toFixed(2) as any - parseFloat(Number(order?.totalVat || 0).toFixed(2)), lang as any, abbreviation)}
                   </span>
 
                 </div>
                 <div className="flex justify-between font-medium">
-                  {t('Shipping-Fees')} 
+                  {t('Shipping-Fees')}
                   <span>
-               
-                  {toCurrency(Number(order?.shippingFees).toFixed(2) as any , lang)}
+
+                    {abbreviation && toCurrency(Number(order?.shippingFees).toFixed(2) as any, lang as any, abbreviation)}
                   </span>
                 </div>
                 <div className="flex justify-between font-medium">
                   {t('Vat')} <span>
-                    
-                  {toCurrency(Number(order?.totalVat).toFixed(2) as any , lang)}
+
+                    {abbreviation && toCurrency(Number(order?.totalVat).toFixed(2) as any, lang as any, abbreviation)}
                   </span>
 
                 </div>
                 <div className="flex justify-between font-medium">
                   {t('Discount')} <span>
-                    
-                 - {toCurrency(Number(order?.discount).toFixed(2) as any , lang)}
+
+                    - {abbreviation && toCurrency(Number(order?.discount).toFixed(2) as any, lang as any, abbreviation)}
                   </span>
 
                 </div>
                 <div className="flex justify-between border-t border-muted pt-5 text-base font-semibold">
-                  {t('Total')} <span>{toCurrency(order?.totalPrice as any , lang)}</span>
+                  {t('Total')} <span>{abbreviation && toCurrency(order?.totalPrice as any, lang as any, abbreviation)}</span>
                 </div>
               </div>
             </div>
@@ -354,56 +357,56 @@ export default function OrderView({lang}:{lang:string}) {
           <div className="hidden xl:block">
 
             <WidgetCard
-                title={t('Order-Status')}
-                childrenWrapperClass="py-5 @5xl:py-8 flex"
-              >
-                <div className="ms-2 w-full space-y-7 border-s-2 border-gray-100">
-                  {/* عرض حالة الـ id === 0 فقط إذا كان currentOrderStatus === 0 */}
-                  {currentOrderStatus === 0 &&
-                    orderStatus
-                      .filter((item) => item.id === 0)
-                      .map((item) => (
-                        <div
-                          key={item.id}
-                          className={cn(
-                            "relative ps-6 text-sm font-medium before:absolute before:-start-[9px] before:top-px before:h-5 before:w-5 before:-translate-x-px before:rounded-full before:bg-gray-100 before:content-[''] after:absolute after:-start-px after:top-5 after:h-10 after:w-0.5 after:bg-gray-100 last:after:hidden",
-                            'text-red-500 before:bg-red-500' 
-                          )}
-                        >
-                            
-                            <span className={`absolute ${lang ==='en' ? `-start-1.5`:`-start-1`} top-1 text-white`}>
-                              <FaTimes  className="h-auto w-3" />
-                            </span>
-                        
-                          {item.label}
-                        </div>
-                      ))}
+              title={t('Order-Status')}
+              childrenWrapperClass="py-5 @5xl:py-8 flex"
+            >
+              <div className="ms-2 w-full space-y-7 border-s-2 border-gray-100">
+                {/* عرض حالة الـ id === 0 فقط إذا كان currentOrderStatus === 0 */}
+                {currentOrderStatus === 0 &&
+                  orderStatus
+                    .filter((item) => item.id === 0)
+                    .map((item) => (
+                      <div
+                        key={item.id}
+                        className={cn(
+                          "relative ps-6 text-sm font-medium before:absolute before:-start-[9px] before:top-px before:h-5 before:w-5 before:-translate-x-px before:rounded-full before:bg-gray-100 before:content-[''] after:absolute after:-start-px after:top-5 after:h-10 after:w-0.5 after:bg-gray-100 last:after:hidden",
+                          'text-red-500 before:bg-red-500'
+                        )}
+                      >
 
-                  {currentOrderStatus !== 0 &&
-                    orderStatus
-                      .filter((item) => item.id !== 0)
-                      .map((item) => (
-                        <div
-                          key={item.id}
-                          className={cn(
-                            "relative ps-6 text-sm font-medium before:absolute before:-start-[9px] before:top-px before:h-5 before:w-5 before:-translate-x-px before:rounded-full before:bg-gray-100 before:content-[''] after:absolute after:-start-px after:top-5 after:h-10 after:w-0.5 after:bg-gray-100 last:after:hidden",
-                            (currentOrderStatus ?? 1) >= item.id
-                              ? 'before:bg-teal-500 after:bg-teal-500' // باقي الحالات
-                              : 'after:hidden', // إخفاء after للحالات الأخرى
-                            currentOrderStatus === item.id && 'before:bg-teal-500 after:hidden' // الحالة الحالية
-                          )}
-                        >
-                          {(currentOrderStatus ?? 0) >= item.id && item.id !== 0 ? (
-                            <span className={`absolute ${lang ==='en' ? `-start-1.5`:`-start-1`} top-1 text-white`}>
-                              <PiCheckBold className="h-auto w-3" />
-                            </span>
-                          ) : null}
+                        <span className={`absolute ${lang === 'en' ? `-start-1.5` : `-start-1`} top-1 text-white`}>
+                          <FaTimes className="h-auto w-3" />
+                        </span>
 
-                          {item.label}
-                        </div>
-                      ))}
-                </div>
-              </WidgetCard>
+                        {item.label}
+                      </div>
+                    ))}
+
+                {currentOrderStatus !== 0 &&
+                  orderStatus
+                    .filter((item) => item.id !== 0)
+                    .map((item) => (
+                      <div
+                        key={item.id}
+                        className={cn(
+                          "relative ps-6 text-sm font-medium before:absolute before:-start-[9px] before:top-px before:h-5 before:w-5 before:-translate-x-px before:rounded-full before:bg-gray-100 before:content-[''] after:absolute after:-start-px after:top-5 after:h-10 after:w-0.5 after:bg-gray-100 last:after:hidden",
+                          (currentOrderStatus ?? 1) >= item.id
+                            ? 'before:bg-teal-500 after:bg-teal-500' // باقي الحالات
+                            : 'after:hidden', // إخفاء after للحالات الأخرى
+                          currentOrderStatus === item.id && 'before:bg-teal-500 after:hidden' // الحالة الحالية
+                        )}
+                      >
+                        {(currentOrderStatus ?? 0) >= item.id && item.id !== 0 ? (
+                          <span className={`absolute ${lang === 'en' ? `-start-1.5` : `-start-1`} top-1 text-white`}>
+                            <PiCheckBold className="h-auto w-3" />
+                          </span>
+                        ) : null}
+
+                        {item.label}
+                      </div>
+                    ))}
+              </div>
+            </WidgetCard>
           </div>
 
           <WidgetCard
@@ -442,14 +445,14 @@ export default function OrderView({lang}:{lang:string}) {
             title={t('Shipping-Address')}
             childrenWrapperClass="@5xl:py-6 py-5"
           >
-           {order?.address && (
+            {order?.address && (
               <div key={order.address.id}>
                 <Title as="h3" className="mb-2.5 text-base font-semibold @7xl:text-lg">
                   {t('Apartment')} {order.address.apartmentNumber}
-                  <br/>
+                  <br />
                   {t('Floor')} {order.address.floor}
-                  <br/>
-                   {t('Street')} {order.address.street}, 
+                  <br />
+                  {t('Street')} {order.address.street},
                 </Title>
                 <Text as="p" className="mb-2 leading-loose last:mb-0">
                   {order.address.additionalDirections}

@@ -17,7 +17,7 @@ import toast from 'react-hot-toast'
 import axiosClient from '../fetch/api'
 import map from '@public/assets/map.png'
 import { IoMdClose } from 'react-icons/io'
-import { toCurrency } from '@utils/to-currency'
+import useCurrencyAbbreviation, { toCurrency } from '@utils/to-currency'
 import CustomImage from '../ui/CustomImage'
 
 
@@ -41,6 +41,7 @@ function RestaurantTitle({ lang }: { lang?: string; }) {
     const [coupon, setCoupon] = useState<[] | null>([]);
     const [response, setResponse] = useState<Branchprops[]>([]);
     const { shopId } = useUserContext();
+    const abbreviation = useCurrencyAbbreviation({ lang } as any);
 
     console.log("logoUrl: ", logoUrl);
 
@@ -180,12 +181,12 @@ function RestaurantTitle({ lang }: { lang?: string; }) {
                                     return <span>{lang ==='ar'? 'مجانا':'Free'}</span>;
                                 }
                                 if (mainBranch.isFixedDelivery) {
-                                    return <span>{toCurrency(mainBranch.deliveryCharge ?? 0, lang)}</span>;
+                                    return <span>{abbreviation&&toCurrency(mainBranch.deliveryCharge ?? 0, lang as any,abbreviation)}</span>;
                                 }
 
                                 return (
                                     <span>
-                                     {toCurrency(mainBranch.deliveryPerKilo ?? 0, lang)} {lang === "ar" ? "/كيلو" : "/km"}
+                                     {abbreviation&&toCurrency(mainBranch.deliveryPerKilo ?? 0, lang as any,abbreviation)} {lang === "ar" ? "/كيلو" : "/km"}
                                     </span>
                                 );
                             })()}
