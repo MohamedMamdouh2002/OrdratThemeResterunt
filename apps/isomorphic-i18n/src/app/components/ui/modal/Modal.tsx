@@ -829,26 +829,21 @@ function Modal({
       {/* Mobile Modal */}
       <div className="md:hidden">
         <motion.div
-          className="fixed inset-0 bg-gray-600 bg-opacity-50 blur-md z-[999]"
+          className="fixed inset-0 bg-gray-600 bg-opacity-50  z-[999]"
           initial={{ opacity: 0 }}
           animate={{ opacity: isOpen ? 1 : 0 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.015 }}
         />
 
-    <motion.div
-     initial={{ y: '100%' }}
-     animate={{ y: isOpen ? 0 : '100%' }}
-     exit={{ y: '100%' }}
-     transition={{ 
-      type: 'spring', 
-      stiffness: 2000,  // Much higher stiffness
-      damping: 60,     // Higher damping to prevent bouncing
-      mass: 0.1,        // Lower mass for faster reaction
-      duration: 0.1     // Force a very short duration
-    }}
+<motion.div
+  initial={{ y: '100%' }}
+  animate={{ y: isOpen ? 0 : '100%' }}
+  exit={{ y: '100%' }}
+  transition={{ type: 'tween', duration: 0.2 }}
       className="fixed bottom-0 right-0 left-0 flex items-end z-[10000]"
-    >
+>
+    {/* > */}
           <div
             ref={scrollContainerRef}
             onScroll={handleScroll}
@@ -1117,7 +1112,7 @@ function Modal({
                       </>
                     )}
                     {prodId?.frequentlyOrderedWith && prodId.frequentlyOrderedWith.length > 0 && (
-  <div className="my-3 px-5">
+  <div className="my-3 ">
     <h3 className="font-bold mb-2">{lang === 'ar' ? 'منتجات ذات صلة:' : 'Related Products:'}</h3>
 
     <Swiper
