@@ -840,8 +840,14 @@ function Modal({
      initial={{ y: '100%' }}
      animate={{ y: isOpen ? 0 : '100%' }}
      exit={{ y: '100%' }}
-     transition={{ type: 'spring', stiffness: 500, damping: 50, mass: 0.8 }}
-     className="fixed bottom-0 right-0 left-0 flex items-end z-[10000]"
+     transition={{ 
+      type: 'spring', 
+      stiffness: 2000,  // Much higher stiffness
+      damping: 60,     // Higher damping to prevent bouncing
+      mass: 0.1,        // Lower mass for faster reaction
+      duration: 0.1     // Force a very short duration
+    }}
+      className="fixed bottom-0 right-0 left-0 flex items-end z-[10000]"
     >
           <div
             ref={scrollContainerRef}
