@@ -841,7 +841,7 @@ function Modal({
   animate={{ y: isOpen ? 0 : '100%' }}
   exit={{ y: '100%' }}
   transition={{ type: 'tween', duration: 0.2 }}
-      className="fixed bottom-0 right-0 left-0 flex items-end z-[10000]"
+      className="fixed bottom-0 right-0 left-0 flex items-end z-[10000] overflow-hidden"
 >
     {/* > */}
           <div
