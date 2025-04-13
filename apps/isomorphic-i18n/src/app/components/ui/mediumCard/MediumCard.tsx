@@ -90,7 +90,7 @@ function MediumCard(data:Props) {
         //   throw new Error('Function not implemented.');
         // } }
         />
-      )}
+  )}
 
       </AnimatePresence>
 {/* <hr className='mt-3 sm:hidden flex'/> */}

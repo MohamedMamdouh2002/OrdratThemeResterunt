@@ -4,10 +4,10 @@ import Title from '../ui/title/Title'
 import Image from 'next/image'
 import SmallCard from '../ui/smallCard/SmallCard'
 import MediumCard from '../ui/mediumCard/MediumCard'
-import Card from '../ui/card/Card'
 import { Swiper, SwiperSlide } from 'swiper/react'
 import 'swiper/css'
 import { useUserContext } from '../context/UserContext'
+import Card from '../ui/card/Card'
 import { AllCategories, Food } from '@/types'
 import { Swiper as SwiperType } from 'swiper';
 import PrevArrow from '../PrevArrow'
@@ -22,8 +22,8 @@ type Props = { data?: AllCategories; initialCategory?: string };
 function Grills({ lang }: { lang: string }) {
   const { GetHome } = useUserContext();
   const [home, setHome] = useState<any[]>([])
-  const [currentSlide, setCurrentSlide] = useState(0);
   const { t } = useTranslation(lang!, 'home');
+  const [currentSlide, setCurrentSlide] = useState(0);
   const swiperRefs = useRef<{ [key: string]: SwiperType | null }>({});
 
   useEffect(() => {
