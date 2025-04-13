@@ -746,80 +746,61 @@ function Modal({
                           </div>
                         </>
                       )}
-                      {/* {prodId?.frequentlyOrderedWith && (
-                              <div className=''>
-                                  {prodId.frequentlyOrderedWith.map((item: {
-                                      FoodId: string | number | bigint | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | Promise<React.AwaitedReactNode> | Iterable<React.ReactNode> | null | undefined; relatedProductId: string | number | bigint | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | Promise<React.AwaitedReactNode> | Iterable<React.ReactNode> | null | undefined; relatedProduct: {
-                                          oldPrice: string; imageUrl: string | StaticImport; name: string | number | bigint | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | Promise<React.AwaitedReactNode> | Iterable<React.ReactNode> | null | undefined; price: string | number | bigint | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | Promise<React.AwaitedReactNode> | Iterable<React.ReactNode> | null | undefined;
-                                      };
-                                  }, index: React.Key | null | undefined) => (
-                                      <div key={index} className='p-4'>
-                                          <h3 className="font-medium text-lg mb-2">{t('RelatedProduct')}:</h3>
-                                          {item.relatedProduct && (
-                                              <div className=" border border-dashed border-mainColor rounded-lg p-2 w-28">
-                                                  <CustomImage
-                                                      src={item.relatedProduct.imageUrl}
-                                                      width={200}
-                                                      height={300}
-                                                      alt="s"
-                                                      className="w-40"
-                                                  />
-                                                  <p className='text-sm mb-1 font-medium'> {item.relatedProduct.name}</p>
-                                                  <div className="flex gap-3">
-                                                      <p className='text-[10px] text-mainColor'> {item.relatedProduct.price} {t('EGP')}</p>
-                                                      <del className='text-[10px]'>{item.relatedProduct.oldPrice} {t('EGP')} </del>
-                                                  </div>
-                                              </div>
-                                          )}
-                                      </div>
-                                  ))}
-                              </div>
-                          )} */}
-                      <div className='my-3 px-5' >
-                        <h3 className="font-bold mb-2">{lang === 'ar' ? 'منتجات ذات صلة:' : 'Related Product:'}</h3>
-                        {/* {item.relatedProduct && ( */}
-                        <Swiper
-                          spaceBetween={12}
-                          slidesPerView={4}
-                          onClick={() => {
-                            setIsModalOpen(false); // تقفل المودال الحالي مؤقتًا
-                            setTimeout(() => {
-                              // تغير الـ modalId
-                              setIsModalOpen(true); // تفتحه تاني بالمنتج الجديد
-                            }, 300); // خليها تطابق وقت الخروج من المودال الحالي
-                          }}
-                          // onSwiper={(swiper) => (swiperRefs.current[sec.id] = swiper)}
-                          onSlideChange={(swiper) => setCurrentSlide(swiper.activeIndex)}
-                          breakpoints={{
-                            0: { slidesPerView: 3 },
-                            450: { slidesPerView: 3.5 },
-                            600: { slidesPerView: 4.5 },
-                          }}
-                        >
-                          {[...Array(6)].map((_, i) => (
-                            <SwiperSlide key={i}>
-                              <div className="border border-dashed border-mainColor mt-3 rounded-lg p-2 w-28">
-                                <Image
-                                  src={potato}
-                                  width={200}
-                                  height={300}
-                                  alt="s"
-                                  className="w-40"
-                                />
-                                <p className="text-sm mb-1 font-medium truncate">
-                                  شاورما عربي غربي امريكي يونتيتنا ثعاله
-                                </p>
-                                <div className="flex flex-col">
-                                  <p className="text-[10px] text-mainColor">{abbreviation && toCurrency(finalPrice, lang, abbreviation)}</p>
-                                  <del className="text-[10px]">{abbreviation && toCurrency(finalPrice, lang, abbreviation)}</del>
-                                </div>
-                              </div>
-                            </SwiperSlide>
-                          ))}
-                        </Swiper>
+      {prodId?.frequentlyOrderedWith && prodId.frequentlyOrderedWith.length > 0 && (
+  <div className="my-3 px-5">
+    <h3 className="font-bold mb-2">{lang === 'ar' ? 'منتجات ذات صلة:' : 'Related Products:'}</h3>
 
-                        {/* )} */}
-                      </div>
+    <Swiper
+      spaceBetween={12}
+      slidesPerView={4}
+      onSlideChange={(swiper) => setCurrentSlide(swiper.activeIndex)}
+      breakpoints={{
+        0: { slidesPerView: 3 },
+        450: { slidesPerView: 3.5 },
+        600: { slidesPerView: 4.5 },
+      }}
+    >
+      {prodId.frequentlyOrderedWith.map((item:any, index:any) => (
+          <SwiperSlide key={index}>
+            <div
+              className="border border-dashed border-mainColor mt-3 rounded-lg p-2 w-28 cursor-pointer"
+              onClick={() => {
+                setIsModalOpen(false);
+                setTimeout(() => {
+                  setIsModalOpen(true);
+                }, 300);
+              }}
+            >
+              <Image
+                src={item.relatedProduct.imageUrl ?? potato}
+                width={200}
+                height={300}
+                alt={item.relatedProduct.name}
+                className="w-40 h-auto object-cover"
+              />
+              <p className="text-sm mb-1 font-medium truncate">
+                {item.relatedProduct.name}
+              </p>
+              <div className="flex flex-col">
+                <p className="text-[10px] text-mainColor">
+                  {abbreviation && toCurrency(item.relatedProduct.price, lang, abbreviation)}
+                </p>
+                {item.relatedProduct.oldPrice && (
+                  <del className="text-[10px]">
+                    {abbreviation && toCurrency(item.relatedProduct.oldPrice, lang, abbreviation)}
+                  </del>
+                )}
+              </div>
+            </div>
+          </SwiperSlide>
+        ))}
+    </Swiper>
+  </div>
+)}
+
+
+                             
+              
 
                     </div>
 
@@ -852,18 +833,16 @@ function Modal({
           initial={{ opacity: 0 }}
           animate={{ opacity: isOpen ? 1 : 0 }}
           exit={{ opacity: 0 }}
-          transition={{ duration: 0.2 }}
+          transition={{ duration: 0.015 }}
         />
 
-        <motion.div
-          initial={{ opacity: 0, y: 100 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: 100 }}
-          transition={{ duration: 0.25 }}
-
-
-          className="fixed bottom-0 right-0 left-0 flex items-end z-[10000]"
-        >
+    <motion.div
+     initial={{ y: '100%' }}
+     animate={{ y: isOpen ? 0 : '100%' }}
+     exit={{ y: '100%' }}
+     transition={{ type: 'spring', stiffness: 500, damping: 50, mass: 0.8 }}
+     className="fixed bottom-0 right-0 left-0 flex items-end z-[10000]"
+    >
           <div
             ref={scrollContainerRef}
             onScroll={handleScroll}
@@ -1131,56 +1110,57 @@ function Modal({
                         </div>
                       </>
                     )}
-                    {/* {prodId?.frequentlyOrderedWith && ( */}
-                    <div>
-                      {/* {prodId.frequentlyOrderedWith.map((item: { relatedProduct: { imageUrl: string | StaticImport; name: string | number | bigint | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | Promise<React.AwaitedReactNode> | Iterable<React.ReactNode> | null | undefined; price: string | number | bigint | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | Promise<React.AwaitedReactNode> | Iterable<React.ReactNode> | null | undefined; oldPrice: string | number | bigint | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | Promise<React.AwaitedReactNode> | Iterable<React.ReactNode> | null | undefined; }; }, index: React.Key | null | undefined) => ( */}
-                      <div className='mt-3' >
-                        <h3 className="font-bold mb-2">{lang === 'ar' ? 'منتجات ذات صلة:' : 'Related Product:'}</h3>
-                        {/* {item.relatedProduct && ( */}
-                        <Swiper
-                          spaceBetween={12}
-                          slidesPerView={4}
-                          // onSwiper={(swiper) => (swiperRefs.current[sec.id] = swiper)}
-                          onClick={() => {
-                            setIsModalOpen(false); // تقفل المودال الحالي مؤقتًا
-                            setTimeout(() => {
-                              // تغير الـ modalId
-                              setIsModalOpen(true); // تفتحه تاني بالمنتج الجديد
-                            }, 300); // خليها تطابق وقت الخروج من المودال الحالي
-                          }}
-                          onSlideChange={(swiper) => setCurrentSlide(swiper.activeIndex)}
-                          breakpoints={{
-                            0: { slidesPerView: 3 },
-                            450: { slidesPerView: 3.5 },
-                            600: { slidesPerView: 4.5 },
-                          }}
-                        >
-                          {[...Array(6)].map((_, i) => (
-                            <SwiperSlide key={i}>
-                              <div className="border border-dashed border-mainColor mt-3 rounded-lg p-2 w-28">
-                                <Image
-                                  src={potato}
-                                  width={200}
-                                  height={300}
-                                  alt="s"
-                                  className="w-40"
-                                />
-                                <p className="text-sm mb-1 font-medium truncate">
-                                  شاورما عربي غربي امريكي يونتيتنا ثعاله
-                                </p>
-                                <div className="flex flex-col">
-                                  <p className="text-[10px] text-mainColor">{abbreviation && toCurrency(finalPrice, lang, abbreviation)}</p>
-                                  <del className="text-[10px]">{abbreviation && toCurrency(finalPrice, lang, abbreviation)}</del>
-                                </div>
-                              </div>
-                            </SwiperSlide>
-                          ))}
-                        </Swiper>
-                        {/* )} */}
-                      </div>
-                      {/* ))} */}
-                    </div>
-                    {/* )}   */}
+                    {prodId?.frequentlyOrderedWith && prodId.frequentlyOrderedWith.length > 0 && (
+  <div className="my-3 px-5">
+    <h3 className="font-bold mb-2">{lang === 'ar' ? 'منتجات ذات صلة:' : 'Related Products:'}</h3>
+
+    <Swiper
+      spaceBetween={12}
+      slidesPerView={4}
+      onSlideChange={(swiper) => setCurrentSlide(swiper.activeIndex)}
+      breakpoints={{
+        0: { slidesPerView: 3 },
+        450: { slidesPerView: 3.5 },
+        600: { slidesPerView: 4.5 },
+      }}
+    >
+      {prodId.frequentlyOrderedWith.map((item:any, index:any) => (
+          <SwiperSlide key={index}>
+            <div
+              className="border border-dashed border-mainColor mt-3 rounded-lg p-2 w-28 cursor-pointer"
+              onClick={() => {
+                setIsModalOpen(false);
+                setTimeout(() => {
+                  setIsModalOpen(true);
+                }, 300);
+              }}
+            >
+              <Image
+                src={item.relatedProduct.imageUrl ?? potato}
+                width={200}
+                height={300}
+                alt={item.relatedProduct.name}
+                className="w-40 h-auto object-cover"
+              />
+              <p className="text-sm mb-1 font-medium truncate">
+                {item.relatedProduct.name}
+              </p>
+              <div className="flex flex-col">
+                <p className="text-[10px] text-mainColor">
+                  {abbreviation && toCurrency(item.relatedProduct.price, lang, abbreviation)}
+                </p>
+                {item.relatedProduct.oldPrice && (
+                  <del className="text-[10px]">
+                    {abbreviation && toCurrency(item.relatedProduct.oldPrice, lang, abbreviation)}
+                  </del>
+                )}
+              </div>
+            </div>
+          </SwiperSlide>
+        ))}
+    </Swiper>
+  </div>
+)}
                   </div>
 
                   <SpecialNotes

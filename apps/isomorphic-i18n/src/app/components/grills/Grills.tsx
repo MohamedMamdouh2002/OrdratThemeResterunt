@@ -53,7 +53,7 @@ function Grills({ lang }: { lang: string }) {
             <div key={sec.id} id={sec.id} className="w-5/6 sm:w-[90%] mx-auto mt-20">
               <div className="flex justify-between items-center">
                 <Title title={sec.name} />
-                <Link href={`/${lang}/product/${sec.id}`}>
+                <Link href={`/${lang}/category/${sec.id}`}>
                   <p className="hover:text-mainColor mb-5 text-black font-medium text-lg underline">
                     {t('view-all')}
                   </p>

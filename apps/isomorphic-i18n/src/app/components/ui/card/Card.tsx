@@ -80,23 +80,23 @@ import { AnimatePresence } from 'framer-motion';
               )}
             </div>
           </div>
-       <AnimatePresence>
+        <AnimatePresence>
 
-        {isModalOpen && (
-          <Modal
-    
+          {isModalOpen && (
+            <Modal
+      
 
-          lang={data.lang} 
-          modalId={data.id}
-          setIsModalOpen={handleCloseModal}
-          quantity={quantity}
-          setQuantity={setQuantity}
-          // setShowItem={function (val: boolean): void {
-            //   throw new Error('Function not implemented.');
-            // } }
-            />
-          )}
-          </AnimatePresence>
+            lang={data.lang} 
+            modalId={data.id}
+            setIsModalOpen={handleCloseModal}
+            quantity={quantity}
+            setQuantity={setQuantity}
+            // setShowItem={function (val: boolean): void {
+              //   throw new Error('Function not implemented.');
+              // } }
+              />
+            )}
+            </AnimatePresence>
       </>
     );
   };
