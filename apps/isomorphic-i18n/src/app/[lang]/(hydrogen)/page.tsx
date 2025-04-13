@@ -8,6 +8,7 @@ import { metaObject } from "@/config/site.config";
 import Header from "@/app/components/header/Header";
 import ScrollToTop from "@/app/components/ui/ScrollToTop";
 import { Metadata } from "next";
+import Footer from "@/app/components/footer/Footer";
 
 
 type LangType = 'en' | 'ar';
@@ -104,6 +105,8 @@ export default async function FileDashboardPage({
       <Header lang={lang!}/>
       <MainSlider/>
       <Grills lang={lang!}/>
+      <Footer  lang={lang!}/>
+
       {/* <PopularMeals/> */}
       {/* <SyrianFood/> */}
       {/* <Offers/> */}

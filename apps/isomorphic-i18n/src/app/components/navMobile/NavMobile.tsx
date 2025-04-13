@@ -127,7 +127,7 @@ const NavMobile = ({ lang }: { lang: string }) => {
   useEffect(() => {
     const handleScroll = () => {
       const offset = window.scrollY;
-      setIsSticky(offset <= 290);
+      // setIsSticky(offset <= 290);
     };
 
     window.addEventListener('scroll', handleScroll);
@@ -142,8 +142,9 @@ const NavMobile = ({ lang }: { lang: string }) => {
 
   return (
     <>
-      <nav className={`lg:hidden w-full m-auto border-b mt-5 border-gray-200 gap-4 pt-5 bg-white ${isSticky ? 'sticky top-11 z-[50]' : 'fixed top-11 z-[50] overflow-x-auto'} transition-all`}>
-        <div className="w-5/6 mx-auto flex">
+<nav 
+  className="lg:hidden sticky top-11 z-[50] bg-white border-b border-gray-200 w-full pt-5 transition-all"
+>        <div className="w-5/6 mx-auto flex">
           <button onClick={() => setIsModalOpen(true)} className="transition duration-150">
             <AlignCenter />
           </button>
@@ -173,6 +174,8 @@ const NavMobile = ({ lang }: { lang: string }) => {
           </ul>
         </div>
       </nav>
+      <div className=" lg:h-0 :h-[4rem]"></div>
+
       {isModalOpen && (
         <>
           <div className="fixed z-[9999] inset-0 bg-gray-600 bg-opacity-50" onClick={handleOutsideClick} />
