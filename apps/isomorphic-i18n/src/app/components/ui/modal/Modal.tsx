@@ -873,7 +873,7 @@ function Modal({
                   />
                 </div>
 
-                <div className={`flex-1 px-4 pb-20 ${!isImageVisible ? 'pt-24' : 'pt-4'}`}>
+                <div className={`flex-1 px-4 pb-20 ${isImageVisible ? 'pt-4' : 'pt-60'}`}>
                   <div className="flex items-center gap-2">
                     {prodId?.isTopRated && <Badge Icon={Star} title="Top rated" className="-ms-1" />}
                     {prodId?.isTopSelling && <Badge Icon={Flame} title="Top Selling" className="-ms-1" />}
