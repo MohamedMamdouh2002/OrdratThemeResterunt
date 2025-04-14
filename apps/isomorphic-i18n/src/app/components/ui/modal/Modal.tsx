@@ -813,7 +813,7 @@ onClick={() => {
                 width={200}
                 height={300}
                 alt={item.relatedProduct.name}
-                className="w-40 h-auto object-cover"
+                className="w-40 h-20 object-cover"
               />
               <p className="text-sm mb-1 font-medium truncate">
                 {item.relatedProduct.name}
