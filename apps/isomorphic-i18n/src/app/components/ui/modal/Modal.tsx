@@ -1146,60 +1146,60 @@ onClick={() => {
                       </>
                     )}
                   {prodId?.frequentlyOrderedWith && prodId.frequentlyOrderedWith.length > 0 && (
-  <div className="my-3 ">
-    <h3 className="font-bold mb-2">{lang === 'ar' ? 'منتجات ذات صلة:' : 'Related Products:'}</h3>
+                  <div className="my-3 ">
+                    <h3 className="font-bold mb-2">{lang === 'ar' ? 'منتجات ذات صلة:' : 'Related Products:'}</h3>
 
-    <Swiper
-      spaceBetween={12}
-      slidesPerView={4}
-      onSlideChange={(swiper) => setCurrentSlide(swiper.activeIndex)}
-      breakpoints={{
-        0: { slidesPerView: 3 },
-        450: { slidesPerView: 3.5 },
-        600: { slidesPerView: 4.5 },
-      }}
-    >
-      {prodId.frequentlyOrderedWith.map((item:any, index:any) => (
-          <SwiperSlide key={index}>
-            <div
-              className="border border-dashed border-mainColor mt-3 rounded-lg p-2 w-28 cursor-pointer"
-              onClick={() => {
-                // Close the current modal
-                setIsModalOpen(false);
-                // Important: Update the modalId state in the parent component
-                setCurrentModalProductId(item.relatedProduct.id);
-                // A small delay before reopening the modal with the new ID
-                setTimeout(() => {
-                  setIsModalOpen(true);
-                }, 300);
-              }}
-            >
-              <Image
-                src={item.relatedProduct.imageUrl ?? potato}
-                width={200}
-                height={300}
-                alt={item.relatedProduct.name}
-                className="w-40 h-auto object-cover"
-              />
-              <p className="text-sm mb-1 font-medium truncate">
-                {item.relatedProduct.name}
-              </p>
-              <div className="flex flex-col">
-                <p className="text-[10px] text-mainColor">
-                  {abbreviation && toCurrency(item.relatedProduct.price, lang, abbreviation)}
-                </p>
-                {item.relatedProduct.oldPrice && (
-                  <del className="text-[10px]">
-                    {abbreviation && toCurrency(item.relatedProduct.oldPrice, lang, abbreviation)}
-                  </del>
-                )}
-              </div>
-            </div>
-          </SwiperSlide>
-        ))}
-    </Swiper>
-  </div>
-)}
+                    <Swiper
+                      spaceBetween={12}
+                      slidesPerView={4}
+                      onSlideChange={(swiper) => setCurrentSlide(swiper.activeIndex)}
+                      breakpoints={{
+                        0: { slidesPerView: 3 },
+                        450: { slidesPerView: 3.5 },
+                        600: { slidesPerView: 4.5 },
+                      }}
+                    >
+                      {prodId.frequentlyOrderedWith.map((item:any, index:any) => (
+                          <SwiperSlide key={index}>
+                            <div
+                              className="border border-dashed border-mainColor mt-3 rounded-lg p-2 w-28 cursor-pointer"
+                              onClick={() => {
+                                // Close the current modal
+                                setIsModalOpen(false);
+                                // Important: Update the modalId state in the parent component
+                                setCurrentModalProductId(item.relatedProduct.id);
+                                // A small delay before reopening the modal with the new ID
+                                setTimeout(() => {
+                                  setIsModalOpen(true);
+                                }, 300);
+                              }}
+                            >
+                              <Image
+                                src={item.relatedProduct.imageUrl ?? potato}
+                                width={200}
+                                height={300}
+                                alt={item.relatedProduct.name}
+                                className="w-40 h-20 object-cover"
+                                />
+                              <p className="text-sm mb-1 font-medium truncate">
+                                {item.relatedProduct.name}
+                              </p>
+                              <div className="flex flex-col">
+                                <p className="text-[10px] text-mainColor">
+                                  {abbreviation && toCurrency(item.relatedProduct.price, lang, abbreviation)}
+                                </p>
+                                {item.relatedProduct.oldPrice && (
+                                  <del className="text-[10px]">
+                                    {abbreviation && toCurrency(item.relatedProduct.oldPrice, lang, abbreviation)}
+                                  </del>
+                                )}
+                              </div>
+                            </div>
+                          </SwiperSlide>
+                        ))}
+                    </Swiper>
+                  </div>
+                  )}
 
 
 
