@@ -1,4 +1,4 @@
-import React, { Dispatch, SetStateAction, useState } from 'react'
+import React, { Dispatch, SetStateAction, useEffect, useState } from 'react'
 import Image from 'next/image'
 import { Title, Text } from 'rizzui';
 import { Food } from '@/types';
@@ -25,43 +25,60 @@ function SmallCard(data: Props) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [quantity, setQuantity] = useState(1);
   const abbreviation = useCurrencyAbbreviation({ lang: data.lang });
-
-
-  const handleOpenModal = () => {
-    console.log("Opening Modal...");
+  const [currentModalProductId, setCurrentModalProductId] = useState<string | null>(null);
+  
+  const handleOpenModal = (id: string) => {
+    // تعيين معرف المنتج الأولي
+    setCurrentModalProductId(id);
     setIsModalOpen(true);
   };
+  useEffect(() => {
+    // معالج لاستقبال طلبات تغيير المنتج من المودال
+    const handleRelatedProductClick = (event: any) => {
+      if (event.data && event.data.type === 'OPEN_RELATED_PRODUCT') {
+        // إغلاق المودال الحالي
+        setIsModalOpen(false);
+        
+        // انتظر إغلاق المودال ثم افتح المودال الجديد
+        setTimeout(() => {
+          // تعيين المنتج الجديد
+          setCurrentModalProductId(event.data.productId);
+          // إعادة فتح المودال
+          setIsModalOpen(true);
+        }, 300);
+      }
+    };
 
-  const handleCloseModal = () => {
-    console.log("Closing Modal...");
-    setIsModalOpen(false);
-  };
+    // إضافة مستمع للرسائل
+    window.addEventListener('message', handleRelatedProductClick);
+    
+    // إزالة المستمع عند تفكيك الكومبوننت
+    return () => {
+      window.removeEventListener('message', handleRelatedProductClick);
+    };
+  }, []);
 
-  return <>
+
+  return (
     <>
       <div
-        onClick={handleOpenModal}
-        className="w-[115px] hover:cursor-pointer  sm:w-[120px] md:w-[150px] lg:w-[200px]  overflow-x-auto">
+        onClick={() => handleOpenModal(data.id)}
+        className="w-[115px] hover:cursor-pointer sm:w-[120px] md:w-[150px] lg:w-[200px] overflow-x-auto">
         <div className="relative">
           <CustomImage
             src={data?.images ? data?.images[0]?.imageUrl || photo : photo}
-            // src={data?.imageUrl} 
             width={200}
             height={180}
             objectFit="cover"
-            className="md:w-[200px] p-2 sm:p-10 bg-[#E8E8E8]  h-[115px] md:h-40 rounded-2xl object-cover"
+            className="md:w-[200px] p-2 sm:p-10 bg-[#E8E8E8] h-[115px] md:h-40 rounded-2xl object-cover"
             alt=""
           />
           {data?.isTopRated || data?.isTopSelling ? (
-            <span className="absolute start-1.5 top-1.5 text-[8px] font-bold text-center min-w-10   rounded-md   ">
+            <span className="absolute start-1.5 top-1.5 text-[8px] font-bold text-center min-w-10 rounded-md">
               {data?.isTopRated ?
-                <>
-                  <Badge Icon={Star} title="Top Rated" className="" />
-                </>
+                <Badge Icon={Star} title="Top Rated" className="" />
                 :
-                <>
-                  <Badge Icon={Flame} title="Top Sell" className="" />
-                </>
+                <Badge Icon={Flame} title="Top Sell" className="" />
               }
             </span>
           ) : (
@@ -81,41 +98,38 @@ function SmallCard(data: Props) {
           <Text as="p" className="truncate text-sm pe-6">
             {data?.description}
           </Text>
-          <div className="mt-2 flex flex-col  items-start font-semibold text-mainColor">
+          <div className="mt-2 flex flex-col items-start font-semibold text-mainColor">
             <div className='text-[12px] sm:pt-0 pt-0.5 font-normal sm:text-[13px]'>
               <span>
                 {abbreviation && toCurrency(data.price, data.lang, abbreviation)}
               </span>
             </div>
             <div>
-              <del className="  text-[12px] sm:text-[13px] font-normal text-gray-500">
+              <del className="text-[12px] sm:text-[13px] font-normal text-gray-500">
                 {abbreviation && toCurrency(data.oldPrice, data.lang, abbreviation)}
               </del>
             </div>
           </div>
         </div>
       </div>
-    </>
-    <AnimatePresence mode='wait'>
-    {isModalOpen && (
+      <AnimatePresence mode='wait'>
+  {isModalOpen && (
+    <>
+      {console.log("رندر المودال، معرف المنتج الحالي:", currentModalProductId || data.id)}
       <Modal
-    
-
+        setCurrentModalProductId={setCurrentModalProductId}
         lang={data.lang}
         modalId={data.id}
-        setIsModalOpen={setIsModalOpen} // تأكد من تمرير الحالة
-
-        // setIsModalOpen={handleCloseModal}
+        currentModalProductId={currentModalProductId}
+        setIsModalOpen={setIsModalOpen}
         quantity={quantity}
         setQuantity={setQuantity}
-      // setShowItem={function (val: boolean): void {
-      // throw new Error('Function not implemented.');
-      // } }
       />
-    )}
-
-      </AnimatePresence>
-  </>
+    </>
+  )}
+</AnimatePresence>
+    </>
+  );
 }
 
 export default SmallCard

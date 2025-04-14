@@ -24,18 +24,21 @@ function MediumCard(data:Props) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [quantity, setQuantity] = useState(1);
     const abbreviation = useCurrencyAbbreviation({ lang: data.lang });
-
-  const handleOpenModal = () => {
-    setIsModalOpen(true);
-  };
-
-  const handleCloseModal = () => {
-    setIsModalOpen(false);
-  };
+    const [currentModalProductId, setCurrentModalProductId] = useState<string | null>(null);
+  
+    const handleOpenModal = (id: string) => {
+      // تعيين معرف المنتج الأولي
+      setCurrentModalProductId(id);
+      setIsModalOpen(true);
+    };
+  
+        const handleCloseModal = () => {
+          setIsModalOpen(false);
+        };
 
   return (
     <>
-        <div onClick={handleOpenModal} className="flex flex-wrap sm:border sm:border-dashed sm:border-mainColor pb-2 sm:pb-4 sm:p-4 rounded-lg justify-between mt-5 gap-5 hover:cursor-pointer">
+        <div onClick={()=>handleOpenModal(data.id)} className="flex flex-wrap sm:border sm:border-dashed sm:border-mainColor pb-2 sm:pb-4 sm:p-4 rounded-lg justify-between mt-5 gap-5 hover:cursor-pointer">
           <div className="flex sm:flex-row w-full sm:gap-0 gap-3 h-[135px] 4xl:h-[200px] rounded-lg">
             <div className="relative w-full sm:w-8/12 4xl:w-9/12">
               <div className="sm:pe-2 4xl:pe-0">
@@ -76,23 +79,21 @@ function MediumCard(data:Props) {
             </div>
           </div>
         </div>
-  <AnimatePresence>
-
-  {isModalOpen && (
-    <Modal
-    
-    lang={data.lang}
-    modalId={data.id}
-    setIsModalOpen={handleCloseModal}
-    quantity={quantity}
-      setQuantity={setQuantity}
-      // setShowItem={function (val: boolean): void {
-        //   throw new Error('Function not implemented.');
-        // } }
-        />
-  )}
-
-      </AnimatePresence>
+        <AnimatePresence mode='wait'>
+                {isModalOpen && (
+                  <Modal
+                    setCurrentModalProductId={setCurrentModalProductId}
+                    lang={data.lang}
+                    // نمرر المعرف الأصلي كModalId الإفتراضي
+                    modalId={data.id}
+                    // نمرر أيضًا currentModalProductId للسماح للمودال بتحديث البيانات داخليًا
+                    currentModalProductId={currentModalProductId}
+                    setIsModalOpen={setIsModalOpen}
+                    quantity={quantity}
+                    setQuantity={setQuantity}
+                  />
+                )}
+              </AnimatePresence>
 {/* <hr className='mt-3 sm:hidden flex'/> */}
 
             

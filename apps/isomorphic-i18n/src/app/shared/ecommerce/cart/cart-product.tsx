@@ -52,15 +52,16 @@ export default function CartProduct({ product, lang , ifModal=false }: { product
 
   return (
     <div className="grid grid-cols-12 items-start gap-4 border-b border-muted py-6 first:pt-0 sm:flex sm:gap-6 2xl:py-8">
-      <figure className="col-span-4 sm:max-w-[180px]">
-        <CustomImage
-          src={product.image||photo}
-          alt={lang =='ar'? realProductData.nameAr : realProductData.nameEn}
-          width={180}
-          height={180}
-          className="aspect-square w-full rounded-lg bg-gray-100 object-cover"
-        />
-      </figure>
+     <figure className={`${ifModal ? "sm:w-28 w-20  col-span-4" : "col-span-4 sm:max-w-[180px]"}`}>
+  <CustomImage
+    src={product.image || photo}
+    alt={lang === 'ar' ? realProductData.nameAr : realProductData.nameEn}
+    width={180}
+    height={ 180}
+    className="aspect-square w-full rounded-lg bg-gray-100 object-contain"
+  />
+</figure>
+
       <div className="col-span-8 sm:block sm:w-full">
         <div className="flex  gap-1 flex-row items-start justify-between">
           <Title

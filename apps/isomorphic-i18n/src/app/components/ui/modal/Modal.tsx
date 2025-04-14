@@ -62,11 +62,14 @@ type ModalProps = {
   setQuantity: Dispatch<SetStateAction<number>>;
   hasMoreDetails?: boolean;
   lang: string;
+  currentModalProductId?: string | null; // أضفنا هذا المتغير
   handleUpdateCart?: () => void;
   itemId?: string;
   type?: string;
   setIsModalOpen: (isOpen: boolean) => void;
   modalId: string;
+  setCurrentModalProductId: Dispatch<SetStateAction<string | null>>;
+
 };
 
 type FakeData = {
@@ -84,11 +87,16 @@ function Modal({
   lang,
   hasMoreDetails,
   handleUpdateCart,
+  currentModalProductId,
+  setCurrentModalProductId,
   itemId,
   type,
 }: ModalProps) {
   const [isOpen, setIsOpen] = useState(true);
   const [prodId, setProdId] = useState<FoodId | any>(null);
+  const [modalId1, setModalId] = useState<string | null>(null);
+  const [isModalOpen, setIsModalOpen1] = useState(false);
+
   const [productData, setProductData] = useState<FoodId | any>(null);
   const [prodCartItem, setProdCartItem] = useState<CartItem | any>(null);
   const [isLoading, setLoading] = useState(false);
@@ -155,6 +163,20 @@ function Modal({
   
     fetchFakeData();
   }, []);
+  // Updated click handler for related products
+  useEffect(() => {
+    const fetchData = async () => {
+      // استخدم المعرف الفعلي للمنتج الذي تريد عرضه
+      const productIdToFetch = currentModalProductId || modalId;
+      console.log("تحميل المنتج بمعرف:", productIdToFetch); // للتصحيح
+      
+      const data = await GetProduct({ lang, id: productIdToFetch });
+      
+      // باقي الكود لتنسيق البيانات...
+    };
+
+    fetchData();
+  }, [GetProduct, modalId, lang, currentModalProductId]); // أضف currentModalProductId للتبعيات
   
   
   const handleScroll = () => {
@@ -176,7 +198,12 @@ function Modal({
   // Fetch product data
   useEffect(() => {
     const fetchData = async () => {
-      const data = await GetProduct({ lang, id: modalId });
+      // استخدم currentModalProductId إذا كان موجودًا، وإلا استخدم modalId الأصلي
+      const productIdToFetch = currentModalProductId || modalId;
+      console.log("جاري تحميل بيانات المنتج...");
+      console.log("معرف المودال:", modalId);
+      console.log("معرف المنتج الحالي:", currentModalProductId);
+      const data = await GetProduct({ lang, id: productIdToFetch });
 
       const formattedData: FoodId = {
         id: data.id,
@@ -259,8 +286,6 @@ function Modal({
         oldPrice: data.oldPrice
       };
 
-
-
       setProdId(formattedData);
       setProductData(formattedData2);
       setProdCartItem({
@@ -280,7 +305,7 @@ function Modal({
     };
 
     fetchData();
-  }, [GetProduct, modalId, lang]);
+  }, [GetProduct, modalId, lang, currentModalProductId]); // أضفنا currentModalProductId كمتغير تبعي
 
   // Prevent body scroll when modal is open
   useEffect(() => {
@@ -290,6 +315,7 @@ function Modal({
     };
   }, []);
 
+  
   const handleClose = () => {
     setIsOpen(false);
     // Use a timeout to allow the animation to complete before actually closing the modal
@@ -746,7 +772,7 @@ function Modal({
                           </div>
                         </>
                       )}
-      {prodId?.frequentlyOrderedWith && prodId.frequentlyOrderedWith.length > 0 && (
+    {prodId?.frequentlyOrderedWith && prodId.frequentlyOrderedWith.length > 0 && (
   <div className="my-3 px-5">
     <h3 className="font-bold mb-2">{lang === 'ar' ? 'منتجات ذات صلة:' : 'Related Products:'}</h3>
 
@@ -764,12 +790,23 @@ function Modal({
           <SwiperSlide key={index}>
             <div
               className="border border-dashed border-mainColor mt-3 rounded-lg p-2 w-28 cursor-pointer"
-              onClick={() => {
-                setIsModalOpen(false);
-                setTimeout(() => {
-                  setIsModalOpen(true);
-                }, 300);
-              }}
+           // في معالج النقر على المنتجات ذات الصلة
+onClick={() => {
+  console.log("تم النقر على منتج ذو صلة:", item.relatedProduct.id);
+  
+  // إغلاق المودال الحالي
+  console.log("إغلاق المودال الحالي...");
+  setIsModalOpen(false);
+  
+  // بعد الإغلاق، انتظر قليلاً ثم افتح المودال الجديد
+  setTimeout(() => {
+    console.log("تعيين معرف المنتج الجديد:", item.relatedProduct.id);
+    setCurrentModalProductId(item.relatedProduct.id);
+    
+    console.log("إعادة فتح المودال...");
+    setIsModalOpen(true);
+  }, 300);
+}}
             >
               <Image
                 src={item.relatedProduct.imageUrl ?? potato}
@@ -797,9 +834,6 @@ function Modal({
     </Swiper>
   </div>
 )}
-
-
-                             
               
 
                     </div>
@@ -1111,7 +1145,7 @@ function Modal({
                         </div>
                       </>
                     )}
-                    {prodId?.frequentlyOrderedWith && prodId.frequentlyOrderedWith.length > 0 && (
+                  {prodId?.frequentlyOrderedWith && prodId.frequentlyOrderedWith.length > 0 && (
   <div className="my-3 ">
     <h3 className="font-bold mb-2">{lang === 'ar' ? 'منتجات ذات صلة:' : 'Related Products:'}</h3>
 
@@ -1130,7 +1164,11 @@ function Modal({
             <div
               className="border border-dashed border-mainColor mt-3 rounded-lg p-2 w-28 cursor-pointer"
               onClick={() => {
+                // Close the current modal
                 setIsModalOpen(false);
+                // Important: Update the modalId state in the parent component
+                setCurrentModalProductId(item.relatedProduct.id);
+                // A small delay before reopening the modal with the new ID
                 setTimeout(() => {
                   setIsModalOpen(true);
                 }, 300);
@@ -1162,6 +1200,9 @@ function Modal({
     </Swiper>
   </div>
 )}
+
+
+
                   </div>
 
                   <SpecialNotes
