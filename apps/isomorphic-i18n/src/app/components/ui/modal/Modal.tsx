@@ -200,13 +200,12 @@ function Modal({
     // No need for setTimeout with this approach
     // The product data will be fetched in the useEffect that watches currentModalProductId
   };
-  
   const handleClose = () => {
     setIsReady(false);
-    // Use a shorter timeout since we're optimizing for speed
+    // Use a shorter timeout for better UX
     setTimeout(() => {
       setIsModalOpen(false);
-    }, 150); // Reduced from 300ms
+    }, 150);
   };
   const handleScroll = () => {
     if (scrollContainerRef.current) {
@@ -332,9 +331,11 @@ function Modal({
         },
       });
     };
-
+    if (isReady) {
+      fetchData();
+    }
     fetchData();
-  }, [GetProduct, modalId, lang, currentModalProductId]); // أضفنا currentModalProductId كمتغير تبعي
+  }, [GetProduct, modalId, lang, currentModalProductId,isReady]); // أضفنا currentModalProductId كمتغير تبعي
 
   // Prevent body scroll when modal is open
   useEffect(() => {
@@ -488,10 +489,36 @@ function Modal({
       toast.success(t("addtoCart"));
     }
   };
-
-  if (!prodId) {
-    return null;
+  if (isLoading && !prodId) {
+    return ReactDOM.createPortal(
+      <div className="md:hidden">
+        <motion.div
+          className="fixed inset-0 bg-gray-600 bg-opacity-50 z-[999]"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.1 }}
+        />
+        <motion.div
+          initial={{ y: '100%' }}
+          animate={{ y: 0 }}
+          exit={{ y: '100%' }}
+          transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+          className="fixed bottom-0 right-0 left-0 flex items-end z-[10000] overflow-hidden"
+        >
+          <div className="bg-white rounded-lg b-4 w-full h-64 flex flex-col items-center justify-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-mainColor"></div>
+            <p className="mt-4 text-gray-600">{t('loading')}</p>
+          </div>
+        </motion.div>
+      </div>,
+      document.body
+    );
   }
+
+
+
+
 
   return ReactDOM.createPortal(
 
@@ -525,7 +552,7 @@ function Modal({
                   {isImageVisible ? (
                     <div className="w-full h-60">
                       <Image
-                        src={prodId.imageUrl || photo}
+                        src={prodId?.imageUrl}
                         layout="fill"
                         objectFit="cover"
                         alt="Product Image"
@@ -875,3 +902,5 @@ function Modal({
 }
 
 export default Modal;
+
+
