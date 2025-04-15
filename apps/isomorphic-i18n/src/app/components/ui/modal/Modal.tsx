@@ -8,6 +8,8 @@ import ReactDOM from 'react-dom';
 import QuantityHandler from '../item/QuantityHandler';
 import ItemPrice from '../ItemPrice';
 import { AllCategories, Food } from '@/types'
+import Skeleton from 'react-loading-skeleton';
+import 'react-loading-skeleton/dist/skeleton.css';
 import { Swiper as SwiperType } from 'swiper';
 import { Swiper, SwiperSlide } from 'swiper/react'
 import 'swiper/css'
@@ -1000,18 +1002,12 @@ onClick={() => {
         animate={{ y: isReady ? 0 : '100%' }}
         exit={{ y: '100%' }}
         transition={{ duration: 0.1 }} 
+
         className="fixed bottom-0 right-0 left-0 flex items-end z-[10000] overflow-hidden"
       >
     {/* > */}
   
-             {isLoading ? (
-              <div
-       
-              className="bg-white rounded-lg b-4 w-full max-h-svh flex flex-col overflow-y-auto custom-scroll"
-            >
-               <ProductModalSkeleton lang={lang} />
-</div>
-      ) : ( 
+         
         <div
           ref={scrollContainerRef}
           onScroll={handleScroll}
@@ -1023,7 +1019,8 @@ onClick={() => {
                      {isImageVisible ? (
                                                          <div className="w-full h-60">
                                                              <CustomImage
-                                                                 src={prodId?.imageUrl || photo}
+
+                                                                 src={isLoading ? <Skeleton width={120} height={24} />:prodId?.imageUrl }
                                                                  // width={900}
                                                                  // height={600}
                                                                  layout="fill"
@@ -1034,7 +1031,9 @@ onClick={() => {
                                                          </div>
                                                      ) : (
                                                          <div className="w-full h-16 fixed top-0 start-0 right-0 flex items-center bg-white secShadow z-50">
-                                                             <h3 className="text-xl font-bold leading-10 text-start  ps-14">{prodId?.name}</h3>
+                                                             <h3 className="text-xl font-bold leading-10 text-start  ps-14">
+                                                                {isLoading ? <Skeleton width={120} height={24} /> : prodId?.name}
+                                                             </h3>
                                                          </div>
                                                      )}
                   <X
@@ -1049,8 +1048,13 @@ onClick={() => {
                     {prodId?.isTopRated && <Badge Icon={Star} title="Top rated" className="-ms-1" />}
                     {prodId?.isTopSelling && <Badge Icon={Flame} title="Top Selling" className="-ms-1" />}
                   </div>
-                  <h3 className="text-xl font-bold leading-10">{prodId?.name}</h3>
-                  <p className="text-sm font-medium text-black/75">{prodId?.description}</p>
+                  <h3 className="text-xl font-bold leading-10">
+                  {isLoading ? <Skeleton width={120} height={24} /> : prodId?.name}
+
+                  </h3>
+                  <p className="text-sm font-medium text-black/75">
+                  
+                  {isLoading ? <Skeleton width={120} height={24} /> : prodId?.description}</p>
 
                   {/* Fake data section */}
                   {fakeData && (
@@ -1060,7 +1064,7 @@ onClick={() => {
                           <source srcSet="https://fonts.gstatic.com/s/e/notoemoji/latest/1f525/512.webp" type="image/webp" />
                           <img src="https://fonts.gstatic.com/s/e/notoemoji/latest/1f525/512.gif" alt="🔥" width="18" height="18" />
                         </picture>                        <span className='font-medium'>
-                          {fakeData.fakeSoldNumber} {lang === 'ar' ? 'بيعت في اخر' : 'sold in last '} {fakeData.fakeSoldNumberInHours} {lang === 'ar' ? 'ساعات' : 'hours'}
+                          {fakeData.fakeSoldNumber} {lang === 'ar' ? 'بيعت في اخر' : 'sold in last '} {fakeData.fakeSoldNumberInHours|| <Skeleton className="w-full h-full" />} {lang === 'ar' ? 'ساعات' : 'hours'}
                         </span>
                       </div>
                       <div className="flex items-center gap-1">
@@ -1075,6 +1079,9 @@ onClick={() => {
                   )}
 
                   {/* Variations rendering for mobile */}
+                  {isLoading ?(
+ <Skeleton className="w-full h-full" />
+                  ):
                   <div className="pt-6">
                     {prodId?.variations && (
                       <>
@@ -1341,6 +1348,7 @@ onClick={() => {
 
 
                   </div>
+                  }
 
                   <SpecialNotes
                     lang={lang!}
@@ -1369,7 +1377,7 @@ onClick={() => {
               </form>
             </FormProvider>
           </div>
-       )}
+       
         </motion.div>
       </div>
 
