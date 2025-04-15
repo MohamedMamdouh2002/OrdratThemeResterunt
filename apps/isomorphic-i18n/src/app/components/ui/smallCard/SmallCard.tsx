@@ -25,7 +25,7 @@ function SmallCard(data: Props) {
   const [quantity, setQuantity] = useState(1);
   const abbreviation = useCurrencyAbbreviation({ lang: data.lang });
   const [currentModalProductId, setCurrentModalProductId] = useState<string | null>(null);
-  
+
   // Optimized modal opener - opens immediately
   const handleOpenModal = (id: string) => {
     setCurrentModalProductId(id);
@@ -51,9 +51,9 @@ function SmallCard(data: Props) {
           {data?.isTopRated || data?.isTopSelling ? (
             <span className="absolute start-1.5 top-1.5 text-[8px] font-bold text-center min-w-10 rounded-md">
               {data?.isTopRated ?
-                <Badge Icon={Star} title="Top Rated" className="" />
+                <Badge Icon={Star} title={data.lang === 'ar' ? "الأعلى تقييمًا" : "Top Rated"} className="" />
                 :
-                <Badge Icon={Flame} title="Top Sell" className="" />
+                <Badge Icon={Flame} title={data.lang === 'ar' ? "الأعلى مبيعًا" : "Top Sale"} className="" />
               }
             </span>
           ) : (
@@ -87,7 +87,7 @@ function SmallCard(data: Props) {
           </div>
         </div>
       </div>
-      
+
       {/* Wrap in AnimatePresence for proper animation handling */}
       <AnimatePresence mode='wait'>
         {isModalOpen && (

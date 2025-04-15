@@ -11,7 +11,7 @@ import hamburger from '@public/assets/hamburger.png'
 import potato from '@public/assets/شاورما-عراقي-لحمة-مع-بطاطا.png'
 import { AnimatePresence } from 'framer-motion';
 type Props = Food & {
-  lang:string;
+  lang: string;
   setCurrentItem: Dispatch<
     SetStateAction<{
       type?: string;
@@ -20,84 +20,84 @@ type Props = Food & {
   >;
 };
 
-function MediumCard(data:Props) {
+function MediumCard(data: Props) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [quantity, setQuantity] = useState(1);
-    const abbreviation = useCurrencyAbbreviation({ lang: data.lang });
-    const [currentModalProductId, setCurrentModalProductId] = useState<string | null>(null);
-  
-    const handleOpenModal = (id: string) => {
-      // تعيين معرف المنتج الأولي
-      setCurrentModalProductId(id);
-      setIsModalOpen(true);
-    };
-  
-        const handleCloseModal = () => {
-          setIsModalOpen(false);
-        };
+  const abbreviation = useCurrencyAbbreviation({ lang: data.lang });
+  const [currentModalProductId, setCurrentModalProductId] = useState<string | null>(null);
+
+  const handleOpenModal = (id: string) => {
+    // تعيين معرف المنتج الأولي
+    setCurrentModalProductId(id);
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+  };
 
   return (
     <>
-        <div onClick={()=>handleOpenModal(data.id)} className="flex flex-wrap sm:border sm:border-dashed sm:border-mainColor pb-2 sm:pb-4 sm:p-4 rounded-lg justify-between mt-5 gap-5 hover:cursor-pointer">
-          <div className="flex sm:flex-row w-full sm:gap-0 gap-3 h-[135px] 4xl:h-[200px] rounded-lg">
-            <div className="relative w-full sm:w-8/12 4xl:w-9/12">
-              <div className="sm:pe-2 4xl:pe-0">
-                {data?.isTopRated || data.isTopSelling ? (
-                  <span className="text-[8px] font-bold text-center rounded-lg ">
-                    {data.isTopRated ? (
-                      <Badge Icon={Star} title="Top Rated" className="-ms-1" />
-                    ) : (
-                      <Badge Icon={Flame} title="Top Sell" className="-ms-1" />
-                    )}
-                  </span>
-                ) : (
-                  ""
-                )}
-                <h2 className="text-lg font-medium">{data.name}</h2>
-              </div>
-              <TextTruncate text={data.description} limit={10} />
-              <div className="mt-2 flex items-center font-semibold text-mainColor absolute bottom-2">
-                <span>
-                  {abbreviation&&toCurrency(data.price, data.lang,abbreviation)}
+      <div onClick={() => handleOpenModal(data.id)} className="flex flex-wrap sm:border sm:border-dashed sm:border-mainColor pb-2 sm:pb-4 sm:p-4 rounded-lg justify-between mt-5 gap-5 hover:cursor-pointer">
+        <div className="flex sm:flex-row w-full sm:gap-0 gap-3 h-[135px] 4xl:h-[200px] rounded-lg">
+          <div className="relative w-full sm:w-8/12 4xl:w-9/12">
+            <div className="sm:pe-2 4xl:pe-0">
+              {data?.isTopRated || data.isTopSelling ? (
+                <span className="text-[8px] font-bold text-center rounded-lg ">
+                  {data?.isTopRated ?
+                    <Badge Icon={Star} title={data.lang === 'ar' ? "الأعلى تقييمًا" : "Top Rated"} className="" />
+                    :
+                    <Badge Icon={Flame} title={data.lang === 'ar' ? "الأعلى مبيعًا" : "Top Sale"} className="" />
+                  }
                 </span>
-                {data.oldPrice && (
-                  <del className="ps-1.5 text-[13px] font-normal text-gray-500">
-                    {abbreviation&&toCurrency(data.oldPrice, data.lang,abbreviation)}
-                  </del>
-                )}
-              </div>
+              ) : (
+                ""
+              )}
+              <h2 className="text-lg font-medium">{data.name}</h2>
             </div>
-            <div className="relative w-[160px] h-[130px] sm:w-4/12 4xl:w-3/12  sm:h-full rounded-lg sm:rounded-s-lg">
-
-            <Image
-              src={data?.images ? data?.images[0]?.imageUrl || photo : photo} 
-                layout="fill"
-                objectFit="cover"
-                className="rounded-lg sm:rounded-s-lg"
-                alt=""
-              />
+            <TextTruncate text={data.description} limit={10} />
+            <div className="mt-2 flex items-center font-semibold text-mainColor absolute bottom-2">
+              <span>
+                {abbreviation && toCurrency(data.price, data.lang, abbreviation)}
+              </span>
+              {data.oldPrice && (
+                <del className="ps-1.5 text-[13px] font-normal text-gray-500">
+                  {abbreviation && toCurrency(data.oldPrice, data.lang, abbreviation)}
+                </del>
+              )}
             </div>
           </div>
-        </div>
-        <AnimatePresence mode='wait'>
-                {isModalOpen && (
-                  <Modal
-                    setCurrentModalProductId={setCurrentModalProductId}
-                    lang={data.lang}
-                    // نمرر المعرف الأصلي كModalId الإفتراضي
-                    modalId={data.id}
-                    // نمرر أيضًا currentModalProductId للسماح للمودال بتحديث البيانات داخليًا
-                    currentModalProductId={currentModalProductId}
-                    setIsModalOpen={setIsModalOpen}
-                    quantity={quantity}
-                    setQuantity={setQuantity}
-                  />
-                )}
-              </AnimatePresence>
-{/* <hr className='mt-3 sm:hidden flex'/> */}
+          <div className="relative w-[160px] h-[130px] sm:w-4/12 4xl:w-3/12  sm:h-full rounded-lg sm:rounded-s-lg">
 
-            
-  </>
+            <Image
+              src={data?.images ? data?.images[0]?.imageUrl || photo : photo}
+              layout="fill"
+              objectFit="cover"
+              className="rounded-lg sm:rounded-s-lg"
+              alt=""
+            />
+          </div>
+        </div>
+      </div>
+      <AnimatePresence mode='wait'>
+        {isModalOpen && (
+          <Modal
+            setCurrentModalProductId={setCurrentModalProductId}
+            lang={data.lang}
+            // نمرر المعرف الأصلي كModalId الإفتراضي
+            modalId={data.id}
+            // نمرر أيضًا currentModalProductId للسماح للمودال بتحديث البيانات داخليًا
+            currentModalProductId={currentModalProductId}
+            setIsModalOpen={setIsModalOpen}
+            quantity={quantity}
+            setQuantity={setQuantity}
+          />
+        )}
+      </AnimatePresence>
+      {/* <hr className='mt-3 sm:hidden flex'/> */}
+
+
+    </>
   )
 }
 

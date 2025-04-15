@@ -8,8 +8,6 @@ import ReactDOM from 'react-dom';
 import QuantityHandler from '../item/QuantityHandler';
 import ItemPrice from '../ItemPrice';
 import { AllCategories, Food } from '@/types'
-import Skeleton from 'react-loading-skeleton';
-import 'react-loading-skeleton/dist/skeleton.css';
 import { Swiper as SwiperType } from 'swiper';
 import { Swiper, SwiperSlide } from 'swiper/react'
 import 'swiper/css'
@@ -33,7 +31,6 @@ import RoleSelect from '../inputs/selectInput/SelectInput';
 import SpecialNotes from '@/app/components/ui/SpecialNotes';
 import { useTranslation } from '@/app/i18n/client';
 import CustomImage from '../CustomImage';
-import ProductModalSkeleton from '../ProductModalSkeleton ';
 
 // Type definitions remain the same as in your original code
 interface Variation {
@@ -115,7 +112,6 @@ function Modal({
   const [fakeData, setFakeData] = useState<FakeData | null>(null);
   const [currentSlide, setCurrentSlide] = useState(0);
   const swiperRefs = useRef<{ [key: string]: SwiperType | null }>({});
-  const [isReady, setIsReady] = useState(false);
 
   // Fetch fake data
   useEffect(() => {
@@ -168,55 +164,27 @@ function Modal({
     fetchFakeData();
   }, []);
   // Updated click handler for related products
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     // استخدم المعرف الفعلي للمنتج الذي تريد عرضه
-  //     const productIdToFetch = currentModalProductId || modalId;
-  //     console.log("تحميل المنتج بمعرف:", productIdToFetch); // للتصحيح
-      
-  //     const data = await GetProduct({ lang, id: productIdToFetch });
-      
-  //     // باقي الكود لتنسيق البيانات...
-  //   };
-
-  //   fetchData();
-  // }, [GetProduct, modalId, lang, currentModalProductId]); // أضف currentModalProductId للتبعيات
-  
   useEffect(() => {
-    document.body.style.overflow = 'hidden';
-    
-    // Use requestAnimationFrame for smoother transition on first render
-    requestAnimationFrame(() => {
-      setIsReady(true);
-    });
-    
-    return () => {
-      document.body.style.overflow = 'auto';
+    const fetchData = async () => {
+      // استخدم المعرف الفعلي للمنتج الذي تريد عرضه
+      const productIdToFetch = currentModalProductId || modalId;
+      console.log("تحميل المنتج بمعرف:", productIdToFetch); // للتصحيح
+      
+      const data = await GetProduct({ lang, id: productIdToFetch });
+      
+      // باقي الكود لتنسيق البيانات...
     };
-  }, []);
 
-  // When changing related products, use this optimized approach
-  const handleRelatedProductClick = (productId: string) => {
-    // Update the product ID immediately
-    setCurrentModalProductId(productId);
-    
-    // No need for setTimeout with this approach
-    // The product data will be fetched in the useEffect that watches currentModalProductId
-  };
-  const handleClose = () => {
-    setIsReady(false);
-    // Use a shorter timeout for better UX
-    setTimeout(() => {
-      setIsModalOpen(false);
-    }, 150);
-  };
+    fetchData();
+  }, [GetProduct, modalId, lang, currentModalProductId]); // أضف currentModalProductId للتبعيات
+  
+  
   const handleScroll = () => {
     if (scrollContainerRef.current) {
       const scrollTop = scrollContainerRef.current.scrollTop;
       setImageVisible(scrollTop < 150);
     }
   };
-  
 
   const handleScrollPc = () => {
     setIsScrolled(window.scrollY > 0);
@@ -230,140 +198,114 @@ function Modal({
   // Fetch product data
   useEffect(() => {
     const fetchData = async () => {
-      try {
-        setLoading(true);
-        // Use currentModalProductId if provided, otherwise use modalId
-        const productIdToFetch = currentModalProductId || modalId;
-        console.log("Loading product with ID:", productIdToFetch);
-        
-        const data = await GetProduct({ lang, id: productIdToFetch });
-        
-        if (!data) {
-          console.error("Failed to load product data");
-          setLoading(false);
-          return;
-        }
+      // استخدم currentModalProductId إذا كان موجودًا، وإلا استخدم modalId الأصلي
+      const productIdToFetch = currentModalProductId || modalId;
+      console.log("جاري تحميل بيانات المنتج...");
+      console.log("معرف المودال:", modalId);
+      console.log("معرف المنتج الحالي:", currentModalProductId);
+      const data = await GetProduct({ lang, id: productIdToFetch });
 
-        // Format data for display
-        const formattedData: FoodId = {
-          id: data.id,
-          name: lang === 'ar' ? data.nameAr : data.nameEn,
-          description: lang === 'ar' ? data.descriptionAr : data.descriptionEn,
-          vat: data.vat,
-          vatType: data.vatType,
-          discount: data.discount,
-          discountType: data.discountType,
-          isActive: data.isActive,
-          createdAt: data.createdAt,
-          lastUpdatedAt: data.lastUpdatedAt,
-          isTopSelling: data.isTopSelling,
-          isTopRated: data.isTopRated,
-          seoDescription: lang === 'ar' ? data.metaDescriptionAr : data.metaDescriptionEn,
-          imageUrl: data.images.length > 0 ? data.images[0].imageUrl : "",
-          categoryId: data.categoryId,
-          numberOfSales: data.numberOfSales,
-          category: null,
-          variations: data.variations
-            .filter((variation: any) => variation.isActive)
-            .map((variation: any) => ({
-              id: variation.id,
-              name: lang === 'ar' ? variation.nameAr : variation.nameEn,
-              buttonType: variation.buttonType,
-              isActive: variation.isActive,
-              isRequired: variation.isRequired,
-              choices: variation.choices
-                .filter((choice: any) => choice.isActive)
-                .map((choice: any) => ({
-                  id: choice.id,
-                  name: lang === 'ar' ? choice.nameAr : choice.nameEn,
-                  price: choice.price,
-                  isDefault: choice.isDefault,
-                  isActive: choice.isActive,
-                  imageUrl: choice.imageUrl,
-                })),
-            })),
-          frequentlyOrderedWith: data.frequentlyOrderedWith,
-          reviews: data.reviews,
-          price: data.price,
-          oldPrice: data.oldPrice
-        };
-
-        // Store raw data for cart operations
-        const formattedData2 = {
-          id: data.id,
-          nameEn: data.nameEn,
-          nameAr: data.nameAr,
-          descriptionEn: data.descriptionEn,
-          descriptionAr: data.descriptionAr,
-          vat: data.vat,
-          vatType: data.vatType,
-          discount: data.discount,
-          discountType: data.discountType,
-          isActive: data.isActive,
-          createdAt: data.createdAt,
-          lastUpdatedAt: data.lastUpdatedAt,
-          isTopSelling: data.isTopSelling,
-          isTopRated: data.isTopRated,
-          metaDescriptionEn: data.metaDescriptionEn,
-          metaDescriptionAr: data.metaDescriptionAr,
-          imageUrl: data.images.length > 0 ? data.images[0].imageUrl : "",
-          categoryId: data.categoryId,
-          numberOfSales: data.numberOfSales,
-          variations: data.variations
-            .filter((variation: any) => variation.isActive)
-            .map((variation: any) => ({
-              id: variation.id,
-              nameEn: variation.nameEn,
-              nameAr: variation.nameAr,
-              buttonType: variation.buttonType,
-              isActive: variation.isActive,
-              isRequired: variation.isRequired,
-              choices: variation.choices
-                .filter((choice: any) => choice.isActive)
-                .map((choice: any) => ({
-                  id: choice.id,
-                  nameEn: choice.nameEn,
-                  nameAr: choice.nameAr,
-                  price: choice.price,
-                  isDefault: choice.isDefault,
-                  isActive: choice.isActive,
-                  imageUrl: choice.imageUrl,
-                })),
+      const formattedData: FoodId = {
+        id: data.id,
+        name: lang === 'ar' ? data.nameAr : data.nameEn,
+        description: lang === 'ar' ? data.descriptionAr : data.descriptionEn,
+        vat: data.vat,
+        vatType: data.vatType,
+        discount: data.discount,
+        discountType: data.discountType,
+        isActive: data.isActive,
+        createdAt: data.createdAt,
+        lastUpdatedAt: data.lastUpdatedAt,
+        isTopSelling: data.isTopSelling,
+        isTopRated: data.isTopRated,
+        seoDescription: lang === 'ar' ? data.metaDescriptionAr : data.metaDescriptionEn,
+        imageUrl: data.images.length > 0 ? data.images[0].imageUrl : "",
+        categoryId: data.categoryId,
+        numberOfSales: data.numberOfSales,
+        category: null,
+        variations: data.variations.filter((variation: any) => variation.isActive).map((variation: any) => ({
+          id: variation.id,
+          name: lang === 'ar' ? variation.nameAr : variation.nameEn,
+          buttonType: variation.buttonType,
+          isActive: variation.isActive,
+          isRequired: variation.isRequired,
+          choices: variation.choices.filter((choice: any) => choice.isActive).map((choice: any) => ({
+            id: choice.id,
+            name: lang === 'ar' ? choice.nameAr : choice.nameEn,
+            price: choice.price,
+            isDefault: choice.isDefault,
+            isActive: choice.isActive,
+            imageUrl: choice.imageUrl,
           })),
-          frequentlyOrderedWith: data.frequentlyOrderedWith,
-          reviews: data.reviews,
-          price: data.price,
-          oldPrice: data.oldPrice
-        };
+        })),
+        frequentlyOrderedWith: data.frequentlyOrderedWith,
+        reviews: data.reviews,
+        price: data.price,
+        oldPrice: data.oldPrice
+      };
+      const formattedData2 = {
+        id: data.id,
+        nameEn: data.nameEn,
+        nameAr: data.nameAr,
+        descriptionEn: data.descriptionEn,
+        descriptionAr: data.descriptionAr,
+        vat: data.vat,
+        vatType: data.vatType,
+        discount: data.discount,
+        discountType: data.discountType,
+        isActive: data.isActive,
+        createdAt: data.createdAt,
+        lastUpdatedAt: data.lastUpdatedAt,
+        isTopSelling: data.isTopSelling,
+        isTopRated: data.isTopRated,
+        metaDescriptionEn: data.metaDescriptionEn,
+        metaDescriptionAr: data.metaDescriptionAr,
+        imageUrl: data.images.length > 0 ? data.images[0].imageUrl : "",
+        categoryId: data.categoryId,
+        numberOfSales: data.numberOfSales,
+        variations: data.variations.filter((variation: any) => variation.isActive).map((variation: any) => ({
+          id: variation.id,
+          nameEn: variation.nameEn,
+          nameAr: variation.nameAr,
+          buttonType: variation.buttonType,
+          isActive: variation.isActive,
+          isRequired: variation.isRequired,
+          choices: variation.choices.filter((choice: any) => choice.isActive).map((choice: any) => ({
+            id: choice.id,
+            nameEn: choice.nameEn,
+            nameAr: choice.nameAr,
+            price: choice.price,
+            isDefault: choice.isDefault,
+            isActive: choice.isActive,
+            imageUrl: choice.imageUrl,
+          })),
+        })),
+        frequentlyOrderedWith: data.frequentlyOrderedWith,
+        reviews: data.reviews,
+        price: data.price,
+        oldPrice: data.oldPrice
+      };
 
-        setProdId(formattedData);
-        setProductData(formattedData2);
-        setProdCartItem({
-          id: formattedData.id,
-          name: formattedData.name,
-          slug: formattedData.name,
-          description: formattedData.description,
-          imageUrl: formattedData.imageUrl,
-          price: formattedData.price,
-          quantity: 1,
-          sizeFood: "small",
-          color: {
-            name: "Purple Heart",
-            code: "#5D30DD",
-          },
-        });
-      } catch (error) {
-        console.error("Error loading product data:", error);
-      } finally {
-        setLoading(false);
-      }
+      setProdId(formattedData);
+      setProductData(formattedData2);
+      setProdCartItem({
+        id: formattedData.id,
+        name: formattedData.name,
+        slug: formattedData.name,
+        description: formattedData.description,
+        imageUrl: formattedData.imageUrl,
+        price: formattedData.price,
+        quantity: 1,
+        sizeFood: "small",
+        color: {
+          name: "Purple Heart",
+          code: "#5D30DD",
+        },
+      });
     };
 
-    // Only fetch if the modal is open
-    if (isReady) {
-      fetchData();
-    }
-  }, [GetProduct, modalId, lang, currentModalProductId, isReady]); // Added isReady to dependencies
+    fetchData();
+  }, [GetProduct, modalId, lang, currentModalProductId]); // أضفنا currentModalProductId كمتغير تبعي
 
   // Prevent body scroll when modal is open
   useEffect(() => {
@@ -374,13 +316,13 @@ function Modal({
   }, []);
 
   
-  // const handleClose = () => {
-  //   setIsOpen(false);
-  //   // Use a timeout to allow the animation to complete before actually closing the modal
-  //   setTimeout(() => {
-  //     setIsModalOpen(false);
-  //   }, 300);
-  // };
+  const handleClose = () => {
+    setIsOpen(false);
+    // Use a timeout to allow the animation to complete before actually closing the modal
+    setTimeout(() => {
+      setIsModalOpen(false);
+    }, 300);
+  };
 
   const handleOutsideClick = (e: React.MouseEvent<HTMLDivElement>) => {
     if (e.target === e.currentTarget) {
@@ -517,80 +459,14 @@ function Modal({
       toast.success(t("addtoCart"));
     }
   };
-  // if (isLoading) {
-  //   return ReactDOM.createPortal(
-  //     <div className="md:hidden">
-  //       <motion.div
-  //         className="fixed inset-0 bg-gray-600 bg-opacity-50 z-[999]"
-  //         initial={{ opacity: 0 }}
-  //         animate={{ opacity: isReady ? 1 : 0 }}
-  //         exit={{ opacity: 0 }}
-  //         transition={{ duration: 0.1 }}
-  //       />
-  
-  //       <motion.div
-  //         initial={{ y: '100%' }}
-  //         animate={{ y: isReady ? 0 : '100%' }}
-  //         exit={{ y: '100%' }}
-  //         transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-  //         className="fixed bottom-0 right-0 left-0 flex items-end z-[10000] overflow-hidden"
-  //       >
-  //         <div
-  //           ref={scrollContainerRef}
-  //           onScroll={handleScroll}
-  //           className="bg-white rounded-lg b-4 w-full h-[60svh] flex flex-col overflow-y-auto custom-scroll"
-  //         >
-  //           <div className="flex flex-col items-center justify-center flex-1 py-8">
-  //             <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-mainColor"></div>
-  //             <p className="mt-4 text-gray-600">{t('loading')}</p>
-  //           </div>
-  //         </div>
-  //       </motion.div>
-  //     </div>,
-  //     document.body
-  //   );
-  // }
-  
 
-
-
-
+  if (!prodId) {
+    return null;
+  }
 
   return ReactDOM.createPortal(
-    <>
-     <AnimatePresence mode="wait">
+    <AnimatePresence mode="wait">
       {/* Desktop Modal */}
-      
-{isLoading ?
-  <div className="md:hidden">
-        <motion.div
-          className="fixed inset-0 bg-gray-600 bg-opacity-50 z-[999]"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: isReady ? 1 : 0 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.1 }}
-        />
-  
-        <motion.div
-          initial={{ y: '100%' }}
-          animate={{ y: isReady ? 0 : '100%' }}
-          exit={{ y: '100%' }}
-          transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-          className="fixed bottom-0 right-0 left-0 flex items-end z-[10000] overflow-hidden"
-        >
-          <div
-            ref={scrollContainerRef}
-            onScroll={handleScroll}
-            className="bg-white rounded-lg b-4 w-full h-[60svh] flex flex-col overflow-y-auto custom-scroll"
-          >
-            <div className="flex flex-col items-center justify-center flex-1 py-8">
-              <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-mainColor"></div>
-              <p className="mt-4 text-gray-600">{t('loading')}</p>
-            </div>
-          </div>
-        </motion.div>
-      </div>
-:
       <div className="hidden md:block">
         <motion.div
           className="fixed inset-0 bg-gray-600 bg-opacity-50 blur-md z-[999]"
@@ -629,7 +505,7 @@ function Modal({
                       <div className={`flex mb-4 `}>
                         <div className="">
                           <Image
-                            src={prodId?.imageUrl}
+                            src={prodId.imageUrl || photo}
                             width={500}
                             height={300}
                             alt="s"
@@ -643,8 +519,8 @@ function Modal({
                         </div>
                         <div className="px-4 pt-2 flex flex-col">
                           <div className="flex items-center gap-2">
-                            {prodId?.isTopSelling && <Badge Icon={Flame} title={lang==='ar'? "":"Top Sale"} className="-ms-1" />}
-                            {prodId?.isTopRated && <Badge Icon={Star} title="Top Rated" className="-ms-1" />}
+                            {prodId?.isTopSelling && <Badge Icon={Flame} title={lang==='ar'?"الأعلى مبيعًا":"Top Sale"} className="-ms-1" />}
+                            {prodId?.isTopRated && <Badge Icon={Star} title={ lang ==='ar' ? "الأعلى تقييمًا":"Top Rated"} className="-ms-1" />}
                           </div>
                           <h3 className="text-xl font-bold leading-10">{prodId?.name}</h3>
                           <p className="text-sm font-medium text-black/75">{prodId?.description}</p>
@@ -983,123 +859,89 @@ onClick={() => {
           </form>
         </FormProvider>
       </div>
-}
-      </AnimatePresence>
 
-
+      {/* Mobile Modal */}
       <div className="md:hidden">
         <motion.div
-        className="fixed inset-0 bg-gray-600 bg-opacity-50 z-[999]"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: isReady ? 1 : 0 }}
-        exit={{ opacity: 0 }}
-        transition={{ duration: 0.1 }} 
-      />
-
+          className="fixed inset-0 bg-gray-600 bg-opacity-50  z-[999]"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: isOpen ? 1 : 0 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.015 }}
+        />
 
 <motion.div
-        initial={{ y: '100%' }}
-        animate={{ y: isReady ? 0 : '100%' }}
-        exit={{ y: '100%' }}
-        transition={{ duration: 0.1 }} 
-
-        className="fixed bottom-0 right-0 left-0 flex items-end z-[10000] overflow-hidden"
-      >
+  initial={{ y: '100%' }}
+  animate={{ y: isOpen ? 0 : '100%' }}
+  exit={{ y: '100%' }}
+  transition={{ type: 'tween', duration: 0.2 }}
+      className="fixed bottom-0 right-0 left-0 flex items-end z-[10000] overflow-hidden"
+>
     {/* > */}
-  
-         
-        <div
-          ref={scrollContainerRef}
-          onScroll={handleScroll}
-          className="bg-white rounded-lg b-4 w-full h-svh flex flex-col overflow-y-auto custom-scroll"
-        >
+          <div
+            ref={scrollContainerRef}
+            onScroll={handleScroll}
+            className="bg-white rounded-lg b-4 w-full max-h-svh flex flex-col overflow-y-auto custom-scroll"
+          >
             <FormProvider {...methods}>
-  <form onSubmit={methods.handleSubmit(onSubmit)}>
-    <div className="relative">
-      {isImageVisible ? (
-        <div className="w-full h-60">
-          {!prodId?.imageUrl ? (
-            <Skeleton className="w-full h-full rounded-lg" />
-          ) : (
-            <CustomImage
-              src={prodId?.imageUrl}
-              layout="fill"
-              objectFit="cover"
-              alt="Product Image"
-            />
-          )}
-        </div>
-      ) : (
-        <div className="w-full h-16 fixed top-0 start-0 right-0 flex items-center bg-white secShadow z-50">
-          <h3 className="text-xl font-bold leading-10 text-start ps-14">
-            {!prodId?.name ? <Skeleton width={120} height={24} /> : prodId?.name}
-          </h3>
-        </div>
-      )}
+              <form onSubmit={methods.handleSubmit(onSubmit)}>
+                <div className="relative">
+                  {isImageVisible ? (
+                    <div className="w-full h-60">
+                      <Image
+                        src={prodId.imageUrl || photo}
+                        layout="fill"
+                        objectFit="cover"
+                        alt="Product Image"
+                      />
+                    </div>
+                  ) : (
+                    <div className="w-full h-16 fixed top-0 start-0 right-0 flex items-center bg-white secShadow z-50">
+                      <h3 className="text-xl font-bold leading-10 text-start ps-14">{prodId?.name}</h3>
+                    </div>
+                  )}
+                  <X
+                    onClick={handleClose}
+                    className={`bg-white rounded-full p-2 ${isImageVisible ? 'fixed top-2 start-2' : 'fixed top-3.5 start-2 z-[100]'}`}
+                    size={36}
+                  />
+                </div>
 
-      <X
-        onClick={handleClose}
-        className={`bg-white rounded-full p-2 ${
-          isImageVisible ? 'fixed top-2 start-2' : 'fixed top-3.5 start-2 z-[100]'
-        }`}
-        size={36}
-      />
-    </div>
+                <div className={`flex-1 px-4 pb-20 ${isImageVisible ? 'pt-4' : 'pt-60'}`}>
+                  <div className="flex items-center gap-2">
+                  {prodId?.isTopSelling && <Badge Icon={Flame} title={lang==='ar'?"الأعلى مبيعًا":"Top Sale"} className="-ms-1" />}
+                  {prodId?.isTopRated && <Badge Icon={Star} title={ lang ==='ar' ? "الأعلى تقييمًا":"Top Rated"} className="-ms-1" />}
+                    </div>
+                  <h3 className="text-xl font-bold leading-10">{prodId?.name}</h3>
+                  <p className="text-sm font-medium text-black/75">{prodId?.description}</p>
 
-    <div className={`flex-1 px-4 pb-20 ${isImageVisible ? 'pt-4' : 'pt-60'}`}>
-      {/* Badges */}
-      <div className="flex items-center gap-2">
-        {prodId?.isTopRated && <Badge Icon={Star} title="Top rated" className="-ms-1" />}
-        {prodId?.isTopSelling && <Badge Icon={Flame} title="Top Selling" className="-ms-1" />}
-      </div>
+                  {/* Fake data section */}
+                  {fakeData && (
+                    <div className="mt-3 space-y-1 text-sm text-gray-700">
+                      <div className="flex items-center gap-1">
+                        <picture>
+                          <source srcSet="https://fonts.gstatic.com/s/e/notoemoji/latest/1f525/512.webp" type="image/webp" />
+                          <img src="https://fonts.gstatic.com/s/e/notoemoji/latest/1f525/512.gif" alt="🔥" width="18" height="18" />
+                        </picture>                        <span className='font-medium'>
+                          {fakeData.fakeSoldNumber} {lang === 'ar' ? 'بيعت في اخر' : 'sold in last '} {fakeData.fakeSoldNumberInHours} {lang === 'ar' ? 'ساعات' : 'hours'}
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-1">
+                        <picture>
+                          <source srcSet="https://fonts.gstatic.com/s/e/notoemoji/latest/1f60d/512.webp" type="image/webp" />
+                          <img src="https://fonts.gstatic.com/s/e/notoemoji/latest/1f60d/512.gif" alt="😍" width="18" height="18" />
+                        </picture>                        <span className='font-medium'>
+                          {fakeData.fakeViewers} {lang === 'ar' ? 'اشخاص يشاهدون هذا الآن' : 'people are viewing this right now'}
+                        </span>
+                      </div>
+                    </div>
+                  )}
 
-      {/* Product Name */}
-      <h3 className="text-xl font-bold leading-10">
-        {!prodId?.name ? <Skeleton width={100} /> : prodId?.name}
-      </h3>
-
-      {/* Product Description */}
-      <p className="text-sm font-medium text-black/75">
-        {!prodId?.description ? <Skeleton count={2} width={180} /> : prodId?.description}
-      </p>
-
-      {/* Fake Data Section */}
-      {fakeData ? (
-        <div className="mt-3 space-y-1 text-sm text-gray-700">
-          <div className="flex items-center gap-1">
-            <img
-              src="https://fonts.gstatic.com/s/e/notoemoji/latest/1f525/512.gif"
-              alt="🔥"
-              width={18}
-              height={18}
-            />
-            <span className="font-medium">
-              {fakeData.fakeSoldNumber} {lang === 'ar' ? 'بيعت في اخر' : 'sold in last '}
-              {fakeData.fakeSoldNumberInHours ?? <Skeleton width={40} />} {lang === 'ar' ? 'ساعات' : 'hours'}
-            </span>
-          </div>
-          <div className="flex items-center gap-1">
-            <img
-              src="https://fonts.gstatic.com/s/e/notoemoji/latest/1f60d/512.gif"
-              alt="😍"
-              width={18}
-              height={18}
-            />
-            <span className="font-medium">
-              {fakeData.fakeViewers} {lang === 'ar' ? 'اشخاص يشاهدون هذا الآن' : 'people are viewing this right now'}
-            </span>
-          </div>
-        </div>
-      ) : (
-        <Skeleton className="w-full h-10 mt-2" />
-      )}
-
-      {/* Variations Section */}
-      <div className="pt-6">
-        {!prodId?.variations ? (
-          <Skeleton className="w-full h-28" />
-        ) : (
-          <div className="flex flex-col gap-3">
+                  {/* Variations rendering for mobile */}
+                  <div className="pt-6">
+                    {prodId?.variations && (
+                      <>
+                        <div className="flex flex-col gap-3">
                           {prodId.variations.map((variation: Variation) => {
                             {/* PC Product Variation buttonType 0 */ }
                             if (variation.buttonType === 0 && (variation.isActive)) {
@@ -1300,109 +1142,99 @@ onClick={() => {
                             }
                             return null;
                           })}
-                       
-          </div>
-        )}
-      </div>
-
-      {/* Related Products */}
-
-        {!prodId?.frequentlyOrderedWith ? (
-          <Skeleton className="w-full h-20" />
-        ) : (
-      <div className="my-3">
-        <h3 className="font-bold mb-2">
-          {lang === 'ar' ? 'منتجات ذات صلة:' : 'Related Products:'}
-        </h3>
-          <Swiper
-          spaceBetween={12}
-          slidesPerView={4}
-          onSlideChange={(swiper) => setCurrentSlide(swiper.activeIndex)}
-          breakpoints={{
-            0: { slidesPerView: 3 },
-            450: { slidesPerView: 3.5 },
-            600: { slidesPerView: 4.5 },
-          }}
-        >
-          {prodId.frequentlyOrderedWith.map((item:any, index:any) => (
-              <SwiperSlide key={index}>
-                <div
-                  className="border border-dashed border-mainColor mt-3 rounded-lg p-2 w-28 cursor-pointer"
-                  onClick={() => {
-                    // Close the current modal
-                    setIsModalOpen(false);
-                    // Important: Update the modalId state in the parent component
-                    setCurrentModalProductId(item.relatedProduct.id);
-                    // A small delay before reopening the modal with the new ID
-                    setTimeout(() => {
-                      setIsModalOpen(true);
-                    }, 300);
-                  }}
-                >
-                  <Image
-                    src={item.relatedProduct.imageUrl ?? potato}
-                    width={200}
-                    height={300}
-                    alt={item.relatedProduct.name}
-                    className="w-40 h-20 object-cover"
-                    />
-                  <p className="text-sm mb-1 font-medium truncate">
-                    {item.relatedProduct.name}
-                  </p>
-                  <div className="flex flex-col">
-                    <p className="text-[10px] text-mainColor">
-                      {abbreviation && toCurrency(item.relatedProduct.price, lang, abbreviation)}
-                    </p>
-                    {item.relatedProduct.oldPrice && (
-                      <del className="text-[10px]">
-                        {abbreviation && toCurrency(item.relatedProduct.oldPrice, lang, abbreviation)}
-                      </del>
+                        </div>
+                      </>
                     )}
+                  {prodId?.frequentlyOrderedWith && prodId.frequentlyOrderedWith.length > 0 && (
+                  <div className="my-3 ">
+                    <h3 className="font-bold mb-2">{lang === 'ar' ? 'منتجات ذات صلة:' : 'Related Products:'}</h3>
+
+                    <Swiper
+                      spaceBetween={12}
+                      slidesPerView={4}
+                      onSlideChange={(swiper) => setCurrentSlide(swiper.activeIndex)}
+                      breakpoints={{
+                        0: { slidesPerView: 3 },
+                        450: { slidesPerView: 3.5 },
+                        600: { slidesPerView: 4.5 },
+                      }}
+                    >
+                      {prodId.frequentlyOrderedWith.map((item:any, index:any) => (
+                          <SwiperSlide key={index}>
+                            <div
+                              className="border border-dashed border-mainColor mt-3 rounded-lg p-2 w-28 cursor-pointer"
+                              onClick={() => {
+                                // Close the current modal
+                                setIsModalOpen(false);
+                                // Important: Update the modalId state in the parent component
+                                setCurrentModalProductId(item.relatedProduct.id);
+                                // A small delay before reopening the modal with the new ID
+                                setTimeout(() => {
+                                  setIsModalOpen(true);
+                                }, 300);
+                              }}
+                            >
+                              <Image
+                                src={item.relatedProduct.imageUrl ?? potato}
+                                width={200}
+                                height={300}
+                                alt={item.relatedProduct.name}
+                                className="w-40 h-20 object-cover"
+                                />
+                              <p className="text-sm mb-1 font-medium truncate">
+                                {item.relatedProduct.name}
+                              </p>
+                              <div className="flex flex-col">
+                                <p className="text-[10px] text-mainColor">
+                                  {abbreviation && toCurrency(item.relatedProduct.price, lang, abbreviation)}
+                                </p>
+                                {item.relatedProduct.oldPrice && (
+                                  <del className="text-[10px]">
+                                    {abbreviation && toCurrency(item.relatedProduct.oldPrice, lang, abbreviation)}
+                                  </del>
+                                )}
+                              </div>
+                            </div>
+                          </SwiperSlide>
+                        ))}
+                    </Swiper>
+                  </div>
+                  )}
+
+
+
+                  </div>
+
+                  <SpecialNotes
+                    lang={lang!}
+                    className="pt-4 pb-2 col-span-full gap-2"
+                    notes={notes}
+                    setNotes={setNotes}
+                  />
+                </div>
+
+                <div className="fixed bottom-0 left-0 right-0 p-5 secShadow bg-white rounded-b-lg z-[10001]">
+                  <div className="grid grid-cols-3 justify-between items-center gap-5 w-full">
+                    <div className={cn('bg-white rounded-bl-lg col-span-1 secShadow rtl:rounded-br-lg h-full', { 'rtl:rounded-bl-none': hasMoreDetails })}>
+                      <QuantityHandler quantity={quantity} setQuantity={setQuantity} className='w-full h-full rounded-lg' />
+                    </div>
+                    <div className={'col-span-2'}>
+                      <ItemPrice
+                        type={type}
+                        buttonType="submit"
+                        price={abbreviation && toCurrency(finalPrice, lang, abbreviation)}
+                        oldPrice={finalOldPrice ? abbreviation && toCurrency(finalOldPrice, lang, abbreviation) : ''}
+                        className={cn('rounded-none rounded-br-lg rtl:rounded-bl-lg rtl:rounded-br-none', { 'rounded-br-none rtl:rounded-bl-none': hasMoreDetails })}
+                      />
+                    </div>
                   </div>
                 </div>
-              </SwiperSlide>
-            ))}
-        </Swiper>
-      </div>
-        )}
-
-      {/* Notes */}
-      <SpecialNotes
-        lang={lang!}
-        className="pt-4 pb-2 col-span-full gap-2"
-        notes={notes}
-        setNotes={setNotes}
-      />
-    </div>
-
-    {/* Bottom bar */}
-    <div className="fixed bottom-0 left-0 right-0 p-5 secShadow bg-white rounded-b-lg z-[10001]">
-      <div className="grid grid-cols-3 justify-between items-center gap-5 w-full">
-        <div className={cn('bg-white rounded-bl-lg col-span-1 secShadow rtl:rounded-br-lg h-full')}>
-          <QuantityHandler quantity={quantity} setQuantity={setQuantity} className="w-full h-full rounded-lg" />
-        </div>
-        <div className={'col-span-2'}>
-          <ItemPrice
-            type={type}
-            buttonType="submit"
-            price={abbreviation && toCurrency(finalPrice, lang, abbreviation)}
-            oldPrice={
-              finalOldPrice ? abbreviation && toCurrency(finalOldPrice, lang, abbreviation) : ''
-            }
-            className={cn('rounded-none rounded-br-lg rtl:rounded-bl-lg rtl:rounded-br-none')}
-          />
-        </div>
-      </div>
-    </div>
-  </form>
-</FormProvider>
-
+              </form>
+            </FormProvider>
           </div>
-       
         </motion.div>
       </div>
-
-  </>,
+    </AnimatePresence>,
     document.body
   );
 }
