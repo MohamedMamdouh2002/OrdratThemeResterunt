@@ -486,45 +486,58 @@ function Modal({
     };
   }, [isOpen]);
   const drawerStyles = `
+  /* تنسيقات الخلفية */
   .drawer-backdrop {
     position: fixed;
     inset: 0;
-    background-color: rgba(75, 85, 99, 0.5);
+    background-color: rgba(0, 0, 0, 0.5);
     z-index: 999;
     opacity: 0;
-    transition: opacity 0.15s ease-in-out;
-    pointer-events: none;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
   }
   
   .drawer-backdrop.open {
     opacity: 1;
-    pointer-events: auto;
+    visibility: visible;
   }
   
+  /* تنسيقات حاوية الدرج */
   .drawer-container {
     position: fixed;
     bottom: 0;
     right: 0;
     left: 0;
-    z-index: 10000;
-    overflow: hidden;
-    display: flex;
-    items-end;
+    z-index: 1000;
     transform: translateY(100%);
-    transition: transform 0.2s ease-in-out;
+    transition: transform 0.3s ease;
+    will-change: transform;
   }
   
   .drawer-container.open {
     transform: translateY(0);
   }
   
+  /* تنسيقات المحتوى */
+  .drawer-content {
+    background-color: white;
+    border-top-left-radius: 1rem;
+    border-top-right-radius: 1rem;
+    max-height: 90vh;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* تنسيقات التمرير */
   .custom-scroll {
     scrollbar-width: thin;
     scrollbar-color: rgba(0, 0, 0, 0.2) transparent;
   }
   
   .custom-scroll::-webkit-scrollbar {
-    width: 6px;
+    width: 5px;
   }
   
   .custom-scroll::-webkit-scrollbar-track {
@@ -533,7 +546,7 @@ function Modal({
   
   .custom-scroll::-webkit-scrollbar-thumb {
     background-color: rgba(0, 0, 0, 0.2);
-    border-radius: 3px;
+    border-radius: 10px;
   }
 `;
   if (!prodId) {
@@ -936,7 +949,9 @@ onClick={() => {
         </FormProvider>
       </div>
       <style jsx global>{drawerStyles}</style>
-
+      <style jsx global>{`
+${drawerStyles}
+`}</style>
       {/* Mobile Modal */}
       <div className="md:hidden">
         {/* Backdrop */}
