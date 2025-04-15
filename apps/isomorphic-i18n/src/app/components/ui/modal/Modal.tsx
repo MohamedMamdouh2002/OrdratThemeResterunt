@@ -999,14 +999,14 @@ onClick={() => {
         initial={{ y: '100%' }}
         animate={{ y: isReady ? 0 : '100%' }}
         exit={{ y: '100%' }}
-        transition={{ type: 'tween' }} 
+        transition={{ duration: 0.1 }} 
         className="fixed bottom-0 right-0 left-0 flex items-end z-[10000] overflow-hidden"
       >
     {/* > */}
+  
              {isLoading ? (
               <div
-              ref={scrollContainerRef}
-              onScroll={handleScroll}
+       
               className="bg-white rounded-lg b-4 w-full max-h-svh flex flex-col overflow-y-auto custom-scroll"
             >
                <ProductModalSkeleton lang={lang} />
