@@ -513,32 +513,39 @@ function Modal({
       toast.success(t("addtoCart"));
     }
   };
-  // if (isLoading) {
-  //   return ReactDOM.createPortal(
-  //     <div className="md:hidden">
-  //       <motion.div
-  //         className="fixed inset-0 bg-gray-600 bg-opacity-50 z-[999]"
-  //         initial={{ opacity: 0 }}
-  //         animate={{ opacity: 1 }}
-  //         exit={{ opacity: 0 }}
-  //         transition={{ duration: 0.1 }}
-  //       />
-  //       <motion.div
-  //         initial={{ y: '100%' }}
-  //         animate={{ y: 0 }}
-  //         exit={{ y: '100%' }}
-  //         transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-  //         className="fixed bottom-0 right-0 left-0 flex items-end z-[10000] overflow-hidden"
-  //       >
-  //         <div className="bg-white rounded-lg b-4 w-full h-64 flex flex-col items-center justify-center">
-  //           <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-mainColor"></div>
-  //           <p className="mt-4 text-gray-600">{t('loading')}</p>
-  //         </div>
-  //       </motion.div>
-  //     </div>,
-  //     document.body
-  //   );
-  // }
+//   if (isLoading) {
+//     return ReactDOM.createPortal(
+//       <div className="md:hidden">
+// <motion.div
+//         className="fixed inset-0 bg-gray-600 bg-opacity-50 z-[999]"
+//         initial={{ opacity: 0 }}
+//         animate={{ opacity: isReady ? 1 : 0 }}
+//         exit={{ opacity: 0 }}
+//         transition={{ duration: 0.1 }} // Reduced from 0.15
+//       />
+
+
+// <motion.div
+//         initial={{ y: '100%' }}
+//         animate={{ y: isReady ? 0 : '100%' }}
+//         exit={{ y: '100%' }}
+//         transition={{ type: 'spring', stiffness: 300, damping: 30 }} // Changed from tween to spring for more natural feel
+//         className="fixed bottom-0 right-0 left-0 flex items-end z-[10000] overflow-hidden"
+//       >
+//     {/* > */}
+//           <div
+//             ref={scrollContainerRef}
+//             onScroll={handleScroll}
+//             className="bg-white rounded-lg b-4 w-full max-h-svh flex flex-col overflow-y-auto custom-scroll"
+//           >
+//             <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-mainColor"></div>
+//             <p className="mt-4 text-gray-600">{t('loading')}</p>
+//           </div>
+//         </motion.div>
+//       </div>,
+//       document.body
+//     );
+//   }
 
 
 
@@ -547,7 +554,7 @@ function Modal({
   return ReactDOM.createPortal(
     <>
 
-{isLoading?
+{isLoading ?
             <p className="mt-4 text-gray-600">{t('loading')}</p>
 
 :
@@ -566,7 +573,7 @@ function Modal({
         initial={{ y: '100%' }}
         animate={{ y: isReady ? 0 : '100%' }}
         exit={{ y: '100%' }}
-        transition={{ type: 'spring', stiffness: 300, damping: 30 }} // Changed from tween to spring for more natural feel
+        transition={{ type: 'tween' }} // Changed from tween to spring for more natural feel
         className="fixed bottom-0 right-0 left-0 flex items-end z-[10000] overflow-hidden"
       >
     {/* > */}
