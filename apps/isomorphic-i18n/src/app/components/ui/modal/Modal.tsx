@@ -1306,14 +1306,14 @@ onClick={() => {
       </div>
 
       {/* Related Products */}
-      <div className="my-3">
-        <h3 className="font-bold mb-2">
-          {lang === 'ar' ? 'منتجات ذات صلة:' : 'Related Products:'}
-        </h3>
 
         {!prodId?.frequentlyOrderedWith ? (
           <Skeleton className="w-full h-20" />
         ) : (
+      <div className="my-3">
+        <h3 className="font-bold mb-2">
+          {lang === 'ar' ? 'منتجات ذات صلة:' : 'Related Products:'}
+        </h3>
           <Swiper
           spaceBetween={12}
           slidesPerView={4}
@@ -1363,8 +1363,8 @@ onClick={() => {
               </SwiperSlide>
             ))}
         </Swiper>
-        )}
       </div>
+        )}
 
       {/* Notes */}
       <SpecialNotes
