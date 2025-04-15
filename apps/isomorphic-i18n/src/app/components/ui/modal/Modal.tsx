@@ -214,6 +214,7 @@ function Modal({
       setImageVisible(scrollTop < 150);
     }
   };
+  
 
   const handleScrollPc = () => {
     setIsScrolled(window.scrollY > 0);
@@ -1002,32 +1003,40 @@ onClick={() => {
         className="fixed bottom-0 right-0 left-0 flex items-end z-[10000] overflow-hidden"
       >
     {/* > */}
-          <div
-            ref={scrollContainerRef}
-            onScroll={handleScroll}
-            className="bg-white rounded-lg b-4 w-full max-h-svh flex flex-col overflow-y-auto custom-scroll"
-          >
              {isLoading ? (
-          <ProductModalSkeleton lang={lang} />
-
+              <div
+              ref={scrollContainerRef}
+              onScroll={handleScroll}
+              className="bg-white rounded-lg b-4 w-full max-h-svh flex flex-col overflow-y-auto custom-scroll"
+            >
+               <ProductModalSkeleton lang={lang} />
+</div>
       ) : ( 
+        <div
+          ref={scrollContainerRef}
+          onScroll={handleScroll}
+          className="bg-white rounded-lg b-4 w-full max-h-svh flex flex-col overflow-y-auto custom-scroll"
+        >
             <FormProvider {...methods}>
               <form onSubmit={methods.handleSubmit(onSubmit)}>
                 <div className="relative">
-                  {isImageVisible ? (
-                    <div className="w-full h-60">
-                      <Image
-                        src={prodId?.imageUrl }
-                        layout="fill"
-                        objectFit="cover"
-                        alt="Product Image"
-                      />
-                    </div>
-                  ) : (
-                    <div className="w-full h-16 fixed top-0 start-0 right-0 flex items-center bg-white secShadow z-50">
-                      <h3 className="text-xl font-bold leading-10 text-start ps-14">{prodId?.name}</h3>
-                    </div>
-                  )}
+                     {isImageVisible ? (
+                                                         <div className="w-full h-60">
+                                                             <CustomImage
+                                                                 src={prodId?.imageUrl || photo}
+                                                                 // width={900}
+                                                                 // height={600}
+                                                                 layout="fill"
+                                                                 objectFit="cover"
+                                                                 alt="Product Image"
+                                                                 className=""
+                                                             />
+                                                         </div>
+                                                     ) : (
+                                                         <div className="w-full h-16 fixed top-0 start-0 right-0 flex items-center bg-white secShadow z-50">
+                                                             <h3 className="text-xl font-bold leading-10 text-start  ps-14">{prodId?.name}</h3>
+                                                         </div>
+                                                     )}
                   <X
                     onClick={handleClose}
                     className={`bg-white rounded-full p-2 ${isImageVisible ? 'fixed top-2 start-2' : 'fixed top-3.5 start-2 z-[100]'}`}
@@ -1359,8 +1368,8 @@ onClick={() => {
                 </div>
               </form>
             </FormProvider>
-       )}
           </div>
+       )}
         </motion.div>
       </div>
 
