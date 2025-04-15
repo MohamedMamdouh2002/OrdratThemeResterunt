@@ -164,19 +164,19 @@ function Modal({
     fetchFakeData();
   }, []);
   // Updated click handler for related products
-  useEffect(() => {
-    const fetchData = async () => {
-      // استخدم المعرف الفعلي للمنتج الذي تريد عرضه
-      const productIdToFetch = currentModalProductId || modalId;
-      console.log("تحميل المنتج بمعرف:", productIdToFetch); // للتصحيح
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     // استخدم المعرف الفعلي للمنتج الذي تريد عرضه
+  //     const productIdToFetch = currentModalProductId || modalId;
+  //     console.log("تحميل المنتج بمعرف:", productIdToFetch); // للتصحيح
       
-      const data = await GetProduct({ lang, id: productIdToFetch });
+  //     const data = await GetProduct({ lang, id: productIdToFetch });
       
-      // باقي الكود لتنسيق البيانات...
-    };
+  //     // باقي الكود لتنسيق البيانات...
+  //   };
 
-    fetchData();
-  }, [GetProduct, modalId, lang, currentModalProductId]); // أضف currentModalProductId للتبعيات
+  //   fetchData();
+  // }, [GetProduct, modalId, lang, currentModalProductId]); // أضف currentModalProductId للتبعيات
   
   
   const handleScroll = () => {
@@ -864,13 +864,17 @@ onClick={() => {
       <div className="md:hidden">
         <motion.div
           className="fixed inset-0 bg-gray-600 bg-opacity-50  z-[999]"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: isOpen ? 1 : 0 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.015 }}
         />
 
 <motion.div
   initial={{ y: '100%' }}
   animate={{ y: isOpen ? 0 : '100%' }}
   exit={{ y: '100%' }}
-  transition={{ type: 'spring', duration: 0.2 }}
+  transition={{ type: 'tween', duration: 0.2 }}
       className="fixed bottom-0 right-0 left-0 flex items-end z-[10000] overflow-hidden"
 >
     {/* > */}
