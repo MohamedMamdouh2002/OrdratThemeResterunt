@@ -165,19 +165,19 @@ function Modal({
     fetchFakeData();
   }, []);
   // Updated click handler for related products
-  useEffect(() => {
-    const fetchData = async () => {
-      // استخدم المعرف الفعلي للمنتج الذي تريد عرضه
-      const productIdToFetch = currentModalProductId || modalId;
-      console.log("تحميل المنتج بمعرف:", productIdToFetch); // للتصحيح
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     // استخدم المعرف الفعلي للمنتج الذي تريد عرضه
+  //     const productIdToFetch = currentModalProductId || modalId;
+  //     console.log("تحميل المنتج بمعرف:", productIdToFetch); // للتصحيح
       
-      const data = await GetProduct({ lang, id: productIdToFetch });
+  //     const data = await GetProduct({ lang, id: productIdToFetch });
       
-      // باقي الكود لتنسيق البيانات...
-    };
+  //     // باقي الكود لتنسيق البيانات...
+  //   };
 
-    fetchData();
-  }, [GetProduct, modalId, lang, currentModalProductId]); // أضف currentModalProductId للتبعيات
+  //   fetchData();
+  // }, [GetProduct, modalId, lang, currentModalProductId]); // أضف currentModalProductId للتبعيات
   
   useEffect(() => {
     document.body.style.overflow = 'hidden';
@@ -226,116 +226,140 @@ function Modal({
   // Fetch product data
   useEffect(() => {
     const fetchData = async () => {
-      // استخدم currentModalProductId إذا كان موجودًا، وإلا استخدم modalId الأصلي
-      const productIdToFetch = currentModalProductId || modalId;
-      console.log("جاري تحميل بيانات المنتج...");
-      console.log("معرف المودال:", modalId);
-      console.log("معرف المنتج الحالي:", currentModalProductId);
-      const data = await GetProduct({ lang, id: productIdToFetch });
+      try {
+        setLoading(true);
+        // Use currentModalProductId if provided, otherwise use modalId
+        const productIdToFetch = currentModalProductId || modalId;
+        console.log("Loading product with ID:", productIdToFetch);
+        
+        const data = await GetProduct({ lang, id: productIdToFetch });
+        
+        if (!data) {
+          console.error("Failed to load product data");
+          setLoading(false);
+          return;
+        }
 
-      const formattedData: FoodId = {
-        id: data.id,
-        name: lang === 'ar' ? data.nameAr : data.nameEn,
-        description: lang === 'ar' ? data.descriptionAr : data.descriptionEn,
-        vat: data.vat,
-        vatType: data.vatType,
-        discount: data.discount,
-        discountType: data.discountType,
-        isActive: data.isActive,
-        createdAt: data.createdAt,
-        lastUpdatedAt: data.lastUpdatedAt,
-        isTopSelling: data.isTopSelling,
-        isTopRated: data.isTopRated,
-        seoDescription: lang === 'ar' ? data.metaDescriptionAr : data.metaDescriptionEn,
-        imageUrl: data.images.length > 0 ? data.images[0].imageUrl : "",
-        categoryId: data.categoryId,
-        numberOfSales: data.numberOfSales,
-        category: null,
-        variations: data.variations.filter((variation: any) => variation.isActive).map((variation: any) => ({
-          id: variation.id,
-          name: lang === 'ar' ? variation.nameAr : variation.nameEn,
-          buttonType: variation.buttonType,
-          isActive: variation.isActive,
-          isRequired: variation.isRequired,
-          choices: variation.choices.filter((choice: any) => choice.isActive).map((choice: any) => ({
-            id: choice.id,
-            name: lang === 'ar' ? choice.nameAr : choice.nameEn,
-            price: choice.price,
-            isDefault: choice.isDefault,
-            isActive: choice.isActive,
-            imageUrl: choice.imageUrl,
-          })),
-        })),
-        frequentlyOrderedWith: data.frequentlyOrderedWith,
-        reviews: data.reviews,
-        price: data.price,
-        oldPrice: data.oldPrice
-      };
-      const formattedData2 = {
-        id: data.id,
-        nameEn: data.nameEn,
-        nameAr: data.nameAr,
-        descriptionEn: data.descriptionEn,
-        descriptionAr: data.descriptionAr,
-        vat: data.vat,
-        vatType: data.vatType,
-        discount: data.discount,
-        discountType: data.discountType,
-        isActive: data.isActive,
-        createdAt: data.createdAt,
-        lastUpdatedAt: data.lastUpdatedAt,
-        isTopSelling: data.isTopSelling,
-        isTopRated: data.isTopRated,
-        metaDescriptionEn: data.metaDescriptionEn,
-        metaDescriptionAr: data.metaDescriptionAr,
-        imageUrl: data.images.length > 0 ? data.images[0].imageUrl : "",
-        categoryId: data.categoryId,
-        numberOfSales: data.numberOfSales,
-        variations: data.variations.filter((variation: any) => variation.isActive).map((variation: any) => ({
-          id: variation.id,
-          nameEn: variation.nameEn,
-          nameAr: variation.nameAr,
-          buttonType: variation.buttonType,
-          isActive: variation.isActive,
-          isRequired: variation.isRequired,
-          choices: variation.choices.filter((choice: any) => choice.isActive).map((choice: any) => ({
-            id: choice.id,
-            nameEn: choice.nameEn,
-            nameAr: choice.nameAr,
-            price: choice.price,
-            isDefault: choice.isDefault,
-            isActive: choice.isActive,
-            imageUrl: choice.imageUrl,
-          })),
-        })),
-        frequentlyOrderedWith: data.frequentlyOrderedWith,
-        reviews: data.reviews,
-        price: data.price,
-        oldPrice: data.oldPrice
-      };
+        // Format data for display
+        const formattedData: FoodId = {
+          id: data.id,
+          name: lang === 'ar' ? data.nameAr : data.nameEn,
+          description: lang === 'ar' ? data.descriptionAr : data.descriptionEn,
+          vat: data.vat,
+          vatType: data.vatType,
+          discount: data.discount,
+          discountType: data.discountType,
+          isActive: data.isActive,
+          createdAt: data.createdAt,
+          lastUpdatedAt: data.lastUpdatedAt,
+          isTopSelling: data.isTopSelling,
+          isTopRated: data.isTopRated,
+          seoDescription: lang === 'ar' ? data.metaDescriptionAr : data.metaDescriptionEn,
+          imageUrl: data.images.length > 0 ? data.images[0].imageUrl : "",
+          categoryId: data.categoryId,
+          numberOfSales: data.numberOfSales,
+          category: null,
+          variations: data.variations
+            .filter((variation: any) => variation.isActive)
+            .map((variation: any) => ({
+              id: variation.id,
+              name: lang === 'ar' ? variation.nameAr : variation.nameEn,
+              buttonType: variation.buttonType,
+              isActive: variation.isActive,
+              isRequired: variation.isRequired,
+              choices: variation.choices
+                .filter((choice: any) => choice.isActive)
+                .map((choice: any) => ({
+                  id: choice.id,
+                  name: lang === 'ar' ? choice.nameAr : choice.nameEn,
+                  price: choice.price,
+                  isDefault: choice.isDefault,
+                  isActive: choice.isActive,
+                  imageUrl: choice.imageUrl,
+                })),
+            })),
+          frequentlyOrderedWith: data.frequentlyOrderedWith,
+          reviews: data.reviews,
+          price: data.price,
+          oldPrice: data.oldPrice
+        };
 
-      setProdId(formattedData);
-      setProductData(formattedData2);
-      setProdCartItem({
-        id: formattedData.id,
-        name: formattedData.name,
-        slug: formattedData.name,
-        description: formattedData.description,
-        imageUrl: formattedData.imageUrl,
-        price: formattedData.price,
-        quantity: 1,
-        sizeFood: "small",
-        color: {
-          name: "Purple Heart",
-          code: "#5D30DD",
-        },
-      });
+        // Store raw data for cart operations
+        const formattedData2 = {
+          id: data.id,
+          nameEn: data.nameEn,
+          nameAr: data.nameAr,
+          descriptionEn: data.descriptionEn,
+          descriptionAr: data.descriptionAr,
+          vat: data.vat,
+          vatType: data.vatType,
+          discount: data.discount,
+          discountType: data.discountType,
+          isActive: data.isActive,
+          createdAt: data.createdAt,
+          lastUpdatedAt: data.lastUpdatedAt,
+          isTopSelling: data.isTopSelling,
+          isTopRated: data.isTopRated,
+          metaDescriptionEn: data.metaDescriptionEn,
+          metaDescriptionAr: data.metaDescriptionAr,
+          imageUrl: data.images.length > 0 ? data.images[0].imageUrl : "",
+          categoryId: data.categoryId,
+          numberOfSales: data.numberOfSales,
+          variations: data.variations
+            .filter((variation: any) => variation.isActive)
+            .map((variation: any) => ({
+              id: variation.id,
+              nameEn: variation.nameEn,
+              nameAr: variation.nameAr,
+              buttonType: variation.buttonType,
+              isActive: variation.isActive,
+              isRequired: variation.isRequired,
+              choices: variation.choices
+                .filter((choice: any) => choice.isActive)
+                .map((choice: any) => ({
+                  id: choice.id,
+                  nameEn: choice.nameEn,
+                  nameAr: choice.nameAr,
+                  price: choice.price,
+                  isDefault: choice.isDefault,
+                  isActive: choice.isActive,
+                  imageUrl: choice.imageUrl,
+                })),
+          })),
+          frequentlyOrderedWith: data.frequentlyOrderedWith,
+          reviews: data.reviews,
+          price: data.price,
+          oldPrice: data.oldPrice
+        };
+
+        setProdId(formattedData);
+        setProductData(formattedData2);
+        setProdCartItem({
+          id: formattedData.id,
+          name: formattedData.name,
+          slug: formattedData.name,
+          description: formattedData.description,
+          imageUrl: formattedData.imageUrl,
+          price: formattedData.price,
+          quantity: 1,
+          sizeFood: "small",
+          color: {
+            name: "Purple Heart",
+            code: "#5D30DD",
+          },
+        });
+      } catch (error) {
+        console.error("Error loading product data:", error);
+      } finally {
+        setLoading(false);
+      }
     };
+
+    // Only fetch if the modal is open
     if (isReady) {
       fetchData();
     }
-    fetchData();
-  }, [GetProduct, modalId, lang, currentModalProductId,isReady]); // أضفنا currentModalProductId كمتغير تبعي
+  }, [GetProduct, modalId, lang, currentModalProductId, isReady]); // Added isReady to dependencies
 
   // Prevent body scroll when modal is open
   useEffect(() => {
@@ -489,39 +513,44 @@ function Modal({
       toast.success(t("addtoCart"));
     }
   };
-  if (isLoading && !prodId) {
-    return ReactDOM.createPortal(
-      <div className="md:hidden">
-        <motion.div
-          className="fixed inset-0 bg-gray-600 bg-opacity-50 z-[999]"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.1 }}
-        />
-        <motion.div
-          initial={{ y: '100%' }}
-          animate={{ y: 0 }}
-          exit={{ y: '100%' }}
-          transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-          className="fixed bottom-0 right-0 left-0 flex items-end z-[10000] overflow-hidden"
-        >
-          <div className="bg-white rounded-lg b-4 w-full h-64 flex flex-col items-center justify-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-mainColor"></div>
-            <p className="mt-4 text-gray-600">{t('loading')}</p>
-          </div>
-        </motion.div>
-      </div>,
-      document.body
-    );
-  }
+  // if (isLoading) {
+  //   return ReactDOM.createPortal(
+  //     <div className="md:hidden">
+  //       <motion.div
+  //         className="fixed inset-0 bg-gray-600 bg-opacity-50 z-[999]"
+  //         initial={{ opacity: 0 }}
+  //         animate={{ opacity: 1 }}
+  //         exit={{ opacity: 0 }}
+  //         transition={{ duration: 0.1 }}
+  //       />
+  //       <motion.div
+  //         initial={{ y: '100%' }}
+  //         animate={{ y: 0 }}
+  //         exit={{ y: '100%' }}
+  //         transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+  //         className="fixed bottom-0 right-0 left-0 flex items-end z-[10000] overflow-hidden"
+  //       >
+  //         <div className="bg-white rounded-lg b-4 w-full h-64 flex flex-col items-center justify-center">
+  //           <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-mainColor"></div>
+  //           <p className="mt-4 text-gray-600">{t('loading')}</p>
+  //         </div>
+  //       </motion.div>
+  //     </div>,
+  //     document.body
+  //   );
+  // }
 
 
 
 
 
   return ReactDOM.createPortal(
+    <>
 
+{isLoading?
+            <p className="mt-4 text-gray-600">{t('loading')}</p>
+
+:
 
       <div className="md:hidden">
         <motion.div
@@ -552,7 +581,7 @@ function Modal({
                   {isImageVisible ? (
                     <div className="w-full h-60">
                       <Image
-                        src={prodId?.imageUrl}
+                        src={prodId?.imageUrl }
                         layout="fill"
                         objectFit="cover"
                         alt="Product Image"
@@ -896,7 +925,9 @@ function Modal({
             </FormProvider>
           </div>
         </motion.div>
-      </div>,
+      </div>
+}
+  </>,
     document.body
   );
 }
