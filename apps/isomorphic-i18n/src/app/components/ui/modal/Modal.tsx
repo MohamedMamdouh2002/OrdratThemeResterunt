@@ -164,19 +164,19 @@ function Modal({
     fetchFakeData();
   }, []);
   // Updated click handler for related products
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     // استخدم المعرف الفعلي للمنتج الذي تريد عرضه
-  //     const productIdToFetch = currentModalProductId || modalId;
-  //     console.log("تحميل المنتج بمعرف:", productIdToFetch); // للتصحيح
+  useEffect(() => {
+    const fetchData = async () => {
+      // استخدم المعرف الفعلي للمنتج الذي تريد عرضه
+      const productIdToFetch = currentModalProductId || modalId;
+      console.log("تحميل المنتج بمعرف:", productIdToFetch); // للتصحيح
       
-  //     const data = await GetProduct({ lang, id: productIdToFetch });
+      const data = await GetProduct({ lang, id: productIdToFetch });
       
-  //     // باقي الكود لتنسيق البيانات...
-  //   };
+      // باقي الكود لتنسيق البيانات...
+    };
 
-  //   fetchData();
-  // }, [GetProduct, modalId, lang, currentModalProductId]); // أضف currentModalProductId للتبعيات
+    fetchData();
+  }, [GetProduct, modalId, lang, currentModalProductId]); // أضف currentModalProductId للتبعيات
   
   
   const handleScroll = () => {
@@ -460,6 +460,82 @@ function Modal({
     }
   };
 
+  useEffect(() => {
+    const handleClickOutside = (event:any) => {
+      if (isOpen && scrollContainerRef.current && !scrollContainerRef.current.contains(event.target)) {
+        handleClose();
+      }
+    };
+    
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isOpen]);
+  
+  // Handle body scroll lock when drawer is open
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [isOpen]);
+  const drawerStyles = `
+  .drawer-backdrop {
+    position: fixed;
+    inset: 0;
+    background-color: rgba(75, 85, 99, 0.5);
+    z-index: 999;
+    opacity: 0;
+    transition: opacity 0.15s ease-in-out;
+    pointer-events: none;
+  }
+  
+  .drawer-backdrop.open {
+    opacity: 1;
+    pointer-events: auto;
+  }
+  
+  .drawer-container {
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    z-index: 10000;
+    overflow: hidden;
+    display: flex;
+    items-end;
+    transform: translateY(100%);
+    transition: transform 0.2s ease-in-out;
+  }
+  
+  .drawer-container.open {
+    transform: translateY(0);
+  }
+  
+  .custom-scroll {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(0, 0, 0, 0.2) transparent;
+  }
+  
+  .custom-scroll::-webkit-scrollbar {
+    width: 6px;
+  }
+  
+  .custom-scroll::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  
+  .custom-scroll::-webkit-scrollbar-thumb {
+    background-color: rgba(0, 0, 0, 0.2);
+    border-radius: 3px;
+  }
+`;
   if (!prodId) {
     return null;
   }
@@ -859,31 +935,22 @@ onClick={() => {
           </form>
         </FormProvider>
       </div>
+      <style jsx global>{drawerStyles}</style>
 
       {/* Mobile Modal */}
       <div className="md:hidden">
-        <motion.div
-          className="fixed inset-0 bg-gray-600 bg-opacity-50  z-[999]"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: isOpen ? 1 : 0 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.015 }}
+        {/* Backdrop */}
+        <div 
+          className={`drawer-backdrop ${isOpen ? 'open' : ''}`}
+          onClick={handleClose}
         />
-
-<motion.div
-  initial={{ y: '100%' }}
-  animate={{ y: isOpen ? 0 : '100%' }}
-  exit={{ y: '100%' }}
-  transition={{ type: 'tween', duration: 0.2 }}
-      className="fixed bottom-0 right-0 left-0 flex items-end z-[10000] overflow-hidden"
->
-    {/* > */}
+        <div className={`drawer-container ${isOpen ? 'open' : ''}`}>
           <div
             ref={scrollContainerRef}
             onScroll={handleScroll}
             className="bg-white rounded-lg b-4 w-full max-h-svh flex flex-col overflow-y-auto custom-scroll"
           >
-            <FormProvider {...methods}>
+              <FormProvider {...methods}>
               <form onSubmit={methods.handleSubmit(onSubmit)}>
                 <div className="relative">
                   {isImageVisible ? (
@@ -1200,9 +1267,6 @@ onClick={() => {
                     </Swiper>
                   </div>
                   )}
-
-
-
                   </div>
 
                   <SpecialNotes
@@ -1232,7 +1296,7 @@ onClick={() => {
               </form>
             </FormProvider>
           </div>
-        </motion.div>
+        </div>
       </div>
     </AnimatePresence>,
     document.body
