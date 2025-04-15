@@ -953,7 +953,7 @@ onClick={() => {
 ${drawerStyles}
 `}</style>
       {/* Mobile Modal */}
-      <div className="md:hidden ">
+      <div className="md:hidden">
         {/* Backdrop */}
         <div 
           className={`drawer-backdrop ${isOpen ? 'open' : ''}`}
