@@ -5,12 +5,11 @@ import { Food } from '@/types';
 import { Flame, Plus, Star } from 'lucide-react';
 import Badge from '../Badge';
 import photo from '@public/assets/شاورما-عربي-لحمة-768x768.png'
-import hamburger from '@public/assets/hamburger.png'
-import potato from '@public/assets/شاورما-عراقي-لحمة-مع-بطاطا.png'
 import Modal from '../modal/Modal';
 import useCurrencyAbbreviation, { toCurrency } from '@utils/to-currency';
 import CustomImage from '../CustomImage';
 import { AnimatePresence } from 'framer-motion';
+
 type Props = Food & {
   lang: string;
   setCurrentItem: Dispatch<
@@ -27,43 +26,19 @@ function SmallCard(data: Props) {
   const abbreviation = useCurrencyAbbreviation({ lang: data.lang });
   const [currentModalProductId, setCurrentModalProductId] = useState<string | null>(null);
   
+  // Optimized modal opener - opens immediately
   const handleOpenModal = (id: string) => {
-    // تعيين معرف المنتج الأولي
     setCurrentModalProductId(id);
+    // No delay - open immediately
     setIsModalOpen(true);
   };
-  useEffect(() => {
-    // معالج لاستقبال طلبات تغيير المنتج من المودال
-    const handleRelatedProductClick = (event: any) => {
-      if (event.data && event.data.type === 'OPEN_RELATED_PRODUCT') {
-        // إغلاق المودال الحالي
-        setIsModalOpen(false);
-        
-        // انتظر إغلاق المودال ثم افتح المودال الجديد
-        setTimeout(() => {
-          // تعيين المنتج الجديد
-          setCurrentModalProductId(event.data.productId);
-          // إعادة فتح المودال
-          setIsModalOpen(true);
-        }, 300);
-      }
-    };
-
-    // إضافة مستمع للرسائل
-    window.addEventListener('message', handleRelatedProductClick);
-    
-    // إزالة المستمع عند تفكيك الكومبوننت
-    return () => {
-      window.removeEventListener('message', handleRelatedProductClick);
-    };
-  }, []);
-
 
   return (
     <>
       <div
         onClick={() => handleOpenModal(data.id)}
         className="w-[115px] hover:cursor-pointer sm:w-[120px] md:w-[150px] lg:w-[200px] overflow-x-auto">
+        {/* Product card content remains the same */}
         <div className="relative">
           <CustomImage
             src={data?.images ? data?.images[0]?.imageUrl || photo : photo}
@@ -112,24 +87,23 @@ function SmallCard(data: Props) {
           </div>
         </div>
       </div>
-      {/* <AnimatePresence mode='wait'> */}
-  {isModalOpen && (
-    <>
-      {console.log("رندر المودال، معرف المنتج الحالي:", currentModalProductId || data.id)}
-      <Modal
-        setCurrentModalProductId={setCurrentModalProductId}
-        lang={data.lang}
-        modalId={data.id}
-        currentModalProductId={currentModalProductId}
-        setIsModalOpen={setIsModalOpen}
-        quantity={quantity}
-        setQuantity={setQuantity}
-      />
-    </>
-  )}
-{/* </AnimatePresence> */}
+      
+      {/* Wrap in AnimatePresence for proper animation handling */}
+      <AnimatePresence mode='wait'>
+        {isModalOpen && (
+          <Modal
+            setCurrentModalProductId={setCurrentModalProductId}
+            lang={data.lang}
+            modalId={data.id}
+            currentModalProductId={currentModalProductId}
+            setIsModalOpen={setIsModalOpen}
+            quantity={quantity}
+            setQuantity={setQuantity}
+          />
+        )}
+      </AnimatePresence>
     </>
   );
 }
 
-export default SmallCard
+export default SmallCard;
