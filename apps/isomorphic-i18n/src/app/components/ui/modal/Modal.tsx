@@ -1018,16 +1018,17 @@ onClick={() => {
                 <div className="relative">
                      {isImageVisible ? (
                                                          <div className="w-full h-60">
-                                                             <CustomImage
-
-                                                                 src={isLoading ? <Skeleton width={120} height={24} />:prodId?.imageUrl }
-                                                                 // width={900}
-                                                                 // height={600}
-                                                                 layout="fill"
-                                                                 objectFit="cover"
-                                                                 alt="Product Image"
-                                                                 className=""
-                                                             />
+                                                              {isLoading ? (
+    <Skeleton className="w-full h-full rounded-lg" />
+  ) : (
+    <CustomImage
+      src={prodId?.imageUrl || photo}
+      layout="fill"
+      objectFit="cover"
+      alt="Product Image"
+      className=""
+    />
+  )}
                                                          </div>
                                                      ) : (
                                                          <div className="w-full h-16 fixed top-0 start-0 right-0 flex items-center bg-white secShadow z-50">
@@ -1049,12 +1050,13 @@ onClick={() => {
                     {prodId?.isTopSelling && <Badge Icon={Flame} title="Top Selling" className="-ms-1" />}
                   </div>
                   <h3 className="text-xl font-bold leading-10">
-                  {isLoading ? <Skeleton width={120} height={24} /> : prodId?.name}
+                  {isLoading ? <Skeleton count={1} width={100} /> : prodId?.name}
 
                   </h3>
                   <p className="text-sm font-medium text-black/75">
                   
-                  {isLoading ? <Skeleton width={120} height={24} /> : prodId?.description}</p>
+                  {isLoading ? <Skeleton count={2} width={180} /> : prodId?.description}
+                  </p>
 
                   {/* Fake data section */}
                   {fakeData && (
