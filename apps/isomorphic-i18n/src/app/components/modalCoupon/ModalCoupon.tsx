@@ -16,13 +16,13 @@ const CouponModal: React.FC<CouponModalProps> = ({ lang, onClose }) => {
   const { t } = useTranslation(lang, 'home');
   const { shopId } = useUserContext();
 
+  const [coupon, setCoupon] = useState<any[]>([]);
+  const [showToast, setShowToast] = useState(false);
+  
   const touchStartY = useRef<number | null>(null);
   const touchEndY = useRef<number | null>(null);
   const [isClosing, setIsClosing] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
-  const [coupon, setCoupon] = useState<any[]>([]);
-  const [showToast, setShowToast] = useState(false);
-
   const handleTouchStart = (e: React.TouchEvent) => {
     touchStartY.current = e.touches[0].clientY;
   };

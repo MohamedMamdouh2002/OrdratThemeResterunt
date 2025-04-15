@@ -112,7 +112,7 @@ function SmallCard(data: Props) {
           </div>
         </div>
       </div>
-      <AnimatePresence mode='wait'>
+      {/* <AnimatePresence mode='wait'> */}
   {isModalOpen && (
     <>
       {console.log("رندر المودال، معرف المنتج الحالي:", currentModalProductId || data.id)}
@@ -127,7 +127,7 @@ function SmallCard(data: Props) {
       />
     </>
   )}
-</AnimatePresence>
+{/* </AnimatePresence> */}
     </>
   );
 }
