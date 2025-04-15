@@ -26,6 +26,7 @@ import AutoModal from "../components/modalAds/ModalAds";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFacebookF, faSquareFacebook, faWhatsapp } from "@fortawesome/free-brands-svg-icons";
 import Image from "next/image";
+import Pixels, { getEnabledPixels } from "../components/ui/pixels";
 const NextProgress = dynamic(() => import("@components/next-progress"), {
   ssr: false,
 });
@@ -367,6 +368,7 @@ export default async function RootLayout({
 
 
   }
+  const enabledPixels = await getEnabledPixels();
 
 
   return (
@@ -379,6 +381,7 @@ export default async function RootLayout({
         <link rel="icon" href={shopData.logoUrl} type="image/x-icon" />
       </head>
       <body suppressHydrationWarning className={cn(elTajawal.variable, 'font-elTajawal')}>
+        <Pixels enabledPixels={enabledPixels} />
         <style>
           {`
             :root {

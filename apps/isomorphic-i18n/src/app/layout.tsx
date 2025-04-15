@@ -11,6 +11,7 @@ export const metadata = {
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html suppressHydrationWarning={true}>
+      
       <body
         // to prevent any warning that is caused by third party extensions like Grammerly
         suppressHydrationWarning={true}
