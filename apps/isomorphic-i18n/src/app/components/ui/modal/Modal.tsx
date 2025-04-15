@@ -31,6 +31,7 @@ import RoleSelect from '../inputs/selectInput/SelectInput';
 import SpecialNotes from '@/app/components/ui/SpecialNotes';
 import { useTranslation } from '@/app/i18n/client';
 import CustomImage from '../CustomImage';
+import ProductModalSkeleton from '../ProductModalSkeleton ';
 
 // Type definitions remain the same as in your original code
 interface Variation {
@@ -513,39 +514,40 @@ function Modal({
       toast.success(t("addtoCart"));
     }
   };
-//   if (isLoading) {
-//     return ReactDOM.createPortal(
-//       <div className="md:hidden">
-// <motion.div
-//         className="fixed inset-0 bg-gray-600 bg-opacity-50 z-[999]"
-//         initial={{ opacity: 0 }}
-//         animate={{ opacity: isReady ? 1 : 0 }}
-//         exit={{ opacity: 0 }}
-//         transition={{ duration: 0.1 }} // Reduced from 0.15
-//       />
-
-
-// <motion.div
-//         initial={{ y: '100%' }}
-//         animate={{ y: isReady ? 0 : '100%' }}
-//         exit={{ y: '100%' }}
-//         transition={{ type: 'spring', stiffness: 300, damping: 30 }} // Changed from tween to spring for more natural feel
-//         className="fixed bottom-0 right-0 left-0 flex items-end z-[10000] overflow-hidden"
-//       >
-//     {/* > */}
-//           <div
-//             ref={scrollContainerRef}
-//             onScroll={handleScroll}
-//             className="bg-white rounded-lg b-4 w-full max-h-svh flex flex-col overflow-y-auto custom-scroll"
-//           >
-//             <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-mainColor"></div>
-//             <p className="mt-4 text-gray-600">{t('loading')}</p>
-//           </div>
-//         </motion.div>
-//       </div>,
-//       document.body
-//     );
-//   }
+  // if (isLoading) {
+  //   return ReactDOM.createPortal(
+  //     <div className="md:hidden">
+  //       <motion.div
+  //         className="fixed inset-0 bg-gray-600 bg-opacity-50 z-[999]"
+  //         initial={{ opacity: 0 }}
+  //         animate={{ opacity: isReady ? 1 : 0 }}
+  //         exit={{ opacity: 0 }}
+  //         transition={{ duration: 0.1 }}
+  //       />
+  
+  //       <motion.div
+  //         initial={{ y: '100%' }}
+  //         animate={{ y: isReady ? 0 : '100%' }}
+  //         exit={{ y: '100%' }}
+  //         transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+  //         className="fixed bottom-0 right-0 left-0 flex items-end z-[10000] overflow-hidden"
+  //       >
+  //         <div
+  //           ref={scrollContainerRef}
+  //           onScroll={handleScroll}
+  //           className="bg-white rounded-lg b-4 w-full h-[60svh] flex flex-col overflow-y-auto custom-scroll"
+  //         >
+  //           <div className="flex flex-col items-center justify-center flex-1 py-8">
+  //             <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-mainColor"></div>
+  //             <p className="mt-4 text-gray-600">{t('loading')}</p>
+  //           </div>
+  //         </div>
+  //       </motion.div>
+  //     </div>,
+  //     document.body
+  //   );
+  // }
+  
 
 
 
@@ -553,11 +555,434 @@ function Modal({
 
   return ReactDOM.createPortal(
     <>
-
+     <AnimatePresence mode="wait">
+      {/* Desktop Modal */}
+      
 {isLoading ?
-            <p className="mt-4 text-gray-600">{t('loading')}</p>
-
+  <div className="md:hidden">
+        <motion.div
+          className="fixed inset-0 bg-gray-600 bg-opacity-50 z-[999]"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: isReady ? 1 : 0 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.1 }}
+        />
+  
+        <motion.div
+          initial={{ y: '100%' }}
+          animate={{ y: isReady ? 0 : '100%' }}
+          exit={{ y: '100%' }}
+          transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+          className="fixed bottom-0 right-0 left-0 flex items-end z-[10000] overflow-hidden"
+        >
+          <div
+            ref={scrollContainerRef}
+            onScroll={handleScroll}
+            className="bg-white rounded-lg b-4 w-full h-[60svh] flex flex-col overflow-y-auto custom-scroll"
+          >
+            <div className="flex flex-col items-center justify-center flex-1 py-8">
+              <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-mainColor"></div>
+              <p className="mt-4 text-gray-600">{t('loading')}</p>
+            </div>
+          </div>
+        </motion.div>
+      </div>
 :
+      <div className="hidden md:block">
+        <motion.div
+          className="fixed inset-0 bg-gray-600 bg-opacity-50 blur-md z-[999]"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: isOpen ? 1 : 0 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.2 }}
+        />
+
+        <FormProvider {...methods}>
+          <form className="pb-8 pt-5" onSubmit={methods.handleSubmit(onSubmit)}>
+            <motion.div
+              onClick={handleOutsideClick}
+              className="fixed inset-0 flex z-[999] items-center justify-center p-4"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: isOpen ? 1 : 0 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.15 }}
+            >
+              <motion.div
+                onClick={(e) => e.stopPropagation()}
+                className="bg-white rounded-lg b-4 w-[600px] 4xl:w-[800px] min-h-auto max-h-[650px]"
+                initial={{ scale: 0.9, y: 20, opacity: 0 }}
+                animate={{ scale: isOpen ? 1 : 0.9, y: isOpen ? 0 : 20, opacity: isOpen ? 1 : 0 }}
+                exit={{ scale: 0.9, y: 20, opacity: 0 }}
+                transition={{ type: 'spring', stiffness: 300, damping: 25 }}
+              >
+                <div
+                  className={cn('grid grid-cols-3 rounded-lg gap-2 relative', {
+                    'grid-cols-1': !hasMoreDetails,
+                  })}
+                >
+                  <div className="relative rounded-t-lg z-50 bg-white">
+                    {/* PC Product Image */}
+                    <div className={`sticky mb-5 rounded-t-lg ${isScrolled ? `secShadow` : `shadow-none`} top-0 bg-white z-50 `}>
+                      <div className={`flex mb-4 `}>
+                        <div className="">
+                          <Image
+                            src={prodId?.imageUrl}
+                            width={500}
+                            height={300}
+                            alt="s"
+                            className="w-52 h-52 p-1 rounded-lg object-cover"
+                          />
+                          <X
+                            onClick={handleClose}
+                            className="bg-white rounded-full p-2 absolute top-3 start-2 hover:cursor-pointer"
+                            size={36}
+                          />
+                        </div>
+                        <div className="px-4 pt-2 flex flex-col">
+                          <div className="flex items-center gap-2">
+                            {prodId?.isTopSelling && <Badge Icon={Flame} title={lang==='ar'? "":"Top Sale"} className="-ms-1" />}
+                            {prodId?.isTopRated && <Badge Icon={Star} title="Top Rated" className="-ms-1" />}
+                          </div>
+                          <h3 className="text-xl font-bold leading-10">{prodId?.name}</h3>
+                          <p className="text-sm font-medium text-black/75">{prodId?.description}</p>
+                          <SpecialNotes lang={lang!} notes={notes} setNotes={setNotes} className="gap-2" />
+                          {fakeData && (
+                            <div className="mt-3 space-y-1 text-sm text-gray-700">
+                              <div className="flex items-center gap-1 ">
+                                <picture>
+                                  <source srcSet="https://fonts.gstatic.com/s/e/notoemoji/latest/1f525/512.webp" type="image/webp" />
+                                  <img src="https://fonts.gstatic.com/s/e/notoemoji/latest/1f525/512.gif" alt="🔥" width="18" height="18" />
+                                </picture>                                  <span className='font-medium'>
+                                  {fakeData.fakeSoldNumber} {lang === 'ar' ? 'بيعت في اخر' : 'sold in last '} {fakeData.fakeSoldNumberInHours} {lang === 'ar' ? 'ساعات' : 'hours'}
+                                </span>
+                              </div>
+                              <div className="flex items-center gap-1 ">
+                                <picture>
+                                  <source srcSet="https://fonts.gstatic.com/s/e/notoemoji/latest/1f60d/512.webp" type="image/webp" />
+                                  <img src="https://fonts.gstatic.com/s/e/notoemoji/latest/1f60d/512.gif" alt="😍" width="18" height="18" />
+                                </picture>
+                                <span className='font-medium'>
+                                  {fakeData.fakeViewers} {lang === 'ar' ? 'اشخاص يشاهدون هذا الآن' : 'people are viewing this right now'}
+                                </span>
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* PC Product Variations */}
+                  <div className="overflow-y-auto  max-h-[350px]">
+                    <div className="">
+                      {prodId?.variations && (
+                        <>
+                          <div className="flex flex-col gap-3 pb-4">
+                            {prodId.variations.filter((variation: any) => variation.isActive).map((variation: Variation) => {
+                              {/* PC Product Variation buttonType 0 */ }
+                              if (variation.buttonType === 0 && (variation.isActive)) {
+                                const options: Option[] = variation.choices.map((choice: Choice) => ({
+                                  label: (
+                                    <>
+                                      {/* PC Product Variation Choices */}
+                                      <div className="flex flex-col justify-center items-center">
+                                        {choice.imageUrl ? (
+                                          <>
+                                            <CustomImage
+                                              src={choice.imageUrl}
+                                              alt={choice.name || "Radio"}
+                                              width={600}
+                                              height={350}
+                                              className="w-20 h-20 object-cover"
+                                            />
+                                            <div className="">
+                                              <p>{choice.name}</p>
+                                              {choice.price && <small>{abbreviation && toCurrency(choice.price, lang, abbreviation)}</small>}
+                                            </div>
+                                          </>
+                                        ) : (
+                                          <div className="h-10">
+                                            <p>{choice.name}</p>
+                                            {choice.price && <small>{abbreviation && toCurrency(choice.price, lang, abbreviation)}</small>}
+                                          </div>
+
+                                        )
+                                        }
+                                      </div>
+                                    </>
+                                  ),
+                                  value: choice.id,
+                                }));
+                                return (
+                                  <div key={variation.id} className="flex px-4">
+                                    <div className="w-full flex flex-col gap-1">
+                                      <div className="flex items-end justify-between">
+                                        {/* PC Product Variation Name */}
+                                        <strong>{t('choiceof')} {variation.name}</strong>
+                                        {/* PC Product Variation isRequired */}
+                                        {variation.isRequired && (
+                                          <div className="text-white bg-mainColor px-2 py-1 rounded-full text-sm">
+                                            {t('req')}
+                                          </div>
+                                        )}
+                                      </div>
+                                      <span className="text-black/75">{t('Choose1')}</span>
+                                      {/* PC Product Variation choice */}
+                                      <div className='mt-2'>
+                                        <GetRadio name={variation.id} options={options} />
+                                      </div>
+                                    </div>
+                                  </div>
+                                );
+                              }
+                              {/* PC Product Variation buttonType 1 */ }
+                              if (variation.buttonType === 1 && (variation.isActive)) {
+                                return <>
+                                  <div key={variation.id} className="flex z-10 px-4 pt-0">
+                                    <div className="w-full flex flex-col gap-1">
+                                      <div className="flex items-end justify-between">
+                                        {/* PC Product Variation Name */}
+                                        <strong>{t('choiceof')} {variation.name}</strong>
+                                        {variation.isRequired && (
+                                          <div className="text-white bg-mainColor px-2 py-1 rounded-full text-sm">
+                                            {t('req')}
+                                          </div>
+                                        )}
+                                      </div>
+                                      <Controller
+                                        key={variation.id}
+                                        name={variation.id}
+                                        control={methods.control}
+                                        render={({ field, fieldState }) => (
+                                          <RoleSelect
+                                            label={variation.name}
+                                            options={variation.choices as { id: string; name: string }[]}
+                                            field={{
+                                              ...field,
+                                              value: typeof field.value === "string" ? field.value : "",
+                                            }}
+                                            error={String(methods.formState.errors[variation.id]?.message || '')}
+                                            placeholder={variation.name}
+                                          />
+                                        )}
+                                      />
+                                    </div>
+                                  </div>
+                                </>
+                              }
+                              {/* PC Product Variation buttonType 3 */ }
+                              if (variation.buttonType === 3 && (variation.isActive)) {
+                                return (
+                                  <div key={variation.id} className="flex px-4 pt-0">
+                                    <div className="w-full flex flex-col gap-1">
+                                      <div className="flex items-end justify-between">
+                                        {/* <strong>Your choice of: {variation.name}</strong> */}
+                                        {variation.isRequired && (
+                                          <div className="text-white bg-mainColor px-2 py-1 rounded-full text-sm">
+                                            {t('req')}
+
+                                          </div>
+                                        )}
+                                      </div>
+                                      {/* <Input
+                                              key={variation.id}
+                                              label={variation.name}
+                                              placeholder={variation.name}
+                                              inputClassName="text-sm [&.is-hover]:border-mainColor [&.is-focus]:border-mainColor [&.is-focus]:ring-mainColor"
+                                              className="w-full"
+                                              {...methods.register(variation.id)}
+                                              error={String(methods.formState.errors[variation.id]?.message || '')}
+                                          /> */}
+                                      <Controller
+                                        control={control}
+                                        name={variation.id}
+                                        render={({ field }) => (
+                                          <Input
+                                            label={variation.name}
+                                            {...register(variation.id)}
+                                            {...field}
+                                            placeholder={variation.name}
+                                            inputClassName="text-[16px] [&.is-hover]:border-mainColor [&.is-focus]:border-mainColor [&.is-focus]:ring-mainColor"
+                                            className="input-placeholder text-[16px] w-full"
+                                            error={String(methods.formState.errors[variation.id]?.message || '')}
+                                          />
+                                        )}
+                                      />
+                                    </div>
+                                  </div>
+                                );
+                              }
+                              if (variation.buttonType === 4 && (variation.isActive)) {
+                                return (
+                                  <div key={variation.id} className="flex px-4 pt-0">
+                                    <div className="w-full flex flex-col gap-1">
+                                      <div className="flex items-end justify-between">
+                                        {/* <strong>Your choice of: {variation.name}</strong> */}
+                                        {variation.isRequired && (
+                                          <div className="text-white bg-mainColor px-2 py-1 rounded-full text-sm">
+                                            {t('req')}
+
+                                          </div>
+                                        )}
+                                      </div>
+                                      <Controller
+                                        key={variation.id}
+                                        name={variation.id}
+                                        control={methods.control}
+                                        render={({ field: { value, onChange } }) => (
+                                          <PhoneNumber
+                                            label={t('phoneNumber')}
+                                            country="us"
+                                            value={value}
+                                            labelClassName='font-medium'
+                                            inputClassName="text-[16px] hover:!border-mainColor focus:!border-mainColor focus:!ring-mainColor text-sm [&.is-hover]:border-mainColor [&.is-focus]:border-mainColor [&.is-focus]:ring-mainColor"
+                                            className="input-placeholder text-[16px] w-full"
+                                            {...methods.register(variation.id)}
+                                            onChange={onChange}
+                                            // @ts-ignore
+                                            error={methods.formState.errors[variation.id]?.message}
+                                          />
+                                        )}
+                                      />
+                                    </div>
+                                  </div>
+                                );
+                              }
+                              if (variation.buttonType === 5 && (variation.isActive)) {
+                                return (
+                                  <div key={variation.id} className="flex px-4 pt-0">
+                                    <div className="w-full flex flex-col gap-1">
+                                      <div className="flex items-end justify-between">
+                                        {/* <strong>Your choice of: {variation.name}</strong> */}
+                                        {variation.isRequired && (
+                                          <div className="text-white bg-mainColor px-2 py-1 rounded-full text-sm">
+                                            {t('req')}
+                                          </div>
+                                        )}
+                                      </div>
+                                      {/* <Input
+                                              key={variation.id}
+                                              label={variation.name}
+                                              placeholder={variation.name}
+                                              inputClassName="text-sm [&.is-hover]:border-mainColor [&.is-focus]:border-mainColor [&.is-focus]:ring-mainColor"
+                                              className="w-full"
+                                              {...methods.register(variation.id)}
+                                              error={String(methods.formState.errors[variation.id]?.message || '')}
+                                          /> */}
+                                      <Controller
+                                        control={control}
+                                        name={variation.id}
+                                        render={({ field }) => (
+                                          <Input
+                                            label={variation.name}
+                                            {...register(variation.id)}
+                                            {...field}
+                                            placeholder={variation.name}
+                                            inputClassName="text-[16px] [&.is-hover]:border-mainColor [&.is-focus]:border-mainColor [&.is-focus]:ring-mainColor"
+                                            className="input-placeholder text-[16px] w-full"
+                                            error={String(methods.formState.errors[variation.id]?.message || '')}
+                                          />
+                                        )}
+                                      />
+                                    </div>
+                                  </div>
+                                );
+                              }
+                              return null;
+                            })}
+                          </div>
+                        </>
+                      )}
+    {prodId?.frequentlyOrderedWith && prodId.frequentlyOrderedWith.length > 0 && (
+  <div className="my-3 px-5">
+    <h3 className="font-bold mb-2">{lang === 'ar' ? 'منتجات ذات صلة:' : 'Related Products:'}</h3>
+
+    <Swiper
+      spaceBetween={12}
+      slidesPerView={4}
+      onSlideChange={(swiper) => setCurrentSlide(swiper.activeIndex)}
+      breakpoints={{
+        0: { slidesPerView: 3 },
+        450: { slidesPerView: 3.5 },
+        600: { slidesPerView: 4.5 },
+      }}
+    >
+      {prodId.frequentlyOrderedWith.map((item:any, index:any) => (
+          <SwiperSlide key={index}>
+            <div
+              className="border border-dashed border-mainColor mt-3 rounded-lg p-2 w-28 cursor-pointer"
+           // في معالج النقر على المنتجات ذات الصلة
+onClick={() => {
+  console.log("تم النقر على منتج ذو صلة:", item.relatedProduct.id);
+  
+  // إغلاق المودال الحالي
+  console.log("إغلاق المودال الحالي...");
+  setIsModalOpen(false);
+  
+  // بعد الإغلاق، انتظر قليلاً ثم افتح المودال الجديد
+  setTimeout(() => {
+    console.log("تعيين معرف المنتج الجديد:", item.relatedProduct.id);
+    setCurrentModalProductId(item.relatedProduct.id);
+    
+    console.log("إعادة فتح المودال...");
+    setIsModalOpen(true);
+  }, 300);
+}}
+            >
+              <Image
+                src={item.relatedProduct.imageUrl ?? potato}
+                width={200}
+                height={300}
+                alt={item.relatedProduct.name}
+                className="w-40 h-20 object-cover"
+              />
+              <p className="text-sm mb-1 font-medium truncate">
+                {item.relatedProduct.name}
+              </p>
+              <div className="flex flex-col">
+                <p className="text-[10px] text-mainColor">
+                  {abbreviation && toCurrency(item.relatedProduct.price, lang, abbreviation)}
+                </p>
+                {item.relatedProduct.oldPrice && (
+                  <del className="text-[10px]">
+                    {abbreviation && toCurrency(item.relatedProduct.oldPrice, lang, abbreviation)}
+                  </del>
+                )}
+              </div>
+            </div>
+          </SwiperSlide>
+        ))}
+    </Swiper>
+  </div>
+)}
+              
+
+                    </div>
+
+                    <div className="grid grid-cols-3 justify-between items-center gap-5 p-3 bg-white w-full">
+                      <div className={cn('bg-white rounded-bl-lg col-span-1 secShadow rtl:rounded-br-lg h-full', { 'rtl:rounded-bl-none': hasMoreDetails })}>
+                        <QuantityHandler quantity={quantity} setQuantity={setQuantity} className='w-full h-full rounded-lg' />
+                      </div>
+                      <div className={'col-span-2'}>
+                        <ItemPrice
+                          type={type}
+                          buttonType="submit"
+                          price={abbreviation && toCurrency(finalPrice, lang, abbreviation)}
+                          oldPrice={finalOldPrice ? abbreviation && toCurrency(finalOldPrice, lang, abbreviation) : ''}
+                          className={cn('rounded-none rounded-br-lg rtl:rounded-bl-lg rtl:rounded-br-none', { 'rounded-br-none rtl:rounded-bl-none': hasMoreDetails })}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
+            </motion.div>
+          </form>
+        </FormProvider>
+      </div>
+}
+      </AnimatePresence>
+
 
       <div className="md:hidden">
         <motion.div
@@ -565,7 +990,7 @@ function Modal({
         initial={{ opacity: 0 }}
         animate={{ opacity: isReady ? 1 : 0 }}
         exit={{ opacity: 0 }}
-        transition={{ duration: 0.1 }} // Reduced from 0.15
+        transition={{ duration: 0.1 }} 
       />
 
 
@@ -573,7 +998,7 @@ function Modal({
         initial={{ y: '100%' }}
         animate={{ y: isReady ? 0 : '100%' }}
         exit={{ y: '100%' }}
-        transition={{ type: 'tween' }} // Changed from tween to spring for more natural feel
+        transition={{ type: 'tween' }} 
         className="fixed bottom-0 right-0 left-0 flex items-end z-[10000] overflow-hidden"
       >
     {/* > */}
@@ -582,6 +1007,10 @@ function Modal({
             onScroll={handleScroll}
             className="bg-white rounded-lg b-4 w-full max-h-svh flex flex-col overflow-y-auto custom-scroll"
           >
+             {isLoading ? (
+          <ProductModalSkeleton lang={lang} />
+
+      ) : ( 
             <FormProvider {...methods}>
               <form onSubmit={methods.handleSubmit(onSubmit)}>
                 <div className="relative">
@@ -930,10 +1359,11 @@ function Modal({
                 </div>
               </form>
             </FormProvider>
+       )}
           </div>
         </motion.div>
       </div>
-}
+
   </>,
     document.body
   );
