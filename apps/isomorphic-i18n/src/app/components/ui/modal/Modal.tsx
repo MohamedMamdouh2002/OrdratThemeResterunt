@@ -533,7 +533,7 @@ function Modal({
                           <h3 className="text-xl font-bold leading-10">{prodId?.name}</h3>
                           <p className="text-sm font-medium text-black/75">{prodId?.description}</p>
                           <SpecialNotes lang={lang!} notes={notes} setNotes={setNotes} className="gap-2" />
-                          {fakeData && (
+                          {/* {fakeData && (
                             <div className="mt-3 space-y-1 text-sm text-gray-700">
                               <div className="flex items-center gap-1 ">
                                 <picture>
@@ -553,7 +553,7 @@ function Modal({
                                 </span>
                               </div>
                             </div>
-                          )}
+                          )} */}
                         </div>
                       </div>
                     </div>
@@ -924,7 +924,7 @@ onClick={() => {
                   <p className="text-sm font-medium text-black/75">{prodId?.description}</p>
 
                   {/* Fake data section */}
-                  {fakeData && (
+                  {/* {fakeData && (
                     <div className="mt-3 space-y-1 text-sm text-gray-700">
                       <div className="flex items-center gap-1">
                         <picture>
@@ -943,7 +943,7 @@ onClick={() => {
                         </span>
                       </div>
                     </div>
-                  )}
+                  )} */}
 
                   {/* Variations rendering for mobile */}
                   <div className="pt-6">
