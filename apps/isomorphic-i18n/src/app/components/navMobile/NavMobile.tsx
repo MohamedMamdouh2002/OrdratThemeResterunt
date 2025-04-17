@@ -7,33 +7,49 @@ import { motion } from 'framer-motion';
 import { useTranslation } from "@/app/i18n/client";
 
 const NavMobile = ({ lang }: { lang: string }) => {
-  const [active, setActive] = useState("");
   const { GetHome } = useUserContext();
   const [home, setHome] = useState<any[]>([]);
+  const [active, setActive] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const navRef = useRef<HTMLUListElement>(null);
   const [isNavigating, setIsNavigating] = useState(false);
-  const { t, i18n } = useTranslation(lang!, 'nav');
-  const [isSticky, setIsSticky] = useState(true);
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
+  const [loading, setLoading] = useState(false);
+  const navRef = useRef<HTMLUListElement>(null);
+  const { t } = useTranslation(lang!, "nav");
+  const [pageSize] = useState(40); 
 
-  // Fetch home data
   useEffect(() => {
-    const fetchData = async () => {
-      const data = await GetHome({ lang });
-      if (data && data.length > 0) {
-        // فرّز حسب الـ priority
-        const sortedData = data
+    const fetchPaginatedData = async () => {
+      if (!hasMore || loading) return;
+      setLoading(true);
+      const data:any = await GetHome({ lang, page,pageSize });
+
+      if (data && Array.isArray(data.entities) && data.entities.length > 0) {
+        const filteredSorted = data.entities
           .filter((item: any) => item.isActive)
           .sort((a: any, b: any) => a.priority - b.priority);
-  
-        setHome(sortedData);
-  
-        // ✅ أول عنصر بناءً على الـ priority مش على مكانه في الشاشة
-        setActive(sortedData[0]?.id || "");
+
+        setHome((prev) => [
+          ...prev,
+          ...filteredSorted.filter((item: any) => !prev.some((p: any) => p.id === item.id)),
+        ]);
+
+        if (data.nextPage > page) {
+          setPage(data.nextPage);
+        } else {
+          setHasMore(false);
+        }
+      } else {
+        setHasMore(false);
       }
+
+      setLoading(false);
     };
-    fetchData();
-  }, [GetHome, lang]);
+
+    fetchPaginatedData();
+  }, [page, lang]);
+
   
   // Close modal on resize if viewport width >= 1024px
   useEffect(() => {
@@ -52,7 +68,6 @@ const NavMobile = ({ lang }: { lang: string }) => {
   useEffect(() => {
     if (home.length === 0) return;
   
-    // ✅ استنى شوية بعد ما الأقسام تترندر فعليًا
     const timeout = setTimeout(() => {
       const sections = home.map(item => document.getElementById(item.id));
       const observer = new IntersectionObserver(
@@ -82,13 +97,16 @@ const NavMobile = ({ lang }: { lang: string }) => {
         if (section) observer.observe(section);
       });
   
+      // ✅ حفز observer يدويًا بعد التسجيل
+      setTimeout(() => window.dispatchEvent(new Event('scroll')), 100);
+  
       // cleanup
       return () => {
         sections.forEach(section => {
           if (section) observer.unobserve(section);
         });
       };
-    }, 200); 
+    }, 200);
   
     return () => clearTimeout(timeout);
   }, [home, isNavigating]);

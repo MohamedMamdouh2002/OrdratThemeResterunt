@@ -28,7 +28,8 @@ type UserContextType = {
   profileUserName: string;
   setProfileUserName: React.Dispatch<React.SetStateAction<string>>;
   setPage: React.Dispatch<React.SetStateAction<number>>;
-  GetHome: ({ lang, page }: { lang: string; page: number }) => Promise<PaginatedAllCategories | null>;
+  GetHome: ({ lang, page,pageSize }: { lang: string; page: number; pageSize:number }) => Promise<PaginatedAllCategories | null>;
+  GetHomeNav: ({ lang }: { lang: string;  }) => Promise<AllCategories[] | null>;
   GetProduct: ({ lang, id }: { lang: string, id: string }) => Promise<FoodId | any>;
   GetRewiew: ({ lang }: { lang: string }) => Promise<Review | any>;
 
@@ -72,9 +73,9 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const [branchZones, setBranchZones] = useState<{ lat: number; lng: number; zoonRadius: number }[]>([]);
   const [shopId, setshopId] = useState<string>('');
     
-  async function GetHome({ lang, page }: { lang: string; page: number }) {
+  async function GetHome({ lang, page ,pageSize}: { lang: string; page: number ;pageSize: number }) {
     try {
-      const response = await fetch(`${API_BASE_URL}/api/Category/GetPaginatedWithProducts/${shopId}?PageNumber=${page}&PageSize=1`, {
+      const response = await fetch(`${API_BASE_URL}/api/Category/GetPaginatedWithProducts/${shopId}?PageNumber=${page}&PageSize=${pageSize}`, {
         method: 'GET',
         headers: {
           'Accept-Language': lang,
@@ -96,6 +97,29 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     }
   }
 
+  async function GetHomeNav({ lang }: { lang: string;  }) {
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/Category/GetAll/${shopId}`, {
+        method: 'GET',
+        headers: {
+          'Accept-Language': lang,
+        },
+      });
+      if (!response.ok) {
+        throw new Error('Failed to fetch data');
+      }
+
+      // استرجاع البيانات
+      const data: AllCategories[] = await response.json();
+
+      // const ids = data.map(category => category.id);
+      // setProduct(ids); // تخزين البيانات في setProduct
+      return data;
+    } catch (error) {
+      console.error('Error fetching data:', error);
+      return null;
+    }
+  }
   async function GetProduct({ lang, id }: { lang: string, id: string }) {
     try {
       const response = await fetch(`${API_BASE_URL}/api/Products/GetById/${shopId}/${id}`, {
@@ -151,6 +175,7 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       shopId, setshopId, 
       page, setPage, 
       GetHome, 
+      GetHomeNav, 
       GetProduct,
       GetRewiew
     }}>

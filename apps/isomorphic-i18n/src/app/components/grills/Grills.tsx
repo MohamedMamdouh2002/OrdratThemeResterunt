@@ -42,6 +42,7 @@ function Grills({ lang, ProductData, HomeData }: { lang: string; ProductData?: a
   const fetchedPages = useRef<Set<number>>(new Set());
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(1);
+  const [pageSize] = useState(40); // عدد العناصر في كل صفحة
   const [hasMore, setHasMore] = useState(true)
   
   useEffect(() => {
@@ -49,7 +50,7 @@ function Grills({ lang, ProductData, HomeData }: { lang: string; ProductData?: a
       if (!hasMore) return;
   
       setLoading(true);
-      const data:any = await GetHome({ lang, page });
+      const data:any = await GetHome({ lang, page,pageSize });
   
       if (data?.entities?.length  as any > 0) {
         setHome((prev) => [

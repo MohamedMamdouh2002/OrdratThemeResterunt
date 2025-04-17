@@ -122,9 +122,11 @@ export default function Content({lang}: { lang?: string }) {
 							<div className="grid lg:grid-cols-4 md:grid-cols-3 grid-cols-2 gap-4 sm:gap-8">
 								{products.map((product: any) => (
 									<Card
+									FakeData={''}
 										lang={lang!}
 										key={product.id}
 										id={product.id}
+										ProductData={products}
 										isTopSelling={product.isTopSelling}
 										isTopRated={product.isTopRated}
 										name={product.name}
@@ -133,6 +135,7 @@ export default function Content({lang}: { lang?: string }) {
 										description={product.description}
 										imageUrl={product.imageUrl}
 										isActive={product.isActive}
+
 										createdAt={product.createdAt}
 										lastUpdatedAt={product.lastUpdatedAt}
 										isOffer={false}
