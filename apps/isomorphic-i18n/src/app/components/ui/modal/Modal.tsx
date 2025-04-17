@@ -466,7 +466,7 @@ function Modal({
   };
 
 
-  const TWO_MINUTES =  5 * 1000;
+  const TWO_MINUTES =  30 * 1000;
 
 const getStableFakeSold = (productId: string, base: number) => {
   const key = `modal_fakeSold_${productId}`;
