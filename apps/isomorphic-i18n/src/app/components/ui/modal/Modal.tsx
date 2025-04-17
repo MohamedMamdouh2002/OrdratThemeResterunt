@@ -62,6 +62,7 @@ type ModalProps = {
   setQuantity: Dispatch<SetStateAction<number>>;
   hasMoreDetails?: boolean;
   lang: string;
+  ProductData:any;
   currentModalProductId?: string | null; // أضفنا هذا المتغير
   handleUpdateCart?: () => void;
   itemId?: string;
@@ -87,6 +88,7 @@ function Modal({
   lang,
   hasMoreDetails,
   handleUpdateCart,
+  ProductData,
   currentModalProductId,
   setCurrentModalProductId,
   itemId,
@@ -203,12 +205,17 @@ function Modal({
       console.log("جاري تحميل بيانات المنتج...");
       console.log("معرف المودال:", modalId);
       console.log("معرف المنتج الحالي:", currentModalProductId);
-      const data = await GetProduct({ lang, id: productIdToFetch });
-
-      const formattedData: FoodId = {
+      const Cdata = ProductData
+      const data = ProductData
+      .flatMap((c: any) => c.products)
+      .find((p: any) => p.id === modalId);
+    
+      console.log("id الحالي:", data);
+      // const data = await GetProduct({ lang, id: productIdToFetch });
+      const formattedData: any = {
         id: data.id,
-        name: lang === 'ar' ? data.nameAr : data.nameEn,
-        description: lang === 'ar' ? data.descriptionAr : data.descriptionEn,
+        name: lang === 'ar' ? data.name : data.name,
+        description: lang === 'ar' ? data.description : data.description,
         vat: data.vat,
         vatType: data.vatType,
         discount: data.discount,
@@ -223,67 +230,68 @@ function Modal({
         categoryId: data.categoryId,
         numberOfSales: data.numberOfSales,
         category: null,
-        variations: data.variations.filter((variation: any) => variation.isActive).map((variation: any) => ({
-          id: variation.id,
-          name: lang === 'ar' ? variation.nameAr : variation.nameEn,
-          buttonType: variation.buttonType,
-          isActive: variation.isActive,
-          isRequired: variation.isRequired,
-          choices: variation.choices.filter((choice: any) => choice.isActive).map((choice: any) => ({
-            id: choice.id,
-            name: lang === 'ar' ? choice.nameAr : choice.nameEn,
-            price: choice.price,
-            isDefault: choice.isDefault,
-            isActive: choice.isActive,
-            imageUrl: choice.imageUrl,
-          })),
-        })),
-        frequentlyOrderedWith: data.frequentlyOrderedWith,
-        reviews: data.reviews,
-        price: data.price,
-        oldPrice: data.oldPrice
+        // variations: data.variations.filter((variation: any) => variation.isActive).map((variation: any) => ({
+        //   id: variation.id,
+        //   name: lang === 'ar' ? variation.nameAr : variation.nameEn,
+        //   buttonType: variation.buttonType,
+        //   isActive: variation.isActive,
+        //   isRequired: variation.isRequired,
+        //   choices: variation.choices.filter((choice: any) => choice.isActive).map((choice: any) => ({
+        //     id: choice.id,
+        //     name: lang === 'ar' ? choice.nameAr : choice.nameEn,
+        //     price: choice.price,
+        //     isDefault: choice.isDefault,
+        //     isActive: choice.isActive,
+        //     imageUrl: choice.imageUrl,
+        //   })),
+        // })),
+        // frequentlyOrderedWith: data.frequentlyOrderedWith,
+        // reviews: data.reviews,
+        // price: data.price,
+        // oldPrice: data.oldPrice
       };
+
       const formattedData2 = {
         id: data.id,
-        nameEn: data.nameEn,
-        nameAr: data.nameAr,
-        descriptionEn: data.descriptionEn,
-        descriptionAr: data.descriptionAr,
-        vat: data.vat,
-        vatType: data.vatType,
-        discount: data.discount,
-        discountType: data.discountType,
-        isActive: data.isActive,
-        createdAt: data.createdAt,
-        lastUpdatedAt: data.lastUpdatedAt,
-        isTopSelling: data.isTopSelling,
-        isTopRated: data.isTopRated,
-        metaDescriptionEn: data.metaDescriptionEn,
-        metaDescriptionAr: data.metaDescriptionAr,
-        imageUrl: data.images.length > 0 ? data.images[0].imageUrl : "",
-        categoryId: data.categoryId,
-        numberOfSales: data.numberOfSales,
-        variations: data.variations.filter((variation: any) => variation.isActive).map((variation: any) => ({
-          id: variation.id,
-          nameEn: variation.nameEn,
-          nameAr: variation.nameAr,
-          buttonType: variation.buttonType,
-          isActive: variation.isActive,
-          isRequired: variation.isRequired,
-          choices: variation.choices.filter((choice: any) => choice.isActive).map((choice: any) => ({
-            id: choice.id,
-            nameEn: choice.nameEn,
-            nameAr: choice.nameAr,
-            price: choice.price,
-            isDefault: choice.isDefault,
-            isActive: choice.isActive,
-            imageUrl: choice.imageUrl,
-          })),
-        })),
-        frequentlyOrderedWith: data.frequentlyOrderedWith,
-        reviews: data.reviews,
-        price: data.price,
-        oldPrice: data.oldPrice
+        // nameEn: data.nameEn,
+        // nameAr: data.nameAr,
+        // descriptionEn: data.descriptionEn,
+        // descriptionAr: data.descriptionAr,
+        // vat: data.vat,
+        // vatType: data.vatType,
+        // discount: data.discount,
+        // discountType: data.discountType,
+        // isActive: data.isActive,
+        // createdAt: data.createdAt,
+        // lastUpdatedAt: data.lastUpdatedAt,
+        // isTopSelling: data.isTopSelling,
+        // isTopRated: data.isTopRated,
+        // metaDescriptionEn: data.metaDescriptionEn,
+        // metaDescriptionAr: data.metaDescriptionAr,
+        // imageUrl: data.images.length > 0 ? data.images[0].imageUrl : "",
+        // categoryId: data.categoryId,
+        // numberOfSales: data.numberOfSales,
+        // variations: data.variations.filter((variation: any) => variation.isActive).map((variation: any) => ({
+        //   id: variation.id,
+        //   nameEn: variation.nameEn,
+        //   nameAr: variation.nameAr,
+        //   buttonType: variation.buttonType,
+        //   isActive: variation.isActive,
+        //   isRequired: variation.isRequired,
+        //   choices: variation.choices.filter((choice: any) => choice.isActive).map((choice: any) => ({
+        //     id: choice.id,
+        //     nameEn: choice.nameEn,
+        //     nameAr: choice.nameAr,
+        //     price: choice.price,
+        //     isDefault: choice.isDefault,
+        //     isActive: choice.isActive,
+        //     imageUrl: choice.imageUrl,
+        //   })),
+        // })),
+        // frequentlyOrderedWith: data.frequentlyOrderedWith,
+        // reviews: data.reviews,
+        // price: data.price,
+        // oldPrice: data.oldPrice
       };
 
       setProdId(formattedData);
@@ -337,21 +345,21 @@ function Modal({
     defaultValues: {}, // initially empty
   });
 
-  useEffect(() => {
-    if (prodId) {
-      const defaults: Record<string, any> = {};
-      prodId.variations.forEach((variation: any) => {
-        if (variation.buttonType === 0 || variation.buttonType === 1) {
-          const defaultChoice = variation.choices.find((choice: any) => choice.isDefault);
-          if (defaultChoice) {
-            defaults[variation.id] = defaultChoice.id;
-          }
-        }
-      });
+  // useEffect(() => {
+  //   if (prodId) {
+  //     const defaults: Record<string, any> = {};
+  //     prodId.variations.forEach((variation: any) => {
+  //       if (variation.buttonType === 0 || variation.buttonType === 1) {
+  //         const defaultChoice = variation.choices.find((choice: any) => choice.isDefault);
+  //         if (defaultChoice) {
+  //           defaults[variation.id] = defaultChoice.id;
+  //         }
+  //       }
+  //     });
 
-      methods.reset(defaults);
-    }
-  }, [prodId, methods]);
+  //     methods.reset(defaults);
+  //   }
+  // }, [prodId, methods]);
 
   const { watch, setValue, register, handleSubmit, control } = methods;
 

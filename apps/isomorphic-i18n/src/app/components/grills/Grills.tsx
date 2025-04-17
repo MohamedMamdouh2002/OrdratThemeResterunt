@@ -19,7 +19,7 @@ import CustomImage from '../ui/CustomImage';
 
 type Props = { data?: AllCategories; initialCategory?: string };
 
-function Grills({ lang }: { lang: string }) {
+function Grills({ lang,ProductData }: { lang: string; ProductData:any }) {
   const { GetHome } = useUserContext();
   const [home, setHome] = useState<any[]>([])
   const { t } = useTranslation(lang!, 'home');
@@ -39,12 +39,12 @@ function Grills({ lang }: { lang: string }) {
   return (
     <div className="mb-10">
       {home?.filter((sec) => sec.isActive).length === 0 ? (
-         <div className="w-5/6 m-auto my-10">
-         <div className="flex flex-col justify-center items-center">
-           <EmptyProductBoxIcon />
-           <p>{lang==='ar'? 'لا يوجد منتجات':'No products found'}</p>
-         </div>
-       </div>
+        <div className="w-5/6 m-auto my-10">
+          <div className="flex flex-col justify-center items-center">
+            <EmptyProductBoxIcon />
+            <p>{lang === 'ar' ? 'لا يوجد منتجات' : 'No products found'}</p>
+          </div>
+        </div>
       ) : (
         home
           ?.filter((sec) => sec.isActive)
@@ -78,7 +78,7 @@ function Grills({ lang }: { lang: string }) {
 
               {sec.products.length === 0 ? (
                 <div className="text-center text-gray-500 bg-gray-100 p-6 rounded-lg my-6">
-                  {t('no-products') /* ترجمها مثلاً إلى: "مفيش منتجات متاحة حاليًا" */}
+                  {t('no-products')}
                 </div>
               ) : (
                 <div
@@ -100,7 +100,6 @@ function Grills({ lang }: { lang: string }) {
                           />
                         </div>
                       )}
-
                       {(swiperRefs.current[sec.id]?.activeIndex || 0) <
                         sec.products.length - 6 && (
                           <div className="absolute top-[50%] end-4 z-10">
@@ -110,7 +109,6 @@ function Grills({ lang }: { lang: string }) {
                             />
                           </div>
                         )}
-
                       <Swiper
                         spaceBetween={28}
                         slidesPerView={6}
@@ -133,7 +131,7 @@ function Grills({ lang }: { lang: string }) {
                       >
                         {sec.products.slice(0, 8).map((prod: React.JSX.IntrinsicAttributes & Food & { setCurrentItem: React.Dispatch<React.SetStateAction<{ type?: string; id: string } | null>> }) => (
                           <SwiperSlide key={prod.id}>
-                            <SmallCard lang={lang} {...prod} />
+                            <SmallCard ProductData={home}  lang={lang} {...prod} />
                           </SwiperSlide>
                         ))}
                       </Swiper>
@@ -156,8 +154,6 @@ function Grills({ lang }: { lang: string }) {
           ))
       )}
     </div>
-
-
   )
 }
 export default Grills;

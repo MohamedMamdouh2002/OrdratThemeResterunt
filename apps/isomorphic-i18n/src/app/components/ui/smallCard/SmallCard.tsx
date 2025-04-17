@@ -12,6 +12,7 @@ import { AnimatePresence } from 'framer-motion';
 
 type Props = Food & {
   lang: string;
+  ProductData:any
   setCurrentItem: Dispatch<
     SetStateAction<{
       type?: string;
@@ -95,6 +96,7 @@ function SmallCard(data: Props) {
             setCurrentModalProductId={setCurrentModalProductId}
             lang={data.lang}
             modalId={data.id}
+            ProductData={data.ProductData}
             currentModalProductId={currentModalProductId}
             setIsModalOpen={setIsModalOpen}
             quantity={quantity}
