@@ -140,11 +140,11 @@ function Grills({ lang,ProductData }: { lang: string; ProductData?:any }) {
                     sec.products.slice(0, 4).map((prod: React.JSX.IntrinsicAttributes & Food & { setCurrentItem: React.Dispatch<React.SetStateAction<{ type?: string; id: string } | null>> }) =>
                       sec.numberOfColumns === 1 ? (
                         <div key={prod.id}>
-                          <MediumCard lang={lang} {...prod} />
+                          <MediumCard  ProductData={home} lang={lang} {...prod} />
                           <hr className="mt-1 sm:hidden" />
                         </div>
                       ) : (
-                        <Card lang={lang} key={prod.id} {...prod} />
+                        <Card  ProductData={home}lang={lang} key={prod.id} {...prod} />
                       )
                     )
                   )}

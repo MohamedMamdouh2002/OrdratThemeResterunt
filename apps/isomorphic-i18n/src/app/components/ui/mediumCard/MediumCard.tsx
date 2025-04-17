@@ -12,6 +12,8 @@ import potato from '@public/assets/شاورما-عراقي-لحمة-مع-بطا�
 import { AnimatePresence } from 'framer-motion';
 type Props = Food & {
   lang: string;
+  ProductData:any
+
   setCurrentItem: Dispatch<
     SetStateAction<{
       type?: string;
@@ -84,7 +86,8 @@ function MediumCard(data: Props) {
           <Modal
             setCurrentModalProductId={setCurrentModalProductId}
             lang={data.lang}
-            // نمرر المعرف الأصلي كModalId الإفتراضي
+            ProductData={data.ProductData}
+
             modalId={data.id}
             // نمرر أيضًا currentModalProductId للسماح للمودال بتحديث البيانات داخليًا
             currentModalProductId={currentModalProductId}
