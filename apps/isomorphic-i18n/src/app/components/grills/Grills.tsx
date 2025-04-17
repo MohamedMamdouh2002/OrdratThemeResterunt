@@ -19,7 +19,7 @@ import CustomImage from '../ui/CustomImage';
 
 type Props = { data?: AllCategories; initialCategory?: string };
 
-function Grills({ lang,ProductData }: { lang: string; ProductData:any }) {
+function Grills({ lang,ProductData }: { lang: string; ProductData?:any }) {
   const { GetHome } = useUserContext();
   const [home, setHome] = useState<any[]>([])
   const { t } = useTranslation(lang!, 'home');
