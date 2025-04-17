@@ -14,6 +14,7 @@ import { languages } from "../i18n/settings";
 import { CartProvider } from "@/store/quick-cart/cart.context";
 import { UserProvider } from "../components/context/UserContext";
 import logo from '@public/assets/orderLogo.svg'
+import { cookies } from "next/headers";
 
 import { MantineProvider } from "@mantine/core";
 
@@ -264,6 +265,11 @@ export default async function RootLayout({
     if (!shopId || !shopId.id) throw new Error("Invalid subdomain");
 
     shopData = await fetchShopData(shopId.id, lang);
+    // cookies().set('shopId', shopData.id, {
+    //   path: '/',       // متاح في كل الصفحات
+    //   httpOnly: false, // خليه false لو عايز توصله من الكلاينت كمان
+      
+    // });
     const { isFreeTrial, isActive } = await fetchSellerPlanStatus(shopId.sellerId);
 
     if (isFreeTrial) {

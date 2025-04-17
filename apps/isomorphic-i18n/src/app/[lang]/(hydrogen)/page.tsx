@@ -10,6 +10,7 @@ import ScrollToTop from "@/app/components/ui/ScrollToTop";
 import { Metadata } from "next";
 import Footer from "@/app/components/footer/Footer";
 import { API_BASE_URL } from "@/config/base-url";
+import { cookies } from "next/headers";
 
 
 type LangType = 'en' | 'ar';
@@ -93,6 +94,12 @@ const languages = {
 
  async function GetHome({lang}:{lang:string}) {
     try {
+      const cookieStore = cookies();
+    const shopId = cookieStore.get('shopId')?.value;
+
+    if (!shopId) throw new Error('shopId is missing in cookies');
+    // const response = await fetch(`${API_BASE_URL}/api/Category/GetAll/${shopId}`, {
+
       const response = await fetch(`${API_BASE_URL}/api/Category/GetAll/952E762C-010D-4E2B-8035-26668D99E23E`, {
         method: 'GET',
         headers: {
@@ -126,7 +133,7 @@ export default async function FileDashboardPage({
       <NavMobile lang={lang!}/>
       <Header lang={lang!}/>
       <MainSlider/>
-      <Grills HomeData={HomeData!} lang={lang!}/>
+      <Grills lang={lang!}/>
       <Footer  lang={lang!}/>
 
       {/* <PopularMeals/> */}

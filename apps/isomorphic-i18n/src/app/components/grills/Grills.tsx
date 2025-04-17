@@ -19,21 +19,29 @@ import CustomImage from '../ui/CustomImage';
 
 type Props = { data?: AllCategories; initialCategory?: string };
 
-function Grills({ lang,ProductData,HomeData }: { lang: string; ProductData?:any;  HomeData:any[] }) {
+function Grills({ lang,ProductData,HomeData }: { lang: string; ProductData?:any;  HomeData?:any[] }) {
   const { GetHome } = useUserContext();
   const [home, setHome] = useState<any[]>([])
   const { t } = useTranslation(lang!, 'home');
   const [currentSlide, setCurrentSlide] = useState(0);
   const swiperRefs = useRef<{ [key: string]: SwiperType | null }>({});
+  // useEffect(() => {
+  // console.log("HomeData",HomeData);
+  
+  // }, [])
   useEffect(() => {
-  console.log("HomeData",HomeData);
-  
-  }, [])
-  
+    const fetchData = async () => {
+      const data = await GetHome({ lang });
+      setHome(data)
+      console.log('Fetched Data:', data);
+    };
+
+    fetchData();
+  }, [GetHome]);
 
   return (
     <div className="mb-10">
-      {HomeData?.filter((sec) => sec.isActive).length === 0 ? (
+      {home?.filter((sec) => sec.isActive).length === 0 ? (
         <div className="w-5/6 m-auto my-10">
           <div className="flex flex-col justify-center items-center">
             <EmptyProductBoxIcon />
@@ -41,7 +49,7 @@ function Grills({ lang,ProductData,HomeData }: { lang: string; ProductData?:any;
           </div>
         </div>
       ) : (
-        HomeData
+        home
           ?.filter((sec) => sec.isActive)
           .sort((a, b) => a.priority - b.priority)
           .map((sec) => (
@@ -73,7 +81,8 @@ function Grills({ lang,ProductData,HomeData }: { lang: string; ProductData?:any;
 
               {sec.products.length === 0 ? (
                 <div className="text-center text-gray-500 bg-gray-100 p-6 rounded-lg my-6">
-                  {t('no-products')}
+                  {/* <EmptyProductBoxIcon className='text-gray-100 bg-gray-100 mx-auto w-40' /> */}
+                  <p className='text-lg font-medium'>{lang === 'ar' ? 'لا يوجد منتجات' : 'No products found'}</p>
                 </div>
               ) : (
                 <div
@@ -126,7 +135,7 @@ function Grills({ lang,ProductData,HomeData }: { lang: string; ProductData?:any;
                       >
                         {sec.products.slice(0, 8).map((prod: React.JSX.IntrinsicAttributes & Food & { setCurrentItem: React.Dispatch<React.SetStateAction<{ type?: string; id: string } | null>> }) => (
                           <SwiperSlide key={prod.id}>
-                            <SmallCard ProductData={HomeData}  lang={lang} {...prod} />
+                            <SmallCard ProductData={home}  lang={lang} {...prod} />
                           </SwiperSlide>
                         ))}
                       </Swiper>
@@ -135,11 +144,11 @@ function Grills({ lang,ProductData,HomeData }: { lang: string; ProductData?:any;
                     sec.products.slice(0, 4).map((prod: React.JSX.IntrinsicAttributes & Food & { setCurrentItem: React.Dispatch<React.SetStateAction<{ type?: string; id: string } | null>> }) =>
                       sec.numberOfColumns === 1 ? (
                         <div key={prod.id}>
-                          <MediumCard  ProductData={HomeData} lang={lang} {...prod} />
+                          <MediumCard  ProductData={home} lang={lang} {...prod} />
                           <hr className="mt-1 sm:hidden" />
                         </div>
                       ) : (
-                        <Card  ProductData={HomeData} lang={lang} key={prod.id} {...prod} />
+                        <Card  ProductData={home} lang={lang} key={prod.id} {...prod} />
                       )
                     )
                   )}
