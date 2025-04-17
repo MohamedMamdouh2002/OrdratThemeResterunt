@@ -54,7 +54,6 @@ export default function AllProduct({
         if (data.entities.length === 0) {
           setHasMore(false);
         } else {
-          // التأكد من عدم تكرار المنتجات بناءً على الـ id
           setProducts((prev) => {
             const newEntities = data.entities.filter(
               (entity: Food) => !prev.some((p: Food) => p.id === entity.id)
@@ -108,11 +107,11 @@ export default function AllProduct({
       {products.map((prod: Food, index) => (
         isMobile ?
         <div className="col-span-full" key={prod.id}>
-            <MediumCard lang={lang!} setCurrentItem={() => { }} {...prod} />
+            <MediumCard ProductData={products} lang={lang!} setCurrentItem={() => { }} {...prod} />
             {index !== products.length - 1 && <hr />}
           </div>
           :
-          <Card lang={lang!} setCurrentItem={() => { }} key={prod.id} {...prod} />
+          <Card ProductData={products} lang={lang!} setCurrentItem={() => { }} key={prod.id} {...prod} />
         ))}
     </div>
     <div className="flex justify-center">
