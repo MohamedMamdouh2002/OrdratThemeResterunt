@@ -63,14 +63,14 @@ type ModalProps = {
   hasMoreDetails?: boolean;
   lang: string;
   ProductData:any;
-  currentModalProductId?: string | null; // أضفنا هذا المتغير
+  currentModalProductId?: string | null;
   handleUpdateCart?: () => void;
   itemId?: string;
   type?: string;
+  FakeData?:any
   setIsModalOpen: (isOpen: boolean) => void;
   modalId: string;
   setCurrentModalProductId: Dispatch<SetStateAction<string | null>>;
-
 };
 
 type FakeData = {
@@ -89,6 +89,7 @@ function Modal({
   hasMoreDetails,
   handleUpdateCart,
   ProductData,
+  FakeData,
   currentModalProductId,
   setCurrentModalProductId,
   itemId,
@@ -98,14 +99,12 @@ function Modal({
   const [prodId, setProdId] = useState<FoodId | any>(null);
   const [modalId1, setModalId] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen1] = useState(false);
-
   const [productData, setProductData] = useState<FoodId | any>(null);
   const [prodCartItem, setProdCartItem] = useState<CartItem | any>(null);
   const [isLoading, setLoading] = useState(false);
   const [notes, setNotes] = useState('');
   const { t } = useTranslation(lang!, 'home');
   const abbreviation = useCurrencyAbbreviation({ lang });
-
   const { GetProduct } = useUserContext();
   const { addItemToCart } = useCart();
   const [isImageVisible, setImageVisible] = useState(true);
@@ -135,10 +134,8 @@ function Modal({
       }
   
       try {
-        const response = await fetch('https://testapi.ordrat.com/api/FakeData/GetFakeData/952E762C-010D-4E2B-8035-26668D99E23E');
-        if (!response.ok) throw new Error('Failed to fetch fake data');
-  
-        const result: FakeData = await response.json();
+    
+        const result: FakeData =FakeData
   
         // خزن fakeSoldNumber في الكاش لو مش موجود أو انتهت صلاحيته
         if (fakeSoldNumberFromCache === null) {
@@ -533,7 +530,7 @@ function Modal({
                           <h3 className="text-xl font-bold leading-10">{prodId?.name}</h3>
                           <p className="text-sm font-medium text-black/75">{prodId?.description}</p>
                           <SpecialNotes lang={lang!} notes={notes} setNotes={setNotes} className="gap-2" />
-                          {/* {fakeData && (
+                          {fakeData && (
                             <div className="mt-3 space-y-1 text-sm text-gray-700">
                               <div className="flex items-center gap-1 ">
                                 <picture>
@@ -553,7 +550,7 @@ function Modal({
                                 </span>
                               </div>
                             </div>
-                          )} */}
+                          )}
                         </div>
                       </div>
                     </div>
@@ -924,7 +921,7 @@ onClick={() => {
                   <p className="text-sm font-medium text-black/75">{prodId?.description}</p>
 
                   {/* Fake data section */}
-                  {/* {fakeData && (
+                  {fakeData && (
                     <div className="mt-3 space-y-1 text-sm text-gray-700">
                       <div className="flex items-center gap-1">
                         <picture>
@@ -943,7 +940,7 @@ onClick={() => {
                         </span>
                       </div>
                     </div>
-                  )} */}
+                  )}
 
                   {/* Variations rendering for mobile */}
                   <div className="pt-6">

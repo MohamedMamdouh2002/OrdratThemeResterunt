@@ -16,6 +16,7 @@ import { AnimatePresence } from 'framer-motion';
 type Props = Food & {
   lang: string;
   ProductData?:any
+  FakeData?:any
 
   setCurrentItem: Dispatch<
     SetStateAction<{
@@ -88,7 +89,7 @@ const Card = (data: Props) => {
             lang={data.lang}
             ProductData={data.ProductData}
             modalId={data.id}
-            // نمرر أيضًا currentModalProductId للسماح للمودال بتحديث البيانات داخليًا
+            FakeData={data.FakeData}
             currentModalProductId={currentModalProductId}
             setIsModalOpen={setIsModalOpen}
             quantity={quantity}

@@ -18,13 +18,19 @@ import { EmptyProductBoxIcon } from 'rizzui';
 import CustomImage from '../ui/CustomImage';
 
 type Props = { data?: AllCategories; initialCategory?: string };
-
+type FakeData = {
+  fakeViewers: number;
+  fakeSoldNumber: number;
+  fakeSoldNumberInHours: number;
+};
 function Grills({ lang,ProductData,HomeData }: { lang: string; ProductData?:any;  HomeData?:any[] }) {
   const { GetHome } = useUserContext();
   const [home, setHome] = useState<any[]>([])
   const { t } = useTranslation(lang!, 'home');
   const [currentSlide, setCurrentSlide] = useState(0);
   const swiperRefs = useRef<{ [key: string]: SwiperType | null }>({});
+    const [fakeData, setFakeData] = useState<FakeData | null>(null);
+  
   // useEffect(() => {
   // console.log("HomeData",HomeData);
   
@@ -39,6 +45,55 @@ function Grills({ lang,ProductData,HomeData }: { lang: string; ProductData?:any;
     fetchData();
   }, [GetHome]);
 
+    useEffect(() => {
+      const fetchFakeData = async () => {
+        const cacheKey = 'fakeSoldNumberCache';
+        const cacheTTL = 4 * 60 * 60 * 1000;
+    
+        // ابدأ بالتحقق من الكاش
+        const cached = localStorage.getItem(cacheKey);
+        const now = Date.now();
+        let fakeSoldNumberFromCache: number | null = null;
+    
+        if (cached) {
+          const { value, timestamp } = JSON.parse(cached);
+    
+          if (now - timestamp < cacheTTL) {
+            fakeSoldNumberFromCache = value;
+          }
+        }
+    
+        try {
+          const response = await fetch('https://testapi.ordrat.com/api/FakeData/GetFakeData/952E762C-010D-4E2B-8035-26668D99E23E');
+          if (!response.ok) throw new Error('Failed to fetch fake data');
+    
+          const result: FakeData = await response.json();
+    
+          // خزن fakeSoldNumber في الكاش لو مش موجود أو انتهت صلاحيته
+          if (fakeSoldNumberFromCache === null) {
+            localStorage.setItem(
+              cacheKey,
+              JSON.stringify({
+                value: result.fakeSoldNumber,
+                timestamp: Date.now(),
+              })
+            );
+            fakeSoldNumberFromCache = result.fakeSoldNumber;
+          }
+    
+          // استخدم fakeSoldNumber من الكاش والباقي من الـ API
+          setFakeData({
+            fakeSoldNumber: fakeSoldNumberFromCache,
+            fakeViewers: result.fakeViewers,
+            fakeSoldNumberInHours: result.fakeSoldNumberInHours,
+          });
+        } catch (error) {
+          console.error('Error fetching fake data:', error);
+        }
+      };
+    
+      fetchFakeData();
+    }, []);
   return (
     <div className="mb-10">
       {home?.filter((sec) => sec.isActive).length === 0 ? (
@@ -135,7 +190,7 @@ function Grills({ lang,ProductData,HomeData }: { lang: string; ProductData?:any;
                       >
                         {sec.products.slice(0, 8).map((prod: React.JSX.IntrinsicAttributes & Food & { setCurrentItem: React.Dispatch<React.SetStateAction<{ type?: string; id: string } | null>> }) => (
                           <SwiperSlide key={prod.id}>
-                            <SmallCard ProductData={home}  lang={lang} {...prod} />
+                            <SmallCard  FakeData={fakeData} ProductData={home}  lang={lang} {...prod} />
                           </SwiperSlide>
                         ))}
                       </Swiper>
@@ -144,11 +199,11 @@ function Grills({ lang,ProductData,HomeData }: { lang: string; ProductData?:any;
                     sec.products.slice(0, 4).map((prod: React.JSX.IntrinsicAttributes & Food & { setCurrentItem: React.Dispatch<React.SetStateAction<{ type?: string; id: string } | null>> }) =>
                       sec.numberOfColumns === 1 ? (
                         <div key={prod.id}>
-                          <MediumCard  ProductData={home} lang={lang} {...prod} />
+                          <MediumCard FakeData={fakeData}  ProductData={home} lang={lang} {...prod} />
                           <hr className="mt-1 sm:hidden" />
                         </div>
                       ) : (
-                        <Card  ProductData={home} lang={lang} key={prod.id} {...prod} />
+                        <Card FakeData={fakeData} ProductData={home} lang={lang} key={prod.id} {...prod} />
                       )
                     )
                   )}

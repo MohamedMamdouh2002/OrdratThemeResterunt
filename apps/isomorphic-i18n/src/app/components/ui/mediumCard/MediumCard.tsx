@@ -13,6 +13,7 @@ import { AnimatePresence } from 'framer-motion';
 type Props = Food & {
   lang: string;
   ProductData?:any
+  FakeData?:any
 
   setCurrentItem: Dispatch<
     SetStateAction<{
@@ -87,6 +88,7 @@ function MediumCard(data: Props) {
             setCurrentModalProductId={setCurrentModalProductId}
             lang={data.lang}
             ProductData={data.ProductData}
+            FakeData={data.FakeData}
 
             modalId={data.id}
             // نمرر أيضًا currentModalProductId للسماح للمودال بتحديث البيانات داخليًا
