@@ -12,8 +12,8 @@ import potato from '@public/assets/شاورما-عراقي-لحمة-مع-بطا�
 import { AnimatePresence } from 'framer-motion';
 type Props = Food & {
   lang: string;
-  ProductData?:any
-  FakeData?:any
+  ProductData?: any
+  FakeData?: any
 
   setCurrentItem: Dispatch<
     SetStateAction<{
@@ -56,9 +56,9 @@ function MediumCard(data: Props) {
               ) : (
                 ""
               )}
-              <h2 className="text-lg font-medium">{data.name}</h2>
+              <h2 className="text-lg font-medium">{data.lang === 'ar' ? data.nameAr : data.nameEn}</h2>
             </div>
-            <TextTruncate text={data.description} limit={10} />
+            <TextTruncate text={data.lang === 'ar' ? data.descriptionAr : data.descriptionEn} limit={10} />
             <div className="mt-2 flex items-center font-semibold text-mainColor absolute bottom-2">
               <span>
                 {abbreviation && toCurrency(data.price, data.lang, abbreviation)}
@@ -71,7 +71,6 @@ function MediumCard(data: Props) {
             </div>
           </div>
           <div className="relative w-[160px] h-[130px] sm:w-4/12 4xl:w-3/12  sm:h-full rounded-lg sm:rounded-s-lg">
-
             <Image
               src={data?.images ? data?.images[0]?.imageUrl || photo : photo}
               layout="fill"

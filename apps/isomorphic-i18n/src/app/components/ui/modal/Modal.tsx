@@ -11,6 +11,9 @@ import { AllCategories, Food } from '@/types'
 import { Swiper as SwiperType } from 'swiper';
 import { Swiper, SwiperSlide } from 'swiper/react'
 import 'swiper/css'
+import Skeleton from 'react-loading-skeleton';
+import 'react-loading-skeleton/dist/skeleton.css';
+
 import Badge from '../Badge';
 import Image from 'next/image';
 import cn from '../../../../../../../packages/isomorphic-core/src/utils/class-names';
@@ -62,23 +65,27 @@ type ModalProps = {
   setQuantity: Dispatch<SetStateAction<number>>;
   hasMoreDetails?: boolean;
   lang: string;
-  ProductData:any;
+  ProductData: any;
   currentModalProductId?: string | null;
   handleUpdateCart?: () => void;
   itemId?: string;
   type?: string;
-  FakeData?:any
+  FakeData?: any
   setIsModalOpen: (isOpen: boolean) => void;
   modalId: string;
   setCurrentModalProductId: Dispatch<SetStateAction<string | null>>;
 };
 
 type FakeData = {
-  fakeViewers: number;
-  fakeSoldNumber: number;
-  fakeSoldNumberInHours: number;
-};
+  maximumFakeViewers: number;
+  minimumFakeViewers: number;
+  isFakeViewersAvailable: boolean;
+  isFakeSoldNumberAvailable: boolean;
+  maximumFakeSoldNumber: number;
+  minimumFakeSoldNumber: number;
+  lastSoldNumberInHours: number;
 
+};
 function Modal({
   setIsModalOpen,
   modalId,
@@ -110,74 +117,76 @@ function Modal({
   const [isImageVisible, setImageVisible] = useState(true);
   const [isScrolled, setIsScrolled] = useState(false);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
-  const [fakeData, setFakeData] = useState<FakeData | null>(null);
+  const [isFakeSoldNumberAvailable, setisFakeSoldNumberAvailable] = useState<FakeData | null>(null);
+  const [isFakeViewersAvailable, setisFakeViewersAvailable] = useState<FakeData | null>(null);
   const [currentSlide, setCurrentSlide] = useState(0);
   const swiperRefs = useRef<{ [key: string]: SwiperType | null }>({});
+  const [randomViewers, setRandomViewers] = useState<number | null>(null);
 
-  // Fetch fake data
-  useEffect(() => {
-    const fetchFakeData = async () => {
-      const cacheKey = 'fakeSoldNumberCache';
-      const cacheTTL = 4 * 60 * 60 * 1000;
-  
-      // ابدأ بالتحقق من الكاش
-      const cached = localStorage.getItem(cacheKey);
-      const now = Date.now();
-      let fakeSoldNumberFromCache: number | null = null;
-  
-      if (cached) {
-        const { value, timestamp } = JSON.parse(cached);
-  
-        if (now - timestamp < cacheTTL) {
-          fakeSoldNumberFromCache = value;
-        }
-      }
-  
-      try {
-    
-        const result: FakeData =FakeData
-  
-        // خزن fakeSoldNumber في الكاش لو مش موجود أو انتهت صلاحيته
-        if (fakeSoldNumberFromCache === null) {
-          localStorage.setItem(
-            cacheKey,
-            JSON.stringify({
-              value: result.fakeSoldNumber,
-              timestamp: Date.now(),
-            })
-          );
-          fakeSoldNumberFromCache = result.fakeSoldNumber;
-        }
-  
-        // استخدم fakeSoldNumber من الكاش والباقي من الـ API
-        setFakeData({
-          fakeSoldNumber: fakeSoldNumberFromCache,
-          fakeViewers: result.fakeViewers,
-          fakeSoldNumberInHours: result.fakeSoldNumberInHours,
-        });
-      } catch (error) {
-        console.error('Error fetching fake data:', error);
-      }
-    };
-  
-    fetchFakeData();
-  }, []);
+  // // Fetch fake data
+  // useEffect(() => {
+  //   const fetchFakeData = async () => {
+  //     const cacheKey = 'fakeSoldNumberCache';
+  //     const cacheTTL = 4 * 60 * 60 * 1000;
+
+  //     // ابدأ بالتحقق من الكاش
+  //     const cached = localStorage.getItem(cacheKey);
+  //     const now = Date.now();
+  //     let fakeSoldNumberFromCache: number | null = null;
+
+  //     if (cached) {
+  //       const { value, timestamp } = JSON.parse(cached);
+
+  //       if (now - timestamp < cacheTTL) {
+  //         fakeSoldNumberFromCache = value;
+  //       }
+  //     }
+
+  //     try {
+
+  //       const result: FakeData = FakeData
+
+  //       // خزن fakeSoldNumber في الكاش لو مش موجود أو انتهت صلاحيته
+  //       if (fakeSoldNumberFromCache === null) {
+  //         localStorage.setItem(
+  //           cacheKey,
+  //           JSON.stringify({
+  //             value: result.fakeSoldNumber,
+  //             timestamp: Date.now(),
+  //           })
+  //         );
+  //         fakeSoldNumberFromCache = result.fakeSoldNumber;
+  //       }
+
+  //       // استخدم fakeSoldNumber من الكاش والباقي من الـ API
+  //       setFakeData({
+  //         fakeSoldNumber: fakeSoldNumberFromCache,
+  //         fakeViewers: result.fakeViewers,
+  //         fakeSoldNumberInHours: result.fakeSoldNumberInHours,
+  //       });
+  //     } catch (error) {
+  //       console.error('Error fetching fake data:', error);
+  //     }
+  //   };
+
+  //   fetchFakeData();
+  // }, []);
   // Updated click handler for related products
   useEffect(() => {
     const fetchData = async () => {
       // استخدم المعرف الفعلي للمنتج الذي تريد عرضه
       const productIdToFetch = currentModalProductId || modalId;
       console.log("تحميل المنتج بمعرف:", productIdToFetch); // للتصحيح
-      
+
       const data = await GetProduct({ lang, id: productIdToFetch });
-      
+
       // باقي الكود لتنسيق البيانات...
     };
 
     fetchData();
   }, [GetProduct, modalId, lang, currentModalProductId]); // أضف currentModalProductId للتبعيات
-  
-  
+
+
   const handleScroll = () => {
     if (scrollContainerRef.current) {
       const scrollTop = scrollContainerRef.current.scrollTop;
@@ -204,15 +213,15 @@ function Modal({
       console.log("معرف المنتج الحالي:", currentModalProductId);
       const Cdata = ProductData
       const data = ProductData
-      .flatMap((c: any) => c.products)
-      .find((p: any) => p.id === modalId);
-    
+        .flatMap((c: any) => c.products)
+        .find((p: any) => p.id === productIdToFetch);
+
       console.log("id الحالي:", data);
       // const data = await GetProduct({ lang, id: productIdToFetch });
       const formattedData: any = {
         id: data.id,
-        name: lang === 'ar' ? data.name : data.name,
-        description: lang === 'ar' ? data.description : data.description,
+        name: lang === 'ar' ? data.nameAr : data.nameEn,
+        description: lang === 'ar' ? data.descriptionAr : data.descriptionEn,
         vat: data.vat,
         vatType: data.vatType,
         discount: data.discount,
@@ -227,66 +236,66 @@ function Modal({
         categoryId: data.categoryId,
         numberOfSales: data.numberOfSales,
         category: null,
-        // variations: data.variations.filter((variation: any) => variation.isActive).map((variation: any) => ({
-        //   id: variation.id,
-        //   name: lang === 'ar' ? variation.nameAr : variation.nameEn,
-        //   buttonType: variation.buttonType,
-        //   isActive: variation.isActive,
-        //   isRequired: variation.isRequired,
-        //   choices: variation.choices.filter((choice: any) => choice.isActive).map((choice: any) => ({
-        //     id: choice.id,
-        //     name: lang === 'ar' ? choice.nameAr : choice.nameEn,
-        //     price: choice.price,
-        //     isDefault: choice.isDefault,
-        //     isActive: choice.isActive,
-        //     imageUrl: choice.imageUrl,
-        //   })),
-        // })),
-        // frequentlyOrderedWith: data.frequentlyOrderedWith,
-        // reviews: data.reviews,
+        variations: data.variations.filter((variation: any) => variation.isActive).map((variation: any) => ({
+          id: variation.id,
+          name: lang === 'ar' ? variation.nameAr : variation.nameEn,
+          buttonType: variation.buttonType,
+          isActive: variation.isActive,
+          isRequired: variation.isRequired,
+          choices: variation.choices.filter((choice: any) => choice.isActive).map((choice: any) => ({
+            id: choice.id,
+            name: lang === 'ar' ? choice.nameAr : choice.nameEn,
+            price: choice.price,
+            isDefault: choice.isDefault,
+            isActive: choice.isActive,
+            imageUrl: choice.imageUrl,
+          })),
+        })),
+        frequentlyOrderedWith: data.frequentlyOrderedWith,
+        reviews: data.reviews,
         price: data.price,
         oldPrice: data.oldPrice
       };
 
       const formattedData2 = {
         id: data.id,
-        // nameEn: data.nameEn,
-        // nameAr: data.nameAr,
-        // descriptionEn: data.descriptionEn,
-        // descriptionAr: data.descriptionAr,
-        // vat: data.vat,
-        // vatType: data.vatType,
-        // discount: data.discount,
-        // discountType: data.discountType,
-        // isActive: data.isActive,
-        // createdAt: data.createdAt,
-        // lastUpdatedAt: data.lastUpdatedAt,
-        // isTopSelling: data.isTopSelling,
-        // isTopRated: data.isTopRated,
-        // metaDescriptionEn: data.metaDescriptionEn,
-        // metaDescriptionAr: data.metaDescriptionAr,
-        // imageUrl: data.images.length > 0 ? data.images[0].imageUrl : "",
-        // categoryId: data.categoryId,
-        // numberOfSales: data.numberOfSales,
-        // variations: data.variations.filter((variation: any) => variation.isActive).map((variation: any) => ({
-        //   id: variation.id,
-        //   nameEn: variation.nameEn,
-        //   nameAr: variation.nameAr,
-        //   buttonType: variation.buttonType,
-        //   isActive: variation.isActive,
-        //   isRequired: variation.isRequired,
-        //   choices: variation.choices.filter((choice: any) => choice.isActive).map((choice: any) => ({
-        //     id: choice.id,
-        //     nameEn: choice.nameEn,
-        //     nameAr: choice.nameAr,
-        //     price: choice.price,
-        //     isDefault: choice.isDefault,
-        //     isActive: choice.isActive,
-        //     imageUrl: choice.imageUrl,
-        //   })),
-        // })),
-        // frequentlyOrderedWith: data.frequentlyOrderedWith,
-        // reviews: data.reviews,
+        nameEn: data.nameEn,
+        nameAr: data.nameAr,
+        descriptionEn: data.descriptionEn,
+        descriptionAr: data.descriptionAr,
+        vat: data.vat,
+        vatType: data.vatType,
+        discount: data.discount,
+        discountType: data.discountType,
+        isActive: data.isActive,
+        createdAt: data.createdAt,
+        lastUpdatedAt: data.lastUpdatedAt,
+        isTopSelling: data.isTopSelling,
+        isTopRated: data.isTopRated,
+        metaDescriptionEn: data.metaDescriptionEn,
+        metaDescriptionAr: data.metaDescriptionAr,
+        imageUrl: data.images.length > 0 ? data.images[0].imageUrl : "",
+        categoryId: data.categoryId,
+        numberOfSales: data.numberOfSales,
+        variations: data.variations.filter((variation: any) => variation.isActive).map((variation: any) => ({
+          id: variation.id,
+          nameEn: variation.nameEn,
+          nameAr: variation.nameAr,
+          buttonType: variation.buttonType,
+          isActive: variation.isActive,
+          isRequired: variation.isRequired,
+          choices: variation.choices.filter((choice: any) => choice.isActive).map((choice: any) => ({
+            id: choice.id,
+            nameEn: choice.nameEn,
+            nameAr: choice.nameAr,
+            price: choice.price,
+            isDefault: choice.isDefault,
+            isActive: choice.isActive,
+            imageUrl: choice.imageUrl,
+          })),
+        })),
+        frequentlyOrderedWith: data.frequentlyOrderedWith,
+        reviews: data.reviews,
         price: data.price,
         oldPrice: data.oldPrice
       };
@@ -310,7 +319,7 @@ function Modal({
     };
 
     fetchData();
-  }, [GetProduct, modalId, lang, currentModalProductId]); // أضفنا currentModalProductId كمتغير تبعي
+  }, [GetProduct, modalId, lang, currentModalProductId]);
 
   // Prevent body scroll when modal is open
   useEffect(() => {
@@ -320,7 +329,7 @@ function Modal({
     };
   }, []);
 
-  
+
   const handleClose = () => {
     setIsOpen(false);
     // Use a timeout to allow the animation to complete before actually closing the modal
@@ -466,22 +475,41 @@ function Modal({
   };
 
 
-  const TWO_MINUTES =  30 * 1000;
+  const TWO_MINUTES = 2 * 60 * 1000;
 
-const getStableFakeSold = (productId: string, base: number) => {
-  const key = `modal_fakeSold_${productId}`;
-  const cached = localStorage.getItem(key);
-  const now = Date.now();
+  const getStableFakeNumber = (keyPrefix: string, productId: string, min: number, max: number): number => {
+    const key = `${keyPrefix}_${productId}`;
+    const cached = localStorage.getItem(key);
+    const now = Date.now();
 
-  if (cached) {
-    const { value, timestamp } = JSON.parse(cached);
-    if (now - timestamp < TWO_MINUTES) return value;
-  }
+    if (cached) {
+      const { value, timestamp } = JSON.parse(cached);
+      if (now - timestamp < TWO_MINUTES) {
+        return value;
+      }
+    }
 
-  const generated = Math.floor(Math.random() * 100) + 1;
-  localStorage.setItem(key, JSON.stringify({ value: generated, timestamp: now }));
-  return generated;
-};
+    // Generate random number between min and max
+    const generated = Math.floor(Math.random() * (max - min + 1)) + min;
+    localStorage.setItem(key, JSON.stringify({ value: generated, timestamp: now }));
+    return generated;
+  };
+
+  useEffect(() => {
+    console.log('isModalOpen', isModalOpen);
+    console.log('FakeData', FakeData);
+
+    if (isModalOpen === false && FakeData?.isFakeViewersAvailable) {
+      const random = Math.floor(
+        Math.random() * (FakeData.maximumFakeViewers - FakeData.minimumFakeViewers + 1)
+      ) + FakeData.minimumFakeViewers;
+      console.log('isModalOpen', isModalOpen);
+
+      console.log('Generated random:', random);
+      setRandomViewers(random);
+    }
+  }, [isModalOpen, FakeData]);
+
 
 
   if (!prodId) {
@@ -543,34 +571,40 @@ const getStableFakeSold = (productId: string, base: number) => {
                         </div>
                         <div className="px-4 pt-2 flex flex-col">
                           <div className="flex items-center gap-2">
-                            {prodId?.isTopSelling && <Badge Icon={Flame} title={lang==='ar'?"الأعلى مبيعًا":"Top Sale"} className="-ms-1" />}
-                            {prodId?.isTopRated && <Badge Icon={Star} title={ lang ==='ar' ? "الأعلى تقييمًا":"Top Rated"} className="-ms-1" />}
+                            {prodId?.isTopSelling && <Badge Icon={Flame} title={lang === 'ar' ? "الأعلى مبيعًا" : "Top Sale"} className="-ms-1" />}
+                            {prodId?.isTopRated && <Badge Icon={Star} title={lang === 'ar' ? "الأعلى تقييمًا" : "Top Rated"} className="-ms-1" />}
                           </div>
                           <h3 className="text-xl font-bold leading-10">{prodId?.name}</h3>
                           <p className="text-sm font-medium text-black/75">{prodId?.description}</p>
                           <SpecialNotes lang={lang!} notes={notes} setNotes={setNotes} className="gap-2" />
-                          {fakeData && (
-                            <div className="mt-3 space-y-1 text-sm text-gray-700">
+
+                          <div className="mt-3 space-y-1 text-sm text-gray-700">
+                            {FakeData?.isFakeViewersAvailable &&
                               <div className="flex items-center gap-1 ">
                                 <picture>
                                   <source srcSet="https://fonts.gstatic.com/s/e/notoemoji/latest/1f525/512.webp" type="image/webp" />
                                   <img src="https://fonts.gstatic.com/s/e/notoemoji/latest/1f525/512.gif" alt="🔥" width="18" height="18" />
                                 </picture>                                  <span className='font-medium'>
-                                  {getStableFakeSold(modalId, fakeData.fakeSoldNumber)}
-{lang === 'ar' ? 'بيعت في اخر' : 'sold in last '} {fakeData.fakeSoldNumberInHours} {lang === 'ar' ? 'ساعات' : 'hours'}
+                                  {getStableFakeNumber('sold', modalId, FakeData.minimumFakeSoldNumber, FakeData.maximumFakeSoldNumber)}
+
+                                  {lang === 'ar' ? 'بيعت في اخر' : 'sold in last '} {FakeData.lastSoldNumberInHours} {lang === 'ar' ? 'ساعات' : 'hours'}
                                 </span>
                               </div>
+                            }
+                            {FakeData?.isFakeViewersAvailable && randomViewers !== null &&
                               <div className="flex items-center gap-1 ">
                                 <picture>
                                   <source srcSet="https://fonts.gstatic.com/s/e/notoemoji/latest/1f60d/512.webp" type="image/webp" />
                                   <img src="https://fonts.gstatic.com/s/e/notoemoji/latest/1f60d/512.gif" alt="😍" width="18" height="18" />
                                 </picture>
                                 <span className='font-medium'>
-                                  {fakeData.fakeViewers} {lang === 'ar' ? 'اشخاص يشاهدون هذا الآن' : 'people are viewing this right now'}
+                                  {randomViewers}
+                                  {lang === 'ar' ? 'اشخاص يشاهدون هذا الآن' : 'people are viewing this right now'}
                                 </span>
                               </div>
-                            </div>
-                          )}
+                            }
+                          </div>
+
                         </div>
                       </div>
                     </div>
@@ -797,69 +831,63 @@ const getStableFakeSold = (productId: string, base: number) => {
                           </div>
                         </>
                       )}
-    {prodId?.frequentlyOrderedWith && prodId.frequentlyOrderedWith.length > 0 && (
-  <div className="my-3 px-5">
-    <h3 className="font-bold mb-2">{lang === 'ar' ? 'منتجات ذات صلة:' : 'Related Products:'}</h3>
+                      {prodId?.frequentlyOrderedWith && prodId.frequentlyOrderedWith.length > 0 && (
+                        <div className="my-3 px-5">
+                          <h3 className="font-bold mb-2">{lang === 'ar' ? 'منتجات ذات صلة:' : 'Related Products:'}</h3>
 
-    <Swiper
-      spaceBetween={12}
-      slidesPerView={4}
-      onSlideChange={(swiper) => setCurrentSlide(swiper.activeIndex)}
-      breakpoints={{
-        0: { slidesPerView: 3 },
-        450: { slidesPerView: 3.5 },
-        600: { slidesPerView: 4.5 },
-      }}
-    >
-      {prodId.frequentlyOrderedWith.map((item:any, index:any) => (
-          <SwiperSlide key={index}>
-            <div
-              className="border border-dashed border-mainColor mt-3 rounded-lg p-2 w-28 cursor-pointer"
-           // في معالج النقر على المنتجات ذات الصلة
-onClick={() => {
-  console.log("تم النقر على منتج ذو صلة:", item.relatedProduct.id);
-  
-  // إغلاق المودال الحالي
-  console.log("إغلاق المودال الحالي...");
-  setIsModalOpen(false);
-  
-  // بعد الإغلاق، انتظر قليلاً ثم افتح المودال الجديد
-  setTimeout(() => {
-    console.log("تعيين معرف المنتج الجديد:", item.relatedProduct.id);
-    setCurrentModalProductId(item.relatedProduct.id);
-    
-    console.log("إعادة فتح المودال...");
-    setIsModalOpen(true);
-  }, 300);
-}}
-            >
-              <Image
-                src={item.relatedProduct.imageUrl ?? potato}
-                width={200}
-                height={300}
-                alt={item.relatedProduct.name}
-                className="w-40 h-20 object-cover"
-              />
-              <p className="text-sm mb-1 font-medium truncate">
-                {item.relatedProduct.name}
-              </p>
-              <div className="flex flex-col">
-                <p className="text-[10px] text-mainColor">
-                  {abbreviation && toCurrency(item.relatedProduct.price, lang, abbreviation)}
-                </p>
-                {item.relatedProduct.oldPrice && (
-                  <del className="text-[10px]">
-                    {abbreviation && toCurrency(item.relatedProduct.oldPrice, lang, abbreviation)}
-                  </del>
-                )}
-              </div>
-            </div>
-          </SwiperSlide>
-        ))}
-    </Swiper>
-  </div>
-)}
-              
+                          <Swiper
+                            spaceBetween={12}
+                            slidesPerView={4}
+                            onSlideChange={(swiper) => setCurrentSlide(swiper.activeIndex)}
+                            breakpoints={{
+                              0: { slidesPerView: 3 },
+                              450: { slidesPerView: 3.5 },
+                              600: { slidesPerView: 4.5 },
+                            }}
+                          >
+                            {prodId.frequentlyOrderedWith.map((item: any, index: any) => (
+                              <SwiperSlide key={index}>
+                                <div
+                                  className="border border-dashed border-mainColor mt-3 rounded-lg p-2 w-28 cursor-pointer"
+                                  onClick={() => {
+                                    setIsModalOpen(false);
+                                    setTimeout(() => {
+                                      setCurrentModalProductId(null); // reset
+                                      setTimeout(() => {
+                                        setCurrentModalProductId(item.relatedProductId);
+                                        setIsModalOpen(true);
+                                      }, 10);
+                                    }, 300);
+                                  }}
+
+                                >
+                                  <Image
+                                    src={item.relatedProduct.imageUrl ?? potato}
+                                    width={200}
+                                    height={300}
+                                    alt={item.relatedProduct.name}
+                                    className="w-40 h-20 object-cover"
+                                  />
+                                  <p className="text-sm mb-1 font-medium truncate">
+                                    {item.relatedProduct.name}
+                                  </p>
+                                  <div className="flex flex-col">
+                                    <p className="text-[10px] text-mainColor">
+                                      {abbreviation && toCurrency(item.relatedProduct.price, lang, abbreviation)}
+                                    </p>
+                                    {item.relatedProduct.oldPrice && (
+                                      <del className="text-[10px]">
+                                        {abbreviation && toCurrency(item.relatedProduct.oldPrice, lang, abbreviation)}
+                                      </del>
+                                    )}
+                                  </div>
+                                </div>
+                              </SwiperSlide>
+                            ))}
+                          </Swiper>
+                        </div>
+                      )}
+
 
                     </div>
 
@@ -893,16 +921,18 @@ onClick={() => {
           animate={{ opacity: isOpen ? 1 : 0 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.015 }}
+          onClick={handleOutsideClick}
+
         />
 
-<motion.div
-  initial={{ y: '100%' }}
-  animate={{ y: isOpen ? 0 : '100%' }}
-  exit={{ y: '100%' }}
-  transition={{ type: 'tween', duration: 0.2 }}
-      className="fixed bottom-0 right-0 left-0 flex items-end z-[10000] overflow-hidden"
->
-    {/* > */}
+        <motion.div
+          initial={{ y: '100%' }}
+          animate={{ y: isOpen ? 0 : '100%' }}
+          exit={{ y: '100%' }}
+          transition={{ type: 'tween', duration: 0.2 }}
+          className="fixed bottom-0 right-0 left-0 flex items-end z-[10000] overflow-hidden"
+        >
+          {/* > */}
           <div
             ref={scrollContainerRef}
             onScroll={handleScroll}
@@ -911,14 +941,22 @@ onClick={() => {
             <FormProvider {...methods}>
               <form onSubmit={methods.handleSubmit(onSubmit)}>
                 <div className="relative">
+
                   {isImageVisible ? (
                     <div className="w-full h-60">
+                      {prodId.imageUrl ? 
                       <Image
-                        src={prodId.imageUrl || photo}
+                        src={prodId.imageUrl}
                         layout="fill"
                         objectFit="cover"
                         alt="Product Image"
                       />
+                      :
+                      <div className="bg-white shadow-md rounded-lg p-2">
+                        <Skeleton height={200} className="w-full rounded-lg " />
+                      </div>
+
+                      }
                     </div>
                   ) : (
                     <div className="w-full h-16 fixed top-0 start-0 right-0 flex items-center bg-white secShadow z-50">
@@ -934,34 +972,39 @@ onClick={() => {
 
                 <div className={`flex-1 px-4 pb-20 ${isImageVisible ? 'pt-4' : 'pt-60'}`}>
                   <div className="flex items-center gap-2">
-                  {prodId?.isTopSelling && <Badge Icon={Flame} title={lang==='ar'?"الأعلى مبيعًا":"Top Sale"} className="-ms-1" />}
-                  {prodId?.isTopRated && <Badge Icon={Star} title={ lang ==='ar' ? "الأعلى تقييمًا":"Top Rated"} className="-ms-1" />}
-                    </div>
+                    {prodId?.isTopSelling && <Badge Icon={Flame} title={lang === 'ar' ? "الأعلى مبيعًا" : "Top Sale"} className="-ms-1" />}
+                    {prodId?.isTopRated && <Badge Icon={Star} title={lang === 'ar' ? "الأعلى تقييمًا" : "Top Rated"} className="-ms-1" />}
+                  </div>
                   <h3 className="text-xl font-bold leading-10">{prodId?.name}</h3>
                   <p className="text-sm font-medium text-black/75">{prodId?.description}</p>
 
                   {/* Fake data section */}
-                  {fakeData && (
-                    <div className="mt-3 space-y-1 text-sm text-gray-700">
-                      <div className="flex items-center gap-1">
+                  <div className="mt-3 space-y-1 text-sm text-gray-700">
+                    {FakeData?.isFakeViewersAvailable &&
+                      <div className="flex items-center gap-1 ">
                         <picture>
                           <source srcSet="https://fonts.gstatic.com/s/e/notoemoji/latest/1f525/512.webp" type="image/webp" />
                           <img src="https://fonts.gstatic.com/s/e/notoemoji/latest/1f525/512.gif" alt="🔥" width="18" height="18" />
-                        </picture>                        <span className='font-medium'>
-                        {getStableFakeSold(modalId, fakeData.fakeSoldNumber)}
-                        {lang === 'ar' ? 'بيعت في اخر' : 'sold in last '} {fakeData.fakeSoldNumberInHours} {lang === 'ar' ? 'ساعات' : 'hours'}
+                        </picture>                                  <span className='font-medium'>
+                          {getStableFakeNumber('sold', modalId, FakeData.minimumFakeSoldNumber, FakeData.maximumFakeSoldNumber)}
+
+                          {lang === 'ar' ? 'بيعت في اخر' : 'sold in last '} {FakeData.lastSoldNumberInHours} {lang === 'ar' ? 'ساعات' : 'hours'}
                         </span>
                       </div>
-                      <div className="flex items-center gap-1">
+                    }
+                    {FakeData?.isFakeViewersAvailable && randomViewers !== null && (
+                      <div className="flex items-center gap-1 ">
                         <picture>
                           <source srcSet="https://fonts.gstatic.com/s/e/notoemoji/latest/1f60d/512.webp" type="image/webp" />
                           <img src="https://fonts.gstatic.com/s/e/notoemoji/latest/1f60d/512.gif" alt="😍" width="18" height="18" />
-                        </picture>                        <span className='font-medium'>
-                          {fakeData.fakeViewers} {lang === 'ar' ? 'اشخاص يشاهدون هذا الآن' : 'people are viewing this right now'}
+                        </picture>
+                        <span className='font-medium'>
+                          {randomViewers} {lang === 'ar' ? 'اشخاص يشاهدون هذا الآن' : 'people are viewing this right now'}
                         </span>
                       </div>
-                    </div>
-                  )}
+                    )}
+
+                  </div>
 
                   {/* Variations rendering for mobile */}
                   <div className="pt-6">
@@ -1171,61 +1214,61 @@ onClick={() => {
                         </div>
                       </>
                     )}
-                  {prodId?.frequentlyOrderedWith && prodId.frequentlyOrderedWith.length > 0 && (
-                  <div className="my-3 ">
-                    <h3 className="font-bold mb-2">{lang === 'ar' ? 'منتجات ذات صلة:' : 'Related Products:'}</h3>
+                    {prodId?.frequentlyOrderedWith && prodId.frequentlyOrderedWith.length > 0 && (
+                      <div className="my-3 ">
+                        <h3 className="font-bold mb-2">{lang === 'ar' ? 'منتجات ذات صلة:' : 'Related Products:'}</h3>
 
-                    <Swiper
-                      spaceBetween={12}
-                      slidesPerView={4}
-                      onSlideChange={(swiper) => setCurrentSlide(swiper.activeIndex)}
-                      breakpoints={{
-                        0: { slidesPerView: 3 },
-                        450: { slidesPerView: 3.5 },
-                        600: { slidesPerView: 4.5 },
-                      }}
-                    >
-                      {prodId.frequentlyOrderedWith.map((item:any, index:any) => (
-                          <SwiperSlide key={index}>
-                            <div
-                              className="border border-dashed border-mainColor mt-3 rounded-lg p-2 w-28 cursor-pointer"
-                              onClick={() => {
-                                // Close the current modal
-                                setIsModalOpen(false);
-                                // Important: Update the modalId state in the parent component
-                                setCurrentModalProductId(item.relatedProduct.id);
-                                // A small delay before reopening the modal with the new ID
-                                setTimeout(() => {
-                                  setIsModalOpen(true);
-                                }, 300);
-                              }}
-                            >
-                              <Image
-                                src={item.relatedProduct.imageUrl ?? potato}
-                                width={200}
-                                height={300}
-                                alt={item.relatedProduct.name}
-                                className="w-40 h-20 object-cover"
+                        <Swiper
+                          spaceBetween={12}
+                          slidesPerView={4}
+                          onSlideChange={(swiper) => setCurrentSlide(swiper.activeIndex)}
+                          breakpoints={{
+                            0: { slidesPerView: 3 },
+                            450: { slidesPerView: 3.5 },
+                            600: { slidesPerView: 4.5 },
+                          }}
+                        >
+                          {prodId.frequentlyOrderedWith.map((item: any, index: any) => (
+                            <SwiperSlide key={index}>
+                              <div
+                                className="border border-dashed border-mainColor mt-3 rounded-lg p-2 w-28 cursor-pointer"
+                                onClick={() => {
+                                  // Close the current modal
+                                  setIsModalOpen(false);
+                                  // Important: Update the modalId state in the parent component
+                                  setCurrentModalProductId(item.relatedProduct.id);
+                                  // A small delay before reopening the modal with the new ID
+                                  setTimeout(() => {
+                                    setIsModalOpen(true);
+                                  }, 300);
+                                }}
+                              >
+                                <Image
+                                  src={item.relatedProduct.imageUrl ?? potato}
+                                  width={200}
+                                  height={300}
+                                  alt={item.relatedProduct.name}
+                                  className="w-40 h-20 object-cover"
                                 />
-                              <p className="text-sm mb-1 font-medium truncate">
-                                {item.relatedProduct.name}
-                              </p>
-                              <div className="flex flex-col">
-                                <p className="text-[10px] text-mainColor">
-                                  {abbreviation && toCurrency(item.relatedProduct.price, lang, abbreviation)}
+                                <p className="text-sm mb-1 font-medium truncate">
+                                  {item.relatedProduct.name}
                                 </p>
-                                {item.relatedProduct.oldPrice && (
-                                  <del className="text-[10px]">
-                                    {abbreviation && toCurrency(item.relatedProduct.oldPrice, lang, abbreviation)}
-                                  </del>
-                                )}
+                                <div className="flex flex-col">
+                                  <p className="text-[10px] text-mainColor">
+                                    {abbreviation && toCurrency(item.relatedProduct.price, lang, abbreviation)}
+                                  </p>
+                                  {item.relatedProduct.oldPrice && (
+                                    <del className="text-[10px]">
+                                      {abbreviation && toCurrency(item.relatedProduct.oldPrice, lang, abbreviation)}
+                                    </del>
+                                  )}
+                                </div>
                               </div>
-                            </div>
-                          </SwiperSlide>
-                        ))}
-                    </Swiper>
-                  </div>
-                  )}
+                            </SwiperSlide>
+                          ))}
+                        </Swiper>
+                      </div>
+                    )}
 
 
 

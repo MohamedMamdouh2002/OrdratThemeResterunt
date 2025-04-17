@@ -12,8 +12,8 @@ import { AnimatePresence } from 'framer-motion';
 
 type Props = Food & {
   lang: string;
-  ProductData?:any
-  FakeData?:any
+  ProductData?: any
+  FakeData?: any
 
   setCurrentItem: Dispatch<
     SetStateAction<{
@@ -71,10 +71,11 @@ function SmallCard(data: Props) {
             as="h6"
             className="mt-1 text-sm truncate font-semibold transition-colors group-hover:text-mainColor"
           >
-            {data?.name}
+            {data.lang === 'ar' ? data.nameAr : data.nameEn}
+
           </Title>
           <Text as="p" className="truncate text-sm pe-6">
-            {data?.description}
+            {data.lang === 'ar' ? data.descriptionAr : data.descriptionEn}
           </Text>
           <div className="mt-2 flex flex-col items-start font-semibold text-mainColor">
             <div className='text-[12px] sm:pt-0 pt-0.5 font-normal sm:text-[13px]'>
@@ -95,11 +96,12 @@ function SmallCard(data: Props) {
       <AnimatePresence mode='wait'>
         {isModalOpen && (
           <Modal
+
             setCurrentModalProductId={setCurrentModalProductId}
             lang={data.lang}
+            ProductData={data.ProductData}
             modalId={data.id}
             FakeData={data.FakeData}
-            ProductData={data.ProductData}
             currentModalProductId={currentModalProductId}
             setIsModalOpen={setIsModalOpen}
             quantity={quantity}

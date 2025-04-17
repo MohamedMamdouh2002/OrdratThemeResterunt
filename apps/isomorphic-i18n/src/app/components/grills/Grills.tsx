@@ -8,7 +8,7 @@ import { Swiper, SwiperSlide } from 'swiper/react'
 import 'swiper/css'
 import { useUserContext } from '../context/UserContext'
 import Card from '../ui/card/Card'
-import { AllCategories, Food } from '@/types'
+import { AllCategories, Food, PaginatedAllCategories } from '@/types'
 import { Swiper as SwiperType } from 'swiper';
 import PrevArrow from '../PrevArrow'
 import NextArrow from '../NextArrow'
@@ -16,90 +16,97 @@ import Link from 'next/link';
 import { useTranslation } from '@/app/i18n/client';
 import { EmptyProductBoxIcon } from 'rizzui';
 import CustomImage from '../ui/CustomImage';
+import { Loader } from 'lucide-react';
+import { shopId } from '@/config/shopId';
 
-type Props = { data?: AllCategories; initialCategory?: string };
+type Props = { data?: PaginatedAllCategories; initialCategory?: string };
 type FakeData = {
-  fakeViewers: number;
-  fakeSoldNumber: number;
-  fakeSoldNumberInHours: number;
+  maximumFakeViewers: number;
+  minimumFakeViewers: number;
+  isFakeViewersAvailable:boolean;
+  isFakeSoldNumberAvailable:boolean;
+  maximumFakeSoldNumber:number;
+  minimumFakeSoldNumber:number;
+  lastSoldNumberInHours:number;
+
 };
-function Grills({ lang,ProductData,HomeData }: { lang: string; ProductData?:any;  HomeData?:any[] }) {
+function Grills({ lang, ProductData, HomeData }: { lang: string; ProductData?: any; HomeData?: any[] }) {
   const { GetHome } = useUserContext();
   const [home, setHome] = useState<any[]>([])
   const { t } = useTranslation(lang!, 'home');
   const [currentSlide, setCurrentSlide] = useState(0);
   const swiperRefs = useRef<{ [key: string]: SwiperType | null }>({});
-    const [fakeData, setFakeData] = useState<FakeData | null>(null);
+  const [fakeData, setFakeData] = useState<FakeData | null>(null);
+ const observerRef = useRef<HTMLDivElement | null>(null);
+
+  const fetchedPages = useRef<Set<number>>(new Set());
+  const [loading, setLoading] = useState(false);
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true)
   
-  // useEffect(() => {
-  // console.log("HomeData",HomeData);
-  
-  // }, [])
   useEffect(() => {
-    const fetchData = async () => {
-      const data = await GetHome({ lang });
-      setHome(data)
-      console.log('Fetched Data:', data);
+    const fetchPaginatedData = async () => {
+      if (!hasMore) return;
+  
+      setLoading(true);
+      const data:any = await GetHome({ lang, page });
+  
+      if (data?.entities?.length  as any > 0) {
+        setHome((prev) => [
+          ...prev,
+          ...(data?.entities ?? []).filter((entity: any) => !prev.some((e: any) => e.id === entity.id))
+        ]);
+        
+        if (data?.nextPage > page) {
+        } else {
+          setHasMore(false);
+        }
+      } else {
+        setHasMore(false);
+      }
+      setLoading(false);
     };
-
-    fetchData();
-  }, [GetHome]);
-
-    useEffect(() => {
-      const fetchFakeData = async () => {
-        const cacheKey = 'fakeSoldNumberCache';
-        const cacheTTL = 4 * 60 * 60 * 1000;
-    
-        // ابدأ بالتحقق من الكاش
-        const cached = localStorage.getItem(cacheKey);
-        const now = Date.now();
-        let fakeSoldNumberFromCache: number | null = null;
-    
-        if (cached) {
-          const { value, timestamp } = JSON.parse(cached);
-    
-          if (now - timestamp < cacheTTL) {
-            fakeSoldNumberFromCache = value;
-          }
+  
+    fetchPaginatedData();
+  }, [page, lang]);
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && hasMore && !loading) {
+          setPage((prev) => prev + 1);
         }
-    
-        try {
-          const response = await fetch('https://testapi.ordrat.com/api/FakeData/GetFakeData/952E762C-010D-4E2B-8035-26668D99E23E');
-          if (!response.ok) throw new Error('Failed to fetch fake data');
-    
-          const result: FakeData = await response.json();
-    
-          // خزن fakeSoldNumber في الكاش لو مش موجود أو انتهت صلاحيته
-          if (fakeSoldNumberFromCache === null) {
-            localStorage.setItem(
-              cacheKey,
-              JSON.stringify({
-                value: result.fakeSoldNumber,
-                timestamp: Date.now(),
-              })
-            );
-            fakeSoldNumberFromCache = result.fakeSoldNumber;
-          }
-    
-          // استخدم fakeSoldNumber من الكاش والباقي من الـ API
-          setFakeData({
-            fakeSoldNumber: fakeSoldNumberFromCache,
-            fakeViewers: result.fakeViewers,
-            fakeSoldNumberInHours: result.fakeSoldNumberInHours,
-          });
-          
-        } catch (error) {
-          console.error('Error fetching fake data:', error);
-        }
-      };
-    
-        fetchFakeData(); 
+      },
+      { threshold: 1 }
+    );
+  
+    if (observerRef.current) {
+      observer.observe(observerRef.current);
+    }
+  
+    return () => {
+      if (observerRef.current) {
+        observer.unobserve(observerRef.current);
+      }
+    };
+  }, [loading, hasMore]);
+  
 
-    const interval = setInterval(fetchFakeData, 3000); 
-
-    return () => clearInterval(interval);
-    }, []);
-  return (
+  useEffect(() => {
+    const fetchFakeData = async () => {
+      try {
+        const response = await fetch(`https://testapi.ordrat.com/api/FakeData/GetFakeDataByShopId/${shopId}`);
+        if (!response.ok) throw new Error('Failed to fetch fake data');
+  
+        const result: FakeData = await response.json();
+        setFakeData(result); // حطينا الريسبونس في الستيت مباشرة
+      } catch (error) {
+        console.error('Error fetching fake data:', error);
+      }
+    };
+  
+    fetchFakeData();
+  }, [shopId]);
+  return <>
     <div className="mb-10">
       {home?.filter((sec) => sec.isActive).length === 0 ? (
         <div className="w-5/6 m-auto my-10">
@@ -116,11 +123,14 @@ function Grills({ lang,ProductData,HomeData }: { lang: string; ProductData?:any;
             <div key={sec.id} id={sec.id} className="w-5/6 sm:w-[90%] mx-auto mt-20">
               <div className="flex justify-between items-center">
                 <Title title={sec.name} />
-                <Link href={`/${lang}/category/${sec.id}`}>
-                  <p className="hover:text-mainColor mb-5 text-black font-medium text-lg underline">
-                    {t('view-all')}
-                  </p>
-                </Link>
+                {sec.hasMoreProducts &&
+                  <Link href={`/${lang}/category/${sec.id}`}>
+                    <p className="hover:text-mainColor mb-5 text-black font-medium text-lg underline">
+                      {t('view-all')}
+                    </p>
+                  </Link>
+                }
+
               </div>
 
               {sec.numberOfColumns !== 0 &&
@@ -193,18 +203,18 @@ function Grills({ lang,ProductData,HomeData }: { lang: string; ProductData?:any;
                           2500: { slidesPerView: 8, slidesPerGroup: 1 },
                         }}
                       >
-                        {sec.products.slice(0, 8).map((prod: React.JSX.IntrinsicAttributes & Food & { setCurrentItem: React.Dispatch<React.SetStateAction<{ type?: string; id: string } | null>> }) => (
+                        {sec.products.map((prod: React.JSX.IntrinsicAttributes & Food & { setCurrentItem: React.Dispatch<React.SetStateAction<{ type?: string; id: string } | null>> }) => (
                           <SwiperSlide key={prod.id}>
-                            <SmallCard  FakeData={fakeData} ProductData={home}  lang={lang} {...prod} />
+                            <SmallCard FakeData={fakeData} ProductData={home} lang={lang} {...prod} />
                           </SwiperSlide>
                         ))}
                       </Swiper>
                     </div>
                   ) : (
-                    sec.products.slice(0, 4).map((prod: React.JSX.IntrinsicAttributes & Food & { setCurrentItem: React.Dispatch<React.SetStateAction<{ type?: string; id: string } | null>> }) =>
+                    sec?.products?.map((prod: React.JSX.IntrinsicAttributes & Food & { setCurrentItem: React.Dispatch<React.SetStateAction<{ type?: string; id: string } | null>> }) =>
                       sec.numberOfColumns === 1 ? (
                         <div key={prod.id}>
-                          <MediumCard FakeData={fakeData}  ProductData={home} lang={lang} {...prod} />
+                          <MediumCard FakeData={fakeData} ProductData={home} lang={lang} {...prod} />
                           <hr className="mt-1 sm:hidden" />
                         </div>
                       ) : (
@@ -218,6 +228,12 @@ function Grills({ lang,ProductData,HomeData }: { lang: string; ProductData?:any;
           ))
       )}
     </div>
-  )
+     <div className="flex justify-center">
+            {loading && <Loader className="animate-spin text-mainColor" />}
+          </div>
+          <div ref={observerRef} className="h-1" />
+  </>
+
+  
 }
 export default Grills;

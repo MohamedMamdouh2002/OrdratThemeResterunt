@@ -67,10 +67,10 @@ const Card = (data: Props) => {
           ""
         )}
         <Title as="h6" className="my-1 truncate font-semibold transition-colors group-hover:text-mainColor">
-          {data.name}
+          {data.lang === 'ar' ? data.nameAr : data.nameEn}
         </Title>
         <Text as="p" className="truncate">
-          {data.description}
+          {data.lang === 'ar' ? data.descriptionAr : data.descriptionEn}
         </Text>
         <div className="mt-2 flex items-center font-semibold text-mainColor">
           {abbreviation && toCurrency(data.price, data.lang, abbreviation)}
@@ -85,6 +85,7 @@ const Card = (data: Props) => {
       <AnimatePresence mode='wait'>
         {isModalOpen && (
           <Modal
+          
             setCurrentModalProductId={setCurrentModalProductId}
             lang={data.lang}
             ProductData={data.ProductData}

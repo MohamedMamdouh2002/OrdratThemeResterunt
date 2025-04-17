@@ -2,7 +2,7 @@
 
 import { API_BASE_URL } from '@/config/base-url';
 // import { shopIdId } from '@/config/shopIdId';
-import { AllCategories, Food, FoodId, Order, Review } from '@/types';
+import { AllCategories, Food, FoodId, Order, Review,PaginatedAllCategories } from '@/types';
 import React, { createContext, useContext, useState, ReactNode } from 'react';
 
 type FaqType = {
@@ -28,7 +28,7 @@ type UserContextType = {
   profileUserName: string;
   setProfileUserName: React.Dispatch<React.SetStateAction<string>>;
   setPage: React.Dispatch<React.SetStateAction<number>>;
-  GetHome: ({ lang }: { lang: string }) => Promise<AllCategories | any>;
+  GetHome: ({ lang, page }: { lang: string; page: number }) => Promise<PaginatedAllCategories | null>;
   GetProduct: ({ lang, id }: { lang: string, id: string }) => Promise<FoodId | any>;
   GetRewiew: ({ lang }: { lang: string }) => Promise<Review | any>;
 
@@ -72,9 +72,9 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const [branchZones, setBranchZones] = useState<{ lat: number; lng: number; zoonRadius: number }[]>([]);
   const [shopId, setshopId] = useState<string>('');
     
-  async function GetHome({lang}:{lang:string}) {
+  async function GetHome({ lang, page }: { lang: string; page: number }) {
     try {
-      const response = await fetch(`${API_BASE_URL}/api/Category/GetAll/${shopId}`, {
+      const response = await fetch(`${API_BASE_URL}/api/Category/GetPaginatedWithProducts/${shopId}?PageNumber=${page}&PageSize=1`, {
         method: 'GET',
         headers: {
           'Accept-Language': lang,
@@ -85,7 +85,7 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       }
 
       // استرجاع البيانات
-      const data: AllCategories[] = await response.json();
+      const data: PaginatedAllCategories = await response.json();
 
       // const ids = data.map(category => category.id);
       // setProduct(ids); // تخزين البيانات في setProduct

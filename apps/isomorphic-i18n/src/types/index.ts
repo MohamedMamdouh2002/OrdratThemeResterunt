@@ -205,9 +205,15 @@ export interface Product {
   colors?: ProductColor[];
   sizes?: number[];
 }
+export type PaginatedAllCategories = {
+  entities: AllCategories[];
+  nextPage: number;
+  totalPages: number;
+};
 export type AllCategories = {
   id: string;
   imageUrl: string;
+  hasMoreProducts: boolean;
   priority: number;
   isActive: boolean;
   numberOfProducts: number;
@@ -221,11 +227,15 @@ export type Food = {
     id: string
     isTopSelling: boolean
     isTopRated: boolean
-    name: string
+    name: string;
+    nameAr: string;
+    nameEn: string;
     price: number;
     oldPrice: number
     categoryName?:string
     description: string
+    descriptionAr: string
+    descriptionEn: string
     images?: OrderItemImages[];
     imageUrl: string
     isActive: boolean
