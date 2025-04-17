@@ -58,7 +58,6 @@ export default function AllProduct({
             const newEntities = data.entities.filter(
               (entity: Food) => !prev.some((p: Food) => p.id === entity.id)
             );
-            // إذا كانت الصفحة الأولى نستبدل القائمة، وإلا نضيف عليها
             return page === 1 ? newEntities : [...prev, ...newEntities];
           });
         }

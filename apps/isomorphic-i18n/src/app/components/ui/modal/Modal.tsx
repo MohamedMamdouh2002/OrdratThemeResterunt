@@ -244,8 +244,8 @@ function Modal({
         // })),
         // frequentlyOrderedWith: data.frequentlyOrderedWith,
         // reviews: data.reviews,
-        // price: data.price,
-        // oldPrice: data.oldPrice
+        price: data.price,
+        oldPrice: data.oldPrice
       };
 
       const formattedData2 = {
@@ -287,8 +287,8 @@ function Modal({
         // })),
         // frequentlyOrderedWith: data.frequentlyOrderedWith,
         // reviews: data.reviews,
-        // price: data.price,
-        // oldPrice: data.oldPrice
+        price: data.price,
+        oldPrice: data.oldPrice
       };
 
       setProdId(formattedData);
@@ -465,6 +465,25 @@ function Modal({
     }
   };
 
+
+  const TWO_MINUTES =  5 * 1000;
+
+const getStableFakeSold = (productId: string, base: number) => {
+  const key = `modal_fakeSold_${productId}`;
+  const cached = localStorage.getItem(key);
+  const now = Date.now();
+
+  if (cached) {
+    const { value, timestamp } = JSON.parse(cached);
+    if (now - timestamp < TWO_MINUTES) return value;
+  }
+
+  const generated = Math.floor(Math.random() * 100) + 1;
+  localStorage.setItem(key, JSON.stringify({ value: generated, timestamp: now }));
+  return generated;
+};
+
+
   if (!prodId) {
     return null;
   }
@@ -537,7 +556,8 @@ function Modal({
                                   <source srcSet="https://fonts.gstatic.com/s/e/notoemoji/latest/1f525/512.webp" type="image/webp" />
                                   <img src="https://fonts.gstatic.com/s/e/notoemoji/latest/1f525/512.gif" alt="🔥" width="18" height="18" />
                                 </picture>                                  <span className='font-medium'>
-                                  {fakeData.fakeSoldNumber} {lang === 'ar' ? 'بيعت في اخر' : 'sold in last '} {fakeData.fakeSoldNumberInHours} {lang === 'ar' ? 'ساعات' : 'hours'}
+                                  {getStableFakeSold(modalId, fakeData.fakeSoldNumber)}
+{lang === 'ar' ? 'بيعت في اخر' : 'sold in last '} {fakeData.fakeSoldNumberInHours} {lang === 'ar' ? 'ساعات' : 'hours'}
                                 </span>
                               </div>
                               <div className="flex items-center gap-1 ">
@@ -928,7 +948,8 @@ onClick={() => {
                           <source srcSet="https://fonts.gstatic.com/s/e/notoemoji/latest/1f525/512.webp" type="image/webp" />
                           <img src="https://fonts.gstatic.com/s/e/notoemoji/latest/1f525/512.gif" alt="🔥" width="18" height="18" />
                         </picture>                        <span className='font-medium'>
-                          {fakeData.fakeSoldNumber} {lang === 'ar' ? 'بيعت في اخر' : 'sold in last '} {fakeData.fakeSoldNumberInHours} {lang === 'ar' ? 'ساعات' : 'hours'}
+                        {getStableFakeSold(modalId, fakeData.fakeSoldNumber)}
+                        {lang === 'ar' ? 'بيعت في اخر' : 'sold in last '} {fakeData.fakeSoldNumberInHours} {lang === 'ar' ? 'ساعات' : 'hours'}
                         </span>
                       </div>
                       <div className="flex items-center gap-1">

@@ -48,7 +48,7 @@ function SmallCard(data: Props) {
             width={200}
             height={180}
             objectFit="cover"
-            className="md:w-[200px] p-2 sm:p-10 bg-[#E8E8E8] h-[115px] md:h-40 rounded-2xl object-cover"
+            className="md:w-[200px] bg-[#E8E8E8] h-[115px] md:h-40 rounded-2xl object-cover"
             alt=""
           />
           {data?.isTopRated || data?.isTopSelling ? (

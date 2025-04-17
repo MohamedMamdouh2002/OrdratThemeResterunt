@@ -87,12 +87,17 @@ function Grills({ lang,ProductData,HomeData }: { lang: string; ProductData?:any;
             fakeViewers: result.fakeViewers,
             fakeSoldNumberInHours: result.fakeSoldNumberInHours,
           });
+          
         } catch (error) {
           console.error('Error fetching fake data:', error);
         }
       };
     
-      fetchFakeData();
+        fetchFakeData(); 
+
+    const interval = setInterval(fetchFakeData, 3000); 
+
+    return () => clearInterval(interval);
     }, []);
   return (
     <div className="mb-10">

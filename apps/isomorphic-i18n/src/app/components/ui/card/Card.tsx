@@ -15,8 +15,8 @@ import { AnimatePresence } from 'framer-motion';
 
 type Props = Food & {
   lang: string;
-  ProductData?:any
-  FakeData?:any
+  ProductData?: any
+  FakeData?: any
 
   setCurrentItem: Dispatch<
     SetStateAction<{
