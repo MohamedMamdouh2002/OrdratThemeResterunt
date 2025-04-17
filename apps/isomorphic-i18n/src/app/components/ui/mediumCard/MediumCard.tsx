@@ -12,7 +12,7 @@ import potato from '@public/assets/شاورما-عراقي-لحمة-مع-بطا�
 import { AnimatePresence } from 'framer-motion';
 type Props = Food & {
   lang: string;
-  ProductData:any
+  ProductData?:any
 
   setCurrentItem: Dispatch<
     SetStateAction<{

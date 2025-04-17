@@ -9,6 +9,7 @@ import Header from "@/app/components/header/Header";
 import ScrollToTop from "@/app/components/ui/ScrollToTop";
 import { Metadata } from "next";
 import Footer from "@/app/components/footer/Footer";
+import { API_BASE_URL } from "@/config/base-url";
 
 
 type LangType = 'en' | 'ar';
@@ -90,7 +91,25 @@ const languages = {
 //   );
 // };
 
+ async function GetHome({lang}:{lang:string}) {
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/Category/GetAll/952E762C-010D-4E2B-8035-26668D99E23E`, {
+        method: 'GET',
+        headers: {
+          'Accept-Language': lang,
+        },
+      });
+      if (!response.ok) {
+        throw new Error('Failed to fetch data');
+      }
 
+      const data: AllCategories[] = await response.json();
+      return data;
+    } catch (error) {
+      console.error('Error fetching data:', error);
+      return null;
+    }
+  }
 export default async function FileDashboardPage({
   params: { lang },
 }: {
@@ -98,13 +117,16 @@ export default async function FileDashboardPage({
     lang?: string;
   };
 }) {
+  const HomeData = await GetHome({lang} as any);
+  console.log('blogData', HomeData);
+
   return<>
       <ScrollToTop/>
       <RestaurantTitle lang={lang}/>
       <NavMobile lang={lang!}/>
       <Header lang={lang!}/>
       <MainSlider/>
-      <Grills lang={lang!}/>
+      <Grills HomeData={HomeData!} lang={lang!}/>
       <Footer  lang={lang!}/>
 
       {/* <PopularMeals/> */}

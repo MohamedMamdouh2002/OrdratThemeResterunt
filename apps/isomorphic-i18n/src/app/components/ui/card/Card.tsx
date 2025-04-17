@@ -15,7 +15,7 @@ import { AnimatePresence } from 'framer-motion';
 
 type Props = Food & {
   lang: string;
-  ProductData:any
+  ProductData?:any
 
   setCurrentItem: Dispatch<
     SetStateAction<{
@@ -44,7 +44,7 @@ const Card = (data: Props) => {
   return (
     <>
       <div onClick={() => handleOpenModal(data.id)} className="hover:scale-105 hover:cursor-pointer w-full duration-200">
-        <div className="relative w-full h-[100px] xs:h-[200px] md:h-[200px] lg:h-[220px] xl:h-[270px] 2xl:h-[300px]">
+        <div className="relative w-full h-[100px] mb-2 xs:h-[200px] md:h-[200px] lg:h-[220px] xl:h-[270px] 2xl:h-[300px]">
           <CustomImage
             alt="card food1"
             src={data?.images && data?.images[0]?.imageUrl}

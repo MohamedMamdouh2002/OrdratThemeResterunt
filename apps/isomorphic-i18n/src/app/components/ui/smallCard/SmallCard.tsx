@@ -12,7 +12,7 @@ import { AnimatePresence } from 'framer-motion';
 
 type Props = Food & {
   lang: string;
-  ProductData:any
+  ProductData?:any
   setCurrentItem: Dispatch<
     SetStateAction<{
       type?: string;
