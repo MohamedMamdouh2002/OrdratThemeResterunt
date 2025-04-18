@@ -171,15 +171,15 @@ export default function OrderSummery({
               {abbreviation&&toCurrency(fees, lang)}
             </Text> */}
             {(() => {
-              const mainBranch = response.find(
-                (i) => i.name === "Main Branch" || i.name === "الفرع الرئيسي"
-              );
-              if (mainBranch?.isFixedDelivery) {
-                return <span>{abbreviation&&toCurrency(mainBranch?.deliveryCharge ?? 0, lang as any,abbreviation)}</span>;
-              }
-              else {
+              // const mainBranch = response.find(
+              //   (i) => i.name 
+              // );
+              // if (mainBranch?.isFixedDelivery) {
+              //   return <span>{abbreviation&&toCurrency(mainBranch?.deliveryCharge ?? 0, lang as any,abbreviation)}</span>;
+              // }
+              // else {
                 return <span>{abbreviation&&toCurrency(fees, lang as any,abbreviation)}</span>;
-              }
+              // }
             })()}
 
 
