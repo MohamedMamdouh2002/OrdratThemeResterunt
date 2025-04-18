@@ -80,14 +80,16 @@ function SmallCard(data: Props) {
           <div className="mt-2 flex flex-col items-start font-semibold text-mainColor">
             <div className='text-[12px] sm:pt-0 pt-0.5 font-normal sm:text-[13px]'>
               <span>
-                {abbreviation && toCurrency(data.price, data.lang, abbreviation)}
+                {abbreviation && toCurrency(data.finalPrice, data.lang, abbreviation)}
               </span>
             </div>
-            <div>
+            {data.isDiscountActive ===true &&
+              <div>
               <del className="text-[12px] sm:text-[13px] font-normal text-gray-500">
-                {abbreviation && toCurrency(data.oldPrice, data.lang, abbreviation)}
+                  {abbreviation && toCurrency(data.price, data.lang, abbreviation)}
               </del>
             </div>
+            }
           </div>
         </div>
       </div>

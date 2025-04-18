@@ -61,11 +61,11 @@ function MediumCard(data: Props) {
             <TextTruncate text={data.lang === 'ar' ? data.descriptionAr : data.descriptionEn} limit={10} />
             <div className="mt-2 flex items-center font-semibold text-mainColor absolute bottom-2">
               <span>
-                {abbreviation && toCurrency(data.price, data.lang, abbreviation)}
+                {abbreviation && toCurrency(data.finalPrice, data.lang, abbreviation)}
               </span>
-              {data.oldPrice && (
+              {data.isDiscountActive ===true  && (
                 <del className="ps-1.5 text-[13px] font-normal text-gray-500">
-                  {abbreviation && toCurrency(data.oldPrice, data.lang, abbreviation)}
+                  {abbreviation && toCurrency(data.price, data.lang, abbreviation)}
                 </del>
               )}
             </div>

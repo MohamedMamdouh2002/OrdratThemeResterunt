@@ -12,7 +12,7 @@ import { useTranslation } from '@/app/i18n/client';
 import { Loader } from 'lucide-react';
 import { useUserContext } from '../context/UserContext';
 
-export default function Content({lang}: { lang?: string }) {
+export default function Content({ lang }: { lang?: string }) {
 	const [searchValue, setSearchValue] = useState('');
 	const [products, setProducts] = useState<Food[]>([]);
 	const [currentPage, setCurrentPage] = useState(1);
@@ -20,7 +20,7 @@ export default function Content({lang}: { lang?: string }) {
 	const [totalPages, setTotalPages] = useState(0);
 	const [errorMessage, setErrorMessage] = useState('');
 	const [isLoading, setIsLoading] = useState(false);
-	const [isSearching, setIsSearching] = useState(false); 
+	const [isSearching, setIsSearching] = useState(false);
 	const [hasMore, setHasMore] = useState(true);
 	const observerRef = useRef<HTMLDivElement | null>(null);
 	const { t } = useTranslation(lang!, 'search');
@@ -35,7 +35,7 @@ export default function Content({lang}: { lang?: string }) {
 			const pageSize = 5;
 			const url = searchTerm
 				? `${API_BASE_URL}/api/Products/SearchByName/${shopId}?SearchParamter=${searchTerm}&PageNumber=${page}&PageSize=${pageSize}`
-				: `${API_BASE_URL}/api/Products/GetAll/${shopId}?PageNumber=${page}&PageSize=${pageSize}`;
+				: `${API_BASE_URL}/api/Products/GetAllDetailed/${shopId}?PageNumber=${page}&PageSize=${pageSize}`;
 
 			const response = await fetch(url, {
 				method: 'GET',
@@ -102,8 +102,8 @@ export default function Content({lang}: { lang?: string }) {
 			<div className="flex flex-col gap-5 mobile:gap-10 pb-5 mobile:pb-0 bg-[#fff]">
 				<div className="relative">
 					<div className='relative h-[25vh]  after:w-full after:h-full after:inset-0 after:absolute after:bg-ColorLitleHover after:backdrop-blur-sm'>
-						<Image src={kft} alt="background" loading="lazy" decoding="async" data-nimg="fill" 
-						className='!relative object-cover' style={{position:"absolute",height:"100%",width:"100%",left:0,top:0,right:0,bottom:0,objectFit:"cover", color:"transparent"}} />
+						<Image src={kft} alt="background" loading="lazy" decoding="async" data-nimg="fill"
+							className='!relative object-cover' style={{ position: "absolute", height: "100%", width: "100%", left: 0, top: 0, right: 0, bottom: 0, objectFit: "cover", color: "transparent" }} />
 					</div>
 					<div className="absolute bg-white rounded-lg bottom-0 start-1/2 -translate-x-1/2 rtl:translate-x-1/2 translate-y-1/2">
 						<SearchInput lang={lang} isTop={true} value={searchValue} handleInputChange={handleInputChange} />
@@ -122,25 +122,23 @@ export default function Content({lang}: { lang?: string }) {
 							<div className="grid lg:grid-cols-4 md:grid-cols-3 grid-cols-2 gap-4 sm:gap-8">
 								{products.map((product: any) => (
 									<Card
-									FakeData={''}
 										lang={lang!}
 										key={product.id}
 										id={product.id}
-										ProductData={products}
 										isTopSelling={product.isTopSelling}
 										isTopRated={product.isTopRated}
 										name={product.name}
 										price={product.price}
 										oldPrice={product.oldPrice}
+										ProductData={products}	
 										description={product.description}
 										imageUrl={product.imageUrl}
 										isActive={product.isActive}
-
 										createdAt={product.createdAt}
 										lastUpdatedAt={product.lastUpdatedAt}
 										isOffer={false}
 										{...product}
-										setCurrentItem={() => {}}
+										setCurrentItem={() => { }}
 									/>
 								))}
 							</div>

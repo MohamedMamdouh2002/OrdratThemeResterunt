@@ -57,6 +57,7 @@ export interface CartItem {
   image: string | StaticImageData;
   price: number;
   oldPrice?: number;
+  isDiscountActive?: boolean
   quantity: number;
   discount?: number;
 
@@ -231,7 +232,8 @@ export type Food = {
     nameAr: string;
     nameEn: string;
     price: number;
-    oldPrice: number
+    finalPrice: number
+    isDiscountActive?: boolean
     categoryName?:string
     description: string
     descriptionAr: string

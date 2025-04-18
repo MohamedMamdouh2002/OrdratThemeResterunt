@@ -328,7 +328,7 @@ function CartModal({ lang }: { lang?: string }) {
                                 className="bg-mainColor text-white rounded-lg text-center text-sm sm:text-base font-medium w-11/12 mx-auto flex justify-between items-center py-2 mt-1 px-4"
                             >
                                 <span>{t('order-cart')}</span>
-                                <span className='bg-white py-1 px-3 text-mainColor rounded-md'>{abbreviation&&toCurrency(totalPrice, lang as any,abbreviation)}
+                                <span className='bg-white py-1 px-3 text-mainColor rounded-md'> {abbreviation&&toCurrency(totalPrice, lang as any,abbreviation)}
                                 </span>
                             </Link>
                         </div>

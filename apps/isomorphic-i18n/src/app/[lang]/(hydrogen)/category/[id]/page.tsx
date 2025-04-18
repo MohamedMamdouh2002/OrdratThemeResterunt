@@ -31,7 +31,6 @@ export default function AllProduct({
 
   useEffect(() => {
     const fetchProducts = async () => {
-      // إذا تم جلب الصفحة مسبقاً، نتخطاها
       if (fetchedPages.current.has(page)) return;
       fetchedPages.current.add(page);
 

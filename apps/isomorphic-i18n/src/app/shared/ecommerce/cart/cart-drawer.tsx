@@ -10,6 +10,8 @@ import { routes } from '@/config/routes';
 
 const Drawer = dynamic(() => import('rizzui').then((module) => module.Drawer), {
   ssr: false,
+
+  
 });
 
 export default function CartDrawer() {

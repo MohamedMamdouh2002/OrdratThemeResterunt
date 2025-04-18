@@ -172,19 +172,18 @@ function Modal({
   //   fetchFakeData();
   // }, []);
   // Updated click handler for related products
-  useEffect(() => {
-    const fetchData = async () => {
-      // استخدم المعرف الفعلي للمنتج الذي تريد عرضه
-      const productIdToFetch = currentModalProductId || modalId;
-      console.log("تحميل المنتج بمعرف:", productIdToFetch); // للتصحيح
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     // استخدم المعرف الفعلي للمنتج الذي تريد عرضه
+  //     const productIdToFetch = currentModalProductId || modalId;
+  //     console.log("تحميل المنتج بمعرف:", productIdToFetch); // للتصحيح
 
-      const data = await GetProduct({ lang, id: productIdToFetch });
+  //     // const data = await GetProduct({ lang, id: productIdToFetch });
 
-      // باقي الكود لتنسيق البيانات...
-    };
+  //   };
 
-    fetchData();
-  }, [GetProduct, modalId, lang, currentModalProductId]); // أضف currentModalProductId للتبعيات
+  //   fetchData();
+  // }, [GetProduct, modalId, lang, currentModalProductId]);
 
 
   const handleScroll = () => {
@@ -204,122 +203,145 @@ function Modal({
   }, []);
 
   // Fetch product data
-  useEffect(() => {
-    const fetchData = async () => {
-      // استخدم currentModalProductId إذا كان موجودًا، وإلا استخدم modalId الأصلي
-      const productIdToFetch = currentModalProductId || modalId;
-      console.log("جاري تحميل بيانات المنتج...");
-      console.log("معرف المودال:", modalId);
-      console.log("معرف المنتج الحالي:", currentModalProductId);
-      const Cdata = ProductData
-      const data = ProductData
-        .flatMap((c: any) => c.products)
-        .find((p: any) => p.id === productIdToFetch);
+    useEffect(() => {
+      const fetchData = async () => {
+        // استخدم currentModalProductId إذا كان موجودًا، وإلا استخدم modalId الأصلي
+        const productIdToFetch = currentModalProductId || modalId;
+        console.log("جاري تحميل بيانات المنتج...");
+        console.log("معرف المودال:", modalId);
+        console.log("معرف المنتج الحالي:", currentModalProductId);
+        const Cdata = ProductData
+        // const data = ProductData
+        // .flatMap((c: any) => c.products)
+        // .find((p: any) => p.id === productIdToFetch);
+      
+        let data: any = null;
 
-      console.log("id الحالي:", data);
-      // const data = await GetProduct({ lang, id: productIdToFetch });
-      const formattedData: any = {
-        id: data.id,
-        name: lang === 'ar' ? data.nameAr : data.nameEn,
-        description: lang === 'ar' ? data.descriptionAr : data.descriptionEn,
-        vat: data.vat,
-        vatType: data.vatType,
-        discount: data.discount,
-        discountType: data.discountType,
-        isActive: data.isActive,
-        createdAt: data.createdAt,
-        lastUpdatedAt: data.lastUpdatedAt,
-        isTopSelling: data.isTopSelling,
-        isTopRated: data.isTopRated,
-        seoDescription: lang === 'ar' ? data.metaDescriptionAr : data.metaDescriptionEn,
-        imageUrl: data.images.length > 0 ? data.images[0].imageUrl : "",
-        categoryId: data.categoryId,
-        numberOfSales: data.numberOfSales,
-        category: null,
-        variations: data.variations.filter((variation: any) => variation.isActive).map((variation: any) => ({
-          id: variation.id,
-          name: lang === 'ar' ? variation.nameAr : variation.nameEn,
-          buttonType: variation.buttonType,
-          isActive: variation.isActive,
-          isRequired: variation.isRequired,
-          choices: variation.choices.filter((choice: any) => choice.isActive).map((choice: any) => ({
-            id: choice.id,
-            name: lang === 'ar' ? choice.nameAr : choice.nameEn,
-            price: choice.price,
-            isDefault: choice.isDefault,
-            isActive: choice.isActive,
-            imageUrl: choice.imageUrl,
+        if (Array.isArray(ProductData)) {
+          // الحالة الأولى: ProductData = [منتجات مباشرة]
+          if (ProductData.length > 0 && !ProductData[0].products) {
+            data = ProductData.find((p: any) => p.id === productIdToFetch);
+          }
+          // الحالة الثانية: ProductData = [تصنيفات وفيها products]
+          else if (ProductData.length > 0 && Array.isArray(ProductData[0].products)) {
+            data = ProductData
+              .filter((c: any) => c && Array.isArray(c.products))
+              .flatMap((c: any) => c.products)
+              .find((p: any) => p.id === productIdToFetch);
+          }
+        }
+        
+
+        
+        if (!data) {
+          console.error("المنتج غير موجود بالمعرف:", productIdToFetch);
+          return;
+        }
+        
+        console.log("id الحالي:", data);
+        // const data = await GetProduct({ lang, id: productIdToFetch });
+        const formattedData: any = {
+          id: data.id,
+          name: lang === 'ar' ? data.nameAr : data.nameEn,
+          description: lang === 'ar' ? data.descriptionAr : data.descriptionEn,
+          vat: data.vat,
+          vatType: data.vatType,
+          discount: data.discount,
+          discountType: data.discountType,
+          isActive: data.isActive,
+          createdAt: data.createdAt,
+          lastUpdatedAt: data.lastUpdatedAt,
+          isTopSelling: data.isTopSelling,
+          isTopRated: data.isTopRated,
+          seoDescription: lang === 'ar' ? data.metaDescriptionAr : data.metaDescriptionEn,
+          imageUrl: data.images.length > 0 ? data.images[0].imageUrl : "",
+          categoryId: data.categoryId,
+          numberOfSales: data.numberOfSales,
+          category: null,
+          variations: data.variations.filter((variation: any) => variation.isActive).map((variation: any) => ({
+            id: variation.id,
+            name: lang === 'ar' ? variation.nameAr : variation.nameEn,
+            buttonType: variation.buttonType,
+            isActive: variation.isActive,
+            isRequired: variation.isRequired,
+            choices: variation.choices.filter((choice: any) => choice.isActive).map((choice: any) => ({
+              id: choice.id,
+              name: lang === 'ar' ? choice.nameAr : choice.nameEn,
+              price: choice.price,
+              isDefault: choice.isDefault,
+              isActive: choice.isActive,
+              imageUrl: choice.imageUrl,
+            })),
           })),
-        })),
-        frequentlyOrderedWith: data.frequentlyOrderedWith,
-        reviews: data.reviews,
-        price: data.price,
-        oldPrice: data.oldPrice
+          frequentlyOrderedWith: data.frequentlyOrderedWith,
+          reviews: data.reviews,
+          price: data.finalPrice,
+          oldPrice: data.price
+        };
+
+        const formattedData2 = {
+          id: data.id,
+          nameEn: data.nameEn,
+          nameAr: data.nameAr,
+          descriptionEn: data.descriptionEn,
+          descriptionAr: data.descriptionAr,
+          vat: data.vat,
+          vatType: data.vatType,
+          discount: data.discount,
+          discountType: data.discountType,
+          isActive: data.isActive,
+          createdAt: data.createdAt,
+          lastUpdatedAt: data.lastUpdatedAt,
+          isTopSelling: data.isTopSelling,
+          isTopRated: data.isTopRated,
+          metaDescriptionEn: data.metaDescriptionEn,
+          metaDescriptionAr: data.metaDescriptionAr,
+          imageUrl: data.images.length > 0 ? data.images[0].imageUrl : "",
+          categoryId: data.categoryId,
+          numberOfSales: data.numberOfSales,
+          variations: data.variations.filter((variation: any) => variation.isActive).map((variation: any) => ({
+            id: variation.id,
+            nameEn: variation.nameEn,
+            nameAr: variation.nameAr,
+            buttonType: variation.buttonType,
+            isActive: variation.isActive,
+            isRequired: variation.isRequired,
+            choices: variation.choices.filter((choice: any) => choice.isActive).map((choice: any) => ({
+              id: choice.id,
+              nameEn: choice.nameEn,
+              nameAr: choice.nameAr,
+              price: choice.price,
+              isDefault: choice.isDefault,
+              isActive: choice.isActive,
+              imageUrl: choice.imageUrl,
+            })),
+          })),
+          frequentlyOrderedWith: data.frequentlyOrderedWith,
+          reviews: data.reviews,
+          price: data.finalPrice,
+          oldPrice: data.price
+        };
+
+        setProdId(formattedData);
+        setProductData(formattedData2);
+        setProdCartItem({
+          id: formattedData.id,
+          name: formattedData.name,
+          slug: formattedData.name,
+          description: formattedData.description,
+          imageUrl: formattedData.imageUrl,
+          price: formattedData.price,
+          quantity: 1,
+          sizeFood: "small",
+          color: {
+            name: "Purple Heart",
+            code: "#5D30DD",
+          },
+        });
       };
 
-      const formattedData2 = {
-        id: data.id,
-        nameEn: data.nameEn,
-        nameAr: data.nameAr,
-        descriptionEn: data.descriptionEn,
-        descriptionAr: data.descriptionAr,
-        vat: data.vat,
-        vatType: data.vatType,
-        discount: data.discount,
-        discountType: data.discountType,
-        isActive: data.isActive,
-        createdAt: data.createdAt,
-        lastUpdatedAt: data.lastUpdatedAt,
-        isTopSelling: data.isTopSelling,
-        isTopRated: data.isTopRated,
-        metaDescriptionEn: data.metaDescriptionEn,
-        metaDescriptionAr: data.metaDescriptionAr,
-        imageUrl: data.images.length > 0 ? data.images[0].imageUrl : "",
-        categoryId: data.categoryId,
-        numberOfSales: data.numberOfSales,
-        variations: data.variations.filter((variation: any) => variation.isActive).map((variation: any) => ({
-          id: variation.id,
-          nameEn: variation.nameEn,
-          nameAr: variation.nameAr,
-          buttonType: variation.buttonType,
-          isActive: variation.isActive,
-          isRequired: variation.isRequired,
-          choices: variation.choices.filter((choice: any) => choice.isActive).map((choice: any) => ({
-            id: choice.id,
-            nameEn: choice.nameEn,
-            nameAr: choice.nameAr,
-            price: choice.price,
-            isDefault: choice.isDefault,
-            isActive: choice.isActive,
-            imageUrl: choice.imageUrl,
-          })),
-        })),
-        frequentlyOrderedWith: data.frequentlyOrderedWith,
-        reviews: data.reviews,
-        price: data.price,
-        oldPrice: data.oldPrice
-      };
-
-      setProdId(formattedData);
-      setProductData(formattedData2);
-      setProdCartItem({
-        id: formattedData.id,
-        name: formattedData.name,
-        slug: formattedData.name,
-        description: formattedData.description,
-        imageUrl: formattedData.imageUrl,
-        price: formattedData.price,
-        quantity: 1,
-        sizeFood: "small",
-        color: {
-          name: "Purple Heart",
-          code: "#5D30DD",
-        },
-      });
-    };
-
-    fetchData();
-  }, [GetProduct, modalId, lang, currentModalProductId]);
+      fetchData();
+    }, [GetProduct, modalId, lang, currentModalProductId]);
 
   // Prevent body scroll when modal is open
   useEffect(() => {
@@ -351,21 +373,21 @@ function Modal({
     defaultValues: {}, // initially empty
   });
 
-  // useEffect(() => {
-  //   if (prodId) {
-  //     const defaults: Record<string, any> = {};
-  //     prodId.variations.forEach((variation: any) => {
-  //       if (variation.buttonType === 0 || variation.buttonType === 1) {
-  //         const defaultChoice = variation.choices.find((choice: any) => choice.isDefault);
-  //         if (defaultChoice) {
-  //           defaults[variation.id] = defaultChoice.id;
-  //         }
-  //       }
-  //     });
+  useEffect(() => {
+    if (prodId) {
+      const defaults: Record<string, any> = {};
+      prodId.variations.forEach((variation: any) => {
+        if (variation.buttonType === 0 || variation.buttonType === 1) {
+          const defaultChoice = variation.choices.find((choice: any) => choice.isDefault);
+          if (defaultChoice) {
+            defaults[variation.id] = defaultChoice.id;
+          }
+        }
+      });
 
-  //     methods.reset(defaults);
-  //   }
-  // }, [prodId, methods]);
+      methods.reset(defaults);
+    }
+  }, [prodId, methods]);
 
   const { watch, setValue, register, handleSubmit, control } = methods;
 
@@ -695,10 +717,12 @@ function Modal({
                                           <RoleSelect
                                             label={variation.name}
                                             options={variation.choices as { id: string; name: string }[]}
+                                            
                                             field={{
                                               ...field,
                                               value: typeof field.value === "string" ? field.value : "",
                                             }}
+                                            
                                             error={String(methods.formState.errors[variation.id]?.message || '')}
                                             placeholder={variation.name}
                                           />
