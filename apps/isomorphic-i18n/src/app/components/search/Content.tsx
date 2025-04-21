@@ -11,6 +11,7 @@ import { Food } from '@/types';
 import { useTranslation } from '@/app/i18n/client';
 import { Loader } from 'lucide-react';
 import { useUserContext } from '../context/UserContext';
+import CustomImage from '../ui/CustomImage';
 
 export default function Content({ lang }: { lang?: string }) {
 	const [searchValue, setSearchValue] = useState('');
@@ -23,9 +24,21 @@ export default function Content({ lang }: { lang?: string }) {
 	const [isSearching, setIsSearching] = useState(false);
 	const [hasMore, setHasMore] = useState(true);
 	const observerRef = useRef<HTMLDivElement | null>(null);
-	const { t } = useTranslation(lang!, 'search');
+	const { t,i18n } = useTranslation(lang!, 'search');
 	const { shopId } = useUserContext();
+	const [background, setBackground] = useState<any | null>(null);
 
+  
+	useEffect(() => {
+	  i18n.changeLanguage(lang);
+	  const storedLogo = localStorage.getItem("logoUrl");
+	  const background = localStorage.getItem("backgroundUrl");
+	  if (storedLogo) {
+	
+		  setBackground(background)
+	  }
+	}, [lang, i18n]);
+  
 	const fetchData = async (searchTerm: string, page: number) => {
 		if (isLoading || !hasMore) return;
 		setIsLoading(true);
@@ -102,9 +115,12 @@ export default function Content({ lang }: { lang?: string }) {
 			<div className="flex flex-col gap-5 mobile:gap-10 pb-5 mobile:pb-0 bg-[#fff]">
 				<div className="relative">
 					<div className='relative h-[25vh]  after:w-full after:h-full after:inset-0 after:absolute after:bg-ColorLitleHover after:backdrop-blur-sm'>
-						<Image src={kft} alt="background" loading="lazy" decoding="async" data-nimg="fill"
+					{background && (
+
+						<CustomImage width={900} height={300} src={background as any ||kft} alt="background" loading="lazy" decoding="async" data-nimg="fill"
 							className='!relative object-cover' style={{ position: "absolute", height: "100%", width: "100%", left: 0, top: 0, right: 0, bottom: 0, objectFit: "cover", color: "transparent" }} />
-					</div>
+					)}
+							</div>
 					<div className="absolute bg-white rounded-lg bottom-0 start-1/2 -translate-x-1/2 rtl:translate-x-1/2 translate-y-1/2">
 						<SearchInput lang={lang} isTop={true} value={searchValue} handleInputChange={handleInputChange} />
 					</div>

@@ -139,30 +139,32 @@ export default function Header({ lang }: { lang?: string }) {
         }`}
     >
       <div className=" w-[91%] mx-auto z-[40] flex  justify-between 2xl:py-1 3xl:px-8">
-      <div className="hidden items-center justify-between gap-3 lg:flex w-full relative">
+      <div className="hidden lg:grid w-full grid-cols-[220px_1fr_220px] items-center">
+  {/* الشعار (يمين في RTL) */}
+  <div className="flex items-center gap-4 justify-start">
+    <Link
+      aria-label="Site Logo"
+      href={`/${lang}/`}
+      className="flex items-center gap-4"
+    >
+      {logoUrl ? (
+        <CustomImage src={logoUrl} width={60} height={60} alt="logo" className="max-w-[60px]" />
+      ) : (
+        <div className="w-[60px] h-[60px] bg-gray-200 rounded-full"></div>
+      )}
+      <h1 className={`font-bold text-lg ${isStickyVisible ? `text-white` : `text-black`}`}>{shopName}</h1>
+    </Link>
+  </div>
 
-{/* الشعار */}
-<Link
-  aria-label="Site Logo"
-  href={`/${lang}/`}
-  className="me-4 hidden w-[220px] shrink-0 text-gray-800 hover:text-gray-900 lg:me-5 lg:flex gap-4 items-center"
->
-  {logoUrl ? (
-    <CustomImage src={logoUrl} width={60} height={60} alt="logo" className="max-w-[60px]" />
-  ) : (
-    <div className="w-[60px] h-[60px] bg-gray-200 rounded-full"></div>
-  )}
-  <h1 className={`font-bold text-lg ${isStickyVisible ? `text-white` : `text-black`}`}>{shopName}</h1>
-</Link>
+  {/* المنيو */}
+  <div className="flex justify-center xl:ms-52">
+    <HeaderMenuLeft lang={lang} />
+  </div>
 
-{/* المنيو في النص بالضبط */}
-<div className="absolute left-1/2 -translate-x-1/2">
-  <HeaderMenuLeft lang={lang} />
+
 </div>
 
-{/* أي حاجة يمين أو placeholder */}
-<div className="w-[220px]"></div>
-</div>
+
 
         <div className="flex w-full items-center gap-5 lg:w-auto 3xl:gap-6">
           <div className="flex w-full max-w-2xl items-center lg:w-auto gap-4">

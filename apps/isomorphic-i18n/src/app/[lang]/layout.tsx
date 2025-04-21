@@ -28,6 +28,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFacebookF, faSquareFacebook, faWhatsapp } from "@fortawesome/free-brands-svg-icons";
 import Image from "next/image";
 import Pixels, { getEnabledPixels } from "../components/ui/pixels";
+import { TrackingProvider } from "../components/context/TrackingContext";
+import ScrollToTop from "../components/ui/ScrollToTop";
 const NextProgress = dynamic(() => import("@components/next-progress"), {
   ssr: false,
 });
@@ -401,7 +403,7 @@ export default async function RootLayout({
             }
           `}
         </style>
-
+<TrackingProvider>
         <MantineProvider>
           <AuthProvider session={session}>
             <SessionContextProvider>
@@ -409,6 +411,7 @@ export default async function RootLayout({
                 <ThemeProvider>
                   <UserProvider>
                     <NextProgress />
+                    <ScrollToTop />
                     {showTrialModal && <AutoModal />} 
                     {/* <AutoModal /> */}
                     <ShopLocalStorage
@@ -436,6 +439,7 @@ export default async function RootLayout({
             </SessionContextProvider>
           </AuthProvider>
         </MantineProvider>
+</TrackingProvider>
       </body>
     </html>
   );
