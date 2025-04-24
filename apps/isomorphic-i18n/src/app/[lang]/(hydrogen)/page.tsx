@@ -37,7 +37,7 @@ export default async function FileDashboardPage({
         background={headerData.backgroundUrl}/>
       <MainSlider banner={banner} />
       <Grills lang={lang} HomeData={ProductData}  shopId={headerData.shopId as string} initialPage={page} pageSize={pageSize} />
-      <Footer lang={lang} />
+      {/* <Footer lang={lang} /> */}
     </>
   );
 }
