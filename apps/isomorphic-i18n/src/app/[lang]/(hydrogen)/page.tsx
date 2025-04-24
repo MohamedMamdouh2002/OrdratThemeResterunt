@@ -31,9 +31,9 @@ export default async function FileDashboardPage({
         shopName={headerData.shopName}
         background={headerData.backgroundUrl} rate={headerData.rate} description={headerData.description}
          coupon={coupons} branch={branches} /> */}
-      <Header lang={lang} logoUrl={headerData.logoUrl}  shopId={headerData.shopId} description={headerData.description}
+      {/* <Header lang={lang} logoUrl={headerData.logoUrl}  shopId={headerData.shopId} description={headerData.description}
         shopName={headerData.shopName}
-        background={headerData.backgroundUrl}/>
+        background={headerData.backgroundUrl}/> */}
       <MainSlider banner={banner} />
       <Grills lang={lang} HomeData={ProductData}  shopId={headerData.shopId as string} initialPage={page} pageSize={pageSize} />
       <Footer lang={lang} />
