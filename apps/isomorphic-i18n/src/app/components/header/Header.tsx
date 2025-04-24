@@ -1,10 +1,8 @@
 // Header.tsx
-'use client'
 import Image from 'next/image'
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import logPhoto from '@public/assets/landing.webp'
 import Link from 'next/link'
-import { useTranslation } from '@/app/i18n/client';
 import CustomImage from '../ui/CustomImage'
 
 function Header({ lang, logoUrl, shopName, background,shopId, description }: {
@@ -15,7 +13,6 @@ function Header({ lang, logoUrl, shopName, background,shopId, description }: {
   background: string | null;
   shopId: string | null;
 }) {
-  const { t, i18n } = useTranslation(lang!, 'home');
   // const [shopName, setShopName] = useState<string | null>(null);
   // const [shopLogo, setShopLogo] = useState<any | null>('');
   // const [description, setDescription] = useState<string | null>(null);
@@ -66,14 +63,14 @@ function Header({ lang, logoUrl, shopName, background,shopId, description }: {
             />
           </div>
           <h1 className="text-2xl text-white lg:text-3xl xl:text-5xl font-bold">
-            {t('Welcome-to')}{" "} {shopName}
+            {lang==='ar' ?'اهلا بكم':'Welcome to'}{" "} {shopName}
           </h1>
           <p className="text-sm text-white lg:text-lg xl:text-xl font-normal my-4 ">
             {description}
           </p>
           <Link href={`/${lang}/search`}>
             <button className="w-32 h-10 bg-mainColor hover:bg-mainColorHover rounded-md text-white">
-              {t('View-Product')}
+              {lang==='ar'?'عرض الكل':'View All'}
             </button>
           </Link>
         </div>
