@@ -54,6 +54,7 @@ function Header({ lang, logoUrl, shopName, background,shopId, description }: {
         <div className=" w-[90%] mx-auto pt-10 z-20 relative flex flex-col justify-center items-center">
 
           <div className="w-[160px] h-[160px] mx-auto">
+          {logoUrl && (
             <CustomImage
               src={logoUrl as any}
               width={900}
@@ -61,12 +62,13 @@ function Header({ lang, logoUrl, shopName, background,shopId, description }: {
               className="w-full h-full object-cover rounded-full shadow-lg border-4 border-white"
               alt="logPhoto"
             />
+            )}
           </div>
           <h1 className="text-2xl text-white lg:text-3xl xl:text-5xl font-bold">
-            {lang==='ar' ?'اهلا بكم':'Welcome to'}{" "} {shopName}
+            {lang==='ar' ?'اهلا بكم':'Welcome to'}{" "} {shopName?shopName:''}
           </h1>
           <p className="text-sm text-white lg:text-lg xl:text-xl font-normal my-4 ">
-            {description}
+            {description?description:''}
           </p>
           <Link href={`/${lang}/search`}>
             <button className="w-32 h-10 bg-mainColor hover:bg-mainColorHover rounded-md text-white">
