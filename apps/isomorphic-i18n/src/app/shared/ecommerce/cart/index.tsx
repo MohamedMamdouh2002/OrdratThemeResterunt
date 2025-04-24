@@ -21,6 +21,7 @@ import { useUserContext } from '@/app/components/context/UserContext';
 import { useTranslation } from '@/app/i18n/client';
 import axiosClient from '@/app/components/fetch/api';
 import toast from 'react-hot-toast';
+import { useIsMounted } from '@hooks/use-is-mounted';
 
 type FormValues = {
   couponCode: string;
@@ -35,7 +36,7 @@ type CouponResponse = {
   expireDate: string;
   isActive: boolean;
   usageLimit: number;
-};
+};  
 
 const fetchCoupon = async (shopId: string, code: string): Promise<{ success: boolean; data?: CouponResponse }> => {
   try {
@@ -171,7 +172,7 @@ function CartCalculations({ fees, Tax, lang }: { fees: number; Tax: number, lang
     const fetchOrders = async () => {
       try {
         // setLoading(true);
-        const response = await axiosClient.get(`/api/Branch/GetByShopId/${shopId}`, {
+        const response = await axiosClient.get(`/api/Branch/GetByShopId/952E762C-010D-4E2B-8035-26668D99E23E`, {
           headers: {
             'Accept-Language': lang,
           },
@@ -364,13 +365,18 @@ export default function CartPageWrapper({ lang }: { lang?: string }) {
 
   const { items } = useCart();
   console.log("items: ", items);
-
+  
   const [notes, setNotes] = useState('');
   const { orderNote, setOrderNote } = useUserContext();
   useEffect(() => {
     i18n.changeLanguage(lang);
   }, [lang, i18n]);
-
+  
+  const isMounted = useIsMounted();
+  if (!isMounted) {
+    return null;
+  }
+  
   return (
     <div className="@container">
       <div className="mx-auto w-full max-w-[1536px] items-start @5xl:grid @5xl:grid-cols-12 @5xl:gap-7 @6xl:grid-cols-10 @7xl:gap-10">

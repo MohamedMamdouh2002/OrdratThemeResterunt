@@ -75,7 +75,7 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     
   async function GetHome({ lang, page ,pageSize}: { lang: string; page: number ;pageSize: number }) {
     try {
-      const response = await fetch(`${API_BASE_URL}/api/Category/GetPaginatedWithProducts/${shopId}?PageNumber=${page}&PageSize=${pageSize}`, {
+      const response = await fetch(`${API_BASE_URL}/api/Category/GetPaginatedWithProducts/952E762C-010D-4E2B-8035-26668D99E23E?PageNumber=${page}&PageSize=${pageSize}`, {
         method: 'GET',
         headers: {
           'Accept-Language': lang,
@@ -99,7 +99,7 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
   async function GetHomeNav({ lang }: { lang: string;  }) {
     try {
-      const response = await fetch(`${API_BASE_URL}/api/Category/GetAll/${shopId}`, {
+      const response = await fetch(`${API_BASE_URL}/api/Category/GetAll/952E762C-010D-4E2B-8035-26668D99E23E`, {
         method: 'GET',
         headers: {
           'Accept-Language': lang,
@@ -122,7 +122,7 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   }
   async function GetProduct({ lang, id }: { lang: string, id: string }) {
     try {
-      const response = await fetch(`${API_BASE_URL}/api/Products/GetById/${shopId}/${id}`, {
+      const response = await fetch(`${API_BASE_URL}/api/Products/GetById/952E762C-010D-4E2B-8035-26668D99E23E/${id}`, {
         headers: {
           'Accept-Language': lang,
         },
@@ -139,7 +139,7 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   }
   async function GetRewiew({ lang }: { lang: string }) {
     try {
-      const response = await fetch(`${API_BASE_URL}/api/Review/GetShopReviews/${shopId}?pageNumber=1&pageSize=50`, {
+      const response = await fetch(`${API_BASE_URL}/api/Review/GetShopReviews/952E762C-010D-4E2B-8035-26668D99E23E?pageNumber=1&pageSize=50`, {
         method: 'GET',
         headers: {
           'Accept-Language': lang,

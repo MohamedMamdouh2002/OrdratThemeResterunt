@@ -12,42 +12,42 @@ import { fetchData } from '@/utils/fetch/fetch';
 import { useParams } from 'next/navigation';
 import { Loader } from 'lucide-react';
 
-function FAQSectionContent({ lang }: { lang: string }) {
+function FAQSectionContent({ lang,faqData }: { lang: string; faqData:FaqType[] }) {
   const { t } = useTranslation(lang!, "nav");
   const [openAccordion, setOpenAccordion] = useState<string | null>(null);
   // const { faqs } = useUserContext(); 
-  const [faqData, setFaqData] = useState<FaqType[]>([]);
-  const { setFaqs,updatefaqs,setUpdateFaqs, shopId } = useUserContext(); 
+  // const [faqData, setFaqData] = useState<FaqType[]>([]);
+  // const { setFaqs,updatefaqs,setUpdateFaqs, shopId } = useUserContext(); 
   
   console.log("faqscontext: ",faqData);
   const toggleAccordion = (id: string) => {
       setOpenAccordion((prev) => (prev === id ? null : id));
   };
 
-  async function getFAQs() {
-    const { data, message } = await fetchData<FaqType[]>({
-      link: `api/FAQCategory/GetShopFAQs/${shopId}`,
-      lang: lang
-    });
-    console.log('faq data: ', data);
-    console.log('massage: ',message);
-    console.log("lang: ",lang);
+  // async function getFAQs() {
+  //   const { data, message } = await fetchData<FaqType[]>({
+  //     link: `api/FAQCategory/GetShopFAQs/${shopId}`,
+  //     lang: lang
+  //   });
+  //   console.log('faq data: ', data);
+  //   console.log('massage: ',message);
+  //   console.log("lang: ",lang);
     
-    if (data) {
-      setFaqData(data);
-      console.log("data: ",data);
+  //   if (data) {
+  //     setFaqData(data);
+  //     console.log("data: ",data);
       
-    } else {
-      setFaqData([]);
-    }
-  }
-  useEffect(() => {
-    getFAQs();
-    if (updatefaqs === true) {
-			getFAQs();
-			setUpdateFaqs(false);	
-		}
-  }, [lang, updatefaqs]);
+  //   } else {
+  //     setFaqData([]);
+  //   }
+  // }
+  // useEffect(() => {
+  //   getFAQs();
+  //   if (updatefaqs === true) {
+	// 		getFAQs();
+	// 		setUpdateFaqs(false);	
+	// 	}
+  // }, [lang, updatefaqs]);
 
   const params = useParams();
   const categoryIndex = params?.id ? parseInt(params.id as string, 10) : null;
@@ -80,7 +80,7 @@ function FAQSectionContent({ lang }: { lang: string }) {
                           ${openAccordion === `${index}` ? 'rounded-b-none rounded-xl border-b-0 border-s-8 border-t-0 border-e-0' : 'border-b-0 border-s-8 border-t-0 border-e-0 rounded-xl'}`}
                   >
                       <span className="md:text-base 4xl:text-xl text-start text-base font-montserrat ps-5 dark:text-white">{faq.question}</span>
-                      <FontAwesomeIcon className="4xl:text-2xl ps-2" icon={openAccordion === `${index}` ? faAngleUp : faAngleDown  as any} />
+                      <FontAwesomeIcon className="w-5 ps-2" icon={openAccordion === `${index}` ? faAngleUp : faAngleDown  as any} />
                   </button>
                   <div
                       style={{ borderColor: index % 2 === 0 ? 'var(--main-color)' : '#5B5B5B' }} 

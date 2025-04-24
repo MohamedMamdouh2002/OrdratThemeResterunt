@@ -24,7 +24,7 @@ import { useTranslation } from '@/app/i18n/client';
 import { Loader } from 'lucide-react';
 import CustomImage from '../ui/CustomImage';
 
-function FAQSection({ lang }: { lang: string }) {
+function FAQSection({ lang , faqData }: { lang: string;faqData:FaqType[] }) {
   // const faq = [
   //   {
   //     id:'1',
@@ -137,7 +137,7 @@ function FAQSection({ lang }: { lang: string }) {
   //   },
   // ]; 
   
-  const [faqData, setFaqData] = useState<FaqType[]>([]);
+  // const [faqData, setFaqData] = useState<FaqType[]>([]);
   const { setFaqs,updatefaqs,setUpdateFaqs, shopId } = useUserContext(); 
   const { t } = useTranslation(lang!, 'nav');
   const [loading, setLoading] = useState(false); 
@@ -153,32 +153,32 @@ function FAQSection({ lang }: { lang: string }) {
     directSale,
   ];
   
-  async function getFAQs() {
-    setLoading(true);
-    const { data, message } = await fetchData<FaqType[]>({
-      link: `api/FAQCategory/GetShopFAQs/${shopId}`,
-      lang: lang
-    });
-    console.log('faq data: ', data);
-    console.log('massage: ',message);
-    console.log("lang: ",lang);
+  // async function getFAQs() {
+  //   setLoading(true);
+  //   const { data, message } = await fetchData<FaqType[]>({
+  //     link: `api/FAQCategory/GetShopFAQs/${shopId}`,
+  //     lang: lang
+  //   });
+  //   console.log('faq data: ', data);
+  //   console.log('massage: ',message);
+  //   console.log("lang: ",lang);
     
-    if (data) {
-      setFaqData(data);
-      console.log("data: ",data);
-      setLoading(false);
-    } else {
-      setFaqData([]);
-      setLoading(false);
-    }
-  }
-  useEffect(() => {
-    getFAQs();
-    if (updatefaqs === true) {
-			getFAQs();
-			setUpdateFaqs(false);	
-		}
-  }, [lang, updatefaqs]);
+  //   if (data) {
+  //     setFaqData(data);
+  //     console.log("data: ",data);
+  //     setLoading(false);
+  //   } else {
+  //     setFaqData([]);
+  //     setLoading(false);
+  //   }
+  // }
+  // useEffect(() => {
+  //   getFAQs();
+  //   if (updatefaqs === true) {
+	// 		getFAQs();
+	// 		setUpdateFaqs(false);	
+	// 	}
+  // }, [lang, updatefaqs]);
   console.log("faqData: ",faqData);
   
   

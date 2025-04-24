@@ -80,7 +80,7 @@ async function fetchShopData(shopId: string, lang: string) {
       throw new Error("Failed to fetch shop details");
     }
     const shopData = await res.json();
-    console.log("shopData: ", shopData);
+    // console.log("shopData: ", shopData);
 
     return {
       ...shopData,
@@ -93,13 +93,13 @@ async function fetchShopData(shopId: string, lang: string) {
       title: lang === 'ar' ? shopData.titleAr : shopData.titleEn || "",
       metaDescription: lang === 'ar' ? shopData.metaDescriptionAr : shopData.metaDescriptionEn || "",
       description: lang === 'ar' ? shopData.descriptionAr : shopData.descriptionEn || "",
-      vat:  shopData.vat || "",
-      vatType:  shopData.vatType ,
-      rate:  shopData.rate ,
-      showAllCouponsInSideBar:  shopData.showAllCouponsInSideBar ,
-      applyFreeShppingOnTarget:  shopData.applyFreeShppingOnTarget ,
-      freeShppingTarget:  shopData.freeShppingTarget ,
-      currencyId:  shopData.currencyId ,
+      vat: shopData.vat || "",
+      vatType: shopData.vatType,
+      rate: shopData.rate,
+      showAllCouponsInSideBar: shopData.showAllCouponsInSideBar,
+      applyFreeShppingOnTarget: shopData.applyFreeShppingOnTarget,
+      freeShppingTarget: shopData.freeShppingTarget,
+      currencyId: shopData.currencyId,
     };
   } catch (error) {
     console.error("Error fetching shop details:", error);
@@ -161,19 +161,19 @@ export async function fetchSellerPlanStatus(sellerId: string) {
 
     // إذا كان فيه data جوه object، فكها
     const plans =
-    Array.isArray(response) ? response :
-    Array.isArray(response?.data) ? response.data :
-    [];
-  
-    console.log("⛳ Plans Data:", plans);
+      Array.isArray(response) ? response :
+        Array.isArray(response?.data) ? response.data :
+          [];
+
+    // console.log("⛳ Plans Data:", plans);
 
     const isFreeTrial = plans.some((plan: { freeTrial: boolean; }) => plan.freeTrial === true);
 
-    const isActive = plans.some((plan: { subscriptionStatus: number; }) => plan.subscriptionStatus === 0 );
-    console.log("🔥 Full response:", response);
+    const isActive = plans.some((plan: { subscriptionStatus: number; }) => plan.subscriptionStatus === 0);
+    // console.log("🔥 Full response:", response);
 
-    console.log("✅ isFreeTrial:", isFreeTrial);
-    console.log("✅ isActive:", isActive);
+    // console.log("✅ isFreeTrial:", isFreeTrial);
+    // console.log("✅ isActive:", isActive);
 
     return { isFreeTrial, isActive };
   } catch (error) {
@@ -270,7 +270,7 @@ export default async function RootLayout({
     // cookies().set('shopId', shopData.id, {
     //   path: '/',       // متاح في كل الصفحات
     //   httpOnly: false, // خليه false لو عايز توصله من الكلاينت كمان
-      
+
     // });
     const { isFreeTrial, isActive } = await fetchSellerPlanStatus(shopId.sellerId);
 
@@ -283,12 +283,11 @@ export default async function RootLayout({
 
         <div className="min-h-screen w-screen flex items-center justify-center bg-[#E3E3E5] text-center">
           <div className="p-6 w-screen ">
-        <div className="w-44 mb-3 mx-auto">
-          <a href='https://ordrat.com' target='_blank' className="">
-
-              <Image width={100} height={70} src={logo} className='w-full h-full' alt='اوردرات - أفضل منصة إنشاء متجر إلكتروني ومنيو باركود احترافي'/>
-          </a>
-          </div>    
+            <div className="w-44 mb-3 mx-auto">
+              <a href='https://ordrat.com' target='_blank' className="">
+                <Image width={100} height={70} src={logo} className='w-full h-full' alt='اوردرات - أفضل منصة إنشاء متجر إلكتروني ومنيو باركود احترافي' />
+              </a>
+            </div>
             <h1 className="md:text-4xl text-2xl font-bold text-red-500 mb-4">المتجر غير مفعل</h1>
             <p className="text-mainColorHover md:text-2xl text-lg font-medium mb-2">
               نعتذر عن عدم الوصول لعدم تجديد الاشتراك من قبل المالك
@@ -340,45 +339,34 @@ export default async function RootLayout({
     return <>
       <div className="min-h-screen w-screen flex items-center justify-center bg-[#E3E3E5] text-center">
         <div className="p-6 w-screen ">
-        <div className="w-44 mb-3 mx-auto">
-          <a href='https://ordrat.com' target='_blank' className="">
-
-              <Image width={100} height={70} src={logo} className='w-full h-full' alt='اوردرات - أفضل منصة إنشاء متجر إلكتروني ومنيو باركود احترافي'/>
-          </a>
-          </div> 
+          <div className="w-44 mb-3 mx-auto">
+            <a href='https://ordrat.com' target='_blank' className="">
+              <Image width={100} height={70} src={logo} className='w-full h-full' alt='اوردرات - أفضل منصة إنشاء متجر إلكتروني ومنيو باركود احترافي' />
+            </a>
+          </div>
           <h1 className="md:text-4xl text-2xl font-bold text-red-500 mb-4">تهانينا</h1>
           <p className="text-mainColorHover md:text-2xl text-lg font-medium mb-4">
             الرابط متاح يمكنك انشاء متجرك
           </p>
           <p className="text-mainColorHover bg-white md:px-40 px-5 w-fit my-2 mx-auto rounded-lg  md:py-5 py-3 md:text-2xl text-lg font-medium mb-2">
             {" "}   {realPath || ''} {" "}
-
           </p>
-
           <p className="text-mainColorHover  md:text-xl text-lg font-medium my-2">
             قم بزيارة أوردرات لانشاء متجرك الان مجانا
           </p>
           <a href="https://ordrat.com/ar/%D8%A7%D9%84%D8%AA%D8%B3%D8%B9%D9%8A%D8%B1" target='_blank'>
-
             <button
               className="bg-[#E84654] font-bold w-fit px-5 my-2 mx-auto py-3 text-white rounded-lg"
             >
               أنشئ متجرك الإلكتروني الآن
-
-
             </button>
 
           </a>
         </div>
       </div >
     </>
-
-
-
   }
   const enabledPixels = await getEnabledPixels();
-
-
   return (
     <html
       lang={lang}
@@ -388,8 +376,7 @@ export default async function RootLayout({
       <head>
         <link rel="icon" href={shopData.logoUrl} type="image/x-icon" />
       </head>
-      <body suppressHydrationWarning className={cn(elTajawal.variable, 'font-elTajawal')}>
-        <Pixels enabledPixels={enabledPixels} />
+      <body className={cn(elTajawal.variable, 'font-elTajawal')}>
         <style>
           {`
             :root {
@@ -403,43 +390,45 @@ export default async function RootLayout({
             }
           `}
         </style>
-<TrackingProvider>
         <MantineProvider>
           <AuthProvider session={session}>
             <SessionContextProvider>
-              <CartProvider>
-                <ThemeProvider>
-                  <UserProvider>
-                    <NextProgress />
-                    <ScrollToTop />
-                    {showTrialModal && <AutoModal />} 
-                    {/* <AutoModal /> */}
-                    <ShopLocalStorage
-                      vat={shopData.vat}
-                      vatType={shopData.vatType}
-                      backgroud={shopData.backgroundUrl}
-                      subdomainName={shopData.subdomainName}
-                      description={shopData.description}
-                      logoUrl={shopData.logoUrl}
-                      branchZones={branchZones}
-                      shopId={shopId.id}
-                      rate={shopId.rate}
-                      showAllCouponsInSideBar={shopId.showAllCouponsInSideBar}
-                      applyFreeShppingOnTarget={shopId.applyFreeShppingOnTarget}
-                      freeShppingTarget={shopId.freeShppingTarget}
-                      currencyId={shopId.currencyId}
-                    />
-                    {children}
-                    <Toaster />
-                    <GlobalDrawer />
-                    <GlobalModal />
-                  </UserProvider>
-                </ThemeProvider>
-              </CartProvider>
+              <TrackingProvider>
+                <CartProvider>
+                  <ThemeProvider>
+                    <UserProvider>
+                      {/* <Pixels enabledPixels={enabledPixels} /> */}
+                      <NextProgress />
+                      <ScrollToTop />
+
+                      {showTrialModal && <AutoModal />}
+                      {/* <AutoModal /> */}
+                      <ShopLocalStorage
+                        vat={shopData.vat}
+                        vatType={shopData.vatType}
+                        backgroud={shopData.backgroundUrl}
+                        subdomainName={shopData.subdomainName}
+                        description={shopData.description}
+                        logoUrl={shopData.logoUrl}
+                        branchZones={branchZones}
+                        shopId={shopId.id}
+                        rate={shopId.rate}
+                        showAllCouponsInSideBar={shopId.showAllCouponsInSideBar}
+                        applyFreeShppingOnTarget={shopId.applyFreeShppingOnTarget}
+                        freeShppingTarget={shopId.freeShppingTarget}
+                        currencyId={shopId.currencyId}
+                      />
+                      {children}
+                      <Toaster />
+                      <GlobalDrawer />
+                      <GlobalModal />
+                    </UserProvider>
+                  </ThemeProvider>
+                </CartProvider>
+              </TrackingProvider>
             </SessionContextProvider>
           </AuthProvider>
         </MantineProvider>
-</TrackingProvider>
       </body>
     </html>
   );

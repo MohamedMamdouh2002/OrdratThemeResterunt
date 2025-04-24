@@ -1,23 +1,48 @@
-import RefundPolicy from '@/app/components/refundPolicy/RefundPolicy';
+import dynamic from 'next/dynamic';
 import { metaObject } from '@/config/site.config';
+import { API_BASE_URL } from '@/config/base-url';
+import { cookies } from 'next/headers';
+
+const RefundPolicy = dynamic(() => import('@/app/components/refundPolicy/RefundPolicy'));
 
 export async function generateMetadata({ params }: { params: { lang: string } }) {
-  const lang = params.lang; 
+  const lang = params.lang;
   return {
     ...metaObject(
-      lang === 'ar' ? 'سياسة الاسترداد | استرجاع الأموال بكل سهولة' : 'Refund Policy | Easy Money-Back Guarantee',
+      lang === 'ar'
+        ? 'سياسة الاسترداد | استرجاع الأموال بكل سهولة'
+        : 'Refund Policy | Easy Money-Back Guarantee',
       lang,
       undefined,
-      lang === 'ar' ? 'اكتشف سياسة الاسترداد لدينا، شروط إرجاع المنتجات، والمدة الزمنية لمعالجة طلبات الاسترداد بسهولة.' : 'Learn about our refund policy, product return conditions, and the processing time for refunds with ease.',
+      lang === 'ar'
+        ? 'اكتشف سياسة الاسترداد لدينا، شروط إرجاع المنتجات، والمدة الزمنية لمعالجة طلبات الاسترداد بسهولة.'
+        : 'Learn about our refund policy, product return conditions, and the processing time for refunds with ease.'
     ),
   };
 }
-export default function Refund({
+
+export default async function Refund({
   params: { lang },
+  searchParams,
 }: {
-  params: {
-    lang: string;
-  };
+  params: { lang: string };
+  searchParams: { shopId?: string };
 }) {
-  return <RefundPolicy lang={lang}/>
+      const cookieStore = cookies();
+  const shopId = cookieStore.get('shopId')?.value;
+  let policy = null;
+
+  if (shopId) {
+    try {
+      const res = await fetch(`${API_BASE_URL}/api/Term/GetByShopIdAndType/${shopId}?termType=1`, {
+        headers: { 'Accept-Language': lang },
+        cache: 'no-store',
+      });
+      const data = await res.json();
+      policy = data;
+    } catch (error) {
+      console.error('Failed to fetch refund policy:', error);
+    }
+  }
+  return <RefundPolicy lang={lang} policy={policy} />;
 }

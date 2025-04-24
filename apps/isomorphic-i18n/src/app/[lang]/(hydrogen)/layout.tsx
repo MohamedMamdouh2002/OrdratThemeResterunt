@@ -1,49 +1,35 @@
-'use client';
-import { LAYOUT_OPTIONS } from '@/config/enums';
-import { useLayout } from '@/layouts/use-layout';
-import HydrogenLayout from '@/layouts/hydrogen/layout';
-import HeliumLayout from '@/layouts/helium/helium-layout';
-import BerylLiumLayout from '@/layouts/beryllium/beryllium-layout';
-
-import { useIsMounted } from '@hooks/use-is-mounted';
+import ClientFooter from '@/app/components/ClientFooter';
+import Footer from '@/app/components/footer/Footer';
+import Navbar from '@/app/components/navbar/Navbar';
+import ServerHeaderData from '@/app/components/ServerHeader';
+import ScrollToTop from '@/app/components/ui/ScrollToTop';
+import Header from '@/layouts/lithium/lithium-header';
 import LithiumLayout from '@/layouts/lithium/lithium-layout';
-import BoronLayout from '@/layouts/boron/boron-layout';
-import CarbonLayout from '@/layouts/carbon/carbon-layout';
-import { useUserContext } from '@/app/components/context/UserContext';
-import { useEffect } from 'react';
+import { faWhatsapp } from '@fortawesome/free-brands-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import dynamic from "next/dynamic";
 
 export default function DefaultLayout({
   children,
   params: { lang },
 }: {
   children: React.ReactNode;
-  params: {
-    lang: string;
-  };
+  params: { lang: string };
 }) {
-  const { layout } = useLayout();
-  const isMounted = useIsMounted();
+    const headerData = ServerHeaderData();
   
-  if (!isMounted) {
-    return null;
-  }
-
-  if (layout === LAYOUT_OPTIONS.HELIUM) {
-    return <HeliumLayout lang={lang}>{children}</HeliumLayout>;
-  }
-  if (layout === LAYOUT_OPTIONS.HYDROGEN) {
-    return <HydrogenLayout lang={lang}>{children}</HydrogenLayout>;
-  }
-  if (layout === LAYOUT_OPTIONS.BERYLLIUM) {
-    return <BerylLiumLayout lang={lang}>{children}</BerylLiumLayout>;
-  }
-  if (layout === LAYOUT_OPTIONS.BORON) {
-    return <BoronLayout lang={lang}>{children}</BoronLayout>;
-  }
-  if (layout === LAYOUT_OPTIONS.CARBON) {
-    return <CarbonLayout lang={lang}>{children}</CarbonLayout>;
-  }
-  
-  return <LithiumLayout lang={lang}>{children}</LithiumLayout>
-;
+  return (
+    <>
+      <Header lang={lang!}  logoUrl={headerData.logoUrl}
+      shopName={headerData.shopName}
+      background={headerData.backgroundUrl} />      {/* <Navbar lang={lang} /> */}
+      <ScrollToTop />
+      
+      <div className="relative">
+        {children}
+      </div>
+      
+      <ClientFooter lang={lang} />
+    </>
+  );
 }

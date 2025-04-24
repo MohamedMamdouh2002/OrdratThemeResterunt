@@ -36,6 +36,7 @@ import { useRouter } from "next/router";
 import { usePathname } from "next/navigation";
 import { useTranslation } from "@/app/i18n/client";
 import CustomImage from "@/app/components/ui/CustomImage";
+import { cookies } from "next/headers";
 
 function HeaderMenuRight() {
   return (
@@ -85,29 +86,27 @@ function HeaderMenuRight() {
   );
 }
 
-export default function Header({ lang }: { lang?: string }) {
+export default function Header({
+  lang,
+  logoUrl,
+  shopName,
+  background,
+}: {
+  lang: string;
+  logoUrl: string | null;
+  shopName: string | null;
+  background: string | null;
+}) {
   const [scrollY, setScrollY] = useState(0);
   const [isStickyVisible, setStickyVisible] = useState(false);
-  const [isOpen, setIsOpen] = useState(false); 
-  const pathname = usePathname(); 
+  const [isOpen, setIsOpen] = useState(false);
+  const pathname = usePathname();
   const { t, i18n } = useTranslation(lang!, 'nav');
-  const [logoUrl, setLogoUrl] = useState<string | null>(null);
-  const [shopName, setShopName] = useState<string | null>(null);
-  const [background, setBackground] = useState<string | null>(null);
+  // const [logoUrl, setLogoUrl] = useState<string | null>(null);
+  // const [shopName, setShopName] = useState<string | null>(null);
+  // const [background, setBackground] = useState<string | null>(null);
 
-  
-  useEffect(() => {
-    i18n.changeLanguage(lang);
-    const storedLogo = localStorage.getItem("logoUrl");
-    const background = localStorage.getItem("backgroundUrl");
-    const storedName = localStorage.getItem("subdomainName");
-    if (storedLogo) {
-        setLogoUrl(storedLogo);
-        setShopName(storedName);
-        setBackground(background)
-    }
-  }, [lang, i18n]);
-
+ 
   useEffect(() => {
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
@@ -127,7 +126,7 @@ export default function Header({ lang }: { lang?: string }) {
       window.removeEventListener("scroll", handleScroll);
     };
   }, [scrollY]);
-  
+
 
   return <>
     <Navbar lang={lang} className={`   ${isStickyVisible ? "hidden  " : " "}`} />
@@ -139,30 +138,30 @@ export default function Header({ lang }: { lang?: string }) {
         }`}
     >
       <div className=" w-[91%] mx-auto z-[40] flex  justify-between 2xl:py-1 3xl:px-8">
-      <div className="hidden lg:grid w-full grid-cols-[220px_1fr_220px] items-center">
-  {/* الشعار (يمين في RTL) */}
-  <div className="flex items-center gap-4 justify-start">
-    <Link
-      aria-label="Site Logo"
-      href={`/${lang}/`}
-      className="flex items-center gap-4"
-    >
-      {logoUrl ? (
-        <CustomImage src={logoUrl} width={60} height={60} alt="logo" className="max-w-[60px]" />
-      ) : (
-        <div className="w-[60px] h-[60px] bg-gray-200 rounded-full"></div>
-      )}
-      <h1 className={`font-bold text-lg ${isStickyVisible ? `text-white` : `text-black`}`}>{shopName}</h1>
-    </Link>
-  </div>
+        <div className="hidden lg:grid w-full grid-cols-[220px_1fr_220px] items-center">
+          {/* الشعار (يمين في RTL) */}
+          <div className="flex items-center gap-4 justify-start">
+            <Link
+              aria-label="Site Logo"
+              href={`/${lang}/`}
+              className="flex items-center gap-4"
+            >
+              {logoUrl ? (
+                <CustomImage src={logoUrl} width={60} height={60} alt="logo" className="max-w-[60px]" />
+              ) : (
+                <div className="w-[60px] h-[60px] bg-gray-200 rounded-full"></div>
+              )}
+              <h1 className={`font-bold text-lg ${isStickyVisible ? `text-white` : `text-black`}`}>{shopName}</h1>
+            </Link>
+          </div>
 
-  {/* المنيو */}
-  <div className="flex justify-center xl:ms-52">
-    <HeaderMenuLeft lang={lang} />
-  </div>
+          {/* المنيو */}
+          <div className="flex justify-center xl:ms-52">
+            <HeaderMenuLeft lang={lang} />
+          </div>
 
 
-</div>
+        </div>
 
 
 
@@ -221,7 +220,7 @@ export default function Header({ lang }: { lang?: string }) {
         </div>
       </div>
     </StickyHeader>
-    <nav>
+    <div>
       <div className={`flex lg:hidden ${isStickyVisible
         ? "fixed top-0 z-50 w-full bg-white  "
         : "hidden"}`}>
@@ -249,7 +248,7 @@ export default function Header({ lang }: { lang?: string }) {
           </div>
         </div>
       </div>
-    </nav>
+    </div>
     {/* <div className={`imgBg  lg:hidden `}>
   <div className={`w-10/12 mx-auto mt-5 flex justify-between items-center ${isStickyVisible ? "hidden  " : " "}`}>
     <LanguageSwitcher
@@ -307,7 +306,7 @@ export default function Header({ lang }: { lang?: string }) {
         </div>
       </div>
     ) : (
-      <nav>
+      <div>
         <div className={`flex lg:hidden fixed top-0 z-[999] w-full bg-white`}>
           <div className="w-5/6 mx-auto flex justify-between h-16 items-center">
             <Link href={`/${lang}/`}>
@@ -333,10 +332,8 @@ export default function Header({ lang }: { lang?: string }) {
             </div>
           </div>
         </div>
-      </nav>
+      </div>
     )}
-
-
   </>
 
 }

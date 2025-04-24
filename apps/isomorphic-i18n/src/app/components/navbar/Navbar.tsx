@@ -64,7 +64,7 @@ function Navbar({ className, lang }: { className?: string, lang?: string }) {
         const fetchOrders = async () => {
             try {
                 // setLoading(true);
-                const response = await axiosClient.get(`/api/Branch/GetByShopId/${shopId}`, {
+                const response = await axiosClient.get(`/api/Branch/GetByShopId/952E762C-010D-4E2B-8035-26668D99E23E`, {
                     headers: {
                         'Accept-Language': lang,
                     },
@@ -83,7 +83,7 @@ function Navbar({ className, lang }: { className?: string, lang?: string }) {
         async function fetchData() {
 
             try {
-                let response = await fetch(`${API_BASE_URL}/api/Coupon/GetAll/${shopId}`);
+                let response = await fetch(`${API_BASE_URL}/api/Coupon/GetAll/952E762C-010D-4E2B-8035-26668D99E23E`);
                 const data = await response.json();
                 console.log('data', data);
                 // const banners = data.entities.filter((i: any) => i.isBanner === true);
@@ -107,51 +107,52 @@ function Navbar({ className, lang }: { className?: string, lang?: string }) {
             setrate(rate)
         }
     }, [lang, i18n]);
+    
     return (
         <>
             <div className="hidden lg:block h-14 bg-mainColor text-white text-sm relative">
                 <div className="w-[90%] mx-auto grid grid-cols-9 *:col-span-3 items-center justify-between py-2">
-                {
-  (() => {
-    const banners = coupon?.filter((i: any) => i.isBanner === true && i.isActive === true).slice(-1);
+                    {
+                        (() => {
+                            const banners = coupon?.filter((i: any) => i.isBanner === true && i.isActive === true).slice(-1);
 
-    return banners && banners.length > 0 ? (
-      banners.map((banner: any) => (
-        <div
-          key={banner.id}
-          onClick={() => {
-            navigator.clipboard.writeText(banner.code);
-            toast.success(t('code'));
-          }}
-          className="flex items-center gap-3 cursor-pointer"
-        >
-          <div className="flex items-center gap-3 ">
-            <TicketPercentIcon />
-            <span>{t('select-item')}</span>
-          </div>
-          <div className="border-2 border-white rounded-lg text-white p-2">
-            {t('copy')}
-          </div>
-        </div>
-      ))
-    ) : (
-      // عنصر بديل محجوز بنفس الحجم
-      <div className="flex items-center gap-3 invisible">
-        <div className="flex items-center gap-3 ">
-          <TicketPercentIcon />
-          <span>{t('select-item')}</span>
-        </div>
-        <div className="border-2 border-white rounded-lg text-white p-2">
-          {t('copy')}
-        </div>
-      </div>
-    );
-  })()
-}
+                            return banners && banners.length > 0 ? (
+                                banners.map((banner: any) => (
+                                    <div
+                                        key={banner.id}
+                                        onClick={() => {
+                                            navigator.clipboard.writeText(banner.code);
+                                            toast.success(t('code'));
+                                        }}
+                                        className="flex items-center gap-3 cursor-pointer"
+                                    >
+                                        <div className="flex items-center gap-3 ">
+                                            <TicketPercentIcon className='w-5' />
+                                            <span>{t('select-item')}</span>
+                                        </div>
+                                        <div className="border-2 border-white rounded-lg text-white p-2">
+                                            {t('copy')}
+                                        </div>
+                                    </div>
+                                ))
+                            ) : (
+                                // عنصر بديل محجوز بنفس الحجم
+                                <div className="flex items-center gap-3 invisible">
+                                    <div className="flex items-center gap-3 ">
+                                        <TicketPercentIcon className='w-5' />
+                                        <span>{t('select-item')}</span>
+                                    </div>
+                                    <div className="border-2 border-white rounded-lg text-white p-2">
+                                        {t('copy')}
+                                    </div>
+                                </div>
+                            );
+                        })()
+                    }
 
                     <div className="flex items-center mx-auto gap-5">
                         <div className="flex items-center gap-2">
-                            <FontAwesomeIcon icon={faMoneyBills as any} className="text-lg" />
+                            <FontAwesomeIcon icon={faMoneyBills as any} className="w-5" />
                             {t('Cash')}
                         </div>
                     </div>

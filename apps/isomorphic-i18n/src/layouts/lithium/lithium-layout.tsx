@@ -5,6 +5,7 @@ import CartModal from '@/app/components/cartModal/CartModal';
 import Footer from '@/app/components/footer/Footer';
 import ScrollToTop from '@/app/components/ui/ScrollToTop';
 import Header from '@/layouts/lithium/lithium-header';
+import ServerHeaderData from '@/app/components/ServerHeader';
 
 export default function LithiumLayout({
   children,
@@ -14,17 +15,19 @@ export default function LithiumLayout({
   lang?: string;
 }) {
   const pathname = usePathname();
+  const headerData = ServerHeaderData();
 
   return (
     <main className="flex min-h-screen flex-grow">
       <div className="flex w-full flex-col ">
         <ScrollToTop />
-        <Header lang={lang} />
+        <Header lang={lang!}  logoUrl={headerData.logoUrl}
+      shopName={headerData.shopName}
+      background={headerData.backgroundUrl} />
         <div className="relative">
           <CartModal lang={lang} />
           {children}
         </div>
-
         {(pathname !== '/' && pathname !== '/ar' && pathname !== '/en') && <Footer lang={lang!} />}
         </div>
     </main>

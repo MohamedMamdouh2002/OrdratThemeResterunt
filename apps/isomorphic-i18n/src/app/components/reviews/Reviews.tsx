@@ -6,27 +6,28 @@ import Image from 'next/image';
 import { Icon, Loader, Star } from 'lucide-react';
 import { useTranslation } from '@/app/i18n/client';
 import Link from 'next/link';
+import { Review } from '@/types';
 
-function Reviews({ lang }: { lang: string }) {
+function Reviews({ lang, reviews}: { lang: string;reviews:Review[] }) {
     const { GetRewiew } = useUserContext();
-    const [reviews, setReviews] = useState<any[]>([])
+    // const [reviews, setReviews] = useState<any[]>([])
     const { t } = useTranslation(lang!, 'nav');
     const [loading, setLoading] = useState(false);
     const id = localStorage.getItem('orderId') 
 
-    useEffect(() => {
-	    setLoading(true)
-        const fetchData = async () => {
-        const data = await GetRewiew({lang});
-		setLoading(false)
-        const review =data?.entities
-        setReviews(review)
-        console.log('review Data:', review);
+    // useEffect(() => {
+	//     setLoading(true)
+    //     const fetchData = async () => {
+    //     const data = await GetRewiew({lang});
+	// 	setLoading(false)
+    //     const review =data?.entities
+    //     setReviews(review)
+    //     console.log('review Data:', review);
         
-      };
+    //   };
   
-      fetchData();
-    }, [GetRewiew]);
+    //   fetchData();
+    // }, [GetRewiew]);
   return <>
     <Title className="text-center mt-20 text-[#404040]" title={t('review')}/>
     {loading? 

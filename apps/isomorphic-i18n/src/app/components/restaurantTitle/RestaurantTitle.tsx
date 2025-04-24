@@ -32,36 +32,31 @@ type Branchprops = {
     isFixedDelivery: boolean;
     deliveryTime: string;
 }
-function RestaurantTitle({ lang }: { lang?: string; }) {
+function RestaurantTitle({
+    lang,
+    shopId,
+    logoUrl,
+    shopName,
+    rate,
+    background,
+    coupon,
+    branch,
+    description
+  }: {
+    lang?: string;
+    logoUrl: string | null;
+    shopName: string | null;
+    rate: string | null;
+    background: string | null;
+    coupon: any | null;
+    branch: Branchprops[] | null;
+    description: string | null;
+    shopId: string | null;
+  }) {
     const { t, i18n } = useTranslation(lang!, 'nav');
-    const [logoUrl, setLogoUrl] = useState<string | null>(null);
-    const [shopName, setShopName] = useState<string | null>(null);
-    const [description, setDescription] = useState<string | null>(null);
-    const [rate, setrate] = useState<any| null>(null);
-    const [coupon, setCoupon] = useState<[] | null>([]);
-    const [response, setResponse] = useState<Branchprops[]>([]);
-    const { shopId } = useUserContext();
     const abbreviation = useCurrencyAbbreviation({ lang } as any);
-
     console.log("logoUrl: ", logoUrl);
-
-    useEffect(() => {
-        i18n.changeLanguage(lang);
-        const storedLogo = localStorage.getItem("logoUrl");
-        const storedName = localStorage.getItem("subdomainName");
-        const description = localStorage.getItem("description");
-        const rate = localStorage.getItem("rate");
-        if (storedLogo) {
-            setLogoUrl(storedLogo);
-            setShopName(storedName);
-            setDescription(description)
-            setrate(rate)
-        }
-    }, [lang, i18n]);
     const [modal, setModal] = useState(false);
-
-
-
     useEffect(() => {
         if (modal) {
             document.documentElement.style.overflow = 'hidden';
@@ -75,50 +70,49 @@ function RestaurantTitle({ lang }: { lang?: string; }) {
             document.body.style.overflow = '';
         };
     }, [modal]);
-    useEffect(() => {
-        async function fetchData() {
+    // useEffect(() => {
+    //     async function fetchData() {
+    //         try {
+    //             let response = await fetch(`${API_BASE_URL}/api/Coupon/GetAll/952E762C-010D-4E2B-8035-26668D99E23E`);
+    //             const data = await response.json();
+    //             console.log('data', data);
+    //             // const banners = data.entities.filter((i: any) => i.isBanner === true);
+    //             setCoupon(data.entities);
+    //         } catch (error) {
+    //             console.error("حدث خطأ أثناء جلب البيانات:", error);
+    //         }
 
-            try {
-                let response = await fetch(`${API_BASE_URL}/api/Coupon/GetAll/${shopId}`);
-                const data = await response.json();
-                console.log('data', data);
-                // const banners = data.entities.filter((i: any) => i.isBanner === true);
-                setCoupon(data.entities);
-            } catch (error) {
-                console.error("حدث خطأ أثناء جلب البيانات:", error);
-            }
+    //     }
+    //     fetchData()
+    // }, []);
+    // useEffect(() => {
+    //     i18n.changeLanguage(lang);
 
-        }
-        fetchData()
-    }, []);
-    useEffect(() => {
-        i18n.changeLanguage(lang);
+    //     const description = localStorage.getItem("description");
+    //     if (description) {
 
-        const description = localStorage.getItem("description");
-        if (description) {
+    //         setDescription(description)
+    //     }
+    // }, [lang, i18n]);
+    // useEffect(() => {
+    //     const fetchOrders = async () => {
+    //         try {
+    //             // setLoading(true);
+    //             const response = await axiosClient.get(`/api/Branch/GetByShopId/952E762C-010D-4E2B-8035-26668D99E23E`, {
+    //                 headers: {
+    //                     'Accept-Language': lang,
+    //                 },
+    //             });
+    //             setResponse(response.data);
+    //         } catch (error) {
+    //             console.error('Error fetching orders:', error);
+    //         } finally {
+    //             // setLoading(false);
+    //         }
+    //     };
 
-            setDescription(description)
-        }
-    }, [lang, i18n]);
-    useEffect(() => {
-        const fetchOrders = async () => {
-            try {
-                // setLoading(true);
-                const response = await axiosClient.get(`/api/Branch/GetByShopId/${shopId}`, {
-                    headers: {
-                        'Accept-Language': lang,
-                    },
-                });
-                setResponse(response.data);
-            } catch (error) {
-                console.error('Error fetching orders:', error);
-            } finally {
-                // setLoading(false);
-            }
-        };
-
-        fetchOrders();
-    }, [lang]);
+    //     fetchOrders();
+    // }, [lang]);
     return <>
 
         <div className={'flex lg:hidden -mt-24 rounded-xl flex-col  bg-slate-50 w-5/6 mx-auto z-10 text-black relative'}>
@@ -169,7 +163,7 @@ function RestaurantTitle({ lang }: { lang?: string; }) {
                         <span className="text-sm font-light text-center mt-2">
 
                             {(() => {
-                                const mainBranch = response.find(
+                                const mainBranch = branch?.find(
                                     (i) => i.name === "Main Branch" || i.name === "الفرع الرئيسي"
                                 );
 
@@ -200,9 +194,9 @@ function RestaurantTitle({ lang }: { lang?: string; }) {
                             {t('delivery-Time')}
                         </strong>
 
-                        {response.some(i => i.name === "Main Branch" || i.name === "الفرع الرئيسي") ? (
-                            response
-                                .filter(i => i.name === "Main Branch" || i.name === "الفرع الرئيسي")
+                        {branch?.some(i => i.name === "Main Branch" || i.name === "الفرع الرئيسي") ? (
+                            branch
+                                ?.filter(i => i.name === "Main Branch" || i.name === "الفرع الرئيسي")
                                 .map((i, index) => (
                                     <p key={index} className="text-sm mt-2 text-black">
                                         {i.deliveryTime}
@@ -275,8 +269,7 @@ function RestaurantTitle({ lang }: { lang?: string; }) {
                                 {description}
                             </p>
                         </div>
-                        {response
-                            .filter((i) => i.name === "Main Branch" || i.name === "الفرع الرئيسي")
+                        {branch?.filter((i) => i.name === "Main Branch" || i.name === "الفرع الرئيسي")
                             .map((i, index) => {
                                 const formatTime = (time: any) => {
                                     if (!time) return "";
@@ -322,7 +315,7 @@ function RestaurantTitle({ lang }: { lang?: string; }) {
                             <h2 className="text-black font-medium mt-4 mb-2 text-sm">{lang === 'ar' ? 'الفروع' : 'Branches'}</h2>
 
                             <div className="grid grid-cols-2 gap-4 w-full">
-                                {response.map((i, index) => (
+                                {branch?.map((i, index) => (
                                     <div key={index} className="flex flex-col items-center bg-white p-4 rounded-lg shadow-md w-full">
                                         <Image src={map} className="w-10" alt={i.name} />
                                         <span className="text-sm font-medium text-[#212121] mt-2">{i.name}</span>

@@ -1,5 +1,5 @@
 'use client';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import logo from '@public/assets/karam-el-sham.png';
 import Image from 'next/image';
@@ -12,6 +12,7 @@ import Modal from '../ui/Modal';
 import { API_BASE_URL } from '@/config/base-url';
 import { useUserContext } from '../context/UserContext';
 import CustomImage from '../ui/CustomImage';
+import { useIsMounted } from '@hooks/use-is-mounted';
 
 type linksProps = {
   header: string;
@@ -31,7 +32,7 @@ type mediaProps = {
 
 type Props = {
 
-  lang: string; // إضافة خاصية اللغة
+  lang: string; 
 };
 function Footer({ lang }: Props) {
   const { t, i18n } = useTranslation(lang!, 'nav');
@@ -41,15 +42,75 @@ function Footer({ lang }: Props) {
   const [currentModal, setCurrentModal] = useState<'login' | 'register' | 'resetPassword'>('login');
   const [loginModal, setLoginModal] = useState(false);
   const [logoUrl, setLogoUrl] = useState<string | null>(null);
-  const [contact, setContact] = useState<any>({
-    facebookLink: "",
-    instagramLink: "",
-    whatsAppNumber: "",
-    xLink: ""
-  });
+  // const [contact, setContact] = useState<any>({
+  //   facebookLink: "",
+  //   instagramLink: "",
+  //   whatsAppNumber: "",
+  //   xLink: ""
+  // });
   const { shopId } = useUserContext();
   const [shopName, setShopName] = useState<string | null>(null);
   const [description, setDescription] = useState<string | null>(null);
+  const [contact, setContact] = useState({
+    facebookLink: '',
+    instagramLink: '',
+    whatsAppNumber: '',
+    xLink: '',
+  });
+  useEffect(() => {
+    const fetchContact = async () => {
+      try {
+        const response = await fetch(`${API_BASE_URL}/api/ShopContactInfo/GetByShopId/${shopId}`, {
+          headers: { 'Accept-Language': lang },
+        });
+        if (!response.ok) throw new Error('Failed to fetch contact');
+        const data = await response.json();
+        setContact(data);
+      } catch (err) {
+        console.error('Error fetching contact info:', err);
+      }
+    };
+
+    fetchContact();
+  }, [lang, shopId]);
+
+  // ✅ 2. prepare media links
+  const Links: mediaProps[] = useMemo(() => {
+    const linksArray: (mediaProps | null)[] = [
+      contact.whatsAppNumber
+        ? {
+            link: faWhatsapp,
+            color: '#1B8755',
+            href: `https://wa.me/${contact.whatsAppNumber.replace(/\D/g, '')}`,
+          }
+        : null,
+      contact.xLink
+        ? {
+            link: faXTwitter,
+            color: 'black',
+            href: contact.xLink,
+          }
+        : null,
+      contact.facebookLink
+        ? {
+            link: faFacebookF,
+            color: '#0866FF',
+            href: contact.facebookLink,
+          }
+        : null,
+      contact.instagramLink
+        ? {
+            link: faInstagram,
+            color: '#F400D1',
+            href: contact.instagramLink,
+          }
+        : null,
+    ];
+  
+    return linksArray.filter((item): item is mediaProps => item !== null);
+  }, [contact]);
+  
+
   const AccountBeforeLogin: linksProps[] = [
     {
       header: t('Account'),
@@ -105,13 +166,6 @@ function Footer({ lang }: Props) {
     },
   ];
 
-  const { facebookLink, instagramLink, whatsAppNumber, xLink } = contact;
-  const Links: mediaProps[] = [
-    { link: faWhatsapp, color: '#1B8755', href: `https://wa.me/${whatsAppNumber.replace(/\D/g, '')}` },
-    { link: faXTwitter, color: 'black', href: xLink },
-    { link: faFacebookF, color: '#0866FF', href: facebookLink },
-    { link: faInstagram, color: '#F400D1', href: instagramLink },
-  ];
   useEffect(() => {
     const fetchProducts = async () => {
       try {
@@ -137,6 +191,7 @@ function Footer({ lang }: Props) {
     fetchProducts();
 
   }, []);
+  const { facebookLink, instagramLink, whatsAppNumber, xLink } = contact;
 
   useEffect(() => {
     i18n.changeLanguage(lang);
@@ -149,7 +204,10 @@ function Footer({ lang }: Props) {
       setDescription(description)
     }
   }, [lang, i18n]);
-
+  const isMounted = useIsMounted();
+    if (!isMounted) {
+      return null;
+    }
   return (
     <>
       <div className="mt-auto bg-ColorLitleHover">
@@ -175,16 +233,19 @@ function Footer({ lang }: Props) {
               <p className="text-sm font-light">{description}</p>
               <h4 className="mt-10">{t('Get-in-Touch')}</h4>
               <div className="flex items-center gap-2">
-                {Links.map((i, index) => (
-                  <a
-                    key={index}
-                    href={i.href}
-                    className="bg-white rounded-full flex items-center justify-center text-mainColor p-2 size-10 hover:bg-white transition duration-150 cursor-pointer"
-                  >
-                    <FontAwesomeIcon icon={i.link} className="text-xl" />
-                  </a>
-                ))}
-              </div>
+  {Links.map((i, index) => (
+    <Link
+      key={index}
+      href={i.href as any}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="bg-white rounded-full flex items-center justify-center text-mainColor p-2 size-10 hover:bg-white transition duration-150 cursor-pointer"
+    >
+      <FontAwesomeIcon icon={i.link as any} className="text-xl" />
+    </Link>
+  ))}
+</div>
+
             </div>
 
             {/* Dynamic Account Links */}
@@ -209,6 +270,7 @@ function Footer({ lang }: Props) {
                       >
                         {i.title}
                       </Link>
+                      
                     )
                   )}
                 </div>

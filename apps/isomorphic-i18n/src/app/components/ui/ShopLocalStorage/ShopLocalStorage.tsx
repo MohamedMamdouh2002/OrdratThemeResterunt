@@ -2,17 +2,19 @@
 
 import { useEffect } from "react";
 import { useUserContext } from "../../context/UserContext";
+import Cookies from 'js-cookie';
 
-export default function ShopLocalStorage({ backgroud,vat, currencyId,vatType, rate,freeShppingTarget, showAllCouponsInSideBar, applyFreeShppingOnTarget,subdomainName, description, logoUrl, branchZones, shopId }: { backgroud: string;currencyId:string; vatType: number; rate:any, vat: number; subdomainName: string; description: string; logoUrl: string; showAllCouponsInSideBar:boolean; applyFreeShppingOnTarget:boolean; freeShppingTarget:number; branchZones: { lat: number; lng: number; zoonRadius: number }[]; shopId:string;
+export default function ShopLocalStorage({ backgroud, vat, currencyId, vatType, rate, freeShppingTarget, showAllCouponsInSideBar, applyFreeShppingOnTarget, subdomainName, description, logoUrl, branchZones, shopId }: {
+  backgroud: string; currencyId: string; vatType: number; rate: any, vat: number; subdomainName: string; description: string; logoUrl: string; showAllCouponsInSideBar: boolean; applyFreeShppingOnTarget: boolean; freeShppingTarget: number; branchZones: { lat: number; lng: number; zoonRadius: number }[]; shopId: string;
 }) {
-  const { setBranchZones, setshopId } = useUserContext(); 
-  
-  useEffect(() => {
-    setshopId(shopId); 
-  }, [shopId]);
-  
+  const { setBranchZones, setshopId } = useUserContext();
 
-    useEffect(() => {
+  useEffect(() => {
+    setshopId(shopId);
+  }, [shopId]);
+
+
+  useEffect(() => {
     if (typeof window !== "undefined") {
       localStorage.setItem("backgroundUrl", backgroud);
       localStorage.setItem("showAllCouponsInSideBar", JSON.stringify(showAllCouponsInSideBar));
@@ -29,6 +31,22 @@ export default function ShopLocalStorage({ backgroud,vat, currencyId,vatType, ra
       setBranchZones(branchZones);
     }
   }, [subdomainName, logoUrl]);
-
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      Cookies.set("backgroundUrl", backgroud);
+      Cookies.set("showAllCouponsInSideBar", JSON.stringify(showAllCouponsInSideBar));
+      Cookies.set("applyFreeShppingOnTarget", JSON.stringify(applyFreeShppingOnTarget));
+      Cookies.set("subdomainName", subdomainName);
+      Cookies.set("currencyId", currencyId);
+      Cookies.set("shopId", shopId);
+      Cookies.set("description", description);
+      Cookies.set("logoUrl", logoUrl);
+      Cookies.set("rate", rate as any);
+      Cookies.set("vatType", vatType.toString());
+      Cookies.set("vat", vat as any);
+      Cookies.set("freeShppingTarget", freeShppingTarget.toString());
+      Cookies.set("branchZones", JSON.stringify(branchZones));
+    }
+  }, []);
   return null;
 }

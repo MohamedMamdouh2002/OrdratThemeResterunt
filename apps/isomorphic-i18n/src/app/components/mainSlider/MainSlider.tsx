@@ -20,41 +20,46 @@ const Photos=[
   
 ]
 type Banner = {
-    id?: string;
-    bannerUrl: string;
-    actionType?: number;
-    actionString?: string;
-  };
-function MainSlider() {
-  const [banner, setbanner] = useState<Banner[]>([]);
+  id?: string;
+  bannerUrl: string;
+  actionType?: number;
+  actionString?: string;
+};
+
+type MainSliderProps = {
+  banner: Banner[];
+};
+
+function MainSlider({ banner }: MainSliderProps) {
+  // const [banner, setbanner] = useState<Banner[]>([]);
   const { shopId } = useUserContext();
 
-    const [loading, setLoading] = useState(false);
+    // const [loading, setLoading] = useState(false);
 
-    useEffect(() => {
-        const fetchOrder = async () => {
-          try {
-            const response = await fetch(
-              `${API_BASE_URL}/api/Banner/GetAll/${shopId}`,
-              {
-                method: 'GET',
-              }
-            );
-            if (!response.ok) {
-              throw new Error('Failed to fetch order');
-            }
-            const data:Banner[] = await response.json();
+    // useEffect(() => {
+    //     const fetchOrder = async () => {
+    //       try {
+    //         const response = await fetch(
+    //           `${API_BASE_URL}/api/Banner/GetAll/${shopId}`,
+    //           {
+    //             method: 'GET',
+    //           }
+    //         );
+    //         if (!response.ok) {
+    //           throw new Error('Failed to fetch order');
+    //         }
+    //         const data:Banner[] = await response.json();
     
-            setbanner(data);
-          } catch (error) {
-            console.error('Error fetching order:', error);
-          } finally {
-            setLoading(false);
-          }
-        };
+    //         setbanner(data);
+    //       } catch (error) {
+    //         console.error('Error fetching order:', error);
+    //       } finally {
+    //         setLoading(false);
+    //       }
+    //     };
     
-        fetchOrder();
-      }, []);
+    //     fetchOrder();
+    //   }, []);
     const settings = {
         className: "",
         dots: true,

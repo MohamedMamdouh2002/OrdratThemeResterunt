@@ -308,6 +308,8 @@ export type OrderItem = {
   quantity: number;
   totalChoicesPrice: number;
   itemPrice: number;
+  cancelled: boolean;
+  orderItemVariations: any[];
   productId: string;
   product: {
     name: string;

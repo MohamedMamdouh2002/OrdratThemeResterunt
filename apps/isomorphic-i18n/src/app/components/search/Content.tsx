@@ -13,9 +13,17 @@ import { Loader } from 'lucide-react';
 import { useUserContext } from '../context/UserContext';
 import CustomImage from '../ui/CustomImage';
 
-export default function Content({ lang }: { lang?: string }) {
-	const [searchValue, setSearchValue] = useState('');
-	const [products, setProducts] = useState<Food[]>([]);
+export default function Content({
+	lang,
+	initialProducts,
+	initialSearch,
+  }: {
+	lang?: string;
+	initialProducts: Food[];
+	initialSearch?: string;
+  }) {	  
+	const [searchValue, setSearchValue] = useState(initialSearch ?? '');
+	const [products, setProducts] = useState<Food[]>(initialProducts);
 	const [currentPage, setCurrentPage] = useState(1);
 	const [nextPage, setNextPage] = useState(0);
 	const [totalPages, setTotalPages] = useState(0);
@@ -24,7 +32,7 @@ export default function Content({ lang }: { lang?: string }) {
 	const [isSearching, setIsSearching] = useState(false);
 	const [hasMore, setHasMore] = useState(true);
 	const observerRef = useRef<HTMLDivElement | null>(null);
-	const { t,i18n } = useTranslation(lang!, 'search');
+	const { t, i18n } = useTranslation(lang!, 'search');
 	const { shopId } = useUserContext();
 	const [background, setBackground] = useState<any | null>(null);
 
@@ -39,52 +47,116 @@ export default function Content({ lang }: { lang?: string }) {
 	  }
 	}, [lang, i18n]);
   
+	// const fetchData = async (searchTerm: string, page: number) => {
+	// 	if (isLoading || !hasMore) return;
+	// 	setIsLoading(true);
+	// 	setIsSearching(true); // Set searching state
+
+	// 	try {
+	// 		const pageSize = 5;
+	// 		const url = searchTerm
+	// 			? `${API_BASE_URL}/api/Products/SearchByName/${shopId}?SearchParamter=${searchTerm}&PageNumber=${page}&PageSize=${pageSize}`
+	// 			: `${API_BASE_URL}/api/Products/GetAllDetailed/${shopId}?PageNumber=${page}&PageSize=${pageSize}`;
+
+	// 		const response = await fetch(url, {
+	// 			method: 'GET',
+	// 			headers: {
+	// 				'Accept-Language': `${lang}`,
+	// 			},
+	// 		});
+
+	// 		const result = await response.json();
+	// 		if (page === 1) {
+	// 			setProducts(result.entities); // If it's the first page, replace products
+	// 		} else {
+	// 			setProducts((prevProducts) => [...prevProducts, ...result.entities]); // Otherwise append products
+	// 		}
+	// 		setNextPage(result.nextPage);
+	// 		setHasMore(result.nextPage !== 0);
+	// 		setTotalPages(5);
+	// 		setIsLoading(false);
+	// 		setIsSearching(false); // Reset searching state after fetch
+	// 	} catch (error) {
+	// 		setErrorMessage('Error fetching data');
+	// 		setIsLoading(false);
+	// 		setIsSearching(false);
+	// 	}
+	// };
 	const fetchData = async (searchTerm: string, page: number) => {
-		if (isLoading || !hasMore) return;
-		setIsLoading(true);
-		setIsSearching(true); // Set searching state
+  if (isLoading || !hasMore) return;
+  if (page === 1) return; // ممنوع جلب الصفحة الأولى
 
-		try {
-			const pageSize = 5;
-			const url = searchTerm
-				? `${API_BASE_URL}/api/Products/SearchByName/${shopId}?SearchParamter=${searchTerm}&PageNumber=${page}&PageSize=${pageSize}`
-				: `${API_BASE_URL}/api/Products/GetAllDetailed/${shopId}?PageNumber=${page}&PageSize=${pageSize}`;
+  setIsLoading(true);
+  setIsSearching(true);
 
-			const response = await fetch(url, {
-				method: 'GET',
-				headers: {
-					'Accept-Language': `${lang}`,
-				},
-			});
+  try {
+    const pageSize = 5;
+    const url = searchTerm
+      ? `${API_BASE_URL}/api/Products/SearchByName/${shopId}?SearchParamter=${searchTerm}&PageNumber=${page}&PageSize=${pageSize}`
+      : `${API_BASE_URL}/api/Products/GetAllDetailed/${shopId}?PageNumber=${page}&PageSize=${pageSize}`;
 
-			const result = await response.json();
-			if (page === 1) {
-				setProducts(result.entities); // If it's the first page, replace products
-			} else {
-				setProducts((prevProducts) => [...prevProducts, ...result.entities]); // Otherwise append products
-			}
-			setNextPage(result.nextPage);
-			setHasMore(result.nextPage !== 0);
-			setTotalPages(5);
-			setIsLoading(false);
-			setIsSearching(false); // Reset searching state after fetch
-		} catch (error) {
-			setErrorMessage('Error fetching data');
-			setIsLoading(false);
-			setIsSearching(false);
-		}
-	};
+    const response = await fetch(url, {
+      method: 'GET',
+      headers: {
+        'Accept-Language': `${lang}`,
+      },
+    });
 
-	const handleInputChange = (e: any) => {
-		setSearchValue(e.target.value);
-		setCurrentPage(1);
-		setHasMore(true);
-	};
+    const result = await response.json();
+
+    setProducts((prevProducts) => [...prevProducts, ...result.entities]); // دومًا append
+    setNextPage(result.nextPage);
+    setHasMore(result.nextPage !== 0);
+    setTotalPages(result.totalPages ?? 5);
+  } catch (error) {
+    setErrorMessage('Error fetching data');
+  } finally {
+    setIsLoading(false);
+    setIsSearching(false);
+  }
+};
 
 	useEffect(() => {
-		fetchData(searchValue, currentPage);
-	}, [searchValue, currentPage]);
-
+		if (currentPage > 1) {
+		  fetchData(searchValue, currentPage);
+		}
+	  }, [searchValue, currentPage]);
+	  
+	
+	  const handleInputChange = async (e: any) => {
+		const value = e.target.value;
+		setSearchValue(value);
+		setCurrentPage(1);
+		setHasMore(true);
+		setIsLoading(true);
+		setIsSearching(true);
+	  
+		try {
+		  const pageSize = 5;
+		  const url = value
+			? `${API_BASE_URL}/api/Products/SearchByName/${shopId}?SearchParamter=${value}&PageNumber=1&PageSize=${pageSize}`
+			: `${API_BASE_URL}/api/Products/GetAllDetailed/${shopId}?PageNumber=1&PageSize=${pageSize}`;
+	  
+		  const response = await fetch(url, {
+			method: 'GET',
+			headers: {
+			  'Accept-Language': lang!,
+			},
+		  });
+	  
+		  const result = await response.json();
+		  setProducts(result.entities);
+		  setNextPage(result.nextPage ?? 2);
+		  setHasMore(result.nextPage !== 0);
+		  setTotalPages(result.totalPages ?? 5);
+		} catch (error) {
+		  setErrorMessage('Error fetching data');
+		} finally {
+		  setIsLoading(false);
+		  setIsSearching(false);
+		}
+	  };
+	  
 	// Infinite Scroll Observer
 	useEffect(() => {
 		const observer = new IntersectionObserver(

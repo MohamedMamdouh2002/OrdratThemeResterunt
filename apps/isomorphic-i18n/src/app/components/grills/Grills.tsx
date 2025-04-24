@@ -28,11 +28,10 @@ type FakeData = {
   maximumFakeSoldNumber:number;
   minimumFakeSoldNumber:number;
   lastSoldNumberInHours:number;
-
 };
-function Grills({ lang, ProductData, HomeData }: { lang: string; ProductData?: any; HomeData?: any[] }) {
+function Grills({ lang,shopId, ProductData, HomeData,initialPage=1,pageSize=40 }: { lang: string; ProductData?: any; HomeData?: any ;  initialPage?: number; pageSize?: number; shopId?:string}) {
   const { GetHome } = useUserContext();
-  const [home, setHome] = useState<any[]>([])
+
   const { t } = useTranslation(lang!, 'home');
   const [currentSlide, setCurrentSlide] = useState(0);
   const swiperRefs = useRef<{ [key: string]: SwiperType | null }>({});
@@ -41,40 +40,50 @@ function Grills({ lang, ProductData, HomeData }: { lang: string; ProductData?: a
 
   const fetchedPages = useRef<Set<number>>(new Set());
   const [loading, setLoading] = useState(false);
-  const [page, setPage] = useState(1);
-  const [pageSize] = useState(40); // عدد العناصر في كل صفحة
-  const [hasMore, setHasMore] = useState(true)
+  const [home, setHome] = useState(HomeData?.entities as any ?? []);
+  const [page, setPage] = useState(HomeData?.nextPage as any ?? 2);
+  const [hasMore, setHasMore] = useState(HomeData?.nextPage as any ? true : false);
   
   useEffect(() => {
     const fetchPaginatedData = async () => {
-      if (!hasMore) return;
-  
+      if (loading || !hasMore || page === initialPage) return; // 🛑 تجاهل الصفحة الأولى لأنك جايبها من السيرفر
+    
       setLoading(true);
-      const data:any = await GetHome({ lang, page,pageSize });
-  
-      if (data?.entities?.length  as any > 0) {
-        setHome((prev) => [
-          ...prev,
-          ...(data?.entities ?? []).filter((entity: any) => !prev.some((e: any) => e.id === entity.id))
-        ]);
-        
-        if (data?.nextPage > page) {
+    
+      try {
+        const response: any = await GetHome({ lang, page, pageSize });
+    
+        const newEntities = response?.entities ?? [];
+    
+        if (newEntities.length > 0) {
+          setHome((prev:any) => [
+            ...prev as any,
+            ...newEntities.filter((entity: any) => !prev?.some((e: any) => e.id === entity.id)),
+          ]);
+    
+          if (response.nextPage && response.nextPage > page) {
+            setHasMore(true);
+          } else {
+            setHasMore(false);
+          }
         } else {
           setHasMore(false);
         }
-      } else {
+      } catch (error) {
+        console.error("Error fetching paginated data:", error);
         setHasMore(false);
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
     };
-  
-    fetchPaginatedData();
+    fetchPaginatedData()
+    
   }, [page, lang]);
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
         if (entries[0].isIntersecting && hasMore && !loading) {
-          setPage((prev) => prev + 1);
+          setPage((prev:any) => prev + 1);
         }
       },
       { threshold: 1 }
@@ -109,7 +118,7 @@ function Grills({ lang, ProductData, HomeData }: { lang: string; ProductData?: a
   }, [shopId]);
   return <>
     <div className="mb-10">
-      {home?.filter((sec) => sec.isActive).length === 0 ? (
+      {home?.filter((sec:any) => sec.isActive).length === 0 ? (
         <div className="w-5/6 m-auto my-10">
           <div className="flex flex-col justify-center items-center">
             <EmptyProductBoxIcon />
@@ -118,9 +127,9 @@ function Grills({ lang, ProductData, HomeData }: { lang: string; ProductData?: a
         </div>
       ) : (
         home
-          ?.filter((sec) => sec.isActive)
-          .sort((a, b) => a.priority - b.priority)
-          .map((sec) => (
+          ?.filter((sec:any) => sec.isActive)
+          .sort((a:any, b:any) => a.priority - b.priority)
+          .map((sec:any) => (
             <div key={sec.id} id={sec.id} className="w-5/6 sm:w-[90%] mx-auto mt-20">
               <div className="flex justify-between items-center">
                 <Title title={sec.name} />

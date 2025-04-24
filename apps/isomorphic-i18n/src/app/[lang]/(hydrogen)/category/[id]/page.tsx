@@ -1,141 +1,32 @@
-'use client';
-import { useUserContext } from '@/app/components/context/UserContext';
-import Card from '@/app/components/ui/card/Card';
-import CustomImage from '@/app/components/ui/CustomImage';
-import MediumCard from '@/app/components/ui/mediumCard/MediumCard';
-import ScrollToTop from '@/app/components/ui/ScrollToTop';
+// 📁 app/[lang]/all-products/page.tsx
+import AllProduct from '@/app/components/allProduct/AllProduct';
 import { API_BASE_URL } from '@/config/base-url';
-import { Food } from '@/types';
-import { Loader } from 'lucide-react';
-import Image from 'next/image';
-import { useParams } from 'next/navigation';
-import React, { useEffect, useState, useRef } from 'react';
-import { useMediaQuery } from 'react-responsive';
+import { getProductsByCategory } from '@/server/product';
+import { cookies } from 'next/headers';
 
-export default function AllProduct({
-  params: { lang },
+
+export default async function Category({
+  params,
 }: {
-  params: { lang: string };
+  params: { lang: string; id: string };
 }) {
-  const [products, setProducts] = useState<Food[]>([]);
-  const [productTitle, setProductsTitle] = useState<any>();
-  const [loading, setLoading] = useState(false);
-  const [page, setPage] = useState(1);
-  const [hasMore, setHasMore] = useState(true);
-  const params = useParams();
-  const isMobile = useMediaQuery({ query: '(max-width: 640px)' });
-  const { shopId } = useUserContext();
-  const observerRef = useRef<HTMLDivElement | null>(null);
-
-  const fetchedPages = useRef<Set<number>>(new Set());
-
-  useEffect(() => {
-    const fetchProducts = async () => {
-      if (fetchedPages.current.has(page)) return;
-      fetchedPages.current.add(page);
-
-      setLoading(true);
-      try {
-        const response = await fetch(
-          `${API_BASE_URL}/api/Category/GetProductsByCategoryDetailed/${shopId}?categoryId=${params?.id}&PageNumber=${page}&PageSize=4`,
-          {
-            headers: {
-              'Accept-Language': lang!,
-            },
-          }
-        );
-
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
-
-        const data = await response.json();
-        setProductsTitle(data)
-        if (!data.products || data.products.length === 0) {
-          setHasMore(false);
-        } else {
-          setProducts((prev) => {
-            const newEntities = data.products.filter(
-              (entity: Food) => !prev.some((p: Food) => p.id === entity.id)
-            );
-            return page === 1 ? newEntities : [...prev, ...newEntities];
-          });
-        }
-
-      } catch (error) {
-        console.error(error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    if (hasMore) {
-      fetchProducts();
-    }
-  }, [page, shopId, params?.id, lang, hasMore]);
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (entries[0].isIntersecting && hasMore && !loading) {
-          setPage((prev) => prev + 1);
-        }
-      },
-      { threshold: 1 }
-    );
-
-    if (observerRef.current) {
-      observer.observe(observerRef.current);
-    }
-
-    return () => {
-      if (observerRef.current) {
-        observer.unobserve(observerRef.current);
-      }
-    };
-  }, [loading, hasMore]);
-
-  return <>
-    <ScrollToTop />
-
-
-    <div className="w-5/6 sm:w-[90%] mx-auto mt-20 mb-10">
-      {productTitle && <>
-        {productTitle?.bannerUrl &&
-          <div className="relative mb-24">
-
-            <CustomImage
-              id="offers"
-              src={productTitle?.bannerUrl}
-              width={900}
-              height={300}
-              className="w-full h-[240px] sm:h-[300px] object-cover  relative rounded-lg"
-              alt=""
-            />
-            <div className="absolute bottom-0 w-full h-32 bg-gradient-to-b from-transparent to-white">
-
-        <h1 className='text-center mt-36 mb-3 '>{productTitle?.name}</h1>
-            </div>
-          </div>
-        }
-        {/* <h1 className='text-center mb-12'>{productTitle?.name as any}</h1> */}
-      </>
-      }
-      <div className="grid lg:grid-cols-4 md:grid-cols-3 grid-cols-2 gap-5">
-        {products.map((prod: Food, index) => (
-          isMobile ?
-            <div className="col-span-full" key={prod.id}>
-              <MediumCard ProductData={products} lang={lang!} setCurrentItem={() => { }} {...prod} />
-              {index !== products.length - 1 && <hr />}
-            </div>
-            :
-            <Card ProductData={products} lang={lang!} setCurrentItem={() => { }} key={prod.id} {...prod} />
-        ))}
-      </div>
-      <div className="flex justify-center">
-        {loading && <Loader className="animate-spin text-mainColor" />}
-      </div>
-      <div ref={observerRef} className="h-1" />
-    </div>
-  </>
+  const { lang, id: categoryId } = params;
+    const cookieStore = cookies();
+    const shopId = cookieStore.get('shopId')?.value;
+  const productData = await getProductsByCategory(
+    lang,
+    shopId as string,
+    categoryId,
+    /* page */ 1,
+    /* pageSize */ 4
+  )
+  return (
+    <AllProduct
+      lang={lang}
+      initialProducts={productData.products}
+      initialTitle={productData.title}
+      initialPage={1} 
+      categoryId={categoryId}
+    />
+  );
 }
