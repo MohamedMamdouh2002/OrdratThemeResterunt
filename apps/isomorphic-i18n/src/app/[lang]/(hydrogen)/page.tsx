@@ -9,8 +9,6 @@ import { API_BASE_URL } from "@/config/base-url";
 import { GetBannerData, getBranches, getCoupons, GetHomeData } from "@/server/home";
 import { cookies } from "next/headers";
 
-export const dynamic = 'force-dynamic';
-
 
 export default async function FileDashboardPage({
   params: { lang },
@@ -31,13 +29,14 @@ export default async function FileDashboardPage({
       <ScrollToTop />
       <RestaurantTitle lang={lang} logoUrl={headerData.logoUrl} shopId={headerData.shopId}
         shopName={headerData.shopName}
-        background={headerData.backgroundUrl} rate={headerData.rate} description={headerData.description} coupon={coupons} branch={branches} />
+        background={headerData.backgroundUrl} rate={headerData.rate} description={headerData.description}
+         coupon={coupons} branch={branches} />
       <Header lang={lang} logoUrl={headerData.logoUrl}  shopId={headerData.shopId} description={headerData.description}
         shopName={headerData.shopName}
         background={headerData.backgroundUrl}/>
       <MainSlider banner={banner} />
       <Grills lang={lang} HomeData={ProductData}  shopId={headerData.shopId as string} initialPage={page} pageSize={pageSize} />
-      {/* <Footer lang={lang} /> */}
+      <Footer lang={lang} />
     </>
   );
 }
