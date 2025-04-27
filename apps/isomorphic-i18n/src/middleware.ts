@@ -9,10 +9,12 @@ acceptLanguage.languages(languages);
 export default withAuth({
   pages: {
     ...pagesOptions,
+    
   },
 });
 
 export const config = {
+  // restricted routes
   matcher: [
     "/",
     "/analytics",
@@ -28,27 +30,113 @@ export const config = {
 };
 
 const cookieName = "i18next";
-const shopCookieName = "shopId"; // اسم كوكي الشوب
 
 export async function middleware(req: any) {
-  const response = NextResponse.next();
-
-  // ===================== (1) Language Redirection =====================
-  if (req.nextUrl.pathname.indexOf("chrome") > -1) {
-    return response;
-  }
-
+  if (
+    // req.nextUrl.pathname.indexOf('icon') > -1 ||
+    req.nextUrl.pathname.indexOf("chrome") > -1
+  )
+    return NextResponse.next();
   let lang;
-  if (req.cookies.has(cookieName)) {
-    lang = acceptLanguage.get(req.cookies.get(cookieName).value);
+  async function fetchSubdomain(subdomain: string) {
+    try {
+      const res = await fetch(
+        `https://testapi.ordrat.com/api/Shop/GetBySubdomain/${subdomain}`,
+        {
+          headers: {
+            Accept: "/",
+            "Accept-Language": "en",
+          },
+        }
+      );
+
+      if (!res.ok) {
+        throw new Error("Failed to fetch branch zones");
+      }
+
+      const data = await res.json();
+      return data;
+    } catch (error) {
+      console.error("Error fetching branch zones:", error);
+      return [];
+    }
   }
-  if (!lang) {
-    lang = acceptLanguage.get(req.headers.get("Accept-Language"));
+async function fetchShopData(shopId: string, lang: string) {
+  const siteUrl = getServerSiteUrl();
+  // const fullSiteUrl = getFullServerUrl();
+  // console.log("Fetching full SiteUrl from:", fullSiteUrl);
+
+  try {
+    const res = await fetch(
+      `https://testapi.ordrat.com/api/Shop/GetById/${shopId}`,
+      {
+        headers: {
+          Accept: "*/*",
+          "Accept-Language": lang,
+        },
+        cache: "no-store",
+      }
+    );
+    if (!res.ok) {
+      throw new Error("Failed to fetch shop details");
+    }
+    const shopData = await res.json();
+    // console.log("shopData: ", shopData);
+
+    return {
+      ...shopData,
+      // mainColor:  "#003049",
+      // mainColorHover: "#003049",
+      mainColor: shopData.mainColor || "#003049",
+      mainColorHover: shopData.secondaryColor || "#003049",
+      subdomainName: lang === 'ar' ? shopData.nameAr : shopData.nameEn || "",
+      logoUrl: shopData.logoUrl || "",
+      title: lang === 'ar' ? shopData.titleAr : shopData.titleEn || "",
+      metaDescription: lang === 'ar' ? shopData.metaDescriptionAr : shopData.metaDescriptionEn || "",
+      description: lang === 'ar' ? shopData.descriptionAr : shopData.descriptionEn || "",
+      vat: shopData.vat || "",
+      vatType: shopData.vatType,
+      rate: shopData.rate,
+      showAllCouponsInSideBar: shopData.showAllCouponsInSideBar,
+      applyFreeShppingOnTarget: shopData.applyFreeShppingOnTarget,
+      freeShppingTarget: shopData.freeShppingTarget,
+      currencyId: shopData.currencyId,
+    };
+  } catch (error) {
+    console.error("Error fetching shop details:", error);
+    return {
+      mainColor: "#f97316",
+      mainColorHover: "#c96722",
+      subdomainName: "",
+      logoUrl: "",
+    };
   }
-  if (!lang) {
-    lang = fallbackLng;
+}
+  function getServerSiteUrl() {
+    const host = "theme.ordrat.com";
+    // const host = headers().get("host") || "localhost:3000";
+    const protocol = process.env.NODE_ENV === "production" ? "https" : "http";
+    return `${host}`;
   }
 
+  const realPath = getServerSiteUrl();
+
+  const shopId = await fetchSubdomain(realPath);
+  const shopData = await fetchShopData(shopId.id, lang as any);
+  const response = NextResponse.next();
+  response.cookies.set("shopId", shopId, {path: "/"});
+  response.cookies.set("currencyId", shopData.currencyId, {path: "/"});
+  response.cookies.set("description", shopData.description, {path: "/"});
+  response.cookies.set("backgroundUrl", shopData.backgroundUrl, {path: "/"});
+  response.cookies.set("rate", shopData.rate, {path: "/"});
+  response.cookies.set("subdomainName", shopData.subdomainName, {path: "/"});
+  response.cookies.set("logoUrl", shopData.logoUrl, {path: "/"});
+
+  if (req.cookies.has(cookieName)) lang = acceptLanguage.get(req.cookies.get(cookieName).value);
+  if (!lang) lang = acceptLanguage.get(req.headers.get("Accept-Language"));
+  if (!lang) lang = fallbackLng;
+
+  // Redirect if lng in path is not supported
   if (
     !languages.some((local) => req.nextUrl.pathname.startsWith(`/${local}`)) &&
     !req.nextUrl.pathname.startsWith("/_next")
@@ -59,47 +147,10 @@ export async function middleware(req: any) {
   if (req.headers.has("referer")) {
     const refererUrl = new URL(req.headers.get("referer"));
     const lngInReferer = languages.find((l) => refererUrl.pathname.startsWith(`/${l}`));
-    if (lngInReferer) {
-      response.cookies.set(cookieName, lngInReferer);
-    }
+    const response = NextResponse.next();
+    if (lngInReferer) response.cookies.set(cookieName, lngInReferer);
+    return response;
   }
 
-  // ===================== (2) Shop Data Handling =====================
-
-  // لو مفيش shopId في الكوكي
-  if (!req.cookies.has(shopCookieName)) {
-    try {
-      const host = req.headers.get('host')?.replace('www.', '') || '';
-
-      // جيب الشوب من API
-      const shopRes = await fetch(`https://testapi.ordrat.com/api/Shop/GetBySubdomain/${host}`, {
-        headers: {
-          Accept: "*/*",
-        },
-      });
-
-      if (shopRes.ok) {
-        const shopData = await shopRes.json();
-
-        // احط الكوكيز بالمعلومات
-        response.cookies.set('shopId', shopData.id, { path: '/' });
-        response.cookies.set('subdomainName', shopData.nameEn || "", { path: '/' });
-        response.cookies.set('logoUrl', shopData.logoUrl || "", { path: '/' });
-        response.cookies.set('currencyId', shopData.currencyId || "", { path: '/' });
-        response.cookies.set('vat', String(shopData.vat || 0), { path: '/' });
-        response.cookies.set('vatType', String(shopData.vatType || 0), { path: '/' });
-        response.cookies.set('rate', String(shopData.rate || 0), { path: '/' });
-        response.cookies.set('description', shopData.descriptionEn || "", { path: '/' });
-        response.cookies.set('showAllCouponsInSideBar', JSON.stringify(shopData.showAllCouponsInSideBar || false), { path: '/' });
-        response.cookies.set('applyFreeShppingOnTarget', JSON.stringify(shopData.applyFreeShppingOnTarget || false), { path: '/' });
-        response.cookies.set('freeShppingTarget', String(shopData.freeShppingTarget || 0), { path: '/' });
-
-        // لو حابب كمان تحط branchZones في الكوكيز تقدر تكمل هنا
-      }
-    } catch (error) {
-      console.error("Error fetching shop data in middleware:", error);
-    }
-  }
-
-  return response;
+  return NextResponse.next();
 }
