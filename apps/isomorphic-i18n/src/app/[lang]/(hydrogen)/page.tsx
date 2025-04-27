@@ -15,11 +15,12 @@ export default async function FileDashboardPage({
 }: {
   params: { lang: string };
 }) {
+  const headerData = await ServerHeaderData();
   const banner = await GetBannerData(lang);
   const page = 1;
   const pageSize = 30;
   const ProductData = await GetHomeData(lang, page, pageSize);
-  const headerData = ServerHeaderData();
+console.log("headerData21212: ", headerData);
 
 
   const coupons = await getCoupons();

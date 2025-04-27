@@ -7,7 +7,7 @@ import ScrollToTop from '@/app/components/ui/ScrollToTop';
 import Header from '@/layouts/lithium/lithium-header';
 import ServerHeaderData from '@/app/components/ServerHeader';
 
-export default function LithiumLayout({
+export default async function LithiumLayout({
   children,
   lang,
 }: {
@@ -15,7 +15,7 @@ export default function LithiumLayout({
   lang?: string;
 }) {
   const pathname = usePathname();
-  const headerData = ServerHeaderData();
+  const headerData = await ServerHeaderData();
 
   return (
     <main className="flex min-h-screen flex-grow">

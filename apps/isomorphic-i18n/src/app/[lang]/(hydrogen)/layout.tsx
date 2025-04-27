@@ -3,14 +3,14 @@ import ServerHeaderData from '@/app/components/ServerHeader';
 import ScrollToTop from '@/app/components/ui/ScrollToTop';
 import Header from '@/layouts/lithium/lithium-header';
 
-export default function DefaultLayout({
+export default async function DefaultLayout({
   children,
   params: { lang },
 }: {
   children: React.ReactNode;
   params: { lang: string };
 }) {
-    const headerData = ServerHeaderData();
+    const headerData = await ServerHeaderData();
   
   return (
     <>

@@ -194,7 +194,7 @@ function FAQSection({ lang , faqData }: { lang: string;faqData:FaqType[] }) {
           </div>
           :
           <div className={style.faqCardsContainer}>
-            {faqData.map((item, index) => (
+            {faqData?.map((item, index) => (
               item.faQs.length > 0 && (
                 
                 <div key={index} className={`${style.faqCardWrapperContainer} group`}>

@@ -1,24 +1,114 @@
-// components/server/ServerHeaderData.tsx
-import { cookies } from "next/headers";
+import { NextResponse } from "next/server";
 
-export default function ServerHeaderData() {
-  const cookieStore = cookies();
-  const logoUrl = cookieStore.get("logoUrl")?.value || null;
-  const shopName = cookieStore.get("subdomainName")?.value || null;
-  const rate = cookieStore.get("rate")?.value || null;
-  const backgroundUrl = cookieStore.get("backgroundUrl")?.value || null;
-  const description = cookieStore.get("description")?.value || null;
-  const shopId = cookieStore.get("shopId")?.value || null;
-  const currencyId = cookieStore.get("currencyId")?.value || null;
+async function fetchSubdomain(subdomain: string) {
+  try {
+    const res = await fetch(
+      `https://testapi.ordrat.com/api/Shop/GetBySubdomain/${subdomain}`,
+      {
+        headers: {
+          Accept: "/",
+          "Accept-Language": "en",
+        },
+      }
+    );
+
+    if (!res.ok) {
+      throw new Error("Failed to fetch branch zones");
+    }
+
+    const data = await res.json();
+    return data;
+  } catch (error) {
+    console.error("Error fetching branch zones:", error);
+    return null;
+  }
+}
+
+async function fetchShopData(shopId: string, lang: string) {
+  try {
+    const res = await fetch(
+      `https://testapi.ordrat.com/api/Shop/GetById/${shopId}`,
+      {
+        headers: {
+          Accept: "*/*",
+          "Accept-Language": lang,
+        },
+        cache: "no-store",
+      }
+    );
+
+    if (!res.ok) {
+      throw new Error("Failed to fetch shop details");
+    }
+
+    const shopData = await res.json();
+
+    return {
+      logoUrl: shopData.logoUrl || "",
+      subdomainName: lang === 'ar' ? shopData.nameAr : shopData.nameEn || "",
+      rate: shopData.rate || null,
+      backgroundUrl: shopData.backgroundUrl || "",
+      description: lang === 'ar' ? shopData.descriptionAr : shopData.descriptionEn || "",
+      shopId: shopData.id || null,
+      currencyId: shopData.currencyId || null,
+    };
+  } catch (error) {
+    console.error("Error fetching shop details:", error);
+    return {
+      logoUrl: "",
+      subdomainName: "",
+      rate: null,
+      backgroundUrl: "",
+      description: "",
+      shopId: null,
+      currencyId: null,
+    };
+  }
+}
+
+function getServerSiteUrl() {
+  const host = "theme.ordrat.com";
+  // const host = headers().get("host") || "localhost:3000";
+  const protocol = process.env.NODE_ENV === "production" ? "https" : "http";
+  return `${host}`;
+}
+
+export default async function ServerHeaderData(lang: string = "en") {
+  const realPath = getServerSiteUrl();
+  const subdomainData = await fetchSubdomain(realPath);
+
+  if (!subdomainData || !subdomainData.id) {
+    console.error("Failed to fetch subdomain data");
+    return {
+      logoUrl: null,
+      shopName: null,
+      backgroundUrl: null,
+      rate: null,
+      shopId: null,
+      description: null,
+      currencyId: null,
+    };
+  }
+
+  const shopData = await fetchShopData(subdomainData.id, lang);
+
+  // Optional: If you want, you can also still set cookies like you showed
+  const response = NextResponse.next();
+  response.cookies.set("shopId", shopData.shopId || "", { path: "/" });
+  response.cookies.set("currencyId", shopData.currencyId || "", { path: "/" });
+  response.cookies.set("description", shopData.description || "", { path: "/" });
+  response.cookies.set("backgroundUrl", shopData.backgroundUrl || "", { path: "/" });
+  response.cookies.set("rate", shopData.rate?.toString() || "", { path: "/" });
+  response.cookies.set("subdomainName", shopData.subdomainName || "", { path: "/" });
+  response.cookies.set("logoUrl", shopData.logoUrl || "", { path: "/" });
 
   return {
-    logoUrl,
-    shopName,
-    backgroundUrl,
-    rate,
-    shopId,
-    description,
-    currencyId
-
+    logoUrl: shopData.logoUrl,
+    shopName: shopData.subdomainName,
+    backgroundUrl: shopData.backgroundUrl,
+    rate: shopData.rate,
+    shopId: shopData.shopId,
+    description: shopData.description,
+    currencyId: shopData.currencyId,
   };
 }
