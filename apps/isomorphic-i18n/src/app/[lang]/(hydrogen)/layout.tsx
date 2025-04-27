@@ -1,3 +1,4 @@
+import CartModal from '@/app/components/cartModal/CartModal';
 import ClientFooter from '@/app/components/ClientFooter';
 import ServerHeaderData from '@/app/components/ServerHeader';
 import ScrollToTop from '@/app/components/ui/ScrollToTop';
@@ -20,6 +21,8 @@ export default function DefaultLayout({
       <ScrollToTop />
       
       <div className="relative">
+      <CartModal lang={lang} />
+
         {children}
       </div>
       
