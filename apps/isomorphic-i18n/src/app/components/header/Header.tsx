@@ -1,9 +1,11 @@
-// Header.tsx
+
+'use client'// Header.tsx
 import Image from 'next/image'
-import React from 'react'
+import React, { useEffect } from 'react'
 import logPhoto from '@public/assets/landing.webp'
 import Link from 'next/link'
 import CustomImage from '../ui/CustomImage'
+import { useTranslation } from '@/app/i18n/client'
 
 function Header({ lang, logoUrl, shopName, background,shopId, description }: {
   lang?: string
@@ -17,22 +19,12 @@ function Header({ lang, logoUrl, shopName, background,shopId, description }: {
   // const [shopLogo, setShopLogo] = useState<any | null>('');
   // const [description, setDescription] = useState<string | null>(null);
   // const [background, setBackground] = useState<string | null>(null);
+  const { t, i18n } = useTranslation(lang!, 'home');
 
-  // useEffect(() => {
-  //   i18n.changeLanguage(lang);
-  //   const storedName = localStorage.getItem("subdomainName");
-  //   const Logo = localStorage.getItem("logoUrl");
-  //   const background = localStorage.getItem("backgroundUrl");
-
-  //   const description = localStorage.getItem("description");
-  //   if (storedName) {
-  //     setShopName(storedName);
-  //     setDescription(description)
-  //     setShopLogo(Logo)
-  //     setBackground(background)
-
-  //   }
-  // }, [lang, i18n]);
+  useEffect(() => {
+    i18n.changeLanguage(lang);
+   
+  }, [lang, i18n]);
 
 
   return (

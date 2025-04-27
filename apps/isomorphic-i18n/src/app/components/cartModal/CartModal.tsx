@@ -136,7 +136,7 @@ function CartModal({ lang }: { lang?: string }) {
     const { items } = useCart();
     const totalPrice = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
     // const freeShippingThreshold = 2000;
-    const freeShippingThreshold= localStorage.getItem('freeShppingTarget')
+    const freeShippingThreshold = localStorage.getItem('freeShppingTarget')
 
     return (
         <>
@@ -286,33 +286,33 @@ function CartModal({ lang }: { lang?: string }) {
                                             </button>
                                         </Tooltip> */}
 
-                                        { coupon &&
-                                        <button
-                                            onClick={() => setShowCouponModal(true)}
-                                            className="flex items-center justify-between w-full px-4 py-5 hover:bg-gray-100 transition rounded-md cursor-pointer"
-                                        >
+                                        {coupon &&
+                                            <button
+                                                onClick={() => setShowCouponModal(true)}
+                                                className="flex items-center justify-between w-full px-4 py-5 hover:bg-gray-100 transition rounded-md cursor-pointer"
+                                            >
 
-                                            <div className="flex items-center gap-2">
-                                                <MdLocalOffer lang={lang} className="text-mainColor w-5 h-5" />
-                                                <span className="font-semibold text-sm text-gray-800">
-                                                    {lang === 'ar' ? 'عرض الكوبونات' : 'View coupons'}
-                                                </span>
-                                            </div>
+                                                <div className="flex items-center gap-2">
+                                                    <MdLocalOffer lang={lang} className="text-mainColor w-5 h-5" />
+                                                    <span className="font-semibold text-sm text-gray-800">
+                                                        {lang === 'ar' ? 'عرض الكوبونات' : 'View coupons'}
+                                                    </span>
+                                                </div>
 
-                                            {lang === 'ar' ?
+                                                {lang === 'ar' ?
 
-                                                <IoIosArrowForward className="text-gray-500 w-4 h-4 rotate-180" />
-                                                :
+                                                    <IoIosArrowForward className="text-gray-500 w-4 h-4 rotate-180" />
+                                                    :
 
-                                                <IoIosArrowForward className="text-gray-500 w-4 h-4" />
-                                            }
-                                        </button>
+                                                    <IoIosArrowForward className="text-gray-500 w-4 h-4" />
+                                                }
+                                            </button>
                                         }
                                     </div>
                                     {/* <div className="w-full h-[0.5px] bg-[#7a7a7a] my-2"></div> */}
                                     {free_shipping && <>
-                                    <ProgressBar totalPrice={totalPrice} freeShippingThreshold={freeShippingThreshold as any} />
-                                    <FreeShippingMessage totalPrice={totalPrice} lang={lang!} freeShippingThreshold={freeShippingThreshold as any} />
+                                        <ProgressBar totalPrice={totalPrice} freeShippingThreshold={freeShippingThreshold as any} />
+                                        <FreeShippingMessage totalPrice={totalPrice} lang={lang!} freeShippingThreshold={freeShippingThreshold as any} />
                                     </>
                                     }
                                 </>
@@ -328,7 +328,7 @@ function CartModal({ lang }: { lang?: string }) {
                                 className="bg-mainColor text-white rounded-lg text-center text-sm sm:text-base font-medium w-11/12 mx-auto flex justify-between items-center py-2 mt-1 px-4"
                             >
                                 <span>{t('order-cart')}</span>
-                                <span className='bg-white py-1 px-3 text-mainColor rounded-md'> {abbreviation&&toCurrency(totalPrice, lang as any,abbreviation)}
+                                <span className='bg-white py-1 px-3 text-mainColor rounded-md'> {abbreviation && toCurrency(totalPrice, lang as any, abbreviation)}
                                 </span>
                             </Link>
                         </div>
