@@ -52,21 +52,32 @@ export function TrackingProvider({ children }: { children: React.ReactNode }) {
       ? 'Tablet'
       : 'Desktop';
 
-  useEffect(() => {
-    let storedId = localStorage.getItem('new1ssa');
-    if (!storedId) {
-      storedId = Math.random().toString(36).substring(2, 15);
-      localStorage.setItem('new1ssa', storedId);
-    }
-    setSessionId(storedId);
-  }, []);
+      useEffect(() => {
+        const sessionKey = 'new1ssa';
+        const timestampKey = 'new1ssa_timestamp';
+        const now = Date.now();
+        const twoHours = 2 * 60 * 60 * 1000;
+      
+        const storedTime = localStorage.getItem(timestampKey);
+        const storedId = localStorage.getItem(sessionKey);
+      
+        if (!storedId || !storedTime || now - Number(storedTime) > twoHours) {
+          const newSessionId = Math.random().toString(36).substring(2, 15);
+          localStorage.setItem(sessionKey, newSessionId);
+          localStorage.setItem(timestampKey, now.toString());
+          setSessionId(newSessionId);
+        } else {
+          setSessionId(storedId);
+        }
+      }, []);
+      
 
   const trackAddToCart = () => {
     setAddToCartCount((prev) => prev + 1);
   };
 
   useEffect(() => {
- if (!ip || !sessionId) return; 
+    if (!ip || !sessionId || !location) return;
     const checkoutPageVisited = pathname?.includes('/checkout');
     const completedOrder = pathname?.includes('/thank-you');
 
@@ -94,8 +105,8 @@ export function TrackingProvider({ children }: { children: React.ReactNode }) {
       console.error('Tracking error:', error);
     });
 
-    setAddToCartCount(0); // تصفير العداد بعد إرسال التراك
-  }, [pathname]);
+    setAddToCartCount(0); 
+  }, [pathname,ip, sessionId, location]);
 
   return (
     <TrackingContext.Provider value={{ trackAddToCart }}>
