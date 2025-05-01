@@ -60,7 +60,8 @@ export interface CartItem {
   isDiscountActive?: boolean
   quantity: number;
   discount?: number;
-
+  // stockNumber: number,
+  // hasStock: boolean,
   // Variations
   // Order-related information
   specialInstructions?: string;
@@ -78,8 +79,6 @@ export interface CartItem {
     }[];
   }[];
 }
-
-
 
 export interface PosProduct {
   id: number;

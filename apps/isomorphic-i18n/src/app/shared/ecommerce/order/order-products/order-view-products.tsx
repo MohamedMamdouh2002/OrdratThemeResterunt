@@ -210,22 +210,22 @@ export default function OrderViewProducts({ lang }: { lang: string }) {
     },
     {
       title: <HeaderCell title={t('totalChoicePrices')} align="right" />,
-      dataIndex: 'totalChoicePrices',
-      key: 'totalChoicePrices',
+      dataIndex: 'totalChoicesPrice',
+      key: 'totalChoicesPrice',
       width: 200,
-      render: (totalChoicePrices: number) => (
-        <Text className="text-end text-sm">{abbreviation && toCurrency(totalChoicePrices, lang, abbreviation)}</Text>
+      render: (totalChoicesPrice: number) => (
+        <Text className="text-end text-sm">{abbreviation && toCurrency(totalChoicesPrice, lang, abbreviation)}</Text>
       ),
     },
-    {
-      title: <HeaderCell title={t('Total-Price')} align="right" />,
-      dataIndex: 'totalPrice',
-      key: 'totalPrice',
-      width: 200,
-      render: (totalPrice: number) => (
-        <Text className="text-end text-sm">{abbreviation && toCurrency(totalPrice, lang, abbreviation)}</Text>
-      ),
-    },
+    // {
+    //   title: <HeaderCell title={t('Total-Price')} align="right" />,
+    //   dataIndex: 'totalPrice',
+    //   key: 'totalPrice',
+    //   width: 200,
+    //   render: (totalPrice: number) => (
+    //     <Text className="text-end text-sm">{abbreviation && toCurrency(totalPrice, lang, abbreviation)}</Text>
+    //   ),
+    // },
   ];
 
 
@@ -267,6 +267,7 @@ export default function OrderViewProducts({ lang }: { lang: string }) {
     <Table
       data={order.items.map(item => ({
         ...order,
+        totalChoicesPrice:item.totalChoicesPrice,
         product: item.product,
         cancelled: item.cancelled,
         itemPrice: item.itemPrice,

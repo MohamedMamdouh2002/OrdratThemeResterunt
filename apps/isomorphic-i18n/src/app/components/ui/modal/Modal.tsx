@@ -279,7 +279,9 @@ function Modal({
         frequentlyOrderedWith: data.frequentlyOrderedWith,
         reviews: data.reviews,
         price: data.finalPrice,
-        oldPrice: data.price
+        oldPrice: data.price,
+        stockNumber: data.stockNumber,
+        hasStock: data.hasStock,
       };
 
       const formattedData2 = {
@@ -323,7 +325,9 @@ function Modal({
         frequentlyOrderedWith: data.frequentlyOrderedWith,
         reviews: data.reviews,
         price: data.finalPrice,
-        oldPrice: data.price
+        oldPrice: data.price,
+        stockNumber: data.stockNumber,
+        hasStock: data.hasStock,
       };
 
       setProdId(formattedData);
@@ -445,6 +449,8 @@ function Modal({
       isDiscountActive: isDiscount,
       price: (prodId.price + selectedChoicePrices) || 0,
       oldPrice: (prodId.oldPrice + selectedChoicePrices) || 0,
+      // stockNumber: prodId?.stockNumber,
+      // hasStock: prodId.hasStock,
       quantity,
       notes: notes || "",
       orderItemVariations: prodId.variations.map((variation: Variation) => {
@@ -606,6 +612,7 @@ function Modal({
                           <h3 className="text-xl font-bold leading-10">{prodId?.name}</h3>
                           <p className="text-sm font-medium text-black/75">{prodId?.description}</p>
                           <SpecialNotes lang={lang!} notes={notes} setNotes={setNotes} className="gap-2" />
+                          {prodId.stockNumber}
 
                           <div className="mt-3 space-y-1 text-sm text-gray-700">
                             {FakeData?.isFakeViewersAvailable &&

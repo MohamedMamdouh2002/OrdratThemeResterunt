@@ -109,6 +109,16 @@ function Login({ onLogin, setCurrentModal }: Props, { lang }: { lang?: string })
 					email: result.email || '',
 				};
 				localStorage.setItem('userData', JSON.stringify(userData));
+				const phoneNumber = result.phoneNumber;
+const shopId = result.shopId || '952E762C-010D-4E2B-8035-26668D99E23E';
+
+fetch(`https://testapi.ordrat.com/api/EndUser/GetByPhoneNumber/${shopId}?phoneNumber=${phoneNumber}`)
+  .then(res => res.json())
+  .then(data => {
+    console.log('بيانات المستخدم:', data);
+	localStorage.setItem('endUserId', data.id); 
+})
+  .catch(console.error);
 			} else {
 				console.log('Access Token not found.');
 				setLoading(false)

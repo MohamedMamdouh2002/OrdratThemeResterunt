@@ -1,16 +1,12 @@
 'use client';
 import { BadgeCent, Loader } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
-import Image from 'next/image';
-import Logo from '@public/assets/karam-el-sham.png';
 import Link from 'next/link';
 import Title from '@/app/components/ui/title/Title';
 import { Order } from '@/types';
-// import { photos } from '../fetch/api'; // يمكنك إعداد الصور هنا إذا لزم الأمر
 import axiosClient from '../fetch/api';
 import { EmptyProductBoxIcon } from 'rizzui';
 import { useTranslation } from '@/app/i18n/client';
-import fetchClient from '../fetch/api';
 import useCurrencyAbbreviation, { toCurrency } from '@utils/to-currency';
 import { useUserContext } from '../context/UserContext';
 import CustomImage from '../ui/CustomImage';
@@ -24,18 +20,15 @@ const MyOrder: React.FC<{ lang: string }> = ({ lang }) => {
   const { shopId } = useUserContext();
   const abbreviation = useCurrencyAbbreviation({ lang });
 
-
   useEffect(() => {
     const fetchOrders = async () => {
       try {
         const token = localStorage.getItem('accessToken');
-
         setLoading(true);
         const response = await axiosClient.get(`/api/Order/GetAllUserOrders/GetAll/${shopId}`, {
           headers: {
             'Accept-Language': lang,
             'Authorization': `Bearer ${token}`,
-
           },
         });
         setOrders(response.data);
@@ -45,7 +38,9 @@ const MyOrder: React.FC<{ lang: string }> = ({ lang }) => {
         setLoading(false);
       }
     };
+
     fetchOrders();
+
     const storedLogo = localStorage.getItem("logoUrl");
     const storedName = localStorage.getItem("subdomainName");
     if (storedLogo) {
@@ -56,17 +51,19 @@ const MyOrder: React.FC<{ lang: string }> = ({ lang }) => {
 
   return (
     <>
-      <Title title={t('Orders')} className="text-center text-[#404040]  mt-20" />
+      <Title title={t('Orders')} className="text-center text-[#404040] mt-20" />
       {loading ? (
-        <div className="flex justify-center ">
-          <Loader className="animate-spin text-mainColor " />
+        <div className="flex justify-center">
+          <Loader className="animate-spin text-mainColor" />
         </div>
       ) : (
         <>
           {orders.length > 0 ? (
-            <div>
-              <div className="w-5/6 mx-auto mb-10">
-                {orders.map((order) => (
+            <div className="w-5/6 mx-auto mb-10">
+              {orders.map((order) => {
+                const totalQuantity = order.items.reduce((sum, item) => sum + item.quantity, 0);
+
+                return (
                   <Link key={order.id} href={`/${lang}/orders/${order.id}`}>
                     <div className="relative bg-slate-100 hover:bg-Color30 transition-all duration-100 px-4 py-4 border rounded-lg mb-4">
                       <div className="flex justify-between">
@@ -75,46 +72,60 @@ const MyOrder: React.FC<{ lang: string }> = ({ lang }) => {
                           <h2 className="text-mainColor text-sm sm:text-base">{order.orderNumber}</h2>
                         </div>
                         <h3 className="text-mainColor">
-                          {abbreviation && toCurrency(order?.totalPrice as any, lang, abbreviation)}
+                          {abbreviation && toCurrency(order.totalPrice, lang, abbreviation)}
                         </h3>
                       </div>
+
                       <div className="py-5">
                         <div className="flex gap-1 mt-3">
                           <p>{t('order-date')}</p>
                           <span>{new Date(order.createdAt).toLocaleDateString()}</span>
                         </div>
+
                         <div className="flex gap-1 mt-3">
                           <p>{t('total-choice-prices')}</p>
                           <span>
-                            {abbreviation && toCurrency(order?.totalChoicePrices as any, lang, abbreviation)}
+                            {abbreviation && toCurrency(order.totalChoicePrices, lang, abbreviation)}
                           </span>
-
                         </div>
-                        {order.items.map((i, index) => (
-                          <React.Fragment key={index}>
-                            <div className="flex gap-1 mt-3">
-                              <p>{t('quantity')}</p>
-                              <span>{i.quantity}</span>
-                            </div>
-                            <p>{t('items')}</p>
-                            <div className="flex flex-wrap gap-3 mt-3">
-                              <div className="rounded-lg border w-24 h-[115px] border-dashed border-mainColor">
-                                <CustomImage width={300} height={150} className="w-full h-[75%] rounded-t-lg object-cover" src={i.product.images[0]?.imageUrl || ''} alt={i.product.name} />
-                                <span className="truncate-text mt-1 ms-1">
-                                  {i.product.name}
-                                </span>
-                              </div>
-                            </div>
-                            <div className="flex gap-1 mt-3">
-                              <p>{t('item-price')}</p>
-                              <span>
-                                {abbreviation && toCurrency(i?.itemPrice as any, lang, abbreviation)}
 
+                        <div className="flex gap-1 mt-3">
+                          <p>{t('quantity')}</p>
+                          <span>{totalQuantity}</span>
+                        </div>
+
+                        <p className="mt-3">{t('items')}</p>
+                        <div className="flex flex-wrap gap-3 mt-3">
+                          {order.items.map((i, index) => (
+                            <div key={index} className="rounded-lg border w-24 h-[120px] border-dashed border-mainColor">
+                              <CustomImage
+                                width={300}
+                                height={150}
+                                className="w-full h-[60%] rounded-t-lg object-cover"
+                                src={i.product.images[0]?.imageUrl || ''}
+                                alt={i.product.name}
+                              />
+                              <span className="truncate-text mt-1 ms-1">
+                                {i.product.name}
+                                </span>
+                              <span className="truncate-text mt-1 ms-1 pb-1">
+                              {abbreviation && toCurrency(i.itemPrice, lang, abbreviation)}
+                                </span>
+                            </div>
+                          ))}
+                        </div>
+
+                        {/* <div className="flex flex-col gap-3 mt-3">
+                          {order.items.map((i, index) => (
+                            <div key={index} className="flex gap-1">
+                              <p>{t('item-price')}:</p>
+                              <span>
                               </span>
                             </div>
-                          </React.Fragment>
-                        ))}
+                          ))}
+                        </div> */}
                       </div>
+
                       <div className="flex justify-between">
                         <div className="gap-5 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4">
                           <div className="flex w-fit items-center p-2 rounded-lg gap-2 border border-dashed border-mainColor">
@@ -123,7 +134,6 @@ const MyOrder: React.FC<{ lang: string }> = ({ lang }) => {
                           </div>
                         </div>
                         <div className="absolute end-3 bottom-4">
-                          {/* <Image width={60} height={60} src={Logo} alt="logo" /> */}
                           {logoUrl ? (
                             <CustomImage src={logoUrl} width={60} height={60} alt="logo" />
                           ) : (
@@ -133,8 +143,8 @@ const MyOrder: React.FC<{ lang: string }> = ({ lang }) => {
                       </div>
                     </div>
                   </Link>
-                ))}
-              </div>
+                );
+              })}
             </div>
           ) : (
             <div className="w-5/6 m-auto my-10">

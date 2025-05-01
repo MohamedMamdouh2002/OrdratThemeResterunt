@@ -353,9 +353,7 @@ export default function OrderView({ lang }: { lang: string }) {
             </div> */}
           </div>
         </div>
-
- 
-        <div className="space-y-7 pt-8 @container @5xl:col-span-4 @5xl:space-y-10 @5xl:pt-0 @6xl:col-span-3">
+        <div className="space-y-7 pt-8 xl:block hidden @container @5xl:col-span-4 @5xl:space-y-10 @5xl:pt-0 @6xl:col-span-3">
           <WidgetCard
             title={t('Order-Status')}
             childrenWrapperClass="py-5 @5xl:py-8 flex"
@@ -369,14 +367,14 @@ export default function OrderView({ lang }: { lang: string }) {
                       key={item.id}
                       className={cn(
                         "relative ps-6 text-sm font-medium before:absolute before:-start-[11px] before:top-px before:h-5 before:w-5 before:-translate-x-px before:rounded-full before:bg-gray-100 before:content-[''] after:absolute after:-start-px after:top-5 after:h-10 after:w-0.5 after:bg-gray-100 last:after:hidden",
-                        'text-red-500 before:bg-red-500' 
+                        'text-red-500 before:bg-red-500'
                       )}
                     >
-                        
-                        <span className={`absolute ${lang ==='en' ? `-start-2`:`-start-1.5`} top-1 text-white`}>
-                          <FaTimes  className="h-auto w-3" />
-                        </span>
-                    
+
+                      <span className={`absolute ${lang === 'en' ? `-start-2` : `-start-1.5`} top-1 text-white`}>
+                        <FaTimes className="h-auto w-3" />
+                      </span>
+
                       {item.label}
                     </div>
                   ))}
@@ -396,7 +394,7 @@ export default function OrderView({ lang }: { lang: string }) {
                       )}
                     >
                       {(currentOrderStatus ?? 0) >= item.id && item.id !== 0 ? (
-                        <span className={`absolute ${lang ==='en' ? `-start-2`:`-start-[0.40rem]`} top-1 text-white`}>
+                        <span className={`absolute ${lang === 'en' ? `-start-2` : `-start-[0.40rem]`} top-1 text-white`}>
                           <PiCheckBold className="h-auto w-3" />
                         </span>
                       ) : null}
@@ -443,14 +441,14 @@ export default function OrderView({ lang }: { lang: string }) {
             title={t('Shipping-Address')}
             childrenWrapperClass="@5xl:py-6 py-5"
           >
-           {order?.address && (
+            {order?.address && (
               <div key={order.address.id}>
                 <Title as="h3" className="mb-2.5 text-base font-semibold @7xl:text-lg">
                   {t('Apartment')} {order.address.apartmentNumber}
-                  <br/>
+                  <br />
                   {t('Floor')} {order.address.floor}
-                  <br/>
-                   {t('Street')} {order.address.street}, 
+                  <br />
+                  {t('Street')} {order.address.street},
                 </Title>
                 <Text as="p" className="mb-2 leading-loose last:mb-0">
                   {order.address.additionalDirections}

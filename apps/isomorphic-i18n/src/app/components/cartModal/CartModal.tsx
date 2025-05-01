@@ -21,7 +21,7 @@ import useCurrencyAbbreviation, { toCurrency } from '@utils/to-currency';
 const ProgressBar = ({ totalPrice, freeShippingThreshold }: { totalPrice: number; freeShippingThreshold: number; }) => {
     const [progress, setProgress] = useState(0);
     const percentage = Math.min((totalPrice / freeShippingThreshold) * 100, 100);
-
+    
     useEffect(() => {
         // Animate the progress bar when the component mounts
         const timeout = setTimeout(() => {
@@ -52,6 +52,7 @@ const ProgressBar = ({ totalPrice, freeShippingThreshold }: { totalPrice: number
 
 const FreeShippingMessage = ({ totalPrice, freeShippingThreshold, lang }: { totalPrice: number; freeShippingThreshold: number; lang: string; }) => {
     const { t } = useTranslation(lang, 'home');
+    const abbreviation = useCurrencyAbbreviation({ lang: lang });
     const remainingAmount = Math.max(freeShippingThreshold - totalPrice, 0);
 
     return (
@@ -60,7 +61,9 @@ const FreeShippingMessage = ({ totalPrice, freeShippingThreshold, lang }: { tota
                 <>
                     {t('spend')} {" "}
                     <span className="text-red-500 font-bold">
-                        {remainingAmount.toLocaleString()} <span>{t('currency')}</span>
+          {abbreviation && toCurrency(remainingAmount.toLocaleString(), lang, abbreviation)}
+
+                        {/* {remainingAmount.toLocaleString()} <span>{t('currency')}</span> */}
                     </span>{" "}
                     {t('more_to_reach')} <strong>{t('free_shipping')}</strong>
                 </>

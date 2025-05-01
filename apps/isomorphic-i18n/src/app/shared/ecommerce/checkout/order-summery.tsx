@@ -67,14 +67,17 @@ export default function OrderSummery({
 
   const storedVat = typeof window !== "undefined" ? Number(localStorage.getItem("vat")) || 0 : 0;
   const storedVatType = typeof window !== "undefined" ? Number(localStorage.getItem("vatType")) || 0 : 0;
+  const freeShppingTarget = typeof window !== "undefined" ? Number(localStorage.getItem("freeShppingTarget")) || 0 : 0;
 
   const taxValue = storedVatType === 0
     ? (storedVat / 100) * total
     : storedVat;
 
 
-  const totalWithFees = total + taxValue + fees;
-
+    const isFreeShipping = total >= freeShppingTarget;
+    const shippingFees = isFreeShipping ? 0 : fees;
+    
+    const totalWithFees = total + taxValue + shippingFees;
   const discount =
     discountType === 0
       ? (Number(discountValue) / 100) * totalWithFees
@@ -178,7 +181,8 @@ export default function OrderSummery({
               //   return <span>{abbreviation&&toCurrency(mainBranch?.deliveryCharge ?? 0, lang as any,abbreviation)}</span>;
               // }
               // else {
-                return <span>{abbreviation&&toCurrency(fees, lang as any,abbreviation)}</span>;
+              
+                return <span style={{ textDecoration: isFreeShipping ? 'line-through' : 'none' }}>{abbreviation&&toCurrency(fees, lang as any,abbreviation)}</span>;
               // }
             })()}
 
