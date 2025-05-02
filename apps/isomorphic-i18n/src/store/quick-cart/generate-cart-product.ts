@@ -17,5 +17,7 @@ export function generateCartProduct(product: CartProduct): CartItem {
     quantity: 1,
     size: product.size,
     color: product.color,
+    hasStock: false,
+    stockNumber: 0,
   };
 }
