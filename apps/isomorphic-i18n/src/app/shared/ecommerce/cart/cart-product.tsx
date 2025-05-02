@@ -45,8 +45,8 @@ function parseProductData(productString: string) {
 }
 
 export default function CartProduct({ product, lang , ifModal=false }: { product: CartItem; lang?:string; ifModal:boolean }) {
-  console.log("product: ",product);
-  console.log("data: ",parseProductData(product.id as string));
+  // console.log("product: ",product);
+  // console.log("data: ",parseProductData(product.id as string));
   const realProductData = parseProductData(product.id as string);
   const abbreviation = useCurrencyAbbreviation({ lang } as any);
 

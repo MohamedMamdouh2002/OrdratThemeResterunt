@@ -36,6 +36,39 @@ import { useTranslation } from '@/app/i18n/client';
 import CustomImage from '../CustomImage';
 import { useTracking } from '../../context/TrackingContext';
 
+
+function parseProductData(productString: string) {
+  const dataPairs = productString.split('&&');
+
+  const productData: Record<string, string> = {};
+
+  dataPairs.forEach(pair => {
+    const [key, value] = pair.split(':');
+    productData[key] = value;
+  });
+
+  return {
+    id: productData['id'],
+    nameAr: productData['nameAr'],
+    nameEn: productData['nameEn'],
+    descriptionEn: productData['descriptionEn'],
+    descriptionAr: productData['descriptionAr'],
+    metaDescriptionEn: productData['metaDescriptionEn'],
+    metaDescriptionAr: productData['metaDescriptionAr'],
+    variations: Object.keys(productData)
+      .filter(key => key.startsWith('variations['))
+      .reduce<Record<string, any>>((acc, key) => {
+        const match = key.match(/variations\[(.+?)\]\.(.+)/);
+        if (match) {
+          const [, variationId, field] = match;
+          acc[variationId] = acc[variationId] || { id: variationId };
+          acc[variationId][field] = productData[key];
+        }
+        return acc;
+      }, {})
+  };
+}
+
 // Type definitions remain the same as in your original code
 interface Variation {
   id: string;
@@ -114,7 +147,7 @@ function Modal({
   const { t } = useTranslation(lang!, 'home');
   const abbreviation = useCurrencyAbbreviation({ lang });
   const { GetProduct } = useUserContext();
-  const { addItemToCart } = useCart();
+  const { addItemToCart, items } = useCart();
   const [isImageVisible, setImageVisible] = useState(true);
   const [isScrolled, setIsScrolled] = useState(false);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
@@ -124,6 +157,9 @@ function Modal({
   const swiperRefs = useRef<{ [key: string]: SwiperType | null }>({});
   const [randomViewers, setRandomViewers] = useState<number | null>(null);
   const { trackAddToCart } = useTracking();
+  const [totalSoldQuantity, setTotalSoldQuantity] = useState<number>(0);
+
+console.log("totalSoldQuantity: ",totalSoldQuantity);
 
   // // Fetch fake data
   // useEffect(() => {
@@ -241,6 +277,21 @@ function Modal({
       }
 
       console.log("id الحالي:", data);
+      console.log("items الحالي:", items);
+      setTotalSoldQuantity(0);
+      let totalQuantity = 0;
+      if (data.hasStock) {
+        items.forEach((item) => {
+          const realProductData = parseProductData(item.id as string);
+          if (realProductData.id === data.id) {
+            totalQuantity += item.quantity;
+          }
+        });
+        setTotalSoldQuantity(totalQuantity);
+      
+        console.log(`✅ Total quantity sold for product ${data.id}:`, totalSoldQuantity);
+        console.log(`✅ Total quantity - totalSoldQuantity ${data.id}:`, totalSoldQuantity - quantity);
+      }
       // const data = await GetProduct({ lang, id: productIdToFetch });
       const formattedData: any = {
         id: data.id,
@@ -338,7 +389,9 @@ function Modal({
         slug: formattedData.name,
         description: formattedData.description,
         imageUrl: formattedData.imageUrl,
-        isDiscountActive: data.isDiscountActive,
+        isDiscountActive: formattedData.isDiscountActive,
+        stockNumber: formattedData.stockNumber,
+        hasStock: formattedData.hasStock,
         price: formattedData.price,
         quantity: 1,
         sizeFood: "small",
@@ -449,8 +502,8 @@ function Modal({
       isDiscountActive: isDiscount,
       price: (prodId.price + selectedChoicePrices) || 0,
       oldPrice: (prodId.oldPrice + selectedChoicePrices) || 0,
-      // stockNumber: prodId?.stockNumber,
-      // hasStock: prodId.hasStock,
+      stockNumber: prodId?.stockNumber,
+      hasStock: prodId.hasStock,
       quantity,
       notes: notes || "",
       orderItemVariations: prodId.variations.map((variation: Variation) => {
@@ -501,12 +554,23 @@ function Modal({
     if (prodId.variations.length === 0) {
       isItemAdded = true;
     }
+    const remainingStock = prodId.stockNumber - totalSoldQuantity;
 
     if (isItemAdded) {
-      addItemToCart(cartItem, quantity);
-      handleClose();
-      toast.success(t("addtoCart"));
-    }
+      const remainingStock = prodId.stockNumber - totalSoldQuantity;
+    
+      if (!prodId.hasStock || (remainingStock > 0 && remainingStock - quantity >= 0)) {
+        addItemToCart(cartItem, quantity);
+        console.log("✅ Stock:", prodId.stockNumber, "Sold:", totalSoldQuantity, "Qty:", quantity, "Remaining after:", remainingStock - quantity);
+    
+        setTotalSoldQuantity(0);
+        setQuantity(1);
+        handleClose();
+        toast.success(t("addtoCart"));
+      } else {
+        console.warn("❌ Not enough stock to proceed.");
+      }
+    }    
   };
 
 
@@ -612,7 +676,10 @@ function Modal({
                           <h3 className="text-xl font-bold leading-10">{prodId?.name}</h3>
                           <p className="text-sm font-medium text-black/75">{prodId?.description}</p>
                           <SpecialNotes lang={lang!} notes={notes} setNotes={setNotes} className="gap-2" />
-                          {prodId.stockNumber}
+                          
+                          {prodId.hasStock && (prodId.stockNumber - totalSoldQuantity - quantity > 0) && (
+                            <>{prodId.stockNumber - totalSoldQuantity - quantity}</>
+                          )}
 
                           <div className="mt-3 space-y-1 text-sm text-gray-700">
                             {FakeData?.isFakeViewersAvailable &&
