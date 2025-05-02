@@ -60,8 +60,8 @@ export interface CartItem {
   isDiscountActive?: boolean
   quantity: number;
   discount?: number;
-  // stockNumber: number,
-  // hasStock: boolean,
+  stockNumber: number,
+  hasStock: boolean,
   // Variations
   // Order-related information
   specialInstructions?: string;
