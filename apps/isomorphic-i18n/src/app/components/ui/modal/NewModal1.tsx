@@ -196,6 +196,8 @@ function Modal({
             sizeFood: "small",
             discount: prodCartItem.discount,
             stock: 10,
+            hasStock: false,
+            stockNumber: 0
         };
 
         addItemToCart(cartItem, quantity);
@@ -269,6 +271,8 @@ function Modal({
             oldPrice: prodId?.oldPrice || 0,
             quantity,
             notes: notes || "",
+            hasStock: false,
+            stockNumber: 0,
             orderItemVariations: prodId?.variations.map((variation: Variation) => {
                 const variationData = data[variation.id];
 
