@@ -411,7 +411,7 @@ function Modal({
                                                                                     <span className="text-black/75">{t('Choose1')}</span>
                                                                                     {/* PC Product Variation choice */}
                                                                                     <div className='mt-2'>
-                                                                                        <GetRadio name={variation.id} options={options} />
+                                                                                        <GetRadio lang={lang} name={variation.id} options={options} />
                                                                                     </div>
                                                                                 </div>
                                                                             </div>
@@ -742,7 +742,7 @@ function Modal({
                                                                         </div>
                                                                         <span className="text-black/75">{t('Choose1')}</span>
                                                                         <div>
-                                                                            <GetRadio name={variation.id} options={options} />
+                                                                            <GetRadio lang={lang} name={variation.id} options={options} />
                                                                         </div>
                                                                     </div>
                                                                 </div>
