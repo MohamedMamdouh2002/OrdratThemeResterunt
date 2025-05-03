@@ -6,10 +6,11 @@ type Props = {
 	quantity: number;
 	setQuantity: React.Dispatch<React.SetStateAction<number>>;
 	type?: string;
+	plusClassName?: string;
 	className?: string;
 };
 
-function QuantityHandler({ quantity, setQuantity, type, className }: Props) {
+function QuantityHandler({ quantity, setQuantity, type, className, plusClassName}: Props) {
 	return (
 		<div
 			className={cn(
@@ -33,8 +34,8 @@ function QuantityHandler({ quantity, setQuantity, type, className }: Props) {
 				</button>
 			)}
 			<span>{quantity}</span>
-			<button type='button' onClick={() => setQuantity(prev => prev + 1)}>
-				<Plus className={cn({ 'text-mainColor': true })} size={type === 'cart' ? 16 : undefined} />
+			<button type='button'  className={plusClassName} onClick={() => setQuantity(prev => prev + 1)}>
+				<Plus  size={type === 'cart' ? 16 : undefined} />
 			</button>
 		</div>
 	);

@@ -3,6 +3,8 @@
 import { Controller, useFormContext } from 'react-hook-form';
 import { AdvancedRadio, FieldError, RadioGroup } from 'rizzui';
 import cn from '@utils/class-names';
+import { useTranslation } from '@/app/i18n/client';
+import { useEffect } from 'react';
 
 type Option = {
   label: string | JSX.Element;
@@ -11,15 +13,19 @@ type Option = {
 
 interface GetRadioProps {
   name: string;
+  lang: string;
   options: Option[];
 }
 
-export default function GetRadio({ name, options }: GetRadioProps) {
+export default function GetRadio({lang, name, options }: GetRadioProps) {
   const {
     control,
     formState: { errors },
   } = useFormContext();
-
+  const { t, i18n } = useTranslation(lang!, 'form');
+  useEffect(() => {
+    i18n.changeLanguage(lang);
+  }, [lang, i18n]);
   return (
     <>
       <Controller
@@ -61,7 +67,7 @@ export default function GetRadio({ name, options }: GetRadioProps) {
       {errors?.[name] && (
         <FieldError
           className="mt-1"
-          error={errors?.[name]?.message as string}
+          error={t(errors?.[name]?.message as string)}
         />
       )}
     </>

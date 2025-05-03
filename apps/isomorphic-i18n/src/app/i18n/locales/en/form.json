@@ -15,6 +15,7 @@
   "form-password-placeholder": "Enter your password",
   "form-confirm-password": "Confirm Password",
   "form-confirm-password-placeholder": "Enter your confirm password",
+  "form-product-variant-radio-required": "You must choose",
   "form-subscribe": "Subscribe",
   "form-from": "From",
   "form-update": "Update",

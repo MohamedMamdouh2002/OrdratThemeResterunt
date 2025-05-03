@@ -20,7 +20,7 @@ function ItemPrice({ type, action, price, oldPrice, className, buttonType }: Pro
 				type={type}
 				mainItem={true}
 				action={action}
-				className='w-full py-3 '
+				className={`w-full py-3 ${className}`}
 				price={price}
 				oldPrice={oldPrice}
 				buttonType={buttonType}

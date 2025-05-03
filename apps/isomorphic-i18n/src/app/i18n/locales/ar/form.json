@@ -68,6 +68,7 @@
   "form-shipping-price": "سعر الشحن",
   "form-shipping-charge": "رسوم الشحن",
   "form-shipping-charge-placeholder": "150.00",
+  "form-product-variant-radio-required": "يجب ان تختار",
   "form-location-based-shipping": "الشحن على أساس الموقع",
   "form-sender-info": "معلومات المرسل",
   "form-recipients-info": "معلومات المستلمين",

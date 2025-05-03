@@ -71,4 +71,5 @@ export const messages = {
   roleNameLengthMin: 'form-role-name-must-3-letters',
   errorSendingEmail: 'form-error-sending-email',
   emailSentSuccessfully: 'form-your-email-sent-successfully',
+  variantRadioIsRequired: "form-product-variant-radio-required",
 };

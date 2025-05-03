@@ -19,11 +19,11 @@ const getSchemaByButtonType = (buttonType: number, isOptional: boolean) => {
   const schema = (() => {
     switch (buttonType) {
       case 0: // Radio
-        return z.string().nonempty("Radio is required");
+        return z.string({ required_error: messages.variantRadioIsRequired }).nonempty(messages.variantRadioIsRequired);
       case 1: // Dropdown
-        return z.string().min(1, "Dropdown selection is required");
+        return z.string({ required_error: messages.variantRadioIsRequired }).min(1, "Dropdown selection is required");
       case 2: // Checkbox
-        return z.string().min(1, "Selection is required");
+        return z.string({ required_error: messages.variantRadioIsRequired }).min(1, "Selection is required");
       case 3: // Input
         return z.string().min(1, "Input is required");
       case 4: // PhoneNumber

@@ -145,6 +145,7 @@ function Modal({
   const [isLoading, setLoading] = useState(false);
   const [notes, setNotes] = useState('');
   const { t } = useTranslation(lang!, 'home');
+  const errorMassages = useTranslation(lang!, 'form');
   const abbreviation = useCurrencyAbbreviation({ lang });
   const { GetProduct } = useUserContext();
   const { addItemToCart, items } = useCart();
@@ -677,9 +678,9 @@ console.log("totalSoldQuantity: ",totalSoldQuantity);
                           <p className="text-sm font-medium text-black/75">{prodId?.description}</p>
                           <SpecialNotes lang={lang!} notes={notes} setNotes={setNotes} className="gap-2" />
                           
-                          {prodId.hasStock && (prodId.stockNumber - totalSoldQuantity - quantity > 0) && (
+                          {/* {prodId.hasStock && (prodId.stockNumber - totalSoldQuantity - quantity > 0) && (
                             <>{prodId.stockNumber - totalSoldQuantity - quantity}</>
-                          )}
+                          )} */}
 
                           <div className="mt-3 space-y-1 text-sm text-gray-700">
                             {FakeData?.isFakeViewersAvailable &&
@@ -770,7 +771,7 @@ console.log("totalSoldQuantity: ",totalSoldQuantity);
                                       <span className="text-black/75">{t('Choose1')}</span>
                                       {/* PC Product Variation choice */}
                                       <div className='mt-2'>
-                                        <GetRadio name={variation.id} options={options} />
+                                        <GetRadio lang={lang} name={variation.id} options={options} />
                                       </div>
                                     </div>
                                   </div>
@@ -803,8 +804,7 @@ console.log("totalSoldQuantity: ",totalSoldQuantity);
                                               ...field,
                                               value: typeof field.value === "string" ? field.value : "",
                                             }}
-
-                                            error={String(methods.formState.errors[variation.id]?.message || '')}
+                                            error={errorMassages.t(String(methods.formState.errors[variation.id]?.message || ''))}
                                             placeholder={variation.name}
                                           />
                                         )}
@@ -998,7 +998,7 @@ console.log("totalSoldQuantity: ",totalSoldQuantity);
 
                     <div className="grid grid-cols-3 justify-between items-center gap-5 p-3 bg-white w-full">
                       <div className={cn('bg-white rounded-bl-lg col-span-1 secShadow rtl:rounded-br-lg h-full', { 'rtl:rounded-bl-none': hasMoreDetails })}>
-                        <QuantityHandler quantity={quantity} setQuantity={setQuantity} className='w-full h-full rounded-lg' />
+                        <QuantityHandler quantity={quantity} plusClassName={`${!prodId.hasStock || (prodId.stockNumber - totalSoldQuantity > 0 && prodId.stockNumber - totalSoldQuantity - quantity >= 0) ? 'text-mainColor':'cursor-no-drop text-Color30 pointer-events-none'}`}  setQuantity={setQuantity} className='w-full h-full rounded-lg' />
                       </div>
                       <div className={'col-span-2'}>
                         <ItemPrice
@@ -1009,9 +1009,10 @@ console.log("totalSoldQuantity: ",totalSoldQuantity);
                           buttonType="submit"
                           price={abbreviation && toCurrency(finalPrice, lang, abbreviation)}
                           oldPrice={finalOldPrice ? abbreviation && toCurrency(finalOldPrice, lang, abbreviation) : ''}
-                          className={cn('rounded-none rounded-br-lg rtl:rounded-bl-lg rtl:rounded-br-none', { 'rounded-br-none rtl:rounded-bl-none': hasMoreDetails })}
+                          className={`${!prodId.hasStock || (prodId.stockNumber - totalSoldQuantity > 0 && prodId.stockNumber - totalSoldQuantity - quantity >= 0) ? '':'cursor-no-drop bg-slate-400'}`}
                         />
                       </div>
+
                     </div>
                   </div>
                 </div>
@@ -1163,7 +1164,7 @@ console.log("totalSoldQuantity: ",totalSoldQuantity);
                                     </div>
                                     <span className="text-black/75">{t('Choose1')}</span>
                                     <div>
-                                      <GetRadio name={variation.id} options={options} />
+                                      <GetRadio lang={lang} name={variation.id} options={options} />
                                     </div>
                                   </div>
                                 </div>
@@ -1194,7 +1195,7 @@ console.log("totalSoldQuantity: ",totalSoldQuantity);
                                             ...field,
                                             value: typeof field.value === "string" ? field.value : "", // Ensure field.value is a string
                                           }}
-                                          error={String(methods.formState.errors[variation.id]?.message || '')}
+                                          error={errorMassages.t(String(methods.formState.errors[variation.id]?.message || ''))}
                                           placeholder={variation.name}
                                         />
                                       )}
@@ -1393,7 +1394,7 @@ console.log("totalSoldQuantity: ",totalSoldQuantity);
                 <div className="fixed bottom-0 left-0 right-0 p-5 secShadow bg-white rounded-b-lg z-[10001]">
                   <div className="grid grid-cols-3 justify-between items-center gap-5 w-full">
                     <div className={cn('bg-white rounded-bl-lg col-span-1 secShadow rtl:rounded-br-lg h-full', { 'rtl:rounded-bl-none': hasMoreDetails })}>
-                      <QuantityHandler quantity={quantity} setQuantity={setQuantity} className='w-full h-full rounded-lg' />
+                      <QuantityHandler plusClassName={`${!prodId.hasStock || (prodId.stockNumber - totalSoldQuantity > 0 && prodId.stockNumber - totalSoldQuantity - quantity >= 0) ? 'text-mainColor':'cursor-no-drop text-Color30 pointer-events-none'}`} quantity={quantity} setQuantity={setQuantity} className='w-full h-full rounded-lg' />
                     </div>
                     <div className={'col-span-2'}>
                       <ItemPrice
@@ -1401,8 +1402,8 @@ console.log("totalSoldQuantity: ",totalSoldQuantity);
                         buttonType="submit"
                         price={abbreviation && toCurrency(finalPrice, lang, abbreviation)}
                         oldPrice={finalOldPrice ? abbreviation && toCurrency(finalOldPrice, lang, abbreviation) : ''}
-                        className={cn('rounded-none rounded-br-lg rtl:rounded-bl-lg rtl:rounded-br-none', { 'rounded-br-none rtl:rounded-bl-none': hasMoreDetails })}
-                      />
+                        className={`${!prodId.hasStock || (prodId.stockNumber - totalSoldQuantity > 0 && prodId.stockNumber - totalSoldQuantity - quantity >= 0) ? '':'cursor-no-drop  bg-slate-400'}`}
+                        /> 
                     </div>
                   </div>
                 </div>
