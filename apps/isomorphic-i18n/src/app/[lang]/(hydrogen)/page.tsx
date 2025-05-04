@@ -1,6 +1,6 @@
 import Footer from "@/app/components/footer/Footer";
 import Grills from "@/app/components/grills/Grills";
-import Header from "@/app/components/header/Header";
+import HeaderData from "@/app/components/header/HeaderData";
 import HomeSchema from "@/app/components/HomeSchema";
 import MainSlider from "@/app/components/mainSlider/MainSlider";
 import NavMobile from "@/app/components/navMobile/NavMobile";
@@ -35,13 +35,13 @@ export default async function FileDashboardPage({
           shopName={headerData.shopName}
           description={headerData.description}
         />
+        
         <RestaurantTitle lang={lang} logoUrl={headerData.logoUrl} shopId={headerData.shopId}
           shopName={headerData.shopName}
           background={headerData.backgroundUrl} rate={headerData.rate} description={headerData.description}
           coupon={coupons} branch={branches} />
-
         <NavMobile lang={lang!} HomeData={ProductData} />
-        <Header lang={lang} logoUrl={headerData.logoUrl} shopId={headerData.shopId} description={headerData.description}
+        <HeaderData  lang={lang} logoUrl={headerData.logoUrl} shopId={headerData.shopId} description={headerData.description}
           shopName={headerData.shopName}
           backgroundUrl={headerData.backgroundUrl} />
         <MainSlider banner={banner} />

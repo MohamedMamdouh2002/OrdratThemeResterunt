@@ -18,7 +18,6 @@ import {
   PiMagnifyingGlassDuotone,
 } from "react-icons/pi";
 import { IoSearchOutline } from "react-icons/io5";
-
 import HeaderMenuLeft from "@/layouts/lithium/lithium-menu";
 import Sidebar from "@/layouts/hydrogen/sidebar";
 import StickyHeader from "@/layouts/sticky-header";

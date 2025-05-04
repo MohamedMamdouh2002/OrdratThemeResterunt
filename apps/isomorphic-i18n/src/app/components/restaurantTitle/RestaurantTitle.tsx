@@ -147,11 +147,9 @@ function RestaurantTitle({
                 </div>
                 <div className="flex gap-3 me-5">
                     <Info size={16}
-
                         onClick={() => setModal(true)}
                         className="cursor-pointer text-base relative z-10"
                     />
-
                 </div>
             </div>
             <div className="flex flex-col  w-5/6 mx-auto py-5  z-10 rounded-lg">

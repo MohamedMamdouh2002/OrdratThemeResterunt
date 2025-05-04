@@ -7,7 +7,7 @@ import Link from 'next/link'
 import CustomImage from '../ui/CustomImage'
 import { useTranslation } from '@/app/i18n/client'
 
-function Header({ lang, logoUrl, shopName, backgroundUrl,shopId, description }: {
+function HeaderData({ lang, logoUrl, shopName, backgroundUrl,shopId, description }: {
   lang?: string
   logoUrl: string ;
   shopName: string;
@@ -81,4 +81,4 @@ function Header({ lang, logoUrl, shopName, backgroundUrl,shopId, description }: 
   );
 }
 
-export default Header;
+export default HeaderData;
