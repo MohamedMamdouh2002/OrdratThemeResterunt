@@ -7,13 +7,13 @@ import Link from 'next/link'
 import CustomImage from '../ui/CustomImage'
 import { useTranslation } from '@/app/i18n/client'
 
-function Header({ lang, logoUrl, shopName, background,shopId, description }: {
+function Header({ lang, logoUrl, shopName, backgroundUrl,shopId, description }: {
   lang?: string
-  logoUrl: string | null;
-  shopName: string | null;
-  description: string | null;
-  background: string | null;
-  shopId: string | null;
+  logoUrl: string ;
+  shopName: string;
+  description: string ;
+  backgroundUrl: string ;
+  shopId: string;
 }) {
   // const [shopName, setShopName] = useState<string | null>(null);
   // const [shopLogo, setShopLogo] = useState<any | null>('');
@@ -23,7 +23,9 @@ function Header({ lang, logoUrl, shopName, background,shopId, description }: {
 
   useEffect(() => {
     i18n.changeLanguage(lang);
-   
+    console.log("Background URL:", backgroundUrl);
+    console.log("Header props:", { shopName, logoUrl, backgroundUrl, description });
+
   }, [lang, i18n]);
 
 
@@ -31,7 +33,7 @@ function Header({ lang, logoUrl, shopName, background,shopId, description }: {
     <>
       <div
         style={{
-          backgroundImage: background ? `url(${background})` : "none",
+          backgroundImage: backgroundUrl ? `url(${backgroundUrl})` : "none",
           backgroundSize: "cover",
           backgroundPosition: "center center",
           backgroundRepeat: "no-repeat",
@@ -57,10 +59,12 @@ function Header({ lang, logoUrl, shopName, background,shopId, description }: {
             )}
           </div>
           <h1 className="text-2xl text-white lg:text-3xl xl:text-5xl font-bold">
-            {lang==='ar' ?'اهلا بكم':'Welcome to'}{" "} {shopName && shopName}
+            {lang==='ar' ?'اهلا بكم':'Welcome to'}{" "} 
+            {/* <pre className="text-white">{JSON.stringify({ shopName }, null, 2)}</pre> */}
+{shopName}
           </h1>
           <p className="text-sm text-white lg:text-lg xl:text-xl font-normal my-4 ">
-            {description&&description}
+            {description}
           </p>
           <Link href={`/${lang}/search`}>
             <button className="w-32 h-10 bg-mainColor hover:bg-mainColorHover rounded-md text-white">

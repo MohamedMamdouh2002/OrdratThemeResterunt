@@ -1,13 +1,13 @@
 import { NextResponse } from "next/server";
 
-async function fetchSubdomain(subdomain: string) {
+async function fetchSubdomain(subdomain: string, lang: string) {
   try {
     const res = await fetch(
       `https://testapi.ordrat.com/api/Shop/GetBySubdomain/${subdomain}`,
       {
         headers: {
           Accept: "/",
-          "Accept-Language": "en",
+          "Accept-Language": lang,
         },
       }
     );
@@ -75,7 +75,7 @@ function getServerSiteUrl() {
 
 export default async function ServerHeaderData(lang: string = "en") {
   const realPath = getServerSiteUrl();
-  const subdomainData = await fetchSubdomain(realPath);
+  const subdomainData = await fetchSubdomain(realPath, lang);
 
   if (!subdomainData || !subdomainData.id) {
     console.error("Failed to fetch subdomain data");

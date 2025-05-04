@@ -276,56 +276,56 @@ export default async function RootLayout({
       showTrialModal = true;
     }
     // Check if the shop is not active
-    if (!isActive) {
-      return (
+    // if (!isActive) {
+    //   return (
 
-        <div className="min-h-screen w-screen flex items-center justify-center bg-[#E3E3E5] text-center">
-          <div className="p-6 w-screen ">
-            <div className="w-44 mb-3 mx-auto">
-              <a href='https://ordrat.com' target='_blank' className="">
-                <Image width={100} height={70} src={logo} className='w-full h-full' alt='اوردرات - أفضل منصة إنشاء متجر إلكتروني ومنيو باركود احترافي' />
-              </a>
-            </div>
-            <h1 className="md:text-4xl text-2xl font-bold text-red-500 mb-4">المتجر غير مفعل</h1>
-            <p className="text-mainColorHover md:text-2xl text-lg font-medium mb-2">
-              نعتذر عن عدم الوصول لعدم تجديد الاشتراك من قبل المالك
-            </p>
-            <p className="text-mainColorHover bg-white  md:px-40 px-5 w-fit my-2 mx-auto rounded-lg  md:py-5 py-4 text-2xl font-medium mb-2">
-              {" "}   {realPath || ''} {" "}
+    //     <div className="min-h-screen w-screen flex items-center justify-center bg-[#E3E3E5] text-center">
+    //       <div className="p-6 w-screen ">
+    //         <div className="w-44 mb-3 mx-auto">
+    //           <a href='https://ordrat.com' target='_blank' className="">
+    //             <Image width={100} height={70} src={logo} className='w-full h-full' alt='اوردرات - أفضل منصة إنشاء متجر إلكتروني ومنيو باركود احترافي' />
+    //           </a>
+    //         </div>
+    //         <h1 className="md:text-4xl text-2xl font-bold text-red-500 mb-4">المتجر غير مفعل</h1>
+    //         <p className="text-mainColorHover md:text-2xl text-lg font-medium mb-2">
+    //           نعتذر عن عدم الوصول لعدم تجديد الاشتراك من قبل المالك
+    //         </p>
+    //         <p className="text-mainColorHover bg-white  md:px-40 px-5 w-fit my-2 mx-auto rounded-lg  md:py-5 py-4 text-2xl font-medium mb-2">
+    //           {" "}   {realPath || ''} {" "}
 
-            </p>
-            <p className="text-mainColorHover md:text-2xl text-lg font-medium mb-4">
-              اذا كنت المالك وحدثت المشكلة يمكنك الدخول لحسابك من هنا
-              وتجديد الاشتراك
-            </p>
-            <button
-              className="bg-[#E84654] font-bold w-fit px-5 my-2 mx-auto py-3 text-white rounded-lg"
-            >
-              تجديد الاشتراك
-            </button>
+    //         </p>
+    //         <p className="text-mainColorHover md:text-2xl text-lg font-medium mb-4">
+    //           اذا كنت المالك وحدثت المشكلة يمكنك الدخول لحسابك من هنا
+    //           وتجديد الاشتراك
+    //         </p>
+    //         <button
+    //           className="bg-[#E84654] font-bold w-fit px-5 my-2 mx-auto py-3 text-white rounded-lg"
+    //         >
+    //           تجديد الاشتراك
+    //         </button>
 
-            <p className="text-mainColorHover md:text-xl text-base font-medium my-2">
-              او قم بالتواصل مع الدعم الفنى عبر احد القنوات
-            </p>
+    //         <p className="text-mainColorHover md:text-xl text-base font-medium my-2">
+    //           او قم بالتواصل مع الدعم الفنى عبر احد القنوات
+    //         </p>
 
-            <div className="flex justify-center items-center gap-5 mt-4 mx-2">
-              <a
-                href="https://wa.me/201069937931"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <FontAwesomeIcon icon={faWhatsapp} className='md:text-xl text-2xl md:w-10 w-8 text-green-500' />
-              </a>
+    //         <div className="flex justify-center items-center gap-5 mt-4 mx-2">
+    //           <a
+    //             href="https://wa.me/201069937931"
+    //             target="_blank"
+    //             rel="noopener noreferrer"
+    //           >
+    //             <FontAwesomeIcon icon={faWhatsapp} className='md:text-xl text-2xl md:w-10 w-8 text-green-500' />
+    //           </a>
 
-              <a href="https://www.facebook.com/ordratofficial/">
+    //           <a href="https://www.facebook.com/ordratofficial/">
 
-                <FontAwesomeIcon icon={faSquareFacebook} className='md:text-xl text-2xl md:w-10 w-8 text-blue-500' />
-              </a>
-            </div>
-          </div>
-        </div>
-      );
-    }
+    //             <FontAwesomeIcon icon={faSquareFacebook} className='md:text-xl text-2xl md:w-10 w-8 text-blue-500' />
+    //           </a>
+    //         </div>
+    //       </div>
+    //     </div>
+    //   );
+    // }
 
     branchZones = await fetchBranchZones(shopId.id);
 

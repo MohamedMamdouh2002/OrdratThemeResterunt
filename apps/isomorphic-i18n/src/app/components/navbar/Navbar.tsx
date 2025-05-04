@@ -46,7 +46,7 @@ function Navbar({ className, lang }: { className?: string, lang?: string }) {
         };
     }, []);
     useEffect(() => {
-        console.log('Current shopId:', shopId);
+        // console.log('Current shopId:', shopId);
       }, [shopId]);
       
     useEffect(() => {

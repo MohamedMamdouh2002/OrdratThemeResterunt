@@ -55,7 +55,7 @@ function RestaurantTitle({
 }) {
     const { t, i18n } = useTranslation(lang!, 'nav');
     const abbreviation = useCurrencyAbbreviation({ lang } as any);
-    console.log("logoUrl: ", logoUrl);
+    // console.log("logoUrl: ", logoUrl);
     const [modal, setModal] = useState(false);
     useEffect(() => {
         if (modal) {

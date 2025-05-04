@@ -43,7 +43,7 @@ export default async function FileDashboardPage({
         <NavMobile lang={lang!} HomeData={ProductData} />
         <Header lang={lang} logoUrl={headerData.logoUrl} shopId={headerData.shopId} description={headerData.description}
           shopName={headerData.shopName}
-          background={headerData.backgroundUrl} />
+          backgroundUrl={headerData.backgroundUrl} />
         <MainSlider banner={banner} />
         <Grills lang={lang} HomeData={ProductData} shopId={headerData.shopId as string} initialPage={page} pageSize={pageSize} />
         <Footer lang={lang} />
