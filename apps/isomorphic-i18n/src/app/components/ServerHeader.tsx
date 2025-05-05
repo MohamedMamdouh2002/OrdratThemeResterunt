@@ -43,9 +43,7 @@ async function fetchShopData(shopId: string, lang: string) {
     if (!res.ok) {
       throw new Error("Failed to fetch shop details");
     }
-
     const shopData = await res.json();
-
     return {
       logoUrl: shopData.logoUrl || "",
       subdomainName: lang === 'ar' ? shopData.nameAr : shopData.nameEn || "",
