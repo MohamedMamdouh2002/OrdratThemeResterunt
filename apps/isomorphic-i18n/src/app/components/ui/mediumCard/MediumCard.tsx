@@ -5,16 +5,16 @@ import Modal from '../modal/Modal';
 import Badge from '../Badge';
 import { Star, Flame } from 'lucide-react';
 import TextTruncate from '../../ui/TruncateText';
-import useCurrencyAbbreviation, { toCurrency } from '@utils/to-currency';
 import photo from '@public/assets/شاورما-عربي-لحمة-768x768.png'
 import hamburger from '@public/assets/hamburger.png'
 import potato from '@public/assets/شاورما-عراقي-لحمة-مع-بطاطا.png'
 import { AnimatePresence } from 'framer-motion';
+import ServerHeaderData from '../../ServerHeader';
 type Props = Food & {
   lang: string;
   ProductData?: any
   FakeData?: any
-
+  currencyName?:string
   setCurrentItem: Dispatch<
     SetStateAction<{
       type?: string;
@@ -23,11 +23,12 @@ type Props = Food & {
   >;
 };
 
-function MediumCard(data: Props) {
+ function MediumCard(data: Props) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [quantity, setQuantity] = useState(1);
-  const abbreviation = useCurrencyAbbreviation({ lang: data.lang });
+  // const abbreviation = useCurrencyAbbreviation({ lang: data.lang });
   const [currentModalProductId, setCurrentModalProductId] = useState<string | null>(null);
+  // const headerData = await ServerHeaderData(data.lang);
 
   const handleOpenModal = (id: string) => {
     // تعيين معرف المنتج الأولي
@@ -61,11 +62,14 @@ function MediumCard(data: Props) {
             <TextTruncate text={data.lang === 'ar' ? data.descriptionAr : data.descriptionEn} limit={10} />
             <div className="mt-2 flex items-center font-semibold text-mainColor absolute bottom-2">
               <span>
-                {abbreviation && toCurrency(data.finalPrice, data.lang, abbreviation)}
+              {data.finalPrice}{" "}{data.currencyName}
+                {/* {abbreviation && toCurrency(data.finalPrice, data.lang, abbreviation)} */}
               </span>
               {data.isDiscountActive ===true  && (
                 <del className="ps-1.5 text-[13px] font-normal text-gray-500">
-                  {abbreviation && toCurrency(data.price, data.lang, abbreviation)}
+                {data.price}{" "}{data.currencyName}
+                 
+                  {/* {abbreviation && toCurrency(data.price, data.lang, abbreviation)} */}
                 </del>
               )}
             </div>
@@ -88,7 +92,7 @@ function MediumCard(data: Props) {
             lang={data.lang}
             ProductData={data.ProductData}
             FakeData={data.FakeData}
-
+            currencyAbbreviation={data.currencyName}
             modalId={data.id}
             // نمرر أيضًا currentModalProductId للسماح للمودال بتحديث البيانات داخليًا
             currentModalProductId={currentModalProductId}

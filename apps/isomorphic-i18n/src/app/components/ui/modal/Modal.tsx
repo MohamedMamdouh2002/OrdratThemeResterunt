@@ -25,7 +25,6 @@ import { useCart } from '@/store/quick-cart/cart.context';
 import toast from 'react-hot-toast';
 import GetSize from '@/app/shared/ecommerce/product/get-size';
 import GetRadio from '@/app/shared/ecommerce/product/get-radio';
-import useCurrencyAbbreviation, { toCurrency } from '@utils/to-currency';
 import photo from '@public/assets/شاورما-عربي-لحمة-768x768.png';
 import hamburger from '@public/assets/hamburger.png';
 import potato from '@public/assets/شاورما-عراقي-لحمة-مع-بطاطا.png';
@@ -104,6 +103,7 @@ type ModalProps = {
   handleUpdateCart?: () => void;
   itemId?: string;
   type?: string;
+  currencyAbbreviation?: string;
   FakeData?: any
   setIsModalOpen: (isOpen: boolean) => void;
   modalId: string;
@@ -122,6 +122,7 @@ type FakeData = {
 };
 function Modal({
   setIsModalOpen,
+  currencyAbbreviation,
   modalId,
   data,
   quantity,
@@ -146,7 +147,7 @@ function Modal({
   const [notes, setNotes] = useState('');
   const { t } = useTranslation(lang!, 'home');
   const errorMassages = useTranslation(lang!, 'form');
-  const abbreviation = useCurrencyAbbreviation({ lang });
+  // const abbreviation = useCurrencyAbbreviation({ lang });
   const { GetProduct } = useUserContext();
   const { addItemToCart, items } = useCart();
   const [isImageVisible, setImageVisible] = useState(true);
@@ -739,13 +740,17 @@ console.log("totalSoldQuantity: ",totalSoldQuantity);
                                             />
                                             <div className="">
                                               <p>{choice.name}</p>
-                                              {choice.price && <small>{abbreviation && toCurrency(choice.price, lang, abbreviation)}</small>}
+                                              {/* {choice.price && <small>{abbreviation && toCurrency(\\ */}
+                                                {choice.price}{" "}{currencyAbbreviation}
+                                                {/* , lang, abbreviation)}</small>} */}
                                             </div>
                                           </>
                                         ) : (
                                           <div className="h-10">
                                             <p>{choice.name}</p>
-                                            {choice.price && <small>{abbreviation && toCurrency(choice.price, lang, abbreviation)}</small>}
+                                            {choice.price}{" "}{currencyAbbreviation}
+
+                                            {/* {choice.price && <small>{abbreviation && toCurrency(choice.price, lang, abbreviation)}</small>} */}
                                           </div>
 
                                         )
@@ -978,11 +983,15 @@ console.log("totalSoldQuantity: ",totalSoldQuantity);
                                   </p>
                                   <div className="flex flex-col">
                                     <p className="text-[10px] text-mainColor">
-                                      {abbreviation && toCurrency(item.relatedProduct.price, lang, abbreviation)}
+                                    {item.relatedProduct.price}{" "}{currencyAbbreviation}
+
+                                      {/* {abbreviation && toCurrency(item.relatedProduct.price, lang, abbreviation)} */}
                                     </p>
                                     {item.relatedProduct.oldPrice && (
                                       <del className="text-[10px]">
-                                        {abbreviation && toCurrency(item.relatedProduct.oldPrice, lang, abbreviation)}
+                                                                          {item.relatedProduct.oldPrice}{" "}{currencyAbbreviation}
+
+                                        {/* {abbreviation && toCurrency(item.relatedProduct.oldPrice, lang, abbreviation)} */}
                                       </del>
                                     )}
                                   </div>
@@ -1007,12 +1016,12 @@ console.log("totalSoldQuantity: ",totalSoldQuantity);
                             trackAddToCart()
                           }
                           buttonType="submit"
-                          price={abbreviation && toCurrency(finalPrice, lang, abbreviation)}
-                          oldPrice={finalOldPrice ? abbreviation && toCurrency(finalOldPrice, lang, abbreviation) : ''}
+                          price={`${finalPrice} ${currencyAbbreviation}`}
+                          // oldPrice={` ${finalOldPrice}` ? `${finalOldPrice} ${currencyAbbreviation}`:''}
+                          // oldPrice={finalOldPrice ? abbreviation && toCurrency(finalOldPrice, lang, abbreviation) : ''}
                           className={`${!prodId.hasStock || (prodId.stockNumber - totalSoldQuantity > 0 && prodId.stockNumber - totalSoldQuantity - quantity >= 0) ? '':'cursor-no-drop bg-slate-400'}`}
                         />
                       </div>
-
                     </div>
                   </div>
                 </div>
@@ -1137,13 +1146,17 @@ console.log("totalSoldQuantity: ",totalSoldQuantity);
                                         />
                                         <div className="">
                                           <p>{choice.name}</p>
-                                          {choice.price && <small>{abbreviation && toCurrency(choice.price, lang, abbreviation)}</small>}
+                                          {choice.price}{" "}{currencyAbbreviation}
+
+                                          {/* {choice.price && <small>{abbreviation && toCurrency(choice.price, lang, abbreviation)}</small>} */}
                                         </div>
                                       </>
                                     ) : (
                                       <div className="h-10">
                                         <p>{choice.name}</p>
-                                        {choice.price && <small>{abbreviation && toCurrency(choice.price, lang, abbreviation)}</small>}
+                                        {choice.price}{" "}{currencyAbbreviation}
+
+                                        {/* {choice.price && <small>{abbreviation && toCurrency(choice.price, lang, abbreviation)}</small>} */}
                                       </div>
                                     )
                                     }
@@ -1364,11 +1377,15 @@ console.log("totalSoldQuantity: ",totalSoldQuantity);
                                 </p>
                                 <div className="flex flex-col">
                                   <p className="text-[10px] text-mainColor">
-                                    {abbreviation && toCurrency(item.relatedProduct.price, lang, abbreviation)}
+                                  {item.relatedProduct.price}{" "}{currencyAbbreviation}
+
+                                    {/* {abbreviation && toCurrency(item.relatedProduct.price, lang, abbreviation)} */}
                                   </p>
                                   {item.relatedProduct.oldPrice && (
                                     <del className="text-[10px]">
-                                      {abbreviation && toCurrency(item.relatedProduct.oldPrice, lang, abbreviation)}
+                                  {item.relatedProduct.oldPrice}{" "}{currencyAbbreviation}
+
+                                      {/* {abbreviation && toCurrency(item.relatedProduct.oldPrice, lang, abbreviation)} */}
                                     </del>
                                   )}
                                 </div>
@@ -1400,8 +1417,10 @@ console.log("totalSoldQuantity: ",totalSoldQuantity);
                       <ItemPrice
                         type={type}
                         buttonType="submit"
-                        price={abbreviation && toCurrency(finalPrice, lang, abbreviation)}
-                        oldPrice={finalOldPrice ? abbreviation && toCurrency(finalOldPrice, lang, abbreviation) : ''}
+                        price={`${finalPrice} ${currencyAbbreviation}`}
+                        oldPrice={` ${finalOldPrice}` ? `${finalOldPrice} ${currencyAbbreviation}`:''}
+                        // price={abbreviation && toCurrency(finalPrice, lang, abbreviation)}
+                        // oldPrice={finalOldPrice ? abbreviation && toCurrency(finalOldPrice, lang, abbreviation) : ''}
                         className={`${!prodId.hasStock || (prodId.stockNumber - totalSoldQuantity > 0 && prodId.stockNumber - totalSoldQuantity - quantity >= 0) ? '':'cursor-no-drop  bg-slate-400'}`}
                         /> 
                     </div>

@@ -51,6 +51,7 @@ async function fetchShopData(shopId: string, lang: string) {
       description: lang === 'ar' ? shopData.descriptionAr : shopData.descriptionEn || "",
       shopId: shopData.id || null,
       currencyId: shopData.currencyId || null,
+      currencyAbbreviation: shopData.currencyAbbreviation || null,
     };
   } catch (error) {
     console.error("Error fetching shop details:", error);
@@ -87,6 +88,7 @@ export default async function ServerHeaderData(lang: string = "en") {
       shopId: null,
       description: null,
       currencyId: null,
+      currencyAbbreviation: null,
     };
   }
 
@@ -101,6 +103,7 @@ export default async function ServerHeaderData(lang: string = "en") {
   response.cookies.set("rate", shopData.rate?.toString() || "", { path: "/" });
   response.cookies.set("subdomainName", shopData.subdomainName || "", { path: "/" });
   response.cookies.set("logoUrl", shopData.logoUrl || "", { path: "/" });
+  response.cookies.set("currencyAbbreviation", shopData.currencyAbbreviation || "", { path: "/" });
 
   return {
     logoUrl: shopData.logoUrl,
@@ -110,5 +113,6 @@ export default async function ServerHeaderData(lang: string = "en") {
     shopId: shopData.shopId,
     description: shopData.description,
     currencyId: shopData.currencyId,
+    currencyAbbreviation: shopData.currencyAbbreviation,
   };
 }

@@ -16,7 +16,6 @@ import ProductCarousel from '@/app/shared/product-carousel';
 import cardImage from '../../../../../public/assets/card.png'
 import sandwitsh from '../../../../../public/assets/sandwitsh.jpg'
 import SpecialNotes from '@/app/components/ui/SpecialNotes';
-import useCurrencyAbbreviation, { toCurrency } from '@utils/to-currency';
 import { useUserContext } from '@/app/components/context/UserContext';
 import { useTranslation } from '@/app/i18n/client';
 import axiosClient from '@/app/components/fetch/api';
@@ -146,7 +145,8 @@ function CartCalculations({ fees, Tax, lang }: { fees: number; Tax: number, lang
   const { total } = useCart();
   const { discountValue, discountType, shopId } = useUserContext();
   const [response, setResponse] = useState<Branchprops[]>([]);
-  const abbreviation = useCurrencyAbbreviation({ lang } as any);
+  // const abbreviation = useCurrencyAbbreviation({ lang } as any);
+  const currencyAbbreviation =localStorage.getItem('currencyAbbreviation')
 
   const storedVat = typeof window !== "undefined" ? Number(localStorage.getItem("vat")) || 0 : 0;
   const storedVatType = typeof window !== "undefined" ? Number(localStorage.getItem("vatType")) || 0 : 0;
@@ -196,11 +196,19 @@ function CartCalculations({ fees, Tax, lang }: { fees: number; Tax: number, lang
       <div className="mt-6 grid grid-cols-1 gap-4 @md:gap-6">
         <div className="flex items-center justify-between">
           {t('Subtotal')}
-          <span className="font-medium text-gray-1000">{abbreviation&&toCurrency(total, lang as any,abbreviation)}</span>
+          <span className="font-medium text-gray-1000">
+            {/* {abbreviation&&toCurrency( */}
+            {/* // , lang as any,abbreviation)} */}
+            {total}{" "}{currencyAbbreviation}
+            </span>
         </div>
         <div className="flex items-center justify-between">
           {t('Vat')}
-          <span className="font-medium text-gray-1000">{abbreviation&&toCurrency(taxValue, lang as any,abbreviation)}</span>
+          <span className="font-medium text-gray-1000">
+            {/* {abbreviation&&toCurrency(taxValue, lang as any,abbreviation)} */}
+            {taxValue}{" "}{currencyAbbreviation}
+            
+            </span>
           {/* <span className="font-medium text-gray-1000">{toCurrency(Tax, lang)}</span> */}
         </div>
         {/* <div className="flex items-center justify-between w-full mb-2">
@@ -218,13 +226,22 @@ function CartCalculations({ fees, Tax, lang }: { fees: number; Tax: number, lang
         {discount ?(
           <div className="flex items-center justify-between text-green-600">
             {t('Discount')}
-            <span>- {abbreviation&&toCurrency(discount, lang as any,abbreviation)}</span>
+            <span>-{discount}{" "}{currencyAbbreviation}
+            {/* {abbreviation&&toCurrency(discount, lang as any,abbreviation)}
+             */}
+            </span>
           </div>
         ):''}
         <CheckCoupon lang={lang} />
         <div className="mt-3 flex items-center justify-between border-t border-muted py-4 font-semibold text-gray-1000">
           {t('Total')}
-          <span className="font-medium text-gray-1000">{abbreviation&&toCurrency(finalTotal, lang as any,abbreviation)}</span>
+          <span className="font-medium text-gray-1000">
+          {finalTotal}{" "}{currencyAbbreviation}
+            
+            
+            {/* {abbreviation&&toCurrency(
+              , lang as any,abbreviation)} */}
+            </span>
         </div>
         {totalWithFees === 0 ? (
           <Button

@@ -100,6 +100,7 @@ async function fetchShopData(shopId: string, lang: string) {
       applyFreeShppingOnTarget: shopData.applyFreeShppingOnTarget,
       freeShppingTarget: shopData.freeShppingTarget,
       currencyId: shopData.currencyId,
+      currencyAbbreviation: shopData.currencyAbbreviation
     };
   } catch (error) {
     console.error("Error fetching shop details:", error);
@@ -182,14 +183,14 @@ export async function fetchSellerPlanStatus(sellerId: string) {
   }
 }
 
-async function fetchSubdomain(subdomain: string) {
+async function fetchSubdomain(subdomain: string,lang:string) {
   try {
     const res = await fetch(
       `https://testapi.ordrat.com/api/Shop/GetBySubdomain/${subdomain}`,
       {
         headers: {
           Accept: "*/*",
-          "Accept-Language": "en",
+          "Accept-Language": lang,
         },
       }
     );
@@ -209,7 +210,7 @@ type LangType = 'en' | 'ar';
 
 export const generateMetadata = async ({ params }: { params: { lang: string } }): Promise<Metadata> => {
   const realPath = getServerSiteUrl();
-  const shopId = await fetchSubdomain(realPath);
+  const shopId = await fetchSubdomain(realPath,params.lang);
   const shopData = await fetchShopData(shopId.id, params.lang);
 
   return metaObject(
@@ -259,7 +260,7 @@ export default async function RootLayout({
   const session = await getServerSession(authOptions);
 
   try {
-    shopId = await fetchSubdomain(realPath);
+    shopId = await fetchSubdomain(realPath,lang);
 
     // Check if shopId or shopId.id is invalid
     if (!shopId || !shopId.id) throw new Error("Invalid subdomain");
@@ -424,6 +425,7 @@ export default async function RootLayout({
                         applyFreeShppingOnTarget={shopId.applyFreeShppingOnTarget}
                         freeShppingTarget={shopId.freeShppingTarget}
                         currencyId={shopId.currencyId}
+                        currencyAbbreviation={shopId.currencyAbbreviation}
                       />
                       {children}
                       <Toaster />

@@ -16,7 +16,7 @@ import OrderViewProducts from '@/app/shared/ecommerce/order/order-products/order
 import { useCart } from '@/store/quick-cart/cart.context';
 import { Title, Text } from 'rizzui';
 import cn from '@utils/class-names';
-import useCurrencyAbbreviation, { toCurrency } from '@utils/to-currency';
+// import useCurrencyAbbreviation, { toCurrency } from '@utils/to-currency';
 import { formatDate } from '@utils/format-date';
 import usePrice from '@hooks/use-price';
 import { useEffect, useState } from 'react';
@@ -64,7 +64,7 @@ function WidgetCard({
 
 export default function OrderView({ lang }: { lang: string }) {
   const { items, total, totalItems } = useCart();
-  const abbreviation = useCurrencyAbbreviation({ lang } as any);
+  // const abbreviation = useCurrencyAbbreviation({ lang } as any);
 
   const { price: subtotal } = usePrice(
     items && {
@@ -79,6 +79,7 @@ export default function OrderView({ lang }: { lang: string }) {
   const shippingAddress = useAtomValue(shippingAddressAtom);
   const [order, setOrder] = useState<Order | null>(null);
   const { t } = useTranslation(lang!, 'order');
+  const currencyAbbreviation =localStorage.getItem('currencyAbbreviation')
 
   const [currentOrderStatus, setCurrentOrderStatus] = useState<number>();
   // const currentOrderStatus = order?.status;
@@ -255,34 +256,39 @@ export default function OrderView({ lang }: { lang: string }) {
               <div className="ms-auto max-w-lg space-y-6">
                 <div className="flex justify-between font-medium">
                   {t('Subtotal')} <span>
+                  {Number(order?.price).toFixed(2)}{" "}{currencyAbbreviation}
 
-                    {abbreviation && toCurrency(Number(order?.price).toFixed(2) as any - parseFloat(Number(order?.totalVat || 0).toFixed(2)), lang as any, abbreviation)}
+                    {/* {abbreviation && toCurrency(Number(order?.price).toFixed(2) as any - parseFloat(Number(order?.totalVat || 0).toFixed(2)), lang as any, abbreviation)} */}
                   </span>
 
                 </div>
                 <div className="flex justify-between font-medium">
                   {t('Shipping-Fees')}
                   <span>
-
-                    {abbreviation && toCurrency(Number(order?.shippingFees).toFixed(2) as any, lang as any, abbreviation)}
+                      {Number(order?.shippingFees).toFixed(2)}{" "}{currencyAbbreviation}
+                    {/* {abbreviation && toCurrency(Number(order?.shippingFees).toFixed(2) as any, lang as any, abbreviation)} */}
                   </span>
                 </div>
                 <div className="flex justify-between font-medium">
                   {t('Vat')} <span>
+                  {Number(order?.totalVat).toFixed(2)}{" "}{currencyAbbreviation}
 
-                    {abbreviation && toCurrency(Number(order?.totalVat).toFixed(2) as any, lang as any, abbreviation)}
+                    {/* {abbreviation && toCurrency(Number(order?.totalVat).toFixed(2) as any, lang as any, abbreviation)} */}
                   </span>
 
                 </div>
                 <div className="flex justify-between font-medium">
                   {t('Discount')} <span>
+                    -{Number(order?.discount).toFixed(2)}{" "}{currencyAbbreviation}
 
-                    - {abbreviation && toCurrency(Number(order?.discount).toFixed(2) as any, lang as any, abbreviation)}
+                     {/* {abbreviation && toCurrency(Number(order?.discount).toFixed(2) as any, lang as any, abbreviation)} */}
                   </span>
 
                 </div>
                 <div className="flex justify-between border-t border-muted pt-5 text-base font-semibold">
-                  {t('Total')} <span>{abbreviation && toCurrency(order?.totalPrice as any, lang as any, abbreviation)}</span>
+                {Number(order?.totalPrice).toFixed(2)}{" "}{currencyAbbreviation}
+
+                  {/* {t('Total')} <span>{abbreviation && toCurrency(order?.totalPrice as any, lang as any, abbreviation)}</span> */}
                 </div>
               </div>
             </div>

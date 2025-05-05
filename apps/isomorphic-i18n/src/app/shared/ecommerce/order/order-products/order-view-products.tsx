@@ -4,7 +4,6 @@ import Image from 'next/image';
 import Table, { HeaderCell } from '@/app/shared/table';
 import { useCart } from '@/store/quick-cart/cart.context';
 import { Title, Text, Badge } from 'rizzui';
-import useCurrencyAbbreviation, { toCurrency } from '@utils/to-currency';
 import { CartItem, Order, OrderItem } from '@/types';
 import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
@@ -122,7 +121,8 @@ export default function OrderViewProducts({ lang }: { lang: string }) {
   const [order, setOrder] = useState<Order | null>(null);
   const [loading, setLoading] = useState(true);
   const { t } = useTranslation(lang, 'order');
-  const abbreviation = useCurrencyAbbreviation({ lang } as any);
+  // const abbreviation = useCurrencyAbbreviation({ lang } as any);
+  const currencyAbbreviation = localStorage.getItem('currencyAbbreviation')
 
   const columns = [
     {
@@ -187,7 +187,7 @@ export default function OrderViewProducts({ lang }: { lang: string }) {
       key: 'itemPrice',
       width: 200,
       render: (itemPrice: number) => (
-        <Text className="text-end text-sm">{abbreviation && toCurrency(itemPrice, lang, abbreviation)}</Text>
+        <Text className="text-end text-sm">{itemPrice}{" "}{currencyAbbreviation}</Text>
       ),
     },
     // {
@@ -214,7 +214,7 @@ export default function OrderViewProducts({ lang }: { lang: string }) {
       key: 'totalChoicesPrice',
       width: 200,
       render: (totalChoicesPrice: number) => (
-        <Text className="text-end text-sm">{abbreviation && toCurrency(totalChoicesPrice, lang, abbreviation)}</Text>
+        <Text className="text-end text-sm">{totalChoicesPrice}{" "}{currencyAbbreviation}</Text>
       ),
     },
     // {
@@ -267,7 +267,7 @@ export default function OrderViewProducts({ lang }: { lang: string }) {
     <Table
       data={order.items.map(item => ({
         ...order,
-        totalChoicesPrice:item.totalChoicesPrice,
+        totalChoicesPrice: item.totalChoicesPrice,
         product: item.product,
         cancelled: item.cancelled,
         itemPrice: item.itemPrice,

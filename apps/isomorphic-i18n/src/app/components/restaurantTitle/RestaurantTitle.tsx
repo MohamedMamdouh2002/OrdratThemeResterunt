@@ -17,7 +17,7 @@ import toast from 'react-hot-toast'
 import axiosClient from '../fetch/api'
 import map from '@public/assets/map.png'
 import { IoMdClose } from 'react-icons/io'
-import useCurrencyAbbreviation, { toCurrency } from '@utils/to-currency'
+// import useCurrencyAbbreviation, { toCurrency } from '@utils/to-currency'
 import CustomImage from '../ui/CustomImage'
 
 
@@ -37,6 +37,7 @@ function RestaurantTitle({
     shopId,
     logoUrl,
     shopName,
+    currencyName,
     rate,
     background,
     coupon,
@@ -52,9 +53,10 @@ function RestaurantTitle({
     branch: Branchprops[] | null;
     description: string | null;
     shopId: string | null;
+    currencyName: string ;
 }) {
     const { t, i18n } = useTranslation(lang!, 'nav');
-    const abbreviation = useCurrencyAbbreviation({ lang } as any);
+    // const abbreviation = useCurrencyAbbreviation({ lang } as any);
     // console.log("logoUrl: ", logoUrl);
     const [modal, setModal] = useState(false);
     useEffect(() => {
@@ -173,12 +175,16 @@ function RestaurantTitle({
                                     return <span>{lang === 'ar' ? 'مجانا' : 'Free'}</span>;
                                 }
                                 if (mainBranch.isFixedDelivery) {
-                                    return <span>{abbreviation && toCurrency(mainBranch.deliveryCharge ?? 0, lang as any, abbreviation)}</span>;
+                                    // return <span>{abbreviation && toCurrency(
+                                    //     ?? 0, lang as any, abbreviation)}</span>;
+                                        {mainBranch.deliveryCharge}
                                 }
 
                                 return (
                                     <span>
-                                        {abbreviation && toCurrency(mainBranch.deliveryPerKilo ?? 0, lang as any, abbreviation)} {lang === "ar" ? "/كيلو" : "/km"}
+                                        {/* {abbreviation && toCurrency(
+                                            ?? 0, lang as any, abbreviation)} {lang === "ar" ? "/كيلو" : "/km"} */}
+                                            {mainBranch.deliveryPerKilo}{currencyName}
                                     </span>
                                 );
                             })()}

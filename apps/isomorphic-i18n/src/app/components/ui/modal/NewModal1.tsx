@@ -24,7 +24,7 @@ import { useCart } from '@/store/quick-cart/cart.context';
 import toast from 'react-hot-toast';
 import GetSize from '@/app/shared/ecommerce/product/get-size';
 import GetRadio from '@/app/shared/ecommerce/product/get-radio';
-import useCurrencyAbbreviation, { toCurrency } from '@utils/to-currency';
+// import useCurrencyAbbreviation, { toCurrency } from '@utils/to-currency';
 import photo from '@public/assets/شاورما-عربي-لحمة-768x768.png'
 import hamburger from '@public/assets/hamburger.png'
 import potato from '@public/assets/شاورما-عراقي-لحمة-مع-بطاطا.png'
@@ -101,7 +101,7 @@ function Modal({
     const [isImageVisible, setImageVisible] = useState(true);
     const [isScroll, setIsScroll] = useState(true);
     const scrollContainerRef = useRef<HTMLImageElement>(null);
-    const abbreviation = useCurrencyAbbreviation({ lang });
+    // const abbreviation = useCurrencyAbbreviation({ lang });
 
     const handleScroll = () => {
         if (scrollContainerRef.current) {
@@ -379,13 +379,13 @@ function Modal({
                                                                                                 />
                                                                                                 <div className="">
                                                                                                     <p>{choice.name}</p>
-                                        {choice.price && <small>{abbreviation && toCurrency(choice.price,lang, abbreviation)}</small>}
+                                        {/* {choice.price && <small>{abbreviation && toCurrency(choice.price,lang, abbreviation)}</small>} */}
                                                                                                 </div>
                                                                                             </>
                                                                                         ) : (
                                                                                             <div className="h-10">
                                                                                                 <p>{choice.name}</p>
-                                        {choice.price && <small>{abbreviation && toCurrency(choice.price,lang, abbreviation)}</small>}
+                                        {/* {choice.price && <small>{abbreviation && toCurrency(choice.price,lang, abbreviation)}</small>} */}
                                                                                             </div>
 
                                                                                         )
@@ -714,13 +714,13 @@ function Modal({
                                                                                 />
                                                                                 <div className="">
                                                                                     <p>{choice.name}</p>
-                                        {choice.price && <small>{abbreviation && toCurrency(choice.price,lang, abbreviation)}</small>}
+                                        {/* {choice.price && <small>{abbreviation && toCurrency(choice.price,lang, abbreviation)}</small>} */}
                                                                                 </div>
                                                                             </>
                                                                         ) : (
                                                                             <div className="h-10">
                                                                                 <p>{choice.name}</p>
-                                        {choice.price && <small>{abbreviation && toCurrency(choice.price,lang, abbreviation)}</small>}
+                                        {/* {choice.price && <small>{abbreviation && toCurrency(choice.price,lang, abbreviation)}</small>} */}
                                                                             </div>
 
                                                                         )

@@ -9,7 +9,6 @@ import photo from '@public/assets/شاورما-عربي-لحمة-768x768.png'
 import hamburger from '@public/assets/hamburger.png'
 import potato from '@public/assets/شاورما-عراقي-لحمة-مع-بطاطا.png'
 import { Star, Flame } from 'lucide-react';
-import useCurrencyAbbreviation, { toCurrency } from '@utils/to-currency';
 import CustomImage from '../CustomImage';
 import { AnimatePresence } from 'framer-motion';
 
@@ -17,7 +16,7 @@ type Props = Food & {
   lang: string;
   ProductData?: any
   FakeData?: any
-
+  currencyName?: string
   setCurrentItem: Dispatch<
     SetStateAction<{
       type?: string;
@@ -26,18 +25,16 @@ type Props = Food & {
   >;
 };
 
-const Card = (data: Props) => {
+ function Card(data: Props) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [quantity, setQuantity] = useState(1);
-  const abbreviation = useCurrencyAbbreviation({ lang: data.lang });
+  // const abbreviation = useCurrencyAbbreviation({ lang: data.lang });
   const [currentModalProductId, setCurrentModalProductId] = useState<string | null>(null);
-
   const handleOpenModal = (id: string) => {
     // تعيين معرف المنتج الأولي
     setCurrentModalProductId(id);
     setIsModalOpen(true);
   };
-
   const handleCloseModal = () => {
     setIsModalOpen(false);
   };
@@ -73,11 +70,13 @@ const Card = (data: Props) => {
           {data.lang === 'ar' ? data.descriptionAr : data.descriptionEn}
         </Text>
         <div className="mt-2 flex items-center font-semibold text-mainColor">
-          {abbreviation && toCurrency(data.finalPrice, data.lang, abbreviation)}
+          {/* {abbreviation && toCurrency(data.finalPrice, data.lang, abbreviation)} */}
+          {data.finalPrice}{" "}{data.currencyName}
 
-          {data.isDiscountActive ===true  && (
+          {data.isDiscountActive === true && (
             <del className="ps-1.5 text-[13px] font-normal text-gray-500">
-              {abbreviation && toCurrency(data.price, data.lang, abbreviation)}
+              {/* {abbreviation && toCurrency(data.price, data.lang, abbreviation)} */}
+              {data.price}{" "}{data.currencyName}
             </del>
           )}
         </div>
@@ -89,6 +88,7 @@ const Card = (data: Props) => {
             lang={data.lang}
             ProductData={data.ProductData}
             modalId={data.id}
+            currencyAbbreviation={data.currencyName}
             FakeData={data.FakeData}
             currentModalProductId={currentModalProductId}
             setIsModalOpen={setIsModalOpen}

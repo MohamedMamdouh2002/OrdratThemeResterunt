@@ -7,7 +7,6 @@ import usePrice from '@hooks/use-price';
 import OrderProducts from './order-products';
 import { Button, Title, Text } from 'rizzui';
 import cn from '@utils/class-names';
-import useCurrencyAbbreviation, { toCurrency } from '@utils/to-currency';
 import { useCart } from '@/store/quick-cart/cart.context';
 import { useTranslation } from '@/app/i18n/client';
 import { useEffect, useState } from 'react';
@@ -46,7 +45,8 @@ export default function OrderSummery({
   }) => void;
 }) {
   const params = useParams();
-  const abbreviation = useCurrencyAbbreviation({ lang } as any);
+  // const abbreviation = useCurrencyAbbreviation({ lang } as any);
+  const currencyAbbreviation =localStorage.getItem('currencyAbbreviation')
 
   const [response, setResponse] = useState<Branchprops[]>([]);
 
@@ -151,6 +151,8 @@ export default function OrderSummery({
             addItemToCart={addItemToCart}
             removeItemFromCart={removeItemFromCart}
             clearItemFromCart={clearItemFromCart}
+          currencyAbbreviation={currencyAbbreviation as string}
+
             items={items}
             className="mb-5 border-b border-muted pb-5"
             lang={lang}
@@ -159,13 +161,16 @@ export default function OrderSummery({
             {t('Subtotal')}
             <Text as="span" className="font-medium text-gray-900">
               {/* {subtotal} */}
-              {abbreviation&&toCurrency(total, lang as any,abbreviation)}
+              {/* {abbreviation&&toCurrency(total, lang as any,abbreviation)} */}
+              {total}{" "}{currencyAbbreviation}
             </Text>
           </div>
           <div className="mb-4 flex items-center justify-between last:mb-0">
             {t('Vat')}
             <Text as="span" className="font-medium text-gray-900">
-              {abbreviation&&toCurrency(taxValue, lang as any,abbreviation)}
+            {taxValue}{" "}{currencyAbbreviation}
+
+              {/* {abbreviation&&toCurrency(taxValue, lang as any,abbreviation)} */}
             </Text>
           </div>
           <div className="mb-4 flex items-center justify-between last:mb-0">
@@ -182,7 +187,11 @@ export default function OrderSummery({
               // }
               // else {
               
-                return <span style={{ textDecoration: isFreeShipping ? 'line-through' : 'none' }}>{abbreviation&&toCurrency(fees, lang as any,abbreviation)}</span>;
+                return <span style={{ textDecoration: isFreeShipping ? 'line-through' : 'none' }}>
+                  {/* {abbreviation&&toCurrency(fees, lang as any,abbreviation)} */}
+                  {fees}{" "}{currencyAbbreviation}
+
+                  </span>;
               // }
             })()}
 
@@ -191,13 +200,19 @@ export default function OrderSummery({
           {discount > 0 && (
             <div className="flex mb-4 items-center justify-between text-green-600">
               {t('Discount')}
-              <span>- {abbreviation&&toCurrency(discount, lang as any,abbreviation)}</span>
+              <span>-{discount}{" "}{currencyAbbreviation}
+              {/* {abbreviation&&toCurrency(discount, lang as any,abbreviation)} */}
+              </span>
             </div>
           )}
           <div className="flex items-center justify-between border-t border-muted py-4 text-base font-bold text-gray-1000">
             {t('Total')}
             {/* <Text>{totalPrice}</Text> */}
-            <Text>{abbreviation&&toCurrency(finalTotal, lang as any,abbreviation)}</Text>
+            <Text>
+            {finalTotal}{" "}{currencyAbbreviation}
+            {/* {abbreviation&&toCurrency(finalTotal, lang as any,abbreviation)}
+            */}
+            </Text> 
           </div>
 
           {items.length ? (

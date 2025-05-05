@@ -2,7 +2,6 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { CartItem } from '@/types';
 import isEmpty from 'lodash/isEmpty';
-import useCurrencyAbbreviation, { toCurrency } from '@utils/to-currency';
 import { Title, Text } from 'rizzui';
 import { AddToWishList } from '@components/wishlist-button';
 import RemoveItem from '@/app/shared/ecommerce/cart/remove-item';
@@ -48,7 +47,9 @@ export default function CartProduct({ product, lang , ifModal=false }: { product
   // console.log("product: ",product);
   // console.log("data: ",parseProductData(product.id as string));
   const realProductData = parseProductData(product.id as string);
-  const abbreviation = useCurrencyAbbreviation({ lang } as any);
+  // const abbreviation = useCurrencyAbbreviation({ lang } as any);
+
+  const currencyAbbreviation =localStorage.getItem('currencyAbbreviation')
 
   return (
     <div className="grid grid-cols-12 items-start gap-4 border-b border-muted py-6 first:pt-0 sm:flex sm:gap-6 2xl:py-8">
@@ -73,12 +74,18 @@ export default function CartProduct({ product, lang , ifModal=false }: { product
           <div className="">
 
             <span className="inline-block text-sm font-semibold text-gray-1000 sm:font-medium md:text-base 3xl:text-lg">
-              {abbreviation&&toCurrency(product.price,lang as any,abbreviation)}
+              {/* {abbreviation&&toCurrency(product.price,lang as any,abbreviation)} */}
+              {product?.price}{" "}{currencyAbbreviation}
+
             </span>
             {product.isDiscountActive ===true?
               <li className={`flex items-center gap-3 text-gray-500`}>
                 {/* <span>Old Price :</span> */}
-                <del className="text-gray-1000 ">{abbreviation&&toCurrency(product?.oldPrice as any,lang as any,abbreviation)}</del>
+                <del className="text-gray-1000 ">
+                  {product?.oldPrice}{" "}{currencyAbbreviation}
+                  {/* {abbreviation&&toCurrency(
+                     as any,lang as any,abbreviation)} */}
+                  </del>
               </li>
               :''
             }

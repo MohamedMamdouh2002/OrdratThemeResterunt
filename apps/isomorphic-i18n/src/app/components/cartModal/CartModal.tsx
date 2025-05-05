@@ -16,7 +16,6 @@ import { IoMdClose } from "react-icons/io";
 import CouponModal from '../modalCoupon/ModalCoupon';
 import { MdLocalOffer } from "react-icons/md";
 import { IoIosArrowForward } from "react-icons/io";
-import useCurrencyAbbreviation, { toCurrency } from '@utils/to-currency';
 
 const ProgressBar = ({ totalPrice, freeShippingThreshold }: { totalPrice: number; freeShippingThreshold: number; }) => {
     const [progress, setProgress] = useState(0);
@@ -49,19 +48,20 @@ const ProgressBar = ({ totalPrice, freeShippingThreshold }: { totalPrice: number
     );
 };
 
-
 const FreeShippingMessage = ({ totalPrice, freeShippingThreshold, lang }: { totalPrice: number; freeShippingThreshold: number; lang: string; }) => {
     const { t } = useTranslation(lang, 'home');
-    const abbreviation = useCurrencyAbbreviation({ lang: lang });
+    // const abbreviation = useCurrencyAbbreviation({ lang: lang });
     const remainingAmount = Math.max(freeShippingThreshold - totalPrice, 0);
-
+    const currencyAbbreviation =localStorage.getItem('currencyAbbreviation')
     return (
         <div className="max-w-[550px] mx-auto text-center text-sm sm:text-base leading-snug font-normal my-2 sm:my-4">
             {remainingAmount > 0 ? (
                 <>
                     {t('spend')} {" "}
                     <span className="text-red-500 font-bold">
-          {abbreviation && toCurrency(remainingAmount.toLocaleString(), lang, abbreviation)}
+                        {remainingAmount.toLocaleString()}{" "}{currencyAbbreviation}
+          {/* {abbreviation && toCurrency(
+          , lang, abbreviation)} */}
 
                         {/* {remainingAmount.toLocaleString()} <span>{t('currency')}</span> */}
                     </span>{" "}
@@ -73,7 +73,6 @@ const FreeShippingMessage = ({ totalPrice, freeShippingThreshold, lang }: { tota
         </div>
     );
 };
-
 function CartModal({ lang }: { lang?: string }) {
     const { t } = useTranslation(lang!, "home");
     const [modal, setModal] = useState(false);
@@ -88,7 +87,9 @@ function CartModal({ lang }: { lang?: string }) {
         const data = JSON.parse(localStorage.getItem('productDetails') || '[]');
         setProductDetailsArray(data);
     };
-    const abbreviation = useCurrencyAbbreviation({ lang } as any);
+    const currencyAbbreviation =localStorage.getItem('currencyAbbreviation')
+
+    // const abbreviation = useCurrencyAbbreviation({ lang } as any);
 
     useEffect(() => {
         loadProductDetails();
@@ -332,7 +333,10 @@ function CartModal({ lang }: { lang?: string }) {
                                 className="bg-mainColor text-white rounded-lg text-center text-sm sm:text-base font-medium w-11/12 mx-auto flex justify-between items-center py-2 mt-1 px-4"
                             >
                                 <span>{t('order-cart')}</span>
-                                <span className='bg-white py-1 px-3 text-mainColor rounded-md'> {abbreviation && toCurrency(totalPrice, lang as any, abbreviation)}
+                                <span className='bg-white py-1 px-3 text-mainColor rounded-md'>
+                                     {/* {abbreviation && toCurrency( */}
+                                    {totalPrice}{" "}{currencyAbbreviation}
+                                    {/* // , lang as any, abbreviation)} */}
                                 </span>
                             </Link>
                         </div>

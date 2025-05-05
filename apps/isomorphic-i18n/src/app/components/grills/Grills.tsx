@@ -23,44 +23,44 @@ type Props = { data?: PaginatedAllCategories; initialCategory?: string };
 type FakeData = {
   maximumFakeViewers: number;
   minimumFakeViewers: number;
-  isFakeViewersAvailable:boolean;
-  isFakeSoldNumberAvailable:boolean;
-  maximumFakeSoldNumber:number;
-  minimumFakeSoldNumber:number;
-  lastSoldNumberInHours:number;
+  isFakeViewersAvailable: boolean;
+  isFakeSoldNumberAvailable: boolean;
+  maximumFakeSoldNumber: number;
+  minimumFakeSoldNumber: number;
+  lastSoldNumberInHours: number;
 };
-function Grills({ lang,shopId, ProductData, HomeData,initialPage=1,pageSize=40 }: { lang: string; ProductData?: any; HomeData?: any ;  initialPage?: number; pageSize?: number; shopId?:string}) {
+function Grills({ lang, shopId, currencyName, ProductData, HomeData, initialPage = 1, pageSize = 40 }: { lang: string; ProductData?: any; HomeData?: any; currencyName: string; initialPage?: number; pageSize?: number; shopId?: string }) {
   const { GetHome } = useUserContext();
 
   const { t } = useTranslation(lang!, 'home');
   const [currentSlide, setCurrentSlide] = useState(0);
   const swiperRefs = useRef<{ [key: string]: SwiperType | null }>({});
   const [fakeData, setFakeData] = useState<FakeData | null>(null);
- const observerRef = useRef<HTMLDivElement | null>(null);
+  const observerRef = useRef<HTMLDivElement | null>(null);
 
   const fetchedPages = useRef<Set<number>>(new Set());
   const [loading, setLoading] = useState(false);
   const [home, setHome] = useState(HomeData?.entities as any ?? []);
   const [page, setPage] = useState(HomeData?.nextPage as any ?? 2);
   const [hasMore, setHasMore] = useState(HomeData?.nextPage as any ? true : false);
-  
+
   useEffect(() => {
     const fetchPaginatedData = async () => {
       if (loading || !hasMore || page === initialPage) return; // 🛑 تجاهل الصفحة الأولى لأنك جايبها من السيرفر
-    
+
       setLoading(true);
-    
+
       try {
         const response: any = await GetHome({ lang, page, pageSize });
-    
+
         const newEntities = response?.entities ?? [];
-    
+
         if (newEntities.length > 0) {
-          setHome((prev:any) => [
+          setHome((prev: any) => [
             ...prev as any,
             ...newEntities.filter((entity: any) => !prev?.some((e: any) => e.id === entity.id)),
           ]);
-    
+
           if (response.nextPage && response.nextPage > page) {
             setHasMore(true);
           } else {
@@ -77,48 +77,48 @@ function Grills({ lang,shopId, ProductData, HomeData,initialPage=1,pageSize=40 }
       }
     };
     fetchPaginatedData()
-    
+
   }, [page, lang]);
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
         if (entries[0].isIntersecting && hasMore && !loading) {
-          setPage((prev:any) => prev + 1);
+          setPage((prev: any) => prev + 1);
         }
       },
       { threshold: 1 }
     );
-  
+
     if (observerRef.current) {
       observer.observe(observerRef.current);
     }
-  
+
     return () => {
       if (observerRef.current) {
         observer.unobserve(observerRef.current);
       }
     };
   }, [loading, hasMore]);
-  
+
 
   useEffect(() => {
     const fetchFakeData = async () => {
       try {
         const response = await fetch(`https://testapi.ordrat.com/api/FakeData/GetFakeDataByShopId/${shopId}`);
         if (!response.ok) throw new Error('Failed to fetch fake data');
-  
+
         const result: FakeData = await response.json();
         setFakeData(result); // حطينا الريسبونس في الستيت مباشرة
       } catch (error) {
         console.error('Error fetching fake data:', error);
       }
     };
-  
+
     fetchFakeData();
   }, [shopId]);
   return <>
     <div className="mb-10">
-      {home?.filter((sec:any) => sec.isActive).length === 0 ? (
+      {home?.filter((sec: any) => sec.isActive).length === 0 ? (
         <div className="w-5/6 m-auto my-10">
           <div className="flex flex-col justify-center items-center">
             <EmptyProductBoxIcon />
@@ -127,9 +127,9 @@ function Grills({ lang,shopId, ProductData, HomeData,initialPage=1,pageSize=40 }
         </div>
       ) : (
         home
-          ?.filter((sec:any) => sec.isActive)
-          .sort((a:any, b:any) => a.priority - b.priority)
-          .map((sec:any) => (
+          ?.filter((sec: any) => sec.isActive)
+          .sort((a: any, b: any) => a.priority - b.priority)
+          .map((sec: any) => (
             <div key={sec.id} id={sec.id} className="w-5/6 sm:w-[90%] mx-auto mt-20">
               <div className="flex justify-between items-center">
                 <Title title={sec.name} />
@@ -140,9 +140,7 @@ function Grills({ lang,shopId, ProductData, HomeData,initialPage=1,pageSize=40 }
                     </p>
                   </Link>
                 }
-
               </div>
-
               {sec.numberOfColumns !== 0 &&
                 sec.numberOfColumns !== 2 &&
                 sec.numberOfColumns !== 1 && (
@@ -215,7 +213,7 @@ function Grills({ lang,shopId, ProductData, HomeData,initialPage=1,pageSize=40 }
                       >
                         {sec.products.map((prod: React.JSX.IntrinsicAttributes & Food & { setCurrentItem: React.Dispatch<React.SetStateAction<{ type?: string; id: string } | null>> }) => (
                           <SwiperSlide key={prod.id}>
-                            <SmallCard FakeData={fakeData} ProductData={home} lang={lang} {...prod} />
+                            <SmallCard FakeData={fakeData} currencyName={currencyName} ProductData={home} lang={lang} {...prod} />
                           </SwiperSlide>
                         ))}
                       </Swiper>
@@ -224,11 +222,11 @@ function Grills({ lang,shopId, ProductData, HomeData,initialPage=1,pageSize=40 }
                     sec?.products?.map((prod: React.JSX.IntrinsicAttributes & Food & { setCurrentItem: React.Dispatch<React.SetStateAction<{ type?: string; id: string } | null>> }) =>
                       sec.numberOfColumns === 1 ? (
                         <div key={prod.id}>
-                          <MediumCard FakeData={fakeData} ProductData={home} lang={lang} {...prod} />
+                          <MediumCard FakeData={fakeData} currencyName={currencyName} ProductData={home} lang={lang} {...prod} />
                           <hr className="mt-1 sm:hidden" />
                         </div>
                       ) : (
-                        <Card FakeData={fakeData} ProductData={home} lang={lang} key={prod.id} {...prod} />
+                        <Card FakeData={fakeData} currencyName={currencyName} ProductData={home} lang={lang} key={prod.id} {...prod} />
                       )
                     )
                   )}
@@ -238,12 +236,12 @@ function Grills({ lang,shopId, ProductData, HomeData,initialPage=1,pageSize=40 }
           ))
       )}
     </div>
-     <div className="flex justify-center">
-            {loading && <Loader className="animate-spin text-mainColor" />}
-          </div>
-          <div ref={observerRef} className="h-1" />
+    <div className="flex justify-center">
+      {loading && <Loader className="animate-spin text-mainColor" />}
+    </div>
+    <div ref={observerRef} className="h-1" />
   </>
 
-  
+
 }
 export default Grills;

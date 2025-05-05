@@ -7,7 +7,6 @@ import { Order } from '@/types';
 import axiosClient from '../fetch/api';
 import { EmptyProductBoxIcon } from 'rizzui';
 import { useTranslation } from '@/app/i18n/client';
-import useCurrencyAbbreviation, { toCurrency } from '@utils/to-currency';
 import { useUserContext } from '../context/UserContext';
 import CustomImage from '../ui/CustomImage';
 
@@ -18,7 +17,8 @@ const MyOrder: React.FC<{ lang: string }> = ({ lang }) => {
   const [shopName, setShopName] = useState<string | null>(null);
   const { t } = useTranslation(lang, 'order');
   const { shopId } = useUserContext();
-  const abbreviation = useCurrencyAbbreviation({ lang });
+  // const abbreviation = useCurrencyAbbreviation({ lang });
+  const currencyAbbreviation =localStorage.getItem('currencyAbbreviation')
 
   useEffect(() => {
     const fetchOrders = async () => {
@@ -72,7 +72,8 @@ const MyOrder: React.FC<{ lang: string }> = ({ lang }) => {
                           <h2 className="text-mainColor text-sm sm:text-base">{order.orderNumber}</h2>
                         </div>
                         <h3 className="text-mainColor">
-                          {abbreviation && toCurrency(order.totalPrice, lang, abbreviation)}
+                          {order.totalPrice}{" "}{currencyAbbreviation}
+                          {/* {abbreviation && toCurrency(order.totalPrice, lang, abbreviation)} */}
                         </h3>
                       </div>
 
@@ -85,7 +86,9 @@ const MyOrder: React.FC<{ lang: string }> = ({ lang }) => {
                         <div className="flex gap-1 mt-3">
                           <p>{t('total-choice-prices')}</p>
                           <span>
-                            {abbreviation && toCurrency(order.totalChoicePrices, lang, abbreviation)}
+                          {order.totalChoicePrices}{" "}{currencyAbbreviation}
+
+                            {/* {abbreviation && toCurrency(order.totalChoicePrices, lang, abbreviation)} */}
                           </span>
                         </div>
 
@@ -109,7 +112,9 @@ const MyOrder: React.FC<{ lang: string }> = ({ lang }) => {
                                 {i.product.name}
                                 </span>
                               <span className="truncate-text mt-1 ms-1 pb-1">
-                              {abbreviation && toCurrency(i.itemPrice, lang, abbreviation)}
+                              {i.itemPrice}{" "}{currencyAbbreviation}
+
+                              {/* {abbreviation && toCurrency(i.itemPrice, lang, abbreviation)} */}
                                 </span>
                             </div>
                           ))}

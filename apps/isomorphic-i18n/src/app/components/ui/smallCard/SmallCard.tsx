@@ -6,15 +6,15 @@ import { Flame, Plus, Star } from 'lucide-react';
 import Badge from '../Badge';
 import photo from '@public/assets/شاورما-عربي-لحمة-768x768.png'
 import Modal from '../modal/Modal';
-import useCurrencyAbbreviation, { toCurrency } from '@utils/to-currency';
 import CustomImage from '../CustomImage';
 import { AnimatePresence } from 'framer-motion';
+import ServerHeaderData from '../../ServerHeader';
 
 type Props = Food & {
   lang: string;
   ProductData?: any
   FakeData?: any
-
+currencyName:string
   setCurrentItem: Dispatch<
     SetStateAction<{
       type?: string;
@@ -26,8 +26,9 @@ type Props = Food & {
 function SmallCard(data: Props) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [quantity, setQuantity] = useState(1);
-  const abbreviation = useCurrencyAbbreviation({ lang: data.lang });
+  // const abbreviation = useCurrencyAbbreviation({ lang: data.lang });
   const [currentModalProductId, setCurrentModalProductId] = useState<string | null>(null);
+  // const headerData = await ServerHeaderData(data.lang);
 
   // Optimized modal opener - opens immediately
   const handleOpenModal = (id: string) => {
@@ -80,13 +81,17 @@ function SmallCard(data: Props) {
           <div className="mt-2 flex flex-col items-start font-semibold text-mainColor">
             <div className='text-[12px] sm:pt-0 pt-0.5 font-normal sm:text-[13px]'>
               <span>
-                {abbreviation && toCurrency(data.finalPrice, data.lang, abbreviation)}
+                {/* {abbreviation && toCurrency(data.finalPrice, data.lang, abbreviation)} */}
+                {data.finalPrice}{" "}{data.currencyName}
+
               </span>
             </div>
             {data.isDiscountActive ===true &&
               <div>
               <del className="text-[12px] sm:text-[13px] font-normal text-gray-500">
-                  {abbreviation && toCurrency(data.price, data.lang, abbreviation)}
+                  {/* {abbreviation && toCurrency(
+                    data.lang, abbreviation)} */}
+                {data.price}{" "}{data?.currencyName as any}
               </del>
             </div>
             }
@@ -98,11 +103,11 @@ function SmallCard(data: Props) {
       <AnimatePresence mode='wait'>
         {isModalOpen && (
           <Modal
-
             setCurrentModalProductId={setCurrentModalProductId}
             lang={data.lang}
             ProductData={data.ProductData}
             modalId={data.id}
+            currencyAbbreviation={data.currencyName}
             FakeData={data.FakeData}
             currentModalProductId={currentModalProductId}
             setIsModalOpen={setIsModalOpen}

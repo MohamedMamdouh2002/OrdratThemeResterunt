@@ -3,7 +3,6 @@
 import Link from 'next/link';
 import isEmpty from 'lodash/isEmpty';
 import OrderProducts from '@/app/shared/ecommerce/checkout/order-products';
-import useCurrencyAbbreviation, { toCurrency } from '@utils/to-currency';
 import { Title, Text, Button, EmptyProductBoxIcon } from 'rizzui';
 import cn from '@utils/class-names';
 import { routes } from '@/config/routes';
@@ -29,7 +28,8 @@ export default function CartDrawerView({
   setOpenDrawer,
 }: CartDrawerViewProps) {
   const isCartEmpty = isEmpty(items);
-  const abbreviation = useCurrencyAbbreviation({ lang:'en' });
+  // const abbreviation = useCurrencyAbbreviation({ lang:'en' });
+  const currencyAbbreviation =localStorage.getItem('currencyAbbreviation')
 
   return (
     <div className="flex h-full w-full flex-col">
@@ -53,6 +53,7 @@ export default function CartDrawerView({
           className="mb-5 gap-0 divide-y border-b border-gray-100"
           itemClassName="p-4 pb-5 md:px-6"
           addItemToCart={addItemToCart}
+          currencyAbbreviation={currencyAbbreviation as string}
           removeItemFromCart={removeItemFromCart}
           clearItemFromCart={clearItemFromCart}
         />
@@ -77,7 +78,10 @@ export default function CartDrawerView({
         >
           Checkout
           <span className="-mr-3 inline-flex rounded-md bg-primary-lighter p-2 px-4 text-primary-dark">
-            {abbreviation&&toCurrency(total,'en',abbreviation)}
+            {/* {/* {abbreviation&&toCurrency( * */}
+            
+              {/* // ,'en',abbreviation)} */}
+              {total}{" "}{currencyAbbreviation}
           </span>
         </Link>
       )}

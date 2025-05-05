@@ -7,7 +7,7 @@ import WishlistButton from '../wishlist-button';
 import { generateSlug } from '../../utils/generate-slug';
 import ColorSwatch from '../../utils/color-swatch';
 import { Product } from '../../types';
-import useCurrencyAbbreviation, { toCurrency } from '../../utils/to-currency';
+// import useCurrencyAbbreviation, { toCurrency } from '../../utils/to-currency';
 
 interface ProductProps {
   product: Product;
@@ -22,7 +22,8 @@ export default function ProductModernCard({
   routes,
   lang
 }: ProductProps) {
-  const abbreviation = useCurrencyAbbreviation({ lang });
+  // const abbreviation = useCurrencyAbbreviation({ lang });
+  const currencyAbbreviation =localStorage.getItem('currencyAbbreviation')
 
   const {
     title,
@@ -69,10 +70,13 @@ export default function ProductModernCard({
           {description}
         </Text>
         <div className="mt-2 flex items-center font-semibold text-gray-900">
-          {abbreviation&&toCurrency(Number(price) ,lang,abbreviation)}
+          {/* {abbreviation&&toCurrency(Number(price) ,lang,abbreviation)} */}
+          {Number(price)}{" "}{currencyAbbreviation}
           {sale_price && (
             <del className="ps-1.5 text-[13px] font-normal text-gray-500">
-              {abbreviation&&toCurrency(Number(sale_price),lang,abbreviation)}
+          {Number(sale_price)}{" "}{currencyAbbreviation}
+
+              {/* {abbreviation&&toCurrency(Number(sale_price),lang,abbreviation)} */}
             </del>
           )}
         </div>

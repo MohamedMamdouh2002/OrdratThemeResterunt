@@ -6,7 +6,6 @@ import { useTranslation } from '@/app/i18n/client';
 import CustomToast from '../CustomToast';
 import { API_BASE_URL } from '@/config/base-url';
 import { useUserContext } from '../context/UserContext';
-import useCurrencyAbbreviation, { toCurrency } from '@utils/to-currency';
 
 interface CouponModalProps {
   lang: string;
@@ -16,10 +15,10 @@ interface CouponModalProps {
 const CouponModal: React.FC<CouponModalProps> = ({ lang, onClose }) => {
   const { t } = useTranslation(lang, 'home');
   const { shopId } = useUserContext();
+  const currencyAbbreviation =localStorage.getItem('currencyAbbreviation')
 
   const [coupon, setCoupon] = useState<any[]>([]);
   const [showToast, setShowToast] = useState(false);
-  const abbreviation = useCurrencyAbbreviation({ lang: lang });
 
   const touchStartY = useRef<number | null>(null);
   const touchEndY = useRef<number | null>(null);
@@ -130,7 +129,7 @@ const CouponModal: React.FC<CouponModalProps> = ({ lang, onClose }) => {
                     <span>{t('expire')}</span>
                     <span>
                       {t('discount')} 
-                      {c.discountType === 0 ? `${c.discountValue} %` :`   ${abbreviation && toCurrency(c.discountValue, lang, abbreviation)}`
+                      {c.discountType === 0 ? `${c.discountValue} %` :`   ${c.discountValue} ${currencyAbbreviation}`
                       }
                     </span>
                   </div>

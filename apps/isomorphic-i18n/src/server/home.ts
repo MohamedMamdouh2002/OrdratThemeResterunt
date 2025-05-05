@@ -4,13 +4,10 @@ import { cookies } from "next/headers";
 
 export async function GetBannerData(lang: string) {
     try {
-      const cookieStore = cookies();
       // const shopId = cookieStore.get('shopId')?.value;
-      const shopId = await getServerShopId(lang);
-  
+      const shopId = await getServerShopId(lang);  
       const response = await fetch(`${API_BASE_URL}/api/Banner/GetAll/${shopId}`, {
         headers: {
-  
           'Accept-Language': lang,
         },
         cache: 'no-store'
@@ -29,7 +26,6 @@ export async function GetBannerData(lang: string) {
   }
   export async function GetHomeData(lang: string, page: number = 1, pageSize: number = 10) {
     try {
-      const cookieStore = cookies();
       // const shopId = cookieStore.get('shopId')?.value;
       const shopId = await getServerShopId(lang);
       const response = await fetch(`${API_BASE_URL}/api/Category/GetPaginatedWithProducts/${shopId}?PageNumber=${page}&PageSize=${pageSize}`, {
@@ -51,7 +47,6 @@ export async function GetBannerData(lang: string) {
   }
   export async function getCoupons() {
     try {
-      const cookieStore = cookies();
       // const shopId = cookieStore.get('shopId')?.value;
       const shopId = await getServerShopId('en');
       const res = await fetch(`${API_BASE_URL}/api/Coupon/GetAll/${shopId}?PageNumber=1&PageSize=500`, {
@@ -67,7 +62,6 @@ export async function GetBannerData(lang: string) {
   
   export async function getBranches(lang: string) {
     try {
-      const cookieStore = cookies();
       // const shopId = cookieStore.get('shopId')?.value ?? '952E762C-010D-4E2B-8035-26668D99E23E';
       const shopId = await getServerShopId(lang) ?? '952E762C-010D-4E2B-8035-26668D99E23E';
       const res = await fetch(`${API_BASE_URL}/api/Branch/GetByShopId/${shopId}`, {
