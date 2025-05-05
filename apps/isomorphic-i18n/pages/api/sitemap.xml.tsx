@@ -9,19 +9,20 @@ async function fetchSubdomain(subdomain: string) {
       `https://testapi.ordrat.com/api/Shop/GetBySubdomain/${subdomain}`,
       {
         headers: {
+          Accept: "/",
           "Accept-Language": "en",
         },
       }
     );
 
     if (!res.ok) {
-      throw new Error("Failed to fetch branch zonesmnjknih");
+      throw new Error("Failed to fetch branch zones");
     }
 
     const data = await res.json();
     return data;
   } catch (error) {
-    console.error("Error fetching branch zones:ر", error);
+    console.error("Error fetching branch zones:", error);
     return null;
   }
 }

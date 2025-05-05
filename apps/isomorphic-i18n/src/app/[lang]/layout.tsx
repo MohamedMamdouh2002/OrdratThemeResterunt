@@ -51,7 +51,7 @@ export async function generateStaticParams() {
 // } 
 function getServerSiteUrl() {
   // const host = "theme.ordrat.com";
-  const host = headers().get("host") || "localhost:3001";
+  const host = headers().get("host") || "localhost:3000";
   const protocol = process.env.NODE_ENV === "production" ? "https" : "http";
   return `${host}`;
 }
@@ -120,6 +120,7 @@ async function fetchBranchZones(shopId: string) {
       `https://testapi.ordrat.com/api/Branch/GetByShopId/${shopId}`,
       {
         headers: {
+          Accept: "*/*",
           "Accept-Language": "en",
         },
         cache: "no-store",
@@ -127,7 +128,7 @@ async function fetchBranchZones(shopId: string) {
     );
 
     if (!res.ok) {
-      throw new Error("Failed to fetch branch zone9789s");
+      throw new Error("Failed to fetch branch zones");
     }
 
     const data = await res.json();
@@ -137,7 +138,7 @@ async function fetchBranchZones(shopId: string) {
       zoonRadius: branch.coverageRadius,
     }));
   } catch (error) {
-    console.error("Error fetching branch zones:ال", error);
+    console.error("Error fetching branch zones:", error);
     return [];
   }
 }
@@ -189,6 +190,7 @@ async function fetchSubdomain(subdomain: string,lang:string) {
       `https://testapi.ordrat.com/api/Shop/GetBySubdomain/${subdomain}`,
       {
         headers: {
+          Accept: "*/*",
           "Accept-Language": lang,
         },
         cache: "no-store",
@@ -197,13 +199,13 @@ async function fetchSubdomain(subdomain: string,lang:string) {
     );
 
     if (!res.ok) {
-      throw new Error("Failed to fetch branch zones**/5");
+      throw new Error("Failed to fetch branch zones");
     }
 
     const data = await res.json();
     return data;
   } catch (error) {
-    console.error("Error fetching branch zones:نتا", error);
+    console.error("Error fetching branch zones:", error);
     return [];
   }
 }

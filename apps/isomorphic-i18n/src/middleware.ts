@@ -45,6 +45,7 @@ export async function middleware(req: any) {
         `https://testapi.ordrat.com/api/Shop/GetBySubdomain/${subdomain}`,
         {
           headers: {
+            Accept: "/",
             "Accept-Language": "en",
           },
         }
@@ -57,7 +58,7 @@ export async function middleware(req: any) {
       const data = await res.json();
       return data;
     } catch (error) {
-      console.error("Error fetching branch zones:ل", error);
+      console.error("Error fetching branch zones:", error);
       return [];
     }
   }
@@ -114,11 +115,13 @@ async function fetchShopData(shopId: string, lang: string) {
 }
   function getServerSiteUrl() {
     // const host = "theme.ordrat.com";
-    const host = headers().get("host") || "localhost:3001";
+    const host = headers().get("host") || "localhost:3000";
     const protocol = process.env.NODE_ENV === "production" ? "https" : "http";
     return `${host}`;
   }
+
   const realPath = getServerSiteUrl();
+
   const shopId = await fetchSubdomain(realPath);
   const shopData = await fetchShopData(shopId.id, lang as any);
   const response = NextResponse.next();

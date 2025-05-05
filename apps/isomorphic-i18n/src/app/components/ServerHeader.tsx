@@ -8,6 +8,7 @@ async function fetchSubdomain(subdomain: string, lang: string) {
       `https://testapi.ordrat.com/api/Shop/GetBySubdomain/${subdomain}`,
       {
         headers: {
+          Accept: "/",
           "Accept-Language": lang,
         },
         cache: "no-store"
@@ -15,13 +16,13 @@ async function fetchSubdomain(subdomain: string, lang: string) {
     );
 
     if (!res.ok) {
-      throw new Error("Failed to fetch branch zones55555");
+      throw new Error("Failed to fetch branch zones");
     }
 
     const data = await res.json();
     return data;
   } catch (error) {
-    console.error("Error fetching branch zonesىلبا:", error);
+    console.error("Error fetching branch zones:", error);
     return null;
   }
 }
@@ -66,10 +67,9 @@ async function fetchShopData(shopId: string, lang: string) {
     };
   }
 }
-
 function getServerSiteUrl() {
   // const host = "theme.ordrat.com";
-  const host = headers().get("host") || "localhost:3001";
+  const host = headers().get("host") || "localhost:3000";
   const protocol = process.env.NODE_ENV === "production" ? "https" : "http";
   return `${host}`;
 }
@@ -77,7 +77,6 @@ function getServerSiteUrl() {
 export default async function ServerHeaderData(lang: string = "en") {
   const realPath = getServerSiteUrl();
   const subdomainData = await fetchSubdomain(realPath, lang);
-
   if (!subdomainData || !subdomainData.id) {
     console.error("Failed to fetch subdomain data");
     return {
