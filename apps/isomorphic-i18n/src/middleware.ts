@@ -3,6 +3,7 @@ import withAuth from "next-auth/middleware";
 import { NextResponse } from "next/server";
 import acceptLanguage from "accept-language";
 import { fallbackLng, languages } from "./app/i18n/settings";
+import { headers } from "next/headers";
 
 acceptLanguage.languages(languages);
 
@@ -57,7 +58,7 @@ export async function middleware(req: any) {
       const data = await res.json();
       return data;
     } catch (error) {
-      console.error("Error fetching branch zones:", error);
+      console.error("Error fetching branch zones:ل", error);
       return [];
     }
   }
@@ -118,9 +119,7 @@ async function fetchShopData(shopId: string, lang: string) {
     const protocol = process.env.NODE_ENV === "production" ? "https" : "http";
     return `${host}`;
   }
-
   const realPath = getServerSiteUrl();
-
   const shopId = await fetchSubdomain(realPath);
   const shopData = await fetchShopData(shopId.id, lang as any);
   const response = NextResponse.next();

@@ -19,7 +19,7 @@ async function fetchSubdomain(subdomain: string) {
     const data = await res.json();
     return data;
   } catch (error) {
-    console.error("Error fetching branch zones:", error);
+    console.error("Error fetching branch zones:كمتنكنكم", error);
     return null;
   }
 }

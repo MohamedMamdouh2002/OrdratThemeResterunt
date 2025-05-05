@@ -138,7 +138,7 @@ async function fetchBranchZones(shopId: string) {
       zoonRadius: branch.coverageRadius,
     }));
   } catch (error) {
-    console.error("Error fetching branch zones:", error);
+    console.error("Error fetching branch zones:ال", error);
     return [];
   }
 }
@@ -205,7 +205,7 @@ async function fetchSubdomain(subdomain: string,lang:string) {
     const data = await res.json();
     return data;
   } catch (error) {
-    console.error("Error fetching branch zones:", error);
+    console.error("Error fetching branch zones:نتا", error);
     return [];
   }
 }

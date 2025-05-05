@@ -16,7 +16,6 @@ export default async function LithiumLayout({
 }) {
   const pathname = usePathname();
   const headerData = await ServerHeaderData(lang);
-
   return (
     <main className="flex min-h-screen flex-grow">
       <div className="flex w-full flex-col ">
