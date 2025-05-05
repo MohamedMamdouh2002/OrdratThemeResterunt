@@ -30,6 +30,7 @@ import Image from "next/image";
 import Pixels, { getEnabledPixels } from "../components/ui/pixels";
 import { TrackingProvider } from "../components/context/TrackingContext";
 import ScrollToTop from "../components/ui/ScrollToTop";
+
 const NextProgress = dynamic(() => import("@components/next-progress"), {
   ssr: false,
 });
@@ -49,8 +50,8 @@ export async function generateStaticParams() {
 //   return `${protocol}://${host}`;
 // } 
 function getServerSiteUrl() {
-  const host = "theme.ordrat.com";
-  // const host = headers().get("host") || "localhost:3000";
+  // const host = "theme.ordrat.com";
+  const host = headers().get("host") || "localhost:3000";
   const protocol = process.env.NODE_ENV === "production" ? "https" : "http";
   return `${host}`;
 }
@@ -192,6 +193,8 @@ async function fetchSubdomain(subdomain: string,lang:string) {
           Accept: "*/*",
           "Accept-Language": lang,
         },
+        cache: "no-store",
+
       }
     );
 

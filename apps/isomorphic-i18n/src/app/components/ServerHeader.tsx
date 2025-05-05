@@ -1,4 +1,6 @@
+import { headers } from "next/headers";
 import { NextResponse } from "next/server";
+export const dynamic = "force-dynamic";
 
 async function fetchSubdomain(subdomain: string, lang: string) {
   try {
@@ -9,6 +11,7 @@ async function fetchSubdomain(subdomain: string, lang: string) {
           Accept: "/",
           "Accept-Language": lang,
         },
+        cache: "no-store"
       }
     );
 
@@ -68,8 +71,8 @@ async function fetchShopData(shopId: string, lang: string) {
 }
 
 function getServerSiteUrl() {
-  const host = "theme.ordrat.com";
-  // const host = headers().get("host") || "localhost:3000";
+  // const host = "theme.ordrat.com";
+  const host = headers().get("host") || "localhost:3000";
   const protocol = process.env.NODE_ENV === "production" ? "https" : "http";
   return `${host}`;
 }

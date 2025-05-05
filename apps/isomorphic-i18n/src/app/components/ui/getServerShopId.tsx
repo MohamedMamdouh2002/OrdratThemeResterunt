@@ -1,3 +1,5 @@
+import { headers } from "next/headers";
+
 async function fetchSubdomain(subdomain: string) {
   try {
     const res = await fetch(
@@ -7,6 +9,8 @@ async function fetchSubdomain(subdomain: string) {
           Accept: "/",
           "Accept-Language": "en",
         },
+        cache: "no-store",
+
       }
     );
     if (!res.ok) {
@@ -44,8 +48,8 @@ async function fetchShopData(shopId: string, lang: string) {
 }
 
 function getServerSiteUrl() {
-  const host = "theme.ordrat.com";
-  // const host = headers().get("host") || "localhost:3000";
+  // const host = "theme.ordrat.com";
+  const host = headers().get("host") || "localhost:3000";
   const protocol = process.env.NODE_ENV === "production" ? "https" : "http";
   return `${host}`;
 }
