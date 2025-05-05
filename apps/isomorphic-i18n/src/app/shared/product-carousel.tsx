@@ -97,11 +97,11 @@ export default function ProductCarousel({
           },
         }}
       >
-        {data.map((product) => (
-          <SwiperSlide key={product.id}>
-            <ProductModernCard lang='en' product={product} routes={routes} />
-          </SwiperSlide>
-        ))}
+        {/* {data.map((product) => ( */}
+          {/* // <SwiperSlide key={product.id}> */}
+            {/* <ProductModernCard lang='en' product={product} routes={routes} /> */}
+          {/* </SwiperSlide> */}
+        {/* ))} */}
       </Swiper>
     </div>
   );
