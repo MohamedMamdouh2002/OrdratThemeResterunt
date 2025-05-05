@@ -16,7 +16,7 @@ async function fetchSubdomain(subdomain: string) {
     );
 
     if (!res.ok) {
-      throw new Error("Failed to fetch branch zones");
+      throw new Error("Failed to fetch branch zonesmnjknih");
     }
 
     const data = await res.json();

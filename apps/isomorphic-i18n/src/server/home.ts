@@ -68,7 +68,7 @@ export async function GetBannerData(lang: string) {
         headers: {
           'Accept-Language': lang,
         },
-        cache: 'no-store',
+        // cache: 'no-store',
       });
       const data = await res.json();
       return data;
