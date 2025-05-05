@@ -6,7 +6,7 @@ async function fetchSubdomain(subdomain: string) {
       `https://testapi.ordrat.com/api/Shop/GetBySubdomain/${subdomain}`,
       {
         headers: {
-          Accept: "/",
+
           "Accept-Language": "en",
         },
         cache: "no-store",
@@ -30,7 +30,6 @@ async function fetchShopData(shopId: string, lang: string) {
       `https://testapi.ordrat.com/api/Shop/GetById/${shopId}`,
       {
         headers: {
-          Accept: "*/*",
           "Accept-Language": lang,
         },
         cache: "no-store",

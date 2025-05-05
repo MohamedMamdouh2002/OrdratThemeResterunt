@@ -8,7 +8,6 @@ async function fetchSubdomain(subdomain: string, lang: string) {
       `https://testapi.ordrat.com/api/Shop/GetBySubdomain/${subdomain}`,
       {
         headers: {
-          Accept: "/",
           "Accept-Language": lang,
         },
         cache: "no-store"

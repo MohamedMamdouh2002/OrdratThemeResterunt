@@ -45,7 +45,6 @@ export async function middleware(req: any) {
         `https://testapi.ordrat.com/api/Shop/GetBySubdomain/${subdomain}`,
         {
           headers: {
-            Accept: "/",
             "Accept-Language": "en",
           },
         }

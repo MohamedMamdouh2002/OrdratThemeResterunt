@@ -120,7 +120,6 @@ async function fetchBranchZones(shopId: string) {
       `https://testapi.ordrat.com/api/Branch/GetByShopId/${shopId}`,
       {
         headers: {
-          Accept: "*/*",
           "Accept-Language": "en",
         },
         cache: "no-store",
@@ -190,7 +189,6 @@ async function fetchSubdomain(subdomain: string,lang:string) {
       `https://testapi.ordrat.com/api/Shop/GetBySubdomain/${subdomain}`,
       {
         headers: {
-          Accept: "*/*",
           "Accept-Language": lang,
         },
         cache: "no-store",
