@@ -1,7 +1,7 @@
 'use client';
 
 import { usePathname } from 'next/navigation';
-import useClientIP from '@/app/hooks/useClientIP';
+// import useClientIP from '@/app/hooks/useClientIP';
 import { createContext, useContext, useEffect, useState } from 'react';
 import { GeoLocationResult } from '@/types';
 import { getServerShopId } from '../ui/getServerShopId';
@@ -18,7 +18,7 @@ const TrackingContext = createContext<TrackingContextType>({
 export const useTracking = () => useContext(TrackingContext);
 
 export function TrackingProvider({ children }: { children: React.ReactNode }) {
-  const ip = useClientIP();
+  // const ip = useClientIP();
   const pathname = usePathname();
 
   const [sessionId, setSessionId] = useState<string | null>(null);
@@ -77,7 +77,7 @@ export function TrackingProvider({ children }: { children: React.ReactNode }) {
   };
 
   useEffect(() => {
-    if (!ip || !sessionId || !location) return;
+    if ( !sessionId || !location) return;
     const checkoutPageVisited = pathname?.includes('/checkout');
     const completedOrder = pathname?.includes('/thank-you');
 
@@ -106,7 +106,7 @@ export function TrackingProvider({ children }: { children: React.ReactNode }) {
     });
 
     setAddToCartCount(0); 
-  }, [pathname,ip, sessionId, location]);
+  }, [pathname, sessionId, location]);
 
   return (
     <TrackingContext.Provider value={{ trackAddToCart }}>
