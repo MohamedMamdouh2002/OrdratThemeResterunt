@@ -338,7 +338,6 @@ export default function CheckoutPageWrapper({
   const onSubmit: SubmitHandler<MadeOrderInput> = async (data) => {
     setLoading(true);
     try {
-     const endUserId= localStorage.getItem('endUserId')
       const formData = new FormData();
       formData.append('paymentmethod', '0');
       formData.append('OrderType', '2');
@@ -351,7 +350,7 @@ export default function CheckoutPageWrapper({
 
       formData.append('ShopId', shopId);
       formData.append('BranchId', branchId);
-      formData.append('EndUserId', endUserId as string);
+      formData.append('EndUserId', '');
       formData.append('Discount', '0');
       formData.append('GrossProfit', '0');
       formData.append('Service', '0');

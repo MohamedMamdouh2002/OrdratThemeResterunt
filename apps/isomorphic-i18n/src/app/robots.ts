@@ -11,7 +11,7 @@ export default function robots(): MetadataRoute.Robots {
         disallow: '/private/',
       },
     ],
-    sitemap: `https://ordrat-theme-resterunt-isomorphic-i18n.vercel.app/sitemap.xml`,
+    sitemap: `${siteUrl}/sitemap.xml`,
     // sitemap: `http://localhost:3001/sitemap.xml`,
   }
 }

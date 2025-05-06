@@ -32,26 +32,24 @@ type Props = {
 };
 
 function Login({ onLogin, setCurrentModal }: Props, { lang }: { lang?: string }) {
-	const { t,i18n } = useTranslation(lang!, 'nav');
+	const { t, i18n } = useTranslation(lang!, 'nav');
 
 	const { accessToken, setAccessToken, token, setToken, shopId } = useUserContext()
 	const [loading, setLoading] = useState(false);
 	const [logoUrl, setLogoUrl] = useState<string | null>(null);
-    const [shopName, setShopName] = useState<string | null>(null);
-    
-  const [description, setDescription] = useState<string | null>(null);
-
-  useEffect(() => {
-    i18n.changeLanguage(lang);
-    const storedLogo = localStorage.getItem("logoUrl");
-    const storedName = localStorage.getItem("subdomainName");
-    const description = localStorage.getItem("description");
-    if (storedLogo) {
-      setLogoUrl(storedLogo);
-      setShopName(storedName);
-      setDescription(description)
-    }
-  }, [lang, i18n]);
+	const [shopName, setShopName] = useState<string | null>(null);
+	const [description, setDescription] = useState<string | null>(null);
+	useEffect(() => {
+		i18n.changeLanguage(lang);
+		const storedLogo = localStorage.getItem("logoUrl");
+		const storedName = localStorage.getItem("subdomainName");
+		const description = localStorage.getItem("description");
+		if (storedLogo) {
+			setLogoUrl(storedLogo);
+			setShopName(storedName);
+			setDescription(description)
+		}
+	}, [lang, i18n]);
 	// const { setSession } = useContext(SessionContext);
 	// const loginSchema = useLoginValidation({});
 	// const [submittedSuccessfully, setSubmittedSuccessfully] = useState(false);
@@ -76,9 +74,9 @@ function Login({ onLogin, setCurrentModal }: Props, { lang }: { lang?: string })
 	async function sendData(values: any) {
 		// jsonData = JSON.stringify(values);
 		setLoading(true)
-		const jsonData={
-			phoneNumber:values.phoneNumber,
-			shopId:values.shopId
+		const jsonData = {
+			phoneNumber: values.phoneNumber,
+			shopId: values.shopId
 		}
 		let res = await fetch(`${API_BASE_URL}/api/Auth/EndUserLogin/${values.shopId}`, {
 			method: 'POST',
@@ -87,14 +85,14 @@ function Login({ onLogin, setCurrentModal }: Props, { lang }: { lang?: string })
 			},
 			body: JSON.stringify(jsonData),
 		});
-		if(res.ok){
+		if (res.ok) {
 			const result = await res.json();
 			toast.success(`${t('welcome-to-Karam-Elsham')} ${shopName}`)
 			setLoading(false)
 			console.log("resault: ", result);
-			
+
 			if (result?.refreshToken) {
-	
+
 				localStorage.setItem('accessToken', result?.accessToken);
 				setAccessToken(result.accessToken)
 				localStorage.setItem('Token', result?.refreshToken);
@@ -109,23 +107,13 @@ function Login({ onLogin, setCurrentModal }: Props, { lang }: { lang?: string })
 					email: result.email || '',
 				};
 				localStorage.setItem('userData', JSON.stringify(userData));
-				const phoneNumber = result.phoneNumber;
-const shopId = result.shopId || '952E762C-010D-4E2B-8035-26668D99E23E';
-
-fetch(`https://testapi.ordrat.com/api/EndUser/GetByPhoneNumber/${shopId}?phoneNumber=${phoneNumber}`)
-  .then(res => res.json())
-  .then(data => {
-    console.log('بيانات المستخدم:', data);
-	localStorage.setItem('endUserId', data.id); 
-})
-  .catch(console.error);
+			
 			} else {
 				console.log('Access Token not found.');
 				setLoading(false)
-		
 			}
-		}else{
-			toast.error(`${t('welcome-to-Karam-Elsham')} ${shopName}`)
+		} else {
+			toast.error(``)
 			setLoading(false)
 
 
@@ -158,41 +146,41 @@ fetch(`https://testapi.ordrat.com/api/EndUser/GetByPhoneNumber/${shopId}?phoneNu
 				{logoUrl ? (
 					<CustomImage
 						src={logoUrl} width={60} height={60} alt="logo" />
-					) : (
+				) : (
 					<div className="w-[60px] h-[60px] bg-gray-200 rounded-full"></div>
-                )}
+				)}
 				<p className="text-sm font-light truncate-text">{description}</p>
 			</div>
-				<form onSubmit={formik.handleSubmit}>
-					<div className=" flex justify-between w-full">
-						<PhoneNumber
-							label={t('phone')}
-							country="eg"
-							size='lg'
-							className="mt-1 font-medium w-full"
-							preferredCountries={['eg']}
-							value={formik.values.phoneNumber}
-							onChange={(value) => formik.setFieldValue('phoneNumber', value)}
-							onBlur={formik.handleBlur}
-							error={formik.touched.phoneNumber as any && formik.errors.phoneNumber ? formik.errors.phoneNumber as any : '' as any}
-						/>
-					</div>
-				
-					<div className=" flex items-center justify-center">
+			<form onSubmit={formik.handleSubmit}>
+				<div className=" flex justify-between w-full">
+					<PhoneNumber
+						label={t('phone')}
+						country="eg"
+						size='lg'
+						className="mt-1 font-medium w-full"
+						preferredCountries={['eg']}
+						value={formik.values.phoneNumber}
+						onChange={(value) => formik.setFieldValue('phoneNumber', value)}
+						onBlur={formik.handleBlur}
+						error={formik.touched.phoneNumber as any && formik.errors.phoneNumber ? formik.errors.phoneNumber as any : '' as any}
+					/>
+				</div>
+
+				<div className=" flex items-center justify-center">
 
 					<button
 						type="submit"
 						className="bg-mainColor py-3 px-6 rounded-xl mt-4 font-bold text-base text-white"
 						disabled={loading}
-						>
+					>
 						{loading ? (
 							<Loader2 className="animate-spin" />
 						) : (
 							t("sidebar-menu-sign-in")
 						)}
 					</button>
-						</div>
-				</form>
+				</div>
+			</form>
 		</div>
 	);
 }

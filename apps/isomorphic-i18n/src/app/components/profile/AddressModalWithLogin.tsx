@@ -134,7 +134,7 @@ export default function AddressModalWithLogin({
 			const result = await response.json();
 
 			if (response.ok) {
-				toast.success(result.message || 'Address created successfully!');
+				toast.success(lang==='ar'?'تم انشاء العنوان بنجاح':'Address created successfully!');
 				setUpdateAddresses(true);
 				setIsOpen(false);
 			} else {
