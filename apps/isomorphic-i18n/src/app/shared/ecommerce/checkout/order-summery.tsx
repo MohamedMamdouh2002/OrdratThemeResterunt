@@ -33,7 +33,7 @@ export default function OrderSummery({
 }: {
   className?: string;
   isLoading?: boolean;
- 
+
   lang?: string;
   fees: number;
   isButtonDisabled?: boolean;
@@ -46,7 +46,7 @@ export default function OrderSummery({
 }) {
   const params = useParams();
   // const abbreviation = useCurrencyAbbreviation({ lang } as any);
-  const currencyAbbreviation =localStorage.getItem('currencyAbbreviation')
+  const currencyAbbreviation = localStorage.getItem('currencyAbbreviation')
 
   const [response, setResponse] = useState<Branchprops[]>([]);
 
@@ -69,21 +69,25 @@ export default function OrderSummery({
   const storedVatType = typeof window !== "undefined" ? Number(localStorage.getItem("vatType")) || 0 : 0;
   const freeShppingTarget = typeof window !== "undefined" ? Number(localStorage.getItem("freeShppingTarget")) || 0 : 0;
 
-  const taxValue = storedVatType === 0
-    ? (storedVat / 100) * total
-    : storedVat;
+  const rawTaxValue =
+    storedVatType === 0
+      ? (storedVat / 100) * total
+      : storedVat;
+
+  const taxValue = Math.round((rawTaxValue + Number.EPSILON) * 100) / 100;
 
 
-    const isFreeShipping = total >= freeShppingTarget;
-    const shippingFees = isFreeShipping ? 0 : fees;
-    
-    const totalWithFees = total + taxValue + shippingFees;
+  const isFreeShipping = total >= freeShppingTarget;
+  const shippingFees = isFreeShipping ? 0 : Number(fees);
+
+  const totalWithFees = total + taxValue + shippingFees;
   const discount =
     discountType === 0
-      ? (Number(discountValue) / 100) * totalWithFees
+      ? parseFloat(((Number(discountValue) / 100) * totalWithFees).toFixed(2))
       : Number(discountValue);
 
-  const finalTotal = Math.max(totalWithFees - discount, 0);
+
+  const finalTotal = parseFloat(Math.max(totalWithFees - discount, 0).toFixed(2));
   // discountType === 0
   // ? (Number(discountValue) / 100) * totalWithFees 
   // : Number(discountValue);
@@ -151,7 +155,7 @@ export default function OrderSummery({
             addItemToCart={addItemToCart}
             removeItemFromCart={removeItemFromCart}
             clearItemFromCart={clearItemFromCart}
-          currencyAbbreviation={currencyAbbreviation as string}
+            currencyAbbreviation={currencyAbbreviation as string}
 
             items={items}
             className="mb-5 border-b border-muted pb-5"
@@ -168,7 +172,7 @@ export default function OrderSummery({
           <div className="mb-4 flex items-center justify-between last:mb-0">
             {t('Vat')}
             <Text as="span" className="font-medium text-gray-900">
-            {taxValue}{" "}{currencyAbbreviation}
+              {taxValue}{" "}{currencyAbbreviation}
 
               {/* {abbreviation&&toCurrency(taxValue, lang as any,abbreviation)} */}
             </Text>
@@ -179,20 +183,22 @@ export default function OrderSummery({
               {abbreviation&&toCurrency(fees, lang)}
             </Text> */}
             {(() => {
-              // const mainBranch = response.find(
-              //   (i) => i.name 
-              // );
-              // if (mainBranch?.isFixedDelivery) {
-              //   return <span>{abbreviation&&toCurrency(mainBranch?.deliveryCharge ?? 0, lang as any,abbreviation)}</span>;
-              // }
-              // else {
-              
+              const mainBranch = response.find(
+                (i) => i.name
+              );
+              if (mainBranch?.isFixedDelivery) {
+                return <span>
+                      {shippingFees.toFixed(2)} {currencyAbbreviation}
+
+                  {/* {parseFloat(mainBranch?.deliveryCharge?.toString() || '0').toFixed(2)}    {currencyAbbreviation} */}
+                  </span>;
+              }
+              else {
                 return <span style={{ textDecoration: isFreeShipping ? 'line-through' : 'none' }}>
                   {/* {abbreviation&&toCurrency(fees, lang as any,abbreviation)} */}
-                  {fees}{" "}{currencyAbbreviation}
-
-                  </span>;
-              // }
+                  {parseFloat(fees?.toString() || '0').toFixed(2)}{" "}{currencyAbbreviation}
+                </span>;
+              }
             })()}
 
 
@@ -201,7 +207,7 @@ export default function OrderSummery({
             <div className="flex mb-4 items-center justify-between text-green-600">
               {t('Discount')}
               <span>-{discount}{" "}{currencyAbbreviation}
-              {/* {abbreviation&&toCurrency(discount, lang as any,abbreviation)} */}
+                {/* {abbreviation&&toCurrency(discount, lang as any,abbreviation)} */}
               </span>
             </div>
           )}
@@ -209,10 +215,10 @@ export default function OrderSummery({
             {t('Total')}
             {/* <Text>{totalPrice}</Text> */}
             <Text>
-            {finalTotal}{" "}{currencyAbbreviation}
-            {/* {abbreviation&&toCurrency(finalTotal, lang as any,abbreviation)}
+              {finalTotal}{" "}{currencyAbbreviation}
+              {/* {abbreviation&&toCurrency(finalTotal, lang as any,abbreviation)}
             */}
-            </Text> 
+            </Text>
           </div>
 
           {items.length ? (

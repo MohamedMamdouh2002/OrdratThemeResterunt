@@ -3,6 +3,7 @@ import { metaObject } from '@/config/site.config';
 import { API_BASE_URL } from '@/config/base-url';
 import { cookies } from 'next/headers';
 import { getServerShopId } from '@/app/components/ui/getServerShopId';
+import ServerHeaderData from '@/app/components/ServerHeader';
 
 export async function generateMetadata({ params }: { params: { lang: string } }) {
   const lang = params.lang;
@@ -29,6 +30,8 @@ export default async function Search({
   const searchTerm = searchParams?.search || '';
   const cookieStore = cookies();
   const shopId = await getServerShopId(lang)
+  const headerData = await ServerHeaderData(lang);
+
   const pageSize = 5;
 
   const url = searchTerm
@@ -48,5 +51,5 @@ export default async function Search({
   console.log('await response.json()',result);
   
 
-  return <Content lang={lang} initialProducts={products} initialSearch={searchTerm} />;
+  return <Content lang={lang} currencyName={headerData.currencyAbbreviation} initialProducts={products} initialSearch={searchTerm} />;
 }

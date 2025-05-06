@@ -112,6 +112,7 @@ export default function CheckoutPageWrapper({
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [isAddressOpen, setIsAddressOpen] = useState<boolean>(false);
   const [deliveryBerKelo, setDeliveryBerKelo] = useState<any>('');
+  const [branchId, setBranchId] = useState<any>('');
 
   const methods = useForm<MadeOrderInput>({
     mode: 'onChange',
@@ -205,7 +206,7 @@ export default function CheckoutPageWrapper({
     try {
       const response = await fetch(
         `https://testapi.ordrat.com/api/Order/GetDeliveryCharge/${shopId}/${addressId}`,
-        {
+        { 
           method: 'GET',
           headers: {
             Accept: '*/*',
@@ -218,7 +219,8 @@ export default function CheckoutPageWrapper({
       }
 
       const data = await response.json();
-      setDeliveryBerKelo(data.message);
+      setDeliveryBerKelo(data.message.shippingFees);
+      setBranchId(data.message.branch.id);
 
     } catch (error) {
       console.error('خطأ في استدعاء قيمة التوصيل:', error);
@@ -347,7 +349,8 @@ export default function CheckoutPageWrapper({
       // formData.append('TotalPrice', String(total || 0));
       // formData.append('TotalVat', String(summary?.tax || 0));
 
-      // formData.append('ShopId', shopId);
+      formData.append('ShopId', shopId);
+      formData.append('BranchId', branchId);
       formData.append('EndUserId', endUserId as string);
       formData.append('Discount', '0');
       formData.append('GrossProfit', '0');
@@ -413,7 +416,7 @@ export default function CheckoutPageWrapper({
         // Clear the cart items
         items.forEach(item => clearItemFromCart(item.id));
         // Display success toast
-        toast.success(<Text as="b">Order placed successfully!</Text>);
+        toast.success(<Text as="b">{lang==='ar'?'تم الطلب بنجاح':'Order placed successfully!'}</Text>);
         setOrderNote("");
         setCopone("");
         setDiscountValue(0);

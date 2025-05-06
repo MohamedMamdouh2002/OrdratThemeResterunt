@@ -125,7 +125,7 @@ export default function OrderView({ lang }: { lang: string }) {
     const fetchOrder = async () => {
       try {
         const response = await fetch(
-          `${API_BASE_URL}/api/Order/GetById/${id}`,
+          `${API_BASE_URL}/api/Order/GetById/GetById/${id}`,
           {
             method: 'GET',
             headers: {
@@ -286,6 +286,9 @@ export default function OrderView({ lang }: { lang: string }) {
 
                 </div>
                 <div className="flex justify-between border-t border-muted pt-5 text-base font-semibold">
+                <p>
+                {t('Total')}
+                </p>
                 {Number(order?.totalPrice).toFixed(2)}{" "}{currencyAbbreviation}
 
                   {/* {t('Total')} <span>{abbreviation && toCurrency(order?.totalPrice as any, lang as any, abbreviation)}</span> */}
@@ -440,6 +443,7 @@ export default function OrderView({ lang }: { lang: string }) {
               <Text as="p" className="mb-2 last:mb-0 font-semibold">
                 {phone}
               </Text>
+            
             </div>
           </WidgetCard>
 
@@ -459,6 +463,9 @@ export default function OrderView({ lang }: { lang: string }) {
                 <Text as="p" className="mb-2 leading-loose last:mb-0">
                   {order.address.additionalDirections}
                 </Text>
+                <p>{lang==='ar'? 'يتم توصيل طلبك من  ':'Your order will be delivered from the'}
+                  {order?.branchName}
+                </p>
               </div>
             )}
           </WidgetCard>
@@ -478,6 +485,7 @@ export default function OrderView({ lang }: { lang: string }) {
                 {shippingAddress?.state}, {shippingAddress?.zip},{' '}
                 {shippingAddress?.country}
               </Text>
+           
             </WidgetCard>
           )}
         </div>

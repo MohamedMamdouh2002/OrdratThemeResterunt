@@ -296,27 +296,28 @@ function getPixelComponents(pixel: any) {
   return elements;
 }
 
-export default function Pixels({ enabledPixels }:any) {
+export default function Pixels({ enabledPixels }: any) {
+  const activePixels = enabledPixels?.filter(
+    (pixel: any) => pixel.isEnabled && pixel.pixelCode?.trim() !== ""
+  );
+
   return (
     <>
-
-        {/* Iterate over each enabled pixel and render its full script components */}
-        {enabledPixels?.map((pixel: { id: React.Key | null | undefined; }) => (
-          <React.Fragment key={pixel.id}>
-            {getPixelComponents(pixel as any)}
-          </React.Fragment>
-        ))}
-      
-        </>
+      {activePixels.map((pixel: any) => (
+        <React.Fragment key={pixel.id}>
+          {getPixelComponents(pixel)}
+        </React.Fragment>
+      ))}
+    </>
   );
 }
 
+
 // utils/pixel-api.ts
-export async function getEnabledPixels() {
-    const shopid = process.env.SHOP_ID || '952E762C-010D-4E2B-8035-26668D99E23E';
+export async function getEnabledPixels(shopId:any) {
   
     try {
-      const res = await fetch(`https://testapi.ordrat.com/api/ShopPixel/GetAllPixelsByShopId/${shopid}`);
+      const res = await fetch(`https://testapi.ordrat.com/api/ShopPixel/GetAllPixelsByShopId/${shopId}`);
       const data = await res.json();
   
       return data.filter((pixel: any) => pixel.isEnabled && pixel.pixelCode?.trim() !== '');

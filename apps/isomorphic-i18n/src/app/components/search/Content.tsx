@@ -17,10 +17,12 @@ export default function Content({
 	lang,
 	initialProducts,
 	initialSearch,
+	currencyName
   }: {
 	lang?: string;
 	initialProducts: Food[];
 	initialSearch?: string;
+	currencyName: string;
   }) {	  
 	const [searchValue, setSearchValue] = useState(initialSearch ?? '');
 	const [products, setProducts] = useState<Food[]>(initialProducts);
@@ -221,6 +223,7 @@ export default function Content({
 										ProductData={products}	
 										description={product.description}
 										imageUrl={product.imageUrl}
+										currencyName={currencyName}
 										isActive={product.isActive}
 										createdAt={product.createdAt}
 										lastUpdatedAt={product.lastUpdatedAt}

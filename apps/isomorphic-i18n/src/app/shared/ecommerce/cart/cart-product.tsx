@@ -50,27 +50,56 @@ export default function CartProduct({ product, lang , ifModal=false }: { product
   // const abbreviation = useCurrencyAbbreviation({ lang } as any);
 
   const currencyAbbreviation =localStorage.getItem('currencyAbbreviation')
+  function truncateWords(text: string, maxWords: number): string {
+    const words = text.split(/\s+/);
+    if (words.length <= maxWords) return text;
+    return words.slice(0, maxWords).join(' ') + '…';
+  }
+  const fullTitle = lang === 'ar'
+  ? realProductData.nameAr
+  : realProductData.nameEn;
 
+const displayedTitle = truncateWords(fullTitle, 3);
+  
   return (
-    <div className="grid grid-cols-12 items-start gap-4 border-b border-muted py-6 first:pt-0 sm:flex sm:gap-6 2xl:py-8">
-     <figure className={`${ifModal ? "sm:w-28 w-20  col-span-4" : "col-span-4 sm:max-w-[180px]"}`}>
+    <div className="grid grid-cols-12 items-start gap-4 border-b border-muted py-6 first:pt-0 2xl:py-8">
+   <figure
+  className={`${
+    ifModal
+      ? "w-20 sm:w-28 flex-shrink-0 col-span-4"
+      : "col-span-4 w-full max-w-[180px] md:max-w-[240px] lg:max-w-[320px] xl:max-w-[400px] 2xl:max-w-[480px]"
+  }`}
+>
   <CustomImage
     src={product.image || photo}
     alt={lang === 'ar' ? realProductData.nameAr : realProductData.nameEn}
     width={180}
-    height={ 180}
-    className="aspect-square w-full rounded-lg bg-gray-100 object-contain"
+    height={180}
+    className="w-full h-auto rounded-lg bg-gray-100 object-contain"
   />
 </figure>
 
+
+
       <div className="col-span-8 sm:block sm:w-full">
         <div className="flex  gap-1 flex-row items-start justify-between">
+          {ifModal ===true ?
           <Title
-            as="h3"
-            className="truncate text-base font-medium transition-colors hover:text-primary 3xl:text-lg"
+          as="h3"
+          className="truncate text-base font-medium transition-colors hover:text-primary 3xl:text-lg"
           >
-            {lang =='ar'? realProductData.nameAr : realProductData.nameEn}
+             {displayedTitle}
           </Title>
+          :
+          <Title
+          as="h3"
+          className="truncate text-base font-medium transition-colors hover:text-primary 3xl:text-lg"
+          >
+             {lang === 'ar'
+  ? realProductData.nameAr
+  : realProductData.nameEn}
+          </Title>
+          }
           <div className="">
 
             <span className="inline-block text-sm font-semibold text-gray-1000 sm:font-medium md:text-base 3xl:text-lg">

@@ -17,6 +17,7 @@ type Props = {
   initialTitle: any;
   initialPage: number;
   categoryId: string;
+  currencyAbbreviation: string;
 };
 
 export default function AllProduct({
@@ -25,6 +26,7 @@ export default function AllProduct({
   initialTitle,
   initialPage,
   categoryId,
+  currencyAbbreviation
 }: Props) {
   const [products, setProducts] = useState<Food[]>(initialProducts ?? []);
   const [productTitle, setProductsTitle] = useState<any>(initialTitle ?? {});
@@ -121,6 +123,7 @@ export default function AllProduct({
                 <MediumCard
                   ProductData={products}
                   lang={lang}
+                  currencyName={currencyAbbreviation}
                   setCurrentItem={() => { }}
                   {...prod}
                 />
@@ -130,6 +133,8 @@ export default function AllProduct({
               <Card
                 ProductData={products}
                 lang={lang}
+                currencyName={currencyAbbreviation}
+
                 setCurrentItem={() => { }}
                 key={prod.id}
                 {...prod}

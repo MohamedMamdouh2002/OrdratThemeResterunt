@@ -330,6 +330,7 @@ export type orderAdress = {
 export type Order = {
   id: string;
   totalPrice: number;
+  branchName:string;
   orderNumber: number;
   price: number;
   totalVat: number;

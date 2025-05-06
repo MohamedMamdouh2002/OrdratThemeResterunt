@@ -151,9 +151,12 @@ function CartCalculations({ fees, Tax, lang }: { fees: number; Tax: number, lang
   const storedVat = typeof window !== "undefined" ? Number(localStorage.getItem("vat")) || 0 : 0;
   const storedVatType = typeof window !== "undefined" ? Number(localStorage.getItem("vatType")) || 0 : 0;
 
-  const taxValue = storedVatType === 0
+  const rawTaxValue =
+  storedVatType === 0
     ? (storedVat / 100) * total
     : storedVat;
+
+const taxValue = Math.round((rawTaxValue + Number.EPSILON) * 100) / 100;
 
 
   const totalWithFees = total + taxValue ;

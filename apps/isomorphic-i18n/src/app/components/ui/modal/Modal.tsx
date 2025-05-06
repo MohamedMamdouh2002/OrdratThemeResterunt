@@ -983,14 +983,12 @@ console.log("totalSoldQuantity: ",totalSoldQuantity);
                                   </p>
                                   <div className="flex flex-col">
                                     <p className="text-[10px] text-mainColor">
-                                    {item.relatedProduct.price}{" "}{currencyAbbreviation}
-
+                                    {item.relatedProduct.finalPrice}{" "}{currencyAbbreviation}
                                       {/* {abbreviation && toCurrency(item.relatedProduct.price, lang, abbreviation)} */}
                                     </p>
                                     {item.relatedProduct.oldPrice && (
                                       <del className="text-[10px]">
-                                                                          {item.relatedProduct.oldPrice}{" "}{currencyAbbreviation}
-
+                                        {item.relatedProduct.oldPrice}{" "}{currencyAbbreviation}
                                         {/* {abbreviation && toCurrency(item.relatedProduct.oldPrice, lang, abbreviation)} */}
                                       </del>
                                     )}
@@ -1377,7 +1375,7 @@ console.log("totalSoldQuantity: ",totalSoldQuantity);
                                 </p>
                                 <div className="flex flex-col">
                                   <p className="text-[10px] text-mainColor">
-                                  {item.relatedProduct.price}{" "}{currencyAbbreviation}
+                                  {item.relatedProduct.finalPrice}{" "}{currencyAbbreviation}
 
                                     {/* {abbreviation && toCurrency(item.relatedProduct.price, lang, abbreviation)} */}
                                   </p>
@@ -1418,7 +1416,7 @@ console.log("totalSoldQuantity: ",totalSoldQuantity);
                         type={type}
                         buttonType="submit"
                         price={`${finalPrice} ${currencyAbbreviation}`}
-                        oldPrice={` ${finalOldPrice}` ? `${finalOldPrice} ${currencyAbbreviation}`:''}
+                        // oldPrice={` ${finalOldPrice}` ? `${finalOldPrice} ${currencyAbbreviation}`:''}
                         // price={abbreviation && toCurrency(finalPrice, lang, abbreviation)}
                         // oldPrice={finalOldPrice ? abbreviation && toCurrency(finalOldPrice, lang, abbreviation) : ''}
                         className={`${!prodId.hasStock || (prodId.stockNumber - totalSoldQuantity > 0 && prodId.stockNumber - totalSoldQuantity - quantity >= 0) ? '':'cursor-no-drop  bg-slate-400'}`}

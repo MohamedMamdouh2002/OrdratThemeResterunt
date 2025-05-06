@@ -233,7 +233,7 @@ export default function OrderViewProducts({ lang }: { lang: string }) {
     const fetchOrder = async () => {
       try {
         const response = await fetch(
-          `${API_BASE_URL}/api/Order/GetById/${id}`,
+          `${API_BASE_URL}/api/Order/GetById/GetById/${id}`,
           {
             method: 'GET',
             headers: {

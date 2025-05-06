@@ -61,7 +61,6 @@ function UpdateProfileForm({lang}:{lang:string}) {
 		email: userData.email || '',
 		phoneNumber: userData.phoneNumber || '',
 	};
-
 	const updateUserProfile = async (values: any) => {
 		// try {
 		// 	const token = localStorage.getItem('accessToken');
@@ -134,7 +133,7 @@ function UpdateProfileForm({lang}:{lang:string}) {
 			// Save to localStorage and update state
 			localStorage.setItem('userData', JSON.stringify(updatedUserData));
 			setUserData(updatedUserData);
-			toast.success('User profile updated successfully!');
+			toast.success(lang==='ar'? 'تم تحديث الصفحة الشخصية بنجاح!':'User profile updated successfully!');
 		} catch (error: any) {
 			console.error('Error updating profile:', error);
 			toast.error(error.response?.data?.message || 'Error updating profile. Please try again.');

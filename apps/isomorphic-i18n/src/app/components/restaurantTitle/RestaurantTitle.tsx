@@ -313,7 +313,6 @@ function RestaurantTitle({
                             })}
                         <div className="text-[#212121] mt-5 space-y-4 mb-2">
                             <h2 className="text-black font-medium mt-4 mb-2 text-sm">{lang === 'ar' ? 'الفروع' : 'Branches'}</h2>
-
                             <div className="grid grid-cols-2 gap-4 w-full">
                                 {branch?.map((i, index) => (
                                     <div key={index} className="flex flex-col items-center bg-white p-4 rounded-lg shadow-md w-full">
