@@ -70,9 +70,8 @@ async function fetchShopData(shopId: string, lang: string) {
   }
 }
 
-function getServerSiteUrl() {
-  // const host = "theme.ordrat.com";
-  const host = headers().get("host") || "localhost:3000";
+function getServerSiteUrl(req: NextApiRequest) {
+  const host = req.headers.host || "localhost:3000";
   const protocol = process.env.NODE_ENV === "production" ? "https" : "http";
   return `${host}`;
 }
@@ -98,7 +97,7 @@ async function GetHome({ lang, shopId }: { lang: string; shopId: string }) {
 }
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  const realPath = getServerSiteUrl();
+  const realPath = getServerSiteUrl(req);
   const subdomainData = await fetchSubdomain(realPath);
   console.log("✅ subdomainData:", subdomainData);
   if (!subdomainData || !subdomainData.id) {
@@ -119,11 +118,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       .map(
         (page) => `
       <url>
-        <loc>${realPath}/ar/${page}</loc>
+        <loc>https://${realPath}/ar/${page}</loc>
         <lastmod>${new Date().toISOString().split("T")[0]}</lastmod>
       </url>
       <url>
-        <loc>${realPath}/en/${page}</loc>
+        <loc>https://${realPath}/en/${page}</loc>
         <lastmod>${new Date().toISOString().split("T")[0]}</lastmod>
       </url>`
       )
@@ -133,28 +132,26 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       ...(categoriesAr?.map(
         (cat: any) =>
           `<url>
-            <loc>${realPath}/ar/product/${cat.id}</loc>
+            <loc>https://${realPath}/ar/product/${cat.id}</loc>
             <lastmod>${new Date().toISOString().split("T")[0]}</lastmod>
           </url>`
       ) || []),
       ...(categoriesEn?.map(
         (cat: any) =>
           `<url>
-            <loc>${realPath}/en/product/${cat.id}</loc>
+            <loc>https://${realPath}/en/product/${cat.id}</loc>
             <lastmod>${new Date().toISOString().split("T")[0]}</lastmod>
           </url>`
       ) || []),
     ].join("\n");
-
     const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="/sitemap-style.xsl"?>
-
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
         xmlns:xhtml="http://www.w3.org/1999/xhtml">
   ${staticPages}
   ${categoryPages}
+  
 </urlset>`;
-
     res.setHeader("Content-Type", "text/xml");
     res.status(200).send(sitemap);
   } catch (error) {
