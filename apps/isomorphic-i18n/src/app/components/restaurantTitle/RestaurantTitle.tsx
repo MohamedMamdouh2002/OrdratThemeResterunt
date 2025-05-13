@@ -119,15 +119,15 @@ function RestaurantTitle({
 
         <div className={'flex lg:hidden -mt-24 rounded-xl flex-col  bg-slate-50 w-5/6 mx-auto z-10 text-black relative'}>
             <div className="flex items-start mt-6 justify-between">
-                <div className="flex gap-6 items-start">
+                <div className="flex gap-4 items-start">
                     {/* <Image src={logo} width={100} height={100} className='-mt-5 w-[80px] h-[80px] sm:w-[100px] sm:h-[100px]' alt='logo' /> */}
                     {logoUrl ? (
-                        <div className="w-[90px] h-[80px] mt-5 ms-3  ">
+                        <div className="w-[180px] h-[80px] mt-5 ms-3  ">
                             <CustomImage
                                 src={logoUrl}
                                 width={100}
                                 height={100}
-                                className="-mt-5 w-fit h-full"
+                                className="-mt-5 w-full h-full"
                                 alt="logo"
                             />
                         </div>

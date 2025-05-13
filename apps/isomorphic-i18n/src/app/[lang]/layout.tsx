@@ -50,8 +50,8 @@ export async function generateStaticParams() {
 //   return `${protocol}://${host}`;
 // } 
 function getServerSiteUrl() {
-  // const host = "eldahan.ordrat.com";
-  const host = headers().get("host") || "localhost:3000";
+  const host = "eldahan.ordrat.com";
+  // const host = headers().get("host") || "localhost:3000";
   const protocol = process.env.NODE_ENV === "production" ? "https" : "http";
   return `${host}`;
 }
@@ -161,26 +161,24 @@ export async function fetchSellerPlanStatus(sellerId: string) {
 
     const response = await res.json();
 
-    // إذا كان فيه data جوه object، فكها
     const plans =
-      Array.isArray(response) ? response :
-        Array.isArray(response?.data) ? response.data :
-          [];
+      response ? response :
+      response?.data ? response.data :'';
 
     // console.log("⛳ Plans Data:", plans);
 
-    const isFreeTrial = plans.some((plan: { freeTrial: boolean; }) => plan.freeTrial === true);
+    // const isFreeTrial = plans.some((plan: { freeTrial: boolean; }) => plan.freeTrial === true);
 
-    const isActive = plans.some((plan: { subscriptionStatus: number; }) => plan.subscriptionStatus === 0);
+    const isActive =plans.subscriptionStatus === 0;
     // console.log("🔥 Full response:", response);
 
     // console.log("✅ isFreeTrial:", isFreeTrial);
     // console.log("✅ isActive:", isActive);
 
-    return { isFreeTrial, isActive };
+    return {  isActive };
   } catch (error) {
     console.error("❌ Error fetching seller plan status:", error);
-    return { isFreeTrial: false, isActive: false };
+    return {  isActive: false };
   }
 }
 
@@ -269,16 +267,11 @@ export default async function RootLayout({
     if (!shopId || !shopId.id) throw new Error("Invalid subdomain");
 
     shopData = await fetchShopData(shopId.id, lang);
-    // cookies().set('shopId', shopData.id, {
-    //   path: '/',       // متاح في كل الصفحات
-    //   httpOnly: false, // خليه false لو عايز توصله من الكلاينت كمان
+    const {  isActive } = await fetchSellerPlanStatus(shopId.sellerId);
 
-    // });
-    const { isFreeTrial, isActive } = await fetchSellerPlanStatus(shopId.sellerId);
-
-    if (isFreeTrial) {
-      showTrialModal = true;
-    }
+    // if (isFreeTrial) {
+    //   showTrialModal = true;
+    // }
     // Check if the shop is not active
     if (!isActive) {
       return (

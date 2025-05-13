@@ -108,7 +108,7 @@ function Grills({ lang, shopId, currencyName, ProductData, HomeData, initialPage
         if (!response.ok) throw new Error('Failed to fetch fake data');
 
         const result: FakeData = await response.json();
-        setFakeData(result); // حطينا الريسبونس في الستيت مباشرة
+        setFakeData(result); 
       } catch (error) {
         console.error('Error fetching fake data:', error);
       }

@@ -161,7 +161,7 @@ function Modal({
   const { trackAddToCart } = useTracking();
   const [totalSoldQuantity, setTotalSoldQuantity] = useState<number>(0);
 
-console.log("totalSoldQuantity: ",totalSoldQuantity);
+  console.log("totalSoldQuantity: ", totalSoldQuantity);
 
   // // Fetch fake data
   // useEffect(() => {
@@ -290,7 +290,7 @@ console.log("totalSoldQuantity: ",totalSoldQuantity);
           }
         });
         setTotalSoldQuantity(totalQuantity);
-      
+
         console.log(`✅ Total quantity sold for product ${data.id}:`, totalSoldQuantity);
         console.log(`✅ Total quantity - totalSoldQuantity ${data.id}:`, totalSoldQuantity - quantity);
       }
@@ -495,7 +495,7 @@ console.log("totalSoldQuantity: ",totalSoldQuantity);
       }
     }).join('&&');
     const isDiscount = prodId.isDiscountActive;
-    
+
     const cartItem: CartItem = {
       id: `id:${prodId.id}&&nameAr:${productData.nameAr}&&nameEn:${productData.nameEn}&&descriptionEn:${productData.descriptionEn}&&descriptionAr:${productData.descriptionAr}&&metaDescriptionEn:${productData.metaDescriptionEn}&&metaDescriptionAr:${productData.metaDescriptionAr}&&${variationsString}`,
       name: prodId.name || "Default Item",
@@ -560,11 +560,11 @@ console.log("totalSoldQuantity: ",totalSoldQuantity);
 
     if (isItemAdded) {
       const remainingStock = prodId.stockNumber - totalSoldQuantity;
-    
+
       if (!prodId.hasStock || (remainingStock > 0 && remainingStock - quantity >= 0)) {
         addItemToCart(cartItem, quantity);
         console.log("✅ Stock:", prodId.stockNumber, "Sold:", totalSoldQuantity, "Qty:", quantity, "Remaining after:", remainingStock - quantity);
-    
+
         setTotalSoldQuantity(0);
         setQuantity(1);
         handleClose();
@@ -572,7 +572,7 @@ console.log("totalSoldQuantity: ",totalSoldQuantity);
       } else {
         console.warn("❌ Not enough stock to proceed.");
       }
-    }    
+    }
   };
 
 
@@ -678,37 +678,42 @@ console.log("totalSoldQuantity: ",totalSoldQuantity);
                           <h3 className="text-xl font-bold leading-10">{prodId?.name}</h3>
                           <p className="text-sm font-medium text-black/75">{prodId?.description}</p>
                           <SpecialNotes lang={lang!} notes={notes} setNotes={setNotes} className="gap-2" />
-                          
+
                           {/* {prodId.hasStock && (prodId.stockNumber - totalSoldQuantity - quantity > 0) && (
                             <>{prodId.stockNumber - totalSoldQuantity - quantity}</>
                           )} */}
 
-                          <div className="mt-3 space-y-1 text-sm text-gray-700">
-                            {FakeData?.isFakeViewersAvailable &&
-                              <div className="flex items-center gap-1 ">
-                                <picture>
-                                  <source srcSet="https://fonts.gstatic.com/s/e/notoemoji/latest/1f525/512.webp" type="image/webp" />
-                                  <img src="https://fonts.gstatic.com/s/e/notoemoji/latest/1f525/512.gif" alt="🔥" width="18" height="18" />
-                                </picture>                                  <span className='font-medium'>
-                                  {getStableFakeNumber('sold', modalId, FakeData.minimumFakeSoldNumber, FakeData.maximumFakeSoldNumber)}
+<div className="mt-3 space-y-1 text-sm text-gray-700">
+  {/* عرض عدد المبيعات الوهمية */}
+  {FakeData?.isFakeSoldNumberAvailable && (
+    <div className="flex items-center gap-1 ">
+      <picture>
+        <source srcSet="https://fonts.gstatic.com/s/e/notoemoji/latest/1f525/512.webp" type="image/webp" />
+        <img src="https://fonts.gstatic.com/s/e/notoemoji/latest/1f525/512.gif" alt="🔥" width="18" height="18" />
+      </picture>
+      <span className='font-medium'>
+        {getStableFakeNumber('sold', modalId, FakeData.minimumFakeSoldNumber, FakeData.maximumFakeSoldNumber)}
+        {lang === 'ar' ? ' بيعت في آخر ' : ' sold in the last '}
+        {FakeData.lastSoldNumberInHours} {lang === 'ar' ? ' ساعات' : ' hours'}
+      </span>
+    </div>
+  )}
 
-                                  {lang === 'ar' ? 'بيعت في اخر' : 'sold in last '} {FakeData.lastSoldNumberInHours} {lang === 'ar' ? 'ساعات' : 'hours'}
-                                </span>
-                              </div>
-                            }
-                            {FakeData?.isFakeViewersAvailable && randomViewers !== null &&
-                              <div className="flex items-center gap-1 ">
-                                <picture>
-                                  <source srcSet="https://fonts.gstatic.com/s/e/notoemoji/latest/1f60d/512.webp" type="image/webp" />
-                                  <img src="https://fonts.gstatic.com/s/e/notoemoji/latest/1f60d/512.gif" alt="😍" width="18" height="18" />
-                                </picture>
-                                <span className='font-medium'>
-                                  {randomViewers}
-                                  {lang === 'ar' ? 'اشخاص يشاهدون هذا الآن' : 'people are viewing this right now'}
-                                </span>
-                              </div>
-                            }
-                          </div>
+  {/* عرض عدد المشاهدين الوهميين */}
+  {FakeData?.isFakeViewersAvailable && randomViewers !== null && (
+    <div className="flex items-center gap-1 ">
+      <picture>
+        <source srcSet="https://fonts.gstatic.com/s/e/notoemoji/latest/1f60d/512.webp" type="image/webp" />
+        <img src="https://fonts.gstatic.com/s/e/notoemoji/latest/1f60d/512.gif" alt="😍" width="18" height="18" />
+      </picture>
+      <span className='font-medium'>
+        {randomViewers} {lang === 'ar' ? ' اشخاص يشاهدون هذا الآن' : ' people are viewing this right now'}
+      </span>
+    </div>
+  )}
+
+</div>
+
 
                         </div>
                       </div>
@@ -741,8 +746,8 @@ console.log("totalSoldQuantity: ",totalSoldQuantity);
                                             <div className="">
                                               <p>{choice.name}</p>
                                               {/* {choice.price && <small>{abbreviation && toCurrency(\\ */}
-                                                {choice.price}{" "}{currencyAbbreviation}
-                                                {/* , lang, abbreviation)}</small>} */}
+                                              {choice.price}{" "}{currencyAbbreviation}
+                                              {/* , lang, abbreviation)}</small>} */}
                                             </div>
                                           </>
                                         ) : (
@@ -983,7 +988,7 @@ console.log("totalSoldQuantity: ",totalSoldQuantity);
                                   </p>
                                   <div className="flex flex-col">
                                     <p className="text-[10px] text-mainColor">
-                                    {item.relatedProduct.finalPrice}{" "}{currencyAbbreviation}
+                                      {item.relatedProduct.finalPrice}{" "}{currencyAbbreviation}
                                       {/* {abbreviation && toCurrency(item.relatedProduct.price, lang, abbreviation)} */}
                                     </p>
                                     {item.relatedProduct.oldPrice && (
@@ -1005,7 +1010,7 @@ console.log("totalSoldQuantity: ",totalSoldQuantity);
 
                     <div className="grid grid-cols-3 justify-between items-center gap-5 p-3 bg-white w-full">
                       <div className={cn('bg-white rounded-bl-lg col-span-1 secShadow rtl:rounded-br-lg h-full', { 'rtl:rounded-bl-none': hasMoreDetails })}>
-                        <QuantityHandler quantity={quantity} plusClassName={`${!prodId.hasStock || (prodId.stockNumber - totalSoldQuantity > 0 && prodId.stockNumber - totalSoldQuantity - quantity >= 0) ? 'text-mainColor':'cursor-no-drop text-Color30 pointer-events-none'}`}  setQuantity={setQuantity} className='w-full h-full rounded-lg' />
+                        <QuantityHandler quantity={quantity} plusClassName={`${!prodId.hasStock || (prodId.stockNumber - totalSoldQuantity > 0 && prodId.stockNumber - totalSoldQuantity - quantity >= 0) ? 'text-mainColor' : 'cursor-no-drop text-Color30 pointer-events-none'}`} setQuantity={setQuantity} className='w-full h-full rounded-lg' />
                       </div>
                       <div className={'col-span-2'}>
                         <ItemPrice
@@ -1017,7 +1022,7 @@ console.log("totalSoldQuantity: ",totalSoldQuantity);
                           price={`${finalPrice} ${currencyAbbreviation}`}
                           // oldPrice={` ${finalOldPrice}` ? `${finalOldPrice} ${currencyAbbreviation}`:''}
                           // oldPrice={finalOldPrice ? abbreviation && toCurrency(finalOldPrice, lang, abbreviation) : ''}
-                          className={`${!prodId.hasStock || (prodId.stockNumber - totalSoldQuantity > 0 && prodId.stockNumber - totalSoldQuantity - quantity >= 0) ? '':'cursor-no-drop bg-slate-400'}`}
+                          className={`${!prodId.hasStock || (prodId.stockNumber - totalSoldQuantity > 0 && prodId.stockNumber - totalSoldQuantity - quantity >= 0) ? '' : 'cursor-no-drop bg-slate-400'}`}
                         />
                       </div>
                     </div>
@@ -1096,31 +1101,35 @@ console.log("totalSoldQuantity: ",totalSoldQuantity);
 
                   {/* Fake data section */}
                   <div className="mt-3 space-y-1 text-sm text-gray-700">
-                    {FakeData?.isFakeViewersAvailable &&
-                      <div className="flex items-center gap-1 ">
-                        <picture>
-                          <source srcSet="https://fonts.gstatic.com/s/e/notoemoji/latest/1f525/512.webp" type="image/webp" />
-                          <img src="https://fonts.gstatic.com/s/e/notoemoji/latest/1f525/512.gif" alt="🔥" width="18" height="18" />
-                        </picture>                                  <span className='font-medium'>
-                          {getStableFakeNumber('sold', modalId, FakeData.minimumFakeSoldNumber, FakeData.maximumFakeSoldNumber)}
+  {/* عرض عدد المبيعات الوهمية */}
+  {FakeData?.isFakeSoldNumberAvailable && (
+    <div className="flex items-center gap-1 ">
+      <picture>
+        <source srcSet="https://fonts.gstatic.com/s/e/notoemoji/latest/1f525/512.webp" type="image/webp" />
+        <img src="https://fonts.gstatic.com/s/e/notoemoji/latest/1f525/512.gif" alt="🔥" width="18" height="18" />
+      </picture>
+      <span className='font-medium'>
+        {getStableFakeNumber('sold', modalId, FakeData.minimumFakeSoldNumber, FakeData.maximumFakeSoldNumber)}
+        {lang === 'ar' ? ' بيعت في آخر ' : ' sold in the last '}
+        {FakeData.lastSoldNumberInHours} {lang === 'ar' ? ' ساعات' : ' hours'}
+      </span>
+    </div>
+  )}
 
-                          {lang === 'ar' ? 'بيعت في اخر' : 'sold in last '} {FakeData.lastSoldNumberInHours} {lang === 'ar' ? 'ساعات' : 'hours'}
-                        </span>
-                      </div>
-                    }
-                    {FakeData?.isFakeViewersAvailable && randomViewers !== null && (
-                      <div className="flex items-center gap-1 ">
-                        <picture>
-                          <source srcSet="https://fonts.gstatic.com/s/e/notoemoji/latest/1f60d/512.webp" type="image/webp" />
-                          <img src="https://fonts.gstatic.com/s/e/notoemoji/latest/1f60d/512.gif" alt="😍" width="18" height="18" />
-                        </picture>
-                        <span className='font-medium'>
-                          {randomViewers} {lang === 'ar' ? 'اشخاص يشاهدون هذا الآن' : 'people are viewing this right now'}
-                        </span>
-                      </div>
-                    )}
+  {/* عرض عدد المشاهدين الوهميين */}
+  {FakeData?.isFakeViewersAvailable && randomViewers !== null && (
+    <div className="flex items-center gap-1 ">
+      <picture>
+        <source srcSet="https://fonts.gstatic.com/s/e/notoemoji/latest/1f60d/512.webp" type="image/webp" />
+        <img src="https://fonts.gstatic.com/s/e/notoemoji/latest/1f60d/512.gif" alt="😍" width="18" height="18" />
+      </picture>
+      <span className='font-medium'>
+        {randomViewers} {lang === 'ar' ? ' اشخاص يشاهدون هذا الآن' : ' people are viewing this right now'}
+      </span>
+    </div>
+  )}
 
-                  </div>
+</div>
 
                   {/* Variations rendering for mobile */}
                   <div className="pt-6">
@@ -1375,13 +1384,13 @@ console.log("totalSoldQuantity: ",totalSoldQuantity);
                                 </p>
                                 <div className="flex flex-col">
                                   <p className="text-[10px] text-mainColor">
-                                  {item.relatedProduct.finalPrice}{" "}{currencyAbbreviation}
+                                    {item.relatedProduct.finalPrice}{" "}{currencyAbbreviation}
 
                                     {/* {abbreviation && toCurrency(item.relatedProduct.price, lang, abbreviation)} */}
                                   </p>
                                   {item.relatedProduct.oldPrice && (
                                     <del className="text-[10px]">
-                                  {item.relatedProduct.oldPrice}{" "}{currencyAbbreviation}
+                                      {item.relatedProduct.oldPrice}{" "}{currencyAbbreviation}
 
                                       {/* {abbreviation && toCurrency(item.relatedProduct.oldPrice, lang, abbreviation)} */}
                                     </del>
@@ -1409,7 +1418,7 @@ console.log("totalSoldQuantity: ",totalSoldQuantity);
                 <div className="fixed bottom-0 left-0 right-0 p-5 secShadow bg-white rounded-b-lg z-[10001]">
                   <div className="grid grid-cols-3 justify-between items-center gap-5 w-full">
                     <div className={cn('bg-white rounded-bl-lg col-span-1 secShadow rtl:rounded-br-lg h-full', { 'rtl:rounded-bl-none': hasMoreDetails })}>
-                      <QuantityHandler plusClassName={`${!prodId.hasStock || (prodId.stockNumber - totalSoldQuantity > 0 && prodId.stockNumber - totalSoldQuantity - quantity >= 0) ? 'text-mainColor':'cursor-no-drop text-Color30 pointer-events-none'}`} quantity={quantity} setQuantity={setQuantity} className='w-full h-full rounded-lg' />
+                      <QuantityHandler plusClassName={`${!prodId.hasStock || (prodId.stockNumber - totalSoldQuantity > 0 && prodId.stockNumber - totalSoldQuantity - quantity >= 0) ? 'text-mainColor' : 'cursor-no-drop text-Color30 pointer-events-none'}`} quantity={quantity} setQuantity={setQuantity} className='w-full h-full rounded-lg' />
                     </div>
                     <div className={'col-span-2'}>
                       <ItemPrice
@@ -1419,8 +1428,8 @@ console.log("totalSoldQuantity: ",totalSoldQuantity);
                         // oldPrice={` ${finalOldPrice}` ? `${finalOldPrice} ${currencyAbbreviation}`:''}
                         // price={abbreviation && toCurrency(finalPrice, lang, abbreviation)}
                         // oldPrice={finalOldPrice ? abbreviation && toCurrency(finalOldPrice, lang, abbreviation) : ''}
-                        className={`${!prodId.hasStock || (prodId.stockNumber - totalSoldQuantity > 0 && prodId.stockNumber - totalSoldQuantity - quantity >= 0) ? '':'cursor-no-drop  bg-slate-400'}`}
-                        /> 
+                        className={`${!prodId.hasStock || (prodId.stockNumber - totalSoldQuantity > 0 && prodId.stockNumber - totalSoldQuantity - quantity >= 0) ? '' : 'cursor-no-drop  bg-slate-400'}`}
+                      />
                     </div>
                   </div>
                 </div>

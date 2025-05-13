@@ -59,7 +59,7 @@ function HeaderData({ lang, logoUrl, shopName, backgroundUrl,shopId, description
             )}
           </div>
           <h1 className="text-2xl text-white lg:text-3xl xl:text-5xl font-bold">
-            {lang==='ar' ?'اهلا بكم':'Welcome to'}{" "} 
+            {lang==='ar' ?' اهلا بكم في':'Welcome to'}{" "} 
             {/* <pre className="text-white">{JSON.stringify({ shopName }, null, 2)}</pre> */}
 {shopName}
           </h1>
