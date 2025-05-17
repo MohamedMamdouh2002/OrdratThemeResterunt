@@ -27,13 +27,14 @@ export default function OrderSummery({
   isLoading,
   className,
   lang,
+  branchId,
   isButtonDisabled,
   onSummaryCalculated,
   fees
 }: {
   className?: string;
+  branchId?: string;
   isLoading?: boolean;
-
   lang?: string;
   fees: number;
   isButtonDisabled?: boolean;
@@ -156,7 +157,6 @@ export default function OrderSummery({
             removeItemFromCart={removeItemFromCart}
             clearItemFromCart={clearItemFromCart}
             currencyAbbreviation={currencyAbbreviation as string}
-
             items={items}
             className="mb-5 border-b border-muted pb-5"
             lang={lang}

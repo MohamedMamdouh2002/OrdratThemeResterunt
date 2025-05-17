@@ -12,7 +12,15 @@ import { useTranslation } from '@/app/i18n/client';
 import { Loader } from 'lucide-react';
 import { useUserContext } from '../context/UserContext';
 import CustomImage from '../ui/CustomImage';
-
+type FakeData = {
+  maximumFakeViewers: number;
+  minimumFakeViewers: number;
+  isFakeViewersAvailable: boolean;
+  isFakeSoldNumberAvailable: boolean;
+  maximumFakeSoldNumber: number;
+  minimumFakeSoldNumber: number;
+  lastSoldNumberInHours: number;
+};
 export default function Content({
 	lang,
 	initialProducts,
@@ -37,6 +45,7 @@ export default function Content({
 	const { t, i18n } = useTranslation(lang!, 'search');
 	const { shopId } = useUserContext();
 	const [background, setBackground] = useState<any | null>(null);
+  	const [fakeData, setFakeData] = useState<FakeData | null>(null);
 
   
 	useEffect(() => {
@@ -48,7 +57,21 @@ export default function Content({
 		  setBackground(background)
 	  }
 	}, [lang, i18n]);
+   useEffect(() => {
+	  const fetchFakeData = async () => {
+		try {
+		  const response = await fetch(`https://testapi.ordrat.com/api/FakeData/GetFakeDataByShopId/${shopId}`);
+		  if (!response.ok) throw new Error('Failed to fetch fake data');
   
+		  const result: FakeData = await response.json();
+		  setFakeData(result); 
+		} catch (error) {
+		  console.error('Error fetching fake data:', error);
+		}
+	  };
+  
+	  fetchFakeData();
+	}, [shopId]);
 	// const fetchData = async (searchTerm: string, page: number) => {
 	// 	if (isLoading || !hasMore) return;
 	// 	setIsLoading(true);
@@ -228,6 +251,7 @@ export default function Content({
 										createdAt={product.createdAt}
 										lastUpdatedAt={product.lastUpdatedAt}
 										isOffer={false}
+										FakeData={fakeData}
 										{...product}
 										setCurrentItem={() => { }}
 									/>

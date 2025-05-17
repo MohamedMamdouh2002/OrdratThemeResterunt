@@ -656,7 +656,7 @@ function Modal({
                     {/* PC Product Image */}
                     <div className={`sticky mb-5 rounded-t-lg ${isScrolled ? `secShadow` : `shadow-none`} top-0 bg-white z-50 `}>
                       <div className={`flex mb-4 `}>
-                        <div className="">
+                        <div className="relative">
                           <Image
                             src={prodId.imageUrl || photo}
                             width={500}
@@ -669,6 +669,20 @@ function Modal({
                             className="bg-white rounded-full p-2 absolute top-3 start-2 hover:cursor-pointer"
                             size={36}
                           />
+                          {prodId?.isDiscountActive &&
+                          <p
+                          className="bg-white rounded-xl py-2 px-3 absolute top-3 font-semibold end-2 hover:cursor-pointer"
+                          
+                          >
+                              {lang==='ar'?'خصم':'save'}{" "}
+
+                            {prodId.discountType ===0 ?
+                           ` ${prodId.discount} %`
+                           :
+                            `${prodId.discount} ${currencyAbbreviation}`
+                          }
+                          </p>
+                          }
                         </div>
                         <div className="px-4 pt-2 flex flex-col">
                           <div className="flex items-center gap-2">
@@ -683,36 +697,36 @@ function Modal({
                             <>{prodId.stockNumber - totalSoldQuantity - quantity}</>
                           )} */}
 
-<div className="mt-3 space-y-1 text-sm text-gray-700">
-  {/* عرض عدد المبيعات الوهمية */}
-  {FakeData?.isFakeSoldNumberAvailable && (
-    <div className="flex items-center gap-1 ">
-      <picture>
-        <source srcSet="https://fonts.gstatic.com/s/e/notoemoji/latest/1f525/512.webp" type="image/webp" />
-        <img src="https://fonts.gstatic.com/s/e/notoemoji/latest/1f525/512.gif" alt="🔥" width="18" height="18" />
-      </picture>
-      <span className='font-medium'>
-        {getStableFakeNumber('sold', modalId, FakeData.minimumFakeSoldNumber, FakeData.maximumFakeSoldNumber)}
-        {lang === 'ar' ? ' بيعت في آخر ' : ' sold in the last '}
-        {FakeData.lastSoldNumberInHours} {lang === 'ar' ? ' ساعات' : ' hours'}
-      </span>
-    </div>
-  )}
+                          <div className="mt-3 space-y-1 text-sm text-gray-700">
+                            {/* عرض عدد المبيعات الوهمية */}
+                            {FakeData?.isFakeSoldNumberAvailable && (
+                              <div className="flex items-center gap-1 ">
+                                <picture>
+                                  <source srcSet="https://fonts.gstatic.com/s/e/notoemoji/latest/1f525/512.webp" type="image/webp" />
+                                  <img src="https://fonts.gstatic.com/s/e/notoemoji/latest/1f525/512.gif" alt="🔥" width="18" height="18" />
+                                </picture>
+                                <span className='font-medium'>
+                                  {getStableFakeNumber('sold', modalId, FakeData.minimumFakeSoldNumber, FakeData.maximumFakeSoldNumber)}
+                                  {lang === 'ar' ? ' بيعت في آخر ' : ' sold in the last '}
+                                  {FakeData.lastSoldNumberInHours} {lang === 'ar' ? ' ساعات' : ' hours'}
+                                </span>
+                              </div>
+                            )}
 
-  {/* عرض عدد المشاهدين الوهميين */}
-  {FakeData?.isFakeViewersAvailable && randomViewers !== null && (
-    <div className="flex items-center gap-1 ">
-      <picture>
-        <source srcSet="https://fonts.gstatic.com/s/e/notoemoji/latest/1f60d/512.webp" type="image/webp" />
-        <img src="https://fonts.gstatic.com/s/e/notoemoji/latest/1f60d/512.gif" alt="😍" width="18" height="18" />
-      </picture>
-      <span className='font-medium'>
-        {randomViewers} {lang === 'ar' ? ' اشخاص يشاهدون هذا الآن' : ' people are viewing this right now'}
-      </span>
-    </div>
-  )}
+                            {/* عرض عدد المشاهدين الوهميين */}
+                            {FakeData?.isFakeViewersAvailable && randomViewers !== null && (
+                              <div className="flex items-center gap-1 ">
+                                <picture>
+                                  <source srcSet="https://fonts.gstatic.com/s/e/notoemoji/latest/1f60d/512.webp" type="image/webp" />
+                                  <img src="https://fonts.gstatic.com/s/e/notoemoji/latest/1f60d/512.gif" alt="😍" width="18" height="18" />
+                                </picture>
+                                <span className='font-medium'>
+                                  {randomViewers} {lang === 'ar' ? ' اشخاص يشاهدون هذا الآن' : ' people are viewing this right now'}
+                                </span>
+                              </div>
+                            )}
 
-</div>
+                          </div>
 
 
                         </div>
@@ -1066,12 +1080,27 @@ function Modal({
                   {isImageVisible ? (
                     <div className="w-full h-60">
                       {prodId.imageUrl ?
+                      <>
                         <Image
                           src={prodId.imageUrl}
                           layout="fill"
                           objectFit="cover"
                           alt="Product Image"
                         />
+                        {prodId.isDiscountActive===true &&
+                         <p
+                         className="bg-white rounded-xl py-2 px-3 absolute top-3 font-semibold end-2 hover:cursor-pointer"
+                            
+                            >
+                              {lang==='ar'?'خصم':'save'}{" "}
+                            {prodId.discountType ===0 ?
+                           ` ${prodId.discount} %`
+                           :
+                           `${prodId.discount} ${currencyAbbreviation}`
+                          }
+                          </p>
+                        }
+                          </>
                         :
                         <div className="bg-white shadow-md rounded-lg p-2">
                           <Skeleton height={200} className="w-full rounded-lg " />
@@ -1101,35 +1130,34 @@ function Modal({
 
                   {/* Fake data section */}
                   <div className="mt-3 space-y-1 text-sm text-gray-700">
-  {/* عرض عدد المبيعات الوهمية */}
-  {FakeData?.isFakeSoldNumberAvailable && (
-    <div className="flex items-center gap-1 ">
-      <picture>
-        <source srcSet="https://fonts.gstatic.com/s/e/notoemoji/latest/1f525/512.webp" type="image/webp" />
-        <img src="https://fonts.gstatic.com/s/e/notoemoji/latest/1f525/512.gif" alt="🔥" width="18" height="18" />
-      </picture>
-      <span className='font-medium'>
-        {getStableFakeNumber('sold', modalId, FakeData.minimumFakeSoldNumber, FakeData.maximumFakeSoldNumber)}
-        {lang === 'ar' ? ' بيعت في آخر ' : ' sold in the last '}
-        {FakeData.lastSoldNumberInHours} {lang === 'ar' ? ' ساعات' : ' hours'}
-      </span>
-    </div>
-  )}
+                    {FakeData?.isFakeSoldNumberAvailable && (
+                      <div className="flex items-center gap-1 ">
+                        <picture>
+                          <source srcSet="https://fonts.gstatic.com/s/e/notoemoji/latest/1f525/512.webp" type="image/webp" />
+                          <img src="https://fonts.gstatic.com/s/e/notoemoji/latest/1f525/512.gif" alt="🔥" width="18" height="18" />
+                        </picture>
+                        <span className='font-medium'>
+                          {getStableFakeNumber('sold', modalId, FakeData.minimumFakeSoldNumber, FakeData.maximumFakeSoldNumber)}
+                          {lang === 'ar' ? ' بيعت في آخر ' : ' sold in the last '}
+                          {FakeData.lastSoldNumberInHours} {lang === 'ar' ? ' ساعات' : ' hours'}
+                        </span>
+                      </div>
+                    )}
 
-  {/* عرض عدد المشاهدين الوهميين */}
-  {FakeData?.isFakeViewersAvailable && randomViewers !== null && (
-    <div className="flex items-center gap-1 ">
-      <picture>
-        <source srcSet="https://fonts.gstatic.com/s/e/notoemoji/latest/1f60d/512.webp" type="image/webp" />
-        <img src="https://fonts.gstatic.com/s/e/notoemoji/latest/1f60d/512.gif" alt="😍" width="18" height="18" />
-      </picture>
-      <span className='font-medium'>
-        {randomViewers} {lang === 'ar' ? ' اشخاص يشاهدون هذا الآن' : ' people are viewing this right now'}
-      </span>
-    </div>
-  )}
+                    {/* عرض عدد المشاهدين الوهميين */}
+                    {FakeData?.isFakeViewersAvailable && randomViewers !== null && (
+                      <div className="flex items-center gap-1 ">
+                        <picture>
+                          <source srcSet="https://fonts.gstatic.com/s/e/notoemoji/latest/1f60d/512.webp" type="image/webp" />
+                          <img src="https://fonts.gstatic.com/s/e/notoemoji/latest/1f60d/512.gif" alt="😍" width="18" height="18" />
+                        </picture>
+                        <span className='font-medium'>
+                          {randomViewers} {lang === 'ar' ? ' اشخاص يشاهدون هذا الآن' : ' people are viewing this right now'}
+                        </span>
+                      </div>
+                    )}
 
-</div>
+                  </div>
 
                   {/* Variations rendering for mobile */}
                   <div className="pt-6">

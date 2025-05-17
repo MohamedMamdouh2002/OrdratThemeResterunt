@@ -45,8 +45,14 @@ export interface CartItem {
   color?: ProductColor | null;
   salePrice?: number;
   size?: number;
-  stock?: number;
-
+  stocks?:{
+   id?: string;
+  stockNumber?: number;
+  branchId?: string;
+  createdAt?: string;       
+  lastUpdatedAt?: string;   
+  productId?: string;
+    }[],
   // the product information Not Important
   sizeFood?: string;
 
@@ -60,8 +66,8 @@ export interface CartItem {
   isDiscountActive?: boolean
   quantity: number;
   discount?: number;
-  stockNumber: number,
-  hasStock: boolean,
+  stockNumber?: number,
+  hasStock?: boolean,
   // Variations
   // Order-related information
   specialInstructions?: string;
