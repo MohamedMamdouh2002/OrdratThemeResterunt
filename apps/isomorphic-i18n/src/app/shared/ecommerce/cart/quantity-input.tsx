@@ -78,9 +78,9 @@ export default function QuantityInput({ product }: { product: CartItem }) {
         title="Increment"
         size="sm"
         variant="flat"
-        className={`h-auto px-1 py-1.5 ${(product.hasStock && totalSoldQuantity >= product.stockNumber) ? 'opacity-50 cursor-not-allowed' : ''}`}
+        className={`h-auto px-1 py-1.5`}
         onClick={() => addItemToCart(product, 1)}
-        disabled={product.hasStock && totalSoldQuantity >= product.stockNumber}
+        // disabled={product.hasStock && totalSoldQuantity >= product.stockNumber}
       >
         <PiPlusBold className="h-3.5 w-3.5" />
       </ActionIcon>
