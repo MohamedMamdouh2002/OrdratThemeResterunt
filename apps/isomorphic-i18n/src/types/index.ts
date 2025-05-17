@@ -297,11 +297,12 @@ export type Review = {
   id: string;
   createdAt: string;
   endUser: {
-    name: string;
+    name?: string;
   };
   reviewText: string;
   rate: number;
 };
+
 
 
 export type OrderItemImages = {

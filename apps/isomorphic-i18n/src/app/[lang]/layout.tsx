@@ -51,7 +51,7 @@ export async function generateStaticParams() {
 // } 
 function getServerSiteUrl() {
   // const host = "theme.ordrat.com";
-  const host = headers().get("host") || "localhost:3000";
+    const host = headers().get("host") || "theme.ordrat.com";
   const protocol = process.env.NODE_ENV === "production" ? "https" : "http";
   return `${host}`;
 }
@@ -101,7 +101,8 @@ async function fetchShopData(shopId: string, lang: string) {
       applyFreeShppingOnTarget: shopData.applyFreeShppingOnTarget,
       freeShppingTarget: shopData.freeShppingTarget,
       currencyId: shopData.currencyId,
-      currencyAbbreviation: shopData.currencyAbbreviation
+      currencyAbbreviation: shopData.currencyAbbreviation,
+      languages: shopData.languages
     };
   } catch (error) {
     console.error("Error fetching shop details:", error);
@@ -422,6 +423,7 @@ export default async function RootLayout({
                         freeShppingTarget={shopId.freeShppingTarget}
                         currencyId={shopId.currencyId}
                         currencyAbbreviation={shopId.currencyAbbreviation}
+                        languages={shopId.languages}
                       />
                       {children}
                       <Toaster />

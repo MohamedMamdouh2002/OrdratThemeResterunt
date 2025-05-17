@@ -76,6 +76,36 @@ const nextConfig = {
       },
     ];
   },
+  async redirects() {
+    return [
+      // لو languageOption = "0" عربي
+      {
+        source: '/ar/:path*',
+        has: [
+          {
+            type: 'cookie',
+            key: 'languageOption',
+            value: '1',
+          },
+        ],
+        destination: '/en/:path*',
+        permanent: false,
+      },
+      // لو languageOption = "1" انجليزي 
+      {
+        source: '/en/:path*',
+        has: [
+          {
+            type: 'cookie',
+            key: 'languageOption',
+            value: '0',
+          },
+        ],
+        destination: '/ar/:path*',
+        permanent: false,
+      },
+    ]
+  },
 
   reactStrictMode: true,
   transpilePackages: ["@isomorphic/core"],

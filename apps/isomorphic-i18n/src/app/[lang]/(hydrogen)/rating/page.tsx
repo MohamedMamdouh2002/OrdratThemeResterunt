@@ -21,5 +21,5 @@ export default function page({
         lang: string;
     };
 }) {
-    return <CreateRating lang={lang!} />;
+    return <></>;
 }

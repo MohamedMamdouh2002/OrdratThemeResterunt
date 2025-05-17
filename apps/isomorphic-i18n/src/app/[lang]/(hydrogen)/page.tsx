@@ -6,6 +6,7 @@ import MainSlider from "@/app/components/mainSlider/MainSlider";
 import NavMobile from "@/app/components/navMobile/NavMobile";
 import RestaurantTitle from "@/app/components/restaurantTitle/RestaurantTitle";
 import ServerHeaderData from "@/app/components/ServerHeader";
+import { getServerShopId } from "@/app/components/ui/getServerShopId";
 import ScrollToTop from "@/app/components/ui/ScrollToTop";
 import { API_BASE_URL } from "@/config/base-url";
 import { GetBannerData, getBranches, getCoupons, GetHomeData } from "@/server/home";
@@ -21,8 +22,8 @@ export default async function FileDashboardPage({
   const pageSize = 30;
   const ProductData = await GetHomeData(lang, page, pageSize);
   const headerData = await ServerHeaderData(lang);
-
   const coupons = await getCoupons();
+  
   const branches = await getBranches(lang);
 
   return (

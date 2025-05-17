@@ -131,8 +131,12 @@ async function fetchShopData(shopId: string, lang: string) {
   response.cookies.set("backgroundUrl", shopData.backgroundUrl, {path: "/"});
   response.cookies.set("rate", shopData.rate, {path: "/"});
   response.cookies.set("subdomainName", shopData.subdomainName, {path: "/"});
-  response.cookies.set("logoUrl", shopData.logoUrl, {path: "/"});
-  
+  response.cookies.set("logoUrl", shopData.languages, {path: "/"});
+   response.cookies.set("languages", shopData.languages, {
+    path: "/",
+    secure: true,
+
+  });
   if (req.cookies.has(cookieName)) lang = acceptLanguage.get(req.cookies.get(cookieName).value);
   if (!lang) lang = acceptLanguage.get(req.headers.get("Accept-Language"));
   if (!lang) lang = fallbackLng;

@@ -132,14 +132,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       ...(categoriesAr?.map(
         (cat: any) =>
           `<url>
-            <loc>https://${realPath}/ar/product/${cat.id}</loc>
+            <loc>https://${realPath}/ar/category/${cat.id}</loc>
             <lastmod>${new Date().toISOString().split("T")[0]}</lastmod>
           </url>`
       ) || []),
       ...(categoriesEn?.map(
         (cat: any) =>
           `<url>
-            <loc>https://${realPath}/en/product/${cat.id}</loc>
+            <loc>https://${realPath}/en/category/${cat.id}</loc>
             <lastmod>${new Date().toISOString().split("T")[0]}</lastmod>
           </url>`
       ) || []),

@@ -155,7 +155,6 @@ function Navbar({ className, lang }: { className?: string, lang?: string }) {
                             );
                         })()
                     }
-
                     <div className="flex items-center mx-auto gap-5">
                         <div className="flex items-center gap-2">
                             <FontAwesomeIcon icon={faMoneyBills as any} className="w-5" />

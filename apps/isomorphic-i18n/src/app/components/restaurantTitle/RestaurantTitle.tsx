@@ -56,8 +56,29 @@ function RestaurantTitle({
     currencyName: string ;
 }) {
     const { t, i18n } = useTranslation(lang!, 'nav');
+    const [shopData, setShopData] = useState({
+  logoUrl: logoUrl || '',
+  shopName: shopName || '',
+  description: description || '',
+    });
     // const abbreviation = useCurrencyAbbreviation({ lang } as any);
     // console.log("logoUrl: ", logoUrl);
+    useEffect(() => {
+  i18n.changeLanguage(lang);
+
+  if (!logoUrl || !shopName || !description ) {
+    const storedLogo = localStorage.getItem("logoUrl");
+    const storedName = localStorage.getItem("subdomainName");
+    const storedBackground = localStorage.getItem("backgroundUrl");
+    const storedDescription = localStorage.getItem("description");
+
+    setShopData({
+      logoUrl: storedLogo || '',
+      shopName: storedName || '',
+      description: storedDescription || '',
+    });
+  }
+}, [lang]);
     const [modal, setModal] = useState(false);
     useEffect(() => {
         if (modal) {
@@ -121,7 +142,7 @@ function RestaurantTitle({
             <div className="flex items-start mt-6 justify-between">
                 <div className="flex gap-4 items-start">
                     {/* <Image src={logo} width={100} height={100} className='-mt-5 w-[80px] h-[80px] sm:w-[100px] sm:h-[100px]' alt='logo' /> */}
-                    {logoUrl ? (
+                    {shopData.logoUrl ? (
                         <div className="w-[180px] h-[80px] mt-5 ms-3  ">
                             <CustomImage
                                 src={logoUrl}
@@ -135,8 +156,8 @@ function RestaurantTitle({
                         <div className="w-[100px] h-[100px] bg-gray-200 rounded-full"></div>
                     )}
                     <div className="">
-                        <h2 className='text-base'>{shopName}</h2>
-                        <h2 className='xs:text-sm text-xs font-normal truncate-text '>{description}</h2>
+                        <h2 className='text-base'>{shopData.shopName}</h2>
+                        <h2 className='xs:text-sm text-xs font-normal truncate-text '>{shopData.description}</h2>
                         <div className={'flex items-center gap-1 text-sm'}>
                             <Star className="fill-[#f1d045] text-[#f1d045]" size={14} />
                             <span className="">{rate}</span>

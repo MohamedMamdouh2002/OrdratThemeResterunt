@@ -22,7 +22,7 @@ export async function generateMetadata({ params }: { params: { lang: string } })
 
 
 async function Review({ params: { lang } }: { params: { lang: string } }) {
-  const cookieStore = cookies();
+ 
   const shopId = await getServerShopId(lang)
   const reviews = await getReviewsFromServer(lang, shopId as string);
 

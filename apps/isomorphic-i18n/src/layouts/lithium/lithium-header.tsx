@@ -105,7 +105,6 @@ export default function Header({
   // const [shopName, setShopName] = useState<string | null>(null);
   // const [background, setBackground] = useState<string | null>(null);
 
- 
   useEffect(() => {
     const handleScroll = () => {
       const currentScrollY = window.scrollY;

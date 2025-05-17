@@ -166,31 +166,31 @@ function Footer({ lang }: Props) {
     },
   ];
 
-  useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        const response = await fetch(`${API_BASE_URL}/api/ShopContactInfo/GetByShopId/${shopId}`, {
-          headers: {
-            'Accept-Language': lang!,
-          },
-        });
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
+  // useEffect(() => {
+  //   const fetchProducts = async () => {
+  //     try {
+  //       const response = await fetch(`${API_BASE_URL}/api/ShopContactInfo/GetByShopId/${shopId}`, {
+  //         headers: {
+  //           'Accept-Language': lang!,
+  //         },
+  //       });
+  //       if (!response.ok) {
+  //         throw new Error('Network response was not ok');
+  //       }
 
-        const data = await response.json();
-        setContact(data)
-        console.log('contact data', data);
-        console.log("linksData");
+  //       const data = await response.json();
+  //       setContact(data)
+  //       console.log('contact data', data);
+  //       console.log("linksData");
 
-      }
-      catch {
+  //     }
+  //     catch {
 
-      }
-    }
-    fetchProducts();
+  //     }
+  //   }
+  //   fetchProducts();
 
-  }, []);
+  // }, []);
   const { facebookLink, instagramLink, whatsAppNumber, xLink } = contact;
 
   useEffect(() => {

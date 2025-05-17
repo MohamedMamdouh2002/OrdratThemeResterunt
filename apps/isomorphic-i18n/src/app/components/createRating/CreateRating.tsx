@@ -14,41 +14,38 @@ import { Loader, MessageSquareDashed } from "lucide-react";
 import axiosClient from '../fetch/api';
 import { useUserContext } from '../context/UserContext';
 import toast from 'react-hot-toast';
-import { useRouter } from 'next/navigation';
+import {  useRouter } from 'next/navigation';
+import { useParams } from 'next/navigation';
 
-function CreateRating({ lang }: { lang?: string }) {
+function CreateRating({ lang,id }: { lang?: string;id:string }) {
   const { t } = useTranslation(lang!, 'home');
   const [selected, setSelected] = useState(2);
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(false);
   const { shopId } = useUserContext();
   const router = useRouter();
-  const [isCheckingOrder, setIsCheckingOrder] = useState(true); // نمنع الريندر لحد ما نتحقق
 
+  const [isCheckingOrder, setIsCheckingOrder] = useState(true); 
   useEffect(() => {
-    const orderId = localStorage.getItem('orderId');
+console.log('orderId',id);
 
-    if (!orderId) {
-      router.push(`/${lang}/`);
-    } else {
-      setIsCheckingOrder(false); // فيه orderId → نعرض الصفحة
-    }
-  }, [lang, router]);
+ 
+      setIsCheckingOrder(false); 
+ }, [lang, router]);
 
   const handleSubmit = async () => {
-    const orderId = localStorage.getItem('orderId');
 
     try {
       const token = localStorage.getItem('accessToken');
       setLoading(true);
 
       await axiosClient.post(
-        'https://testapi.ordrat.com/api/Review/CreateReview',
+        `https://testapi.ordrat.com/api/Review/CreateReview/${shopId}/${id}`,
         {
           reviewText: message,
           rate: selected + 1,
-          orderId,
-          shopId
+          shopId,
+          orderId:id
         },
         {
           headers: {
@@ -61,7 +58,7 @@ function CreateRating({ lang }: { lang?: string }) {
 
       toast.success('تم إرسال التقييم بنجاح');
       localStorage.removeItem('orderId');
-      router.replace(`/${lang}/`);
+      router.replace(`/${lang}/reviews`);
 
     } catch (error: any) {
       const errorMessage =
