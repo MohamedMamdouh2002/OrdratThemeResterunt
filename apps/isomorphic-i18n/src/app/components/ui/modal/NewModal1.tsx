@@ -195,7 +195,7 @@ function Modal({
             quantity,
             sizeFood: "small",
             discount: prodCartItem.discount,
-            stock: 10,
+            // stock: 10,
             hasStock: false,
             stockNumber: 0
         };
