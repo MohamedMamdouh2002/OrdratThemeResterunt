@@ -11,7 +11,8 @@ import {
 import { useAtom } from 'jotai';
 import { cartReducer, State, initialState } from './cart.reducer';
 import { useLocalStorage } from '@hooks/use-local-storage';
-import { getItem, inStock } from '@/store/quick-cart/cart.utils';
+import { getItem } from '@/store/quick-cart/cart.utils';
+// import { getItem, inStock } from '@/store/quick-cart/cart.utils';
 import { verifiedResponseAtom } from '@/store/checkout';
 import { CART_KEY } from '@/config/constants';
 import { CartItem as Item } from '@/types';
@@ -83,10 +84,10 @@ export function CartProvider({
     (id: Item['id']) => getItem(state.items, id),
     [state.items]
   );
-  const isInStock = useCallback(
-    (id: Item['id']) => inStock(state.items, id),
-    [state.items]
-  );
+  // const isInStock = useCallback(
+  //   (id: Item['id']) => inStock(state.items, id),
+  //   [state.items]
+  // );
   const updateCartLanguage = (language: string) =>
     dispatch({ type: 'UPDATE_CART_LANGUAGE', language });
   const resetCart = () => dispatch({ type: 'RESET_CART' });
@@ -99,14 +100,15 @@ export function CartProvider({
       clearItemFromCart,
       getItemFromCart,
       isInCart,
-      isInStock,
+      // isInStock,
       resetCart,
       updateCartLanguage,
     }),
-    [getItemFromCart, isInCart, isInStock, state]
+    // [getItemFromCart, isInCart, isInStock, state]
+    [getItemFromCart, isInCart,  state]
   );
   return (
-    <cartContext.Provider value={value} {...props}>
+    <cartContext.Provider value={value as any} {...props}>
       {children}
     </cartContext.Provider>
   );

@@ -62,11 +62,11 @@ export function updateItem(
 export function removeItem(items: Item[], id: Item['id']) {
   return items.filter((existingItem) => existingItem.id !== id);
 }
-export function inStock(items: Item[], id: Item['id']) {
-  const item = getItem(items, id);
-  if (item) return item['quantity']! < item['stock']!;
-  return false;
-}
+// export function inStock(items: Item[], id: Item['id']) {
+//   const item = getItem(items, id);
+//   if (item) return item['quantity']! < item['stock']!;
+//   return false;
+// }
 export const calculateItemTotals = (items: Item[]) =>
   items.map((item) => ({
     ...item,
