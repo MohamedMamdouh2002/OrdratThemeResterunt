@@ -29,7 +29,9 @@ export default async function DefaultLayout({
         {children}
       </div>
 
-      <ClientFooter lang={lang} />
+      <ClientFooter lang={lang}  
+        shopId={headerData.shopId}
+      />
     </>
   );
 }

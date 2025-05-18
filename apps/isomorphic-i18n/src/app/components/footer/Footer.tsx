@@ -31,10 +31,10 @@ type mediaProps = {
 };
 
 type Props = {
-
   lang: string; 
+  shopId: string; 
 };
-function Footer({ lang }: Props) {
+function Footer({ lang ,shopId}: Props) {
   const { t, i18n } = useTranslation(lang!, 'nav');
   const token = typeof window !== 'undefined' ? localStorage.getItem('accessToken') : null;
   const [hasAccount, setHasAccount] = useState(false);
@@ -48,7 +48,6 @@ function Footer({ lang }: Props) {
   //   whatsAppNumber: "",
   //   xLink: ""
   // });
-  const { shopId } = useUserContext();
   const [shopName, setShopName] = useState<string | null>(null);
   const [description, setDescription] = useState<string | null>(null);
   const [contact, setContact] = useState({

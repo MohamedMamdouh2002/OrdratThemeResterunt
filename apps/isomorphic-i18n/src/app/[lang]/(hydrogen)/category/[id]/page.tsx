@@ -16,7 +16,6 @@ export default async function Category({
     const cookieStore = cookies();
     const shopId = await getServerShopId(lang)
       const headerData = await ServerHeaderData(lang);
-    
     const productData = await getProductsByCategory(
     lang,
     shopId as string,

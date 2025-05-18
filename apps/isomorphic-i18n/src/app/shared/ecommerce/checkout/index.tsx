@@ -433,10 +433,25 @@ export default function CheckoutPageWrapper({
         console.error('Error creating order:', response.data);
         toast.error(<Text as="b">Failed to place order. Please try again.</Text>);
       }
-    } catch (error) {
-      console.error('Error during order submission:', error);
-      toast.error(<Text as="b">An error occurred. Please try again later.</Text>);
-    } finally {
+    } catch (error: any) {
+  const serverMessage = error?.response?.data?.message;
+
+  if (serverMessage === "Insufficient stock for product no data. Available: 0, Requested: 1") {
+    toast.error(
+      <Text as="b">
+        {lang === 'ar' ? 'الكمية المطلوبة غير متوفرة في المخزون' : 'Insufficient stock for the requested product.'}
+      </Text>
+    );
+  } else {
+    toast.error(
+      <Text as="b">
+        {serverMessage || (lang === 'ar' ? 'حدث خطأ أثناء تنفيذ الطلب' : 'An error occurred. Please try again later.')}
+      </Text>
+    );
+  }
+
+  console.error('Error during order submission:', error);
+} finally {
       setLoading(false);
     }
   };

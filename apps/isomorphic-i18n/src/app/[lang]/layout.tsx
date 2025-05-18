@@ -35,22 +35,12 @@ const NextProgress = dynamic(() => import("@components/next-progress"), {
   ssr: false,
 });
 
-// export const metadata = {
-//   title: siteConfig.title,
-//   description: siteConfig.description,
-// };
-
 export async function generateStaticParams() {
   return languages.map((lang) => ({ lang }));
 }
-
-// function getServerSiteUrl() {
-//   const host = headers().get("host") || "localhost:3000";
-//   const protocol = process.env.NODE_ENV === "production" ? "https" : "http";
-//   return `${protocol}://${host}`;
-// } 
+ 
 function getServerSiteUrl() {
-  // const host = "eldahan.ordrat.com";
+  // const host = "theme.ordrat.com";
     const host = headers().get("host") || "theme.ordrat.com";
   const protocol = process.env.NODE_ENV === "production" ? "https" : "http";
   return `${host}`;
@@ -74,7 +64,7 @@ async function fetchShopData(shopId: string, lang: string) {
           Accept: "*/*",
           "Accept-Language": lang,
         },
-        cache: "no-store",
+          next: { revalidate: 0 },
       }
     );
     if (!res.ok) {
@@ -124,7 +114,8 @@ async function fetchBranchZones(shopId: string) {
           Accept: "*/*",
           "Accept-Language": "en",
         },
-        cache: "no-store",
+         next: { revalidate: 0 },
+
       }
     );
 
@@ -193,7 +184,8 @@ async function fetchSubdomain(subdomain: string,lang:string) {
           Accept: "*/*",
           "Accept-Language": lang,
         },
-        cache: "no-store",
+          next: { revalidate: 0 },
+
 
       }
     );
@@ -409,6 +401,7 @@ export default async function RootLayout({
 
                       {showTrialModal && <AutoModal />}
                       {/* <AutoModal /> */}
+
                       <ShopLocalStorage
                         vat={shopData.vat}
                         vatType={shopData.vatType}
@@ -426,6 +419,7 @@ export default async function RootLayout({
                         currencyAbbreviation={shopId.currencyAbbreviation}
                         languages={shopId.languages}
                       />
+                      
                       {children}
                  <Toaster
                       toastOptions={{

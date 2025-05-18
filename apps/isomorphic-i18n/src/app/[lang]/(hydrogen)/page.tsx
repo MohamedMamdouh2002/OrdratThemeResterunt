@@ -22,6 +22,10 @@ export default async function FileDashboardPage({
   const pageSize = 30;
   const ProductData = await GetHomeData(lang, page, pageSize);
   const headerData = await ServerHeaderData(lang);
+  if (!headerData.shopId) {
+  console.warn("shopId not found, fallback layout will be used");
+}
+
   const coupons = await getCoupons();
   
   const branches = await getBranches(lang);
@@ -46,7 +50,7 @@ export default async function FileDashboardPage({
           backgroundUrl={headerData.backgroundUrl} />
         <MainSlider banner={banner} />
         <Grills lang={lang} HomeData={ProductData} shopId={headerData.shopId as string} currencyName={headerData.currencyAbbreviation} initialPage={page} pageSize={pageSize} />
-        <Footer lang={lang} />
+        <Footer lang={lang} shopId={headerData.shopId as string} />
       </div>
     </>
   );
