@@ -1168,7 +1168,6 @@ function Modal({
                                         <CustomImg
                                           src={choice.imageUrl}
                                           alt={choice.name || "Radio"}
-                                        
                                           className="w-20 h-20 object-cover"
                                         />
                                         <div className="">

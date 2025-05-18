@@ -50,7 +50,7 @@ export async function generateStaticParams() {
 //   return `${protocol}://${host}`;
 // } 
 function getServerSiteUrl() {
-  const host = "theme.ordrat.com";
+  const host = "eldahan.ordrat.com";
     // const host = headers().get("host") || "theme.ordrat.com";
   const protocol = process.env.NODE_ENV === "production" ? "https" : "http";
   return `${host}`;
@@ -171,12 +171,13 @@ export async function fetchSellerPlanStatus(sellerId: string) {
     // const isFreeTrial = plans.some((plan: { freeTrial: boolean; }) => plan.freeTrial === true);
 
     const isActive =plans.subscriptionStatus === 0;
+    const isFreeTrial = plans.planName === 'الخطة التجريبية' || plans.planName === 'Free Trial';
     // console.log("🔥 Full response:", response);
 
     // console.log("✅ isFreeTrial:", isFreeTrial);
     // console.log("✅ isActive:", isActive);
 
-    return {  isActive };
+    return {  isActive,isFreeTrial };
   } catch (error) {
     console.error("❌ Error fetching seller plan status:", error);
     return {  isActive: false };
@@ -268,11 +269,11 @@ export default async function RootLayout({
     if (!shopId || !shopId.id) throw new Error("Invalid subdomain");
 
     shopData = await fetchShopData(shopId.id, lang);
-    const {  isActive } = await fetchSellerPlanStatus(shopId.sellerId);
+    const {  isActive,isFreeTrial } = await fetchSellerPlanStatus(shopId.sellerId);
 
-    // if (isFreeTrial) {
-    //   showTrialModal = true;
-    // }
+    if (isFreeTrial) {
+      showTrialModal = true;
+    }
     // Check if the shop is not active
     if (!isActive) {
       return (
