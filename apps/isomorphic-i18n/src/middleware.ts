@@ -156,6 +156,17 @@ async function fetchShopData(shopId: string, lang: string) {
     if (lngInReferer) response.cookies.set(cookieName, lngInReferer);
     return response;
   }
+ const languageOption = req.cookies.get('languageOption')?.value;
 
+  const pathname = req.nextUrl.pathname;
+
+  // ✅ لو المستخدم دخل على `/` مباشرة
+  if (pathname === '/') {
+    if (languageOption === '1') {
+      return NextResponse.redirect(new URL('/en', req.url));
+    } else {
+      return NextResponse.redirect(new URL('/ar', req.url));
+    }
+  }
   return NextResponse.next();
 }
