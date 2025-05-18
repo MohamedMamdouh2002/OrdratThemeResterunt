@@ -34,6 +34,7 @@ import SpecialNotes from '@/app/components/ui/SpecialNotes';
 import { useTranslation } from '@/app/i18n/client';
 import CustomImage from '../CustomImage';
 import { useTracking } from '../../context/TrackingContext';
+import CustomImg from '../CustomImg';
 
 
 function parseProductData(productString: string) {
@@ -655,13 +656,13 @@ function Modal({
                     <div className={`sticky mb-5 rounded-t-lg ${isScrolled ? `secShadow` : `shadow-none`} top-0 bg-white z-50 `}>
                       <div className={`flex mb-4 `}>
                         <div className="relative">
-                          <img
-                            src={prodId.imageUrl || photo}
-                            width={500}
-                            height={300}
-                            alt="s"
-                            className="w-52 h-52 p-1 rounded-lg object-cover"
+                          <div className="w-52 h-52">
+                         <img
+                          src={prodId.imageUrl || photo}
+                          alt={prodId?.name}
+                          className="w-52 h-52 p-1 rounded-lg object-cover"
                           />
+                          </div>
                           <X
                             onClick={handleClose}
                             className="bg-white rounded-full p-2 absolute top-3 start-2 hover:cursor-pointer"
@@ -748,11 +749,9 @@ function Modal({
                                       <div className="flex flex-col justify-center items-center">
                                         {choice.imageUrl ? (
                                           <>
-                                            <CustomImage
+                                            <CustomImg
                                               src={choice.imageUrl}
                                               alt={choice.name || "Radio"}
-                                              width={600}
-                                              height={350}
                                               className="w-20 h-20 object-cover"
                                             />
                                             <div className="">
@@ -988,10 +987,8 @@ function Modal({
                                   }}
 
                                 >
-                                  <Image
+                                  <img
                                     src={item.relatedProduct.imageUrl ?? potato}
-                                    width={200}
-                                    height={300}
                                     alt={item.relatedProduct.name}
                                     className="w-40 h-20 object-cover"
                                   />
@@ -1076,10 +1073,13 @@ function Modal({
                     <div className="w-full h-60">
                       {prodId.imageUrl ?
                       <>
+                      <div className="relative w-full h-full">
                         <img
                           src={prodId.imageUrl}
                           alt="Product Image"
+                          className="absolute top-0 left-0 w-full h-full object-cover"
                         />
+                      </div>
                         {prodId.isDiscountActive===true &&
                          <p
                          className="bg-white rounded-xl py-2 px-3 absolute top-3 font-semibold end-2 hover:cursor-pointer"
@@ -1165,11 +1165,10 @@ function Modal({
                                   <div className="flex flex-col justify-center items-center">
                                     {choice.imageUrl ? (
                                       <>
-                                        <CustomImage
+                                        <CustomImg
                                           src={choice.imageUrl}
                                           alt={choice.name || "Radio"}
-                                          width={600}
-                                          height={350}
+                                        
                                           className="w-20 h-20 object-cover"
                                         />
                                         <div className="">
@@ -1393,10 +1392,9 @@ function Modal({
                                   }, 300);
                                 }}
                               >
-                                <Image
+                                <img
                                   src={item.relatedProduct.imageUrl ?? potato}
-                                  width={200}
-                                  height={300}
+                                  
                                   alt={item.relatedProduct.name}
                                   className="w-40 h-20 object-cover"
                                 />
