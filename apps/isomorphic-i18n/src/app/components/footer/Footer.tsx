@@ -128,6 +128,7 @@ function Footer({ lang }: Props) {
         { title: t('search'), href: `/${lang}/search` },
         { title: t('review'), href: `/${lang}/reviews` },
         { title: t('faq'), href: `/${lang}/faq` },
+        { title: t('ordrat'), href: `https://ordrat.com/` },
       ],
     },
     {
