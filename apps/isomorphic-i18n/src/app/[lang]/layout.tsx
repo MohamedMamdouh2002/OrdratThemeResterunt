@@ -50,8 +50,8 @@ export async function generateStaticParams() {
 //   return `${protocol}://${host}`;
 // } 
 function getServerSiteUrl() {
-  const host = "eldahan.ordrat.com";
-    // const host = headers().get("host") || "theme.ordrat.com";
+  // const host = "eldahan.ordrat.com";
+    const host = headers().get("host") || "theme.ordrat.com";
   const protocol = process.env.NODE_ENV === "production" ? "https" : "http";
   return `${host}`;
 }
