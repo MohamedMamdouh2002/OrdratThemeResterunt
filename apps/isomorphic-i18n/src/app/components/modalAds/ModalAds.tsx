@@ -43,12 +43,16 @@ export default function AutoModal() {
     
     
 
-    const handleCreateStore = () => {
-        localStorage.setItem('store_created', 'true');
-        setShowModal(false);
-        setDisabled(true);
-        window.open("https://ordrat.com/ar/%D8%A7%D9%84%D8%AA%D8%B3%D8%B9%D9%8A%D8%B1", "_blank");
-    };
+const handleCreateStore = () => {
+  localStorage.setItem('store_created', 'true');
+  setShowModal(false);
+  setDisabled(true);
+
+  document.body.style.overflow = 'auto';
+
+  window.open("https://ordrat.com/ar/%D8%A7%D9%84%D8%AA%D8%B3%D8%B9%D9%8A%D8%B1", "_blank");
+};
+
 
     const handleClose = () => {
         setShowModal(false);
@@ -90,7 +94,6 @@ export default function AutoModal() {
   <div className="w-[350px] h-[350px] rounded-t-lg">
     <Image src={PcAD} alt="MOBILEAD" className="w-full h-full rounded-t-lg" />
   </div>
-
   <div className="grid grid-cols-12 justify-between items-center gap-4 mt-2 px-4 w-full">
     <button
       onClick={handleCreateStore}
