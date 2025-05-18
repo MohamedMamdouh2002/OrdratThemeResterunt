@@ -1078,8 +1078,6 @@ function Modal({
                       <>
                         <img
                           src={prodId.imageUrl}
-                          layout="fill"
-                          objectFit="cover"
                           alt="Product Image"
                         />
                         {prodId.isDiscountActive===true &&
