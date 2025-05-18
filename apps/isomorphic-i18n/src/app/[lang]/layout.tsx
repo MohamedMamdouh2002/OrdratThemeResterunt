@@ -143,14 +143,14 @@ async function fetchBranchZones(shopId: string) {
     return [];
   }
 }
-export async function fetchSellerPlanStatus(sellerId: string) {
+export async function fetchSellerPlanStatus(sellerId: string,lang:string){
   try {
     const res = await fetch(
       `https://testapi.ordrat.com/api/SellerPlanSubscription/GetSellerPlanActiveSubscription/${sellerId}`,
       {
         headers: {
           Accept: '*/*',
-          "Accept-Language": "en",
+          "Accept-Language": lang,
         },
         cache: 'no-store',
       }
@@ -171,7 +171,7 @@ export async function fetchSellerPlanStatus(sellerId: string) {
     // const isFreeTrial = plans.some((plan: { freeTrial: boolean; }) => plan.freeTrial === true);
 
     const isActive =plans.subscriptionStatus === 0;
-    const isFreeTrial = plans.planName === 'الخطة التجريبية' || plans.planName === 'Free Trial';
+    const isFreeTrial = plans.planName === 'الخطة التجريبية'|| plans.planName === 'Free Trial';
     // console.log("🔥 Full response:", response);
 
     // console.log("✅ isFreeTrial:", isFreeTrial);
@@ -269,7 +269,7 @@ export default async function RootLayout({
     if (!shopId || !shopId.id) throw new Error("Invalid subdomain");
 
     shopData = await fetchShopData(shopId.id, lang);
-    const {  isActive,isFreeTrial } = await fetchSellerPlanStatus(shopId.sellerId);
+    const {  isActive,isFreeTrial } = await fetchSellerPlanStatus(shopId.sellerId,lang);
 
     if (isFreeTrial) {
       showTrialModal = true;

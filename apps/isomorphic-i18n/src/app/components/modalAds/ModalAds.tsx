@@ -22,7 +22,7 @@ export default function AutoModal() {
     
             const interval = setInterval(() => {
                 setShowModal(true);
-            }, 12000);
+            }, 1200);
     
             return () => clearInterval(interval);
         }, 3000);
