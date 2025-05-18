@@ -47,11 +47,14 @@ const handleCreateStore = () => {
   localStorage.setItem('store_created', 'true');
   setShowModal(false);
   setDisabled(true);
-
   document.body.style.overflow = 'auto';
 
-  window.open("https://ordrat.com/ar/%D8%A7%D9%84%D8%AA%D8%B3%D8%B9%D9%8A%D8%B1", "_blank");
+  // افتح الرابط بعد تأخير بسيط لضمان تطبيق overflow
+  setTimeout(() => {
+    window.open("https://ordrat.com/ar/%D8%A7%D9%84%D8%AA%D8%B3%D8%B9%D9%8A%D8%B1", "_blank");
+  }, 100); // تأخير 100ms
 };
+
 
 
     const handleClose = () => {
