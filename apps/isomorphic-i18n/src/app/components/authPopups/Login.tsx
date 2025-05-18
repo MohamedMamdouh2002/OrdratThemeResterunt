@@ -92,7 +92,6 @@ function Login({ onLogin, setCurrentModal }: Props, { lang }: { lang?: string })
 			console.log("resault: ", result);
 
 			if (result?.refreshToken) {
-
 				localStorage.setItem('accessToken', result?.accessToken);
 				setAccessToken(result.accessToken)
 				localStorage.setItem('Token', result?.refreshToken);
@@ -115,8 +114,6 @@ function Login({ onLogin, setCurrentModal }: Props, { lang }: { lang?: string })
 		} else {
 			toast.error(``)
 			setLoading(false)
-
-
 		}
 	}
 	const phoneRegex = /^((\+[1-9]{1,4}[ \-]*)|(\([0-9]{2,3}\)[ \-]*)|([0-9]{2,4})[ \-]*)?[0-9]{7,8}$/;
@@ -165,9 +162,7 @@ function Login({ onLogin, setCurrentModal }: Props, { lang }: { lang?: string })
 						error={formik.touched.phoneNumber as any && formik.errors.phoneNumber ? formik.errors.phoneNumber as any : '' as any}
 					/>
 				</div>
-
 				<div className=" flex items-center justify-center">
-
 					<button
 						type="submit"
 						className="bg-mainColor py-3 px-6 rounded-xl mt-4 font-bold text-base text-white"
@@ -184,5 +179,4 @@ function Login({ onLogin, setCurrentModal }: Props, { lang }: { lang?: string })
 		</div>
 	);
 }
-
 export default Login;

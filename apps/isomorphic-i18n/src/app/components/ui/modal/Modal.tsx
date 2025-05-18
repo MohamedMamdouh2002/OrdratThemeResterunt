@@ -160,9 +160,7 @@ function Modal({
   const [randomViewers, setRandomViewers] = useState<number | null>(null);
   const { trackAddToCart } = useTracking();
   const [totalSoldQuantity, setTotalSoldQuantity] = useState<number>(0);
-
   console.log("totalSoldQuantity: ", totalSoldQuantity);
-
   // // Fetch fake data
   // useEffect(() => {
   //   const fetchFakeData = async () => {
@@ -657,7 +655,7 @@ function Modal({
                     <div className={`sticky mb-5 rounded-t-lg ${isScrolled ? `secShadow` : `shadow-none`} top-0 bg-white z-50 `}>
                       <div className={`flex mb-4 `}>
                         <div className="relative">
-                          <Image
+                          <img
                             src={prodId.imageUrl || photo}
                             width={500}
                             height={300}
@@ -1018,10 +1016,7 @@ function Modal({
                           </Swiper>
                         </div>
                       )}
-
-
                     </div>
-
                     <div className="grid grid-cols-3 justify-between items-center gap-5 p-3 bg-white w-full">
                       <div className={cn('bg-white rounded-bl-lg col-span-1 secShadow rtl:rounded-br-lg h-full', { 'rtl:rounded-bl-none': hasMoreDetails })}>
                         <QuantityHandler quantity={quantity} plusClassName={`${!prodId.hasStock || (prodId.stockNumber - totalSoldQuantity > 0 && prodId.stockNumber - totalSoldQuantity - quantity >= 0) ? 'text-mainColor' : 'cursor-no-drop text-Color30 pointer-events-none'}`} setQuantity={setQuantity} className='w-full h-full rounded-lg' />
@@ -1081,7 +1076,7 @@ function Modal({
                     <div className="w-full h-60">
                       {prodId.imageUrl ?
                       <>
-                        <Image
+                        <img
                           src={prodId.imageUrl}
                           layout="fill"
                           objectFit="cover"

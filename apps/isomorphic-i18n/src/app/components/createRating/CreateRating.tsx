@@ -51,11 +51,9 @@ console.log('orderId',id);
           headers: {
             'Content-Type': 'application/json',
             'Accept-Language': lang,
-            'Authorization': `Bearer ${token}`,
           }
         }
       );
-
       toast.success('تم إرسال التقييم بنجاح');
       localStorage.removeItem('orderId');
       router.replace(`/${lang}/reviews`);

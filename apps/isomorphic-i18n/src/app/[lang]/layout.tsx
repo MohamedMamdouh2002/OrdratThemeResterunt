@@ -50,8 +50,8 @@ export async function generateStaticParams() {
 //   return `${protocol}://${host}`;
 // } 
 function getServerSiteUrl() {
-  // const host = "theme.ordrat.com";
-    const host = headers().get("host") || "theme.ordrat.com";
+  const host = "theme.ordrat.com";
+    // const host = headers().get("host") || "theme.ordrat.com";
   const protocol = process.env.NODE_ENV === "production" ? "https" : "http";
   return `${host}`;
 }
@@ -426,7 +426,19 @@ export default async function RootLayout({
                         languages={shopId.languages}
                       />
                       {children}
-                      <Toaster />
+                 <Toaster
+                      toastOptions={{
+                        style: {
+                          zIndex: 999999,
+                        },
+                      }}
+                      containerStyle={{
+                        zIndex: 999999,
+                        position: 'fixed',
+                        left: 0,
+                        top:20,
+                      }}
+                    />
                       <GlobalDrawer />
                       <GlobalModal />
                     </TrackingProvider>

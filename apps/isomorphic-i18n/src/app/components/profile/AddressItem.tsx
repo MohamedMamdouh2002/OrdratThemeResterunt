@@ -22,7 +22,6 @@ function AddressItem({ address, i, setIsOpen, lang,setSelectedAddress }: Props) 
 	console.log("address: ",address);
 	const { setUpdateAddresses } = useUserContext();
 	const { t } = useTranslation(lang!, 'profile');
-
 	const deleteAddress = async () => {
 		const token = localStorage.getItem('accessToken');
 		if (!token) {

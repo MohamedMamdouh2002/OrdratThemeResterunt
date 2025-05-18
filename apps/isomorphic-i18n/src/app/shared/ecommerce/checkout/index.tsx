@@ -113,7 +113,6 @@ export default function CheckoutPageWrapper({
   const [isAddressOpen, setIsAddressOpen] = useState<boolean>(false);
   const [deliveryBerKelo, setDeliveryBerKelo] = useState<any>('');
   const [branchId, setBranchId] = useState<any>('');
-
   const methods = useForm<MadeOrderInput>({
     mode: 'onChange',
     resolver: zodResolver(madeOrderSchema),
@@ -550,7 +549,7 @@ export default function CheckoutPageWrapper({
                     <RadioGroup.Option key={address.id} value={address.id}>
                       {({ checked }) => (
                         <div
-                          className={`px-1 sm:px-3 py-2 flex items-center gap-1 sm:gap-2 w-full capitalize cursor-pointer rounded-lg transition duration-150 ${checked ? 'bg-mainColor text-white' : 'bg-gray-200'
+                          className={`px-1 sm:px-3 py-2 flex items-center gap-1 sm:gap-2 w-full capitalize cursor-pointer rounded-lg transition duration-150 min-h-[90px] ${checked ? 'bg-mainColor text-white' : 'bg-gray-200'
                             }`}
                         >
                           {/* <p>{`Apartment No: ${address.apartmentNumber}, Street: ${address.street}`}</p>
@@ -564,7 +563,7 @@ export default function CheckoutPageWrapper({
                               ) : (
                                 <BriefcaseBusiness className={`pt-1 ${checked ? 'text-white' : 'text-mainColor'}`} />
                               )}
-                              <span className='whitespace-nowrap overflow-hidden truncate max-w-[200px] sm:max-w-[80%]'>
+                              <span className='whitespace-nowrap overflow-hidden  truncate max-w-[200px] sm:max-w-[80%]'>
                                 {address.apartmentNumber}, {address.floor ? address.floor + ', ' : ''}
                                 {address.street}
                               </span>
