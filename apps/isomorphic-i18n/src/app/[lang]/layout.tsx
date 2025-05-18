@@ -31,6 +31,7 @@ import Pixels, { getEnabledPixels } from "../components/ui/pixels";
 import { TrackingProvider } from "../components/context/TrackingContext";
 import ScrollToTop from "../components/ui/ScrollToTop";
 import ShopDataValidator from "../components/ui/Refresh";
+import AutoRefreshOnFallback from "../components/ui/Refresh";
 
 const NextProgress = dynamic(() => import("@components/next-progress"), {
   ssr: false,
@@ -65,7 +66,7 @@ async function fetchShopData(shopId: string, lang: string) {
           Accept: "*/*",
           "Accept-Language": lang,
         },
-          next: { revalidate: 60 },
+      next: { revalidate: 5},
       }
     );
     if (!res.ok) {
@@ -115,8 +116,7 @@ async function fetchBranchZones(shopId: string) {
           Accept: "*/*",
           "Accept-Language": "en",
         },
-         next: { revalidate: 60 },
-
+  next: { revalidate: 5},
       }
     );
 
@@ -185,8 +185,7 @@ async function fetchSubdomain(subdomain: string,lang:string) {
           Accept: "*/*",
           "Accept-Language": lang,
         },
-          next: { revalidate: 60 },
-
+  next: { revalidate: 5},
 
       }
     );
@@ -420,9 +419,8 @@ export default async function RootLayout({
                         currencyAbbreviation={shopId.currencyAbbreviation}
                         languages={shopId.languages}
                       />
-                      <ShopDataValidator 
-                        shopId={shopId.id}
-                       />
+                      <AutoRefreshOnFallback isFallback={shopId.isFallback} />      
+
 
                       {children}
                  <Toaster

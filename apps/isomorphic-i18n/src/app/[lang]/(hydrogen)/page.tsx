@@ -7,6 +7,7 @@ import NavMobile from "@/app/components/navMobile/NavMobile";
 import RestaurantTitle from "@/app/components/restaurantTitle/RestaurantTitle";
 import ServerHeaderData from "@/app/components/ServerHeader";
 import { getServerShopId } from "@/app/components/ui/getServerShopId";
+import AutoRefreshOnFallback from "@/app/components/ui/Refresh";
 import ScrollToTop from "@/app/components/ui/ScrollToTop";
 import { API_BASE_URL } from "@/config/base-url";
 import { GetBannerData, getBranches, getCoupons, GetHomeData } from "@/server/home";
@@ -34,6 +35,7 @@ export default async function FileDashboardPage({
     <>
       <div className="relative">
         <ScrollToTop />
+        <AutoRefreshOnFallback isFallback={headerData.isFallback} />      
         <HomeSchema
           lang={lang!}
           logoUrl={headerData.logoUrl}

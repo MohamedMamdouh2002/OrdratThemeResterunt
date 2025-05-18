@@ -32,10 +32,10 @@ export default function ShopLocalStorage({ backgroud, languages,currencyAbbrevia
       setBranchZones(branchZones);
     }
   }, [subdomainName, logoUrl]);
-  // useEffect(() => {
-  //   if (typeof window !== "undefined") {
-  //     Cookies.set("languageOption", languages as any);
-  //   }
-  // }, []);
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      Cookies.set("languageOption", languages as any);
+    }
+  }, []);
   return null;
 }

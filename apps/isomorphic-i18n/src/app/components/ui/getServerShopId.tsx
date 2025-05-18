@@ -31,8 +31,7 @@ async function fetchShopData(shopId: string, lang: string) {
           Accept: "*/*",
           "Accept-Language": lang,
         },
-          next: { revalidate: 60 },
-
+  next: { revalidate: 5},
       }
     );
     if (!res.ok) {

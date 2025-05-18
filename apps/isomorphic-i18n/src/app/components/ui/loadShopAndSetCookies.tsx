@@ -17,8 +17,7 @@ async function fetchSubdomain(subdomain: string) {
           Accept: "*/*",
           "Accept-Language": "en",
         },
-          next: { revalidate: 60 },
-
+  next: { revalidate: 5},
       }
     );
     if (!res.ok) throw new Error("Failed to fetch subdomain");
@@ -39,8 +38,7 @@ async function fetchShopData(shopId: string, lang: string) {
           Accept: "*/*",
           "Accept-Language": lang,
         },
-          next: { revalidate: 60 },
-
+  next: { revalidate: 5},
       }
     );
     if (!res.ok) throw new Error("Failed to fetch shop details");

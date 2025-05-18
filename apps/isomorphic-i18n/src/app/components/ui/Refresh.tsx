@@ -2,17 +2,22 @@
 
 import { useEffect } from 'react';
 
-export default function ShopDataValidator({ shopId }: { shopId: string | null }) {
+export default function AutoRefreshOnFallback({ isFallback }: { isFallback: boolean }) {
   useEffect(() => {
-    if (!shopId || shopId === 'null') {
-      // ✅ منع حلقة لا نهائية
-      const alreadyTried = sessionStorage.getItem('shopReloadAttempted');
-      if (!alreadyTried) {
-        sessionStorage.setItem('shopReloadAttempted', 'true');
+    const alreadyReloaded = sessionStorage.getItem('shopReloaded');
+
+    if (isFallback) {
+      if (!alreadyReloaded) {
+        sessionStorage.setItem('shopReloaded', 'true');
         window.location.reload();
       }
+    } else {
+      // ✅ بعد ما الداتا بقت سليمة، امسح العلم
+      if (alreadyReloaded) {
+        sessionStorage.removeItem('shopReloaded');
+      }
     }
-  }, [shopId]);
+  }, [isFallback]);
 
   return null;
 }
