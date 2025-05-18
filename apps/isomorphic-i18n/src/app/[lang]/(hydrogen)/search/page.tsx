@@ -51,5 +51,5 @@ export default async function Search({
   console.log('await response.json()',result);
   
 
-  return <Content lang={lang} currencyName={headerData.currencyAbbreviation} initialProducts={products} initialSearch={searchTerm} />;
+  return <Content lang={lang} currencyName={headerData.currencyAbbreviation} shopId={headerData.shopId} initialProducts={products} initialSearch={searchTerm} />;
 }

@@ -17,7 +17,7 @@ async function fetchSubdomain(subdomain: string) {
           Accept: "*/*",
           "Accept-Language": "en",
         },
-          next: { revalidate: 0 },
+          next: { revalidate: 60 },
 
       }
     );
@@ -39,7 +39,7 @@ async function fetchShopData(shopId: string, lang: string) {
           Accept: "*/*",
           "Accept-Language": lang,
         },
-          next: { revalidate: 0 },
+          next: { revalidate: 60 },
 
       }
     );

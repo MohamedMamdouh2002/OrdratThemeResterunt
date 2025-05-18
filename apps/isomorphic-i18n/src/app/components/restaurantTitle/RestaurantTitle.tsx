@@ -66,7 +66,7 @@ function RestaurantTitle({
     useEffect(() => {
   i18n.changeLanguage(lang);
 
-  if (!logoUrl || !shopName || !description ) {
+if (!shopId?.trim() ||!logoUrl?.trim() || !shopName?.trim() || !description?.trim()){
     const storedLogo = localStorage.getItem("logoUrl");
     const storedName = localStorage.getItem("subdomainName");
     const storedBackground = localStorage.getItem("backgroundUrl");

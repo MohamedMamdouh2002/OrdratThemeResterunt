@@ -64,7 +64,7 @@ async function fetchShopData(shopId: string, lang: string) {
           Accept: "*/*",
           "Accept-Language": lang,
         },
-          next: { revalidate: 0 },
+          next: { revalidate: 60 },
       }
     );
     if (!res.ok) {
@@ -114,7 +114,7 @@ async function fetchBranchZones(shopId: string) {
           Accept: "*/*",
           "Accept-Language": "en",
         },
-         next: { revalidate: 0 },
+         next: { revalidate: 60 },
 
       }
     );
@@ -184,7 +184,7 @@ async function fetchSubdomain(subdomain: string,lang:string) {
           Accept: "*/*",
           "Accept-Language": lang,
         },
-          next: { revalidate: 0 },
+          next: { revalidate: 60 },
 
 
       }

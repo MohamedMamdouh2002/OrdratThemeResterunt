@@ -36,7 +36,7 @@ async function fetchShopData(shopId: string, lang: string) {
           Accept: "*/*",
           "Accept-Language": lang,
         },
-          next: { revalidate: 0 },
+          next: { revalidate: 60 },
 
       }
     );
@@ -69,8 +69,8 @@ async function fetchShopData(shopId: string, lang: string) {
   }
 }
 function getServerSiteUrl() {
-  const host = "eldahan.ordrat.com";
-  // const host = headers().get("host") || "localhost:3000";
+  // const host = "eldahan.ordrat.com";
+  const host = headers().get("host") || "localhost:3000";
   const protocol = process.env.NODE_ENV === "production" ? "https" : "http";
   return `${host}`;
 }
@@ -78,41 +78,33 @@ function getServerSiteUrl() {
 export default async function ServerHeaderData(lang: string = "en") {
   const realPath = getServerSiteUrl();
   const subdomainData = await fetchSubdomain(realPath, lang);
+
   if (!subdomainData || !subdomainData.id) {
-    console.error("Failed to fetch subdomain data");
+    console.warn("No subdomain data found for:", realPath);
+
     return {
-      logoUrl: null,
-      shopName: null,
-      backgroundUrl: null,
-      rate: null,
-      shopId: null,
-      description: null,
-      currencyId: null,
-      currencyAbbreviation: null,
+      logoUrl: "",
+      shopName: "",
+      backgroundUrl: "",
+      rate: 1,
+      shopId: "",
+      description: "",
+      currencyId: "",
+      currencyAbbreviation: "SAR",
     };
   }
 
   const shopData = await fetchShopData(subdomainData.id, lang);
 
-  // Optional: If you want, you can also still set cookies like you showed
-  const response = NextResponse.next();
-  response.cookies.set("shopId", shopData.shopId || "", { path: "/" });
-  response.cookies.set("currencyId", shopData.currencyId || "", { path: "/" });
-  response.cookies.set("description", shopData.description || "", { path: "/" });
-  response.cookies.set("backgroundUrl", shopData.backgroundUrl || "", { path: "/" });
-  response.cookies.set("rate", shopData.rate?.toString() || "", { path: "/" });
-  response.cookies.set("subdomainName", shopData.subdomainName || "", { path: "/" });
-  response.cookies.set("logoUrl", shopData.logoUrl || "", { path: "/" });
-  response.cookies.set("currencyAbbreviation", shopData.currencyAbbreviation || "", { path: "/" });
-
   return {
-    logoUrl: shopData.logoUrl,
-    shopName: shopData.subdomainName,
-    backgroundUrl: shopData.backgroundUrl,
-    rate: shopData.rate,
-    shopId: shopData.shopId,
-    description: shopData.description,
-    currencyId: shopData.currencyId,
-    currencyAbbreviation: shopData.currencyAbbreviation,
+    logoUrl: shopData.logoUrl || "",
+    shopName: shopData.subdomainName || "",
+    backgroundUrl: shopData.backgroundUrl || "",
+    rate: shopData.rate ?? 1,
+    shopId: shopData.shopId || "",
+    description: shopData.description || "",
+    currencyId: shopData.currencyId || "",
+    currencyAbbreviation: shopData.currencyAbbreviation || "SAR",
   };
 }
+

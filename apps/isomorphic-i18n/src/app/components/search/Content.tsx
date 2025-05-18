@@ -25,11 +25,13 @@ export default function Content({
 	lang,
 	initialProducts,
 	initialSearch,
+	shopId,
 	currencyName
   }: {
 	lang?: string;
 	initialProducts: Food[];
 	initialSearch?: string;
+	shopId: string;
 	currencyName: string;
   }) {	  
 	const [searchValue, setSearchValue] = useState(initialSearch ?? '');
@@ -43,7 +45,6 @@ export default function Content({
 	const [hasMore, setHasMore] = useState(true);
 	const observerRef = useRef<HTMLDivElement | null>(null);
 	const { t, i18n } = useTranslation(lang!, 'search');
-	const { shopId } = useUserContext();
 	const [background, setBackground] = useState<any | null>(null);
   	const [fakeData, setFakeData] = useState<FakeData | null>(null);
 
@@ -62,7 +63,7 @@ export default function Content({
 		try {
 		  const response = await fetch(`https://testapi.ordrat.com/api/FakeData/GetFakeDataByShopId/${shopId}`);
 		  if (!response.ok) throw new Error('Failed to fetch fake data');
-  
+
 		  const result: FakeData = await response.json();
 		  setFakeData(result); 
 		} catch (error) {
