@@ -30,6 +30,7 @@ import Image from "next/image";
 import Pixels, { getEnabledPixels } from "../components/ui/pixels";
 import { TrackingProvider } from "../components/context/TrackingContext";
 import ScrollToTop from "../components/ui/ScrollToTop";
+import ShopDataValidator from "../components/ui/Refresh";
 
 const NextProgress = dynamic(() => import("@components/next-progress"), {
   ssr: false,
@@ -419,7 +420,10 @@ export default async function RootLayout({
                         currencyAbbreviation={shopId.currencyAbbreviation}
                         languages={shopId.languages}
                       />
-                      
+                      <ShopDataValidator 
+                        shopId={shopId.id}
+                       />
+
                       {children}
                  <Toaster
                       toastOptions={{

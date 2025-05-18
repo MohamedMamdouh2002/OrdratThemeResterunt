@@ -36,7 +36,7 @@ async function fetchShopData(shopId: string, lang: string) {
           Accept: "*/*",
           "Accept-Language": lang,
         },
-          next: { revalidate: 60 },
+          next: { revalidate: 0 },
 
       }
     );
@@ -78,33 +78,41 @@ function getServerSiteUrl() {
 export default async function ServerHeaderData(lang: string = "en") {
   const realPath = getServerSiteUrl();
   const subdomainData = await fetchSubdomain(realPath, lang);
-
   if (!subdomainData || !subdomainData.id) {
-    console.warn("No subdomain data found for:", realPath);
-
+    console.error("Failed to fetch subdomain data");
     return {
-      logoUrl: "",
-      shopName: "",
-      backgroundUrl: "",
-      rate: 1,
-      shopId: "",
-      description: "",
-      currencyId: "",
-      currencyAbbreviation: "SAR",
+      logoUrl: null,
+      shopName: null,
+      backgroundUrl: null,
+      rate: null,
+      shopId: null,
+      description: null,
+      currencyId: null,
+      currencyAbbreviation: null,
     };
   }
 
   const shopData = await fetchShopData(subdomainData.id, lang);
 
+  // Optional: If you want, you can also still set cookies like you showed
+  const response = NextResponse.next();
+  response.cookies.set("shopId", shopData.shopId || "", { path: "/" });
+  response.cookies.set("currencyId", shopData.currencyId || "", { path: "/" });
+  response.cookies.set("description", shopData.description || "", { path: "/" });
+  response.cookies.set("backgroundUrl", shopData.backgroundUrl || "", { path: "/" });
+  response.cookies.set("rate", shopData.rate?.toString() || "", { path: "/" });
+  response.cookies.set("subdomainName", shopData.subdomainName || "", { path: "/" });
+  response.cookies.set("logoUrl", shopData.logoUrl || "", { path: "/" });
+  response.cookies.set("currencyAbbreviation", shopData.currencyAbbreviation || "", { path: "/" });
+
   return {
-    logoUrl: shopData.logoUrl || "",
-    shopName: shopData.subdomainName || "",
-    backgroundUrl: shopData.backgroundUrl || "",
-    rate: shopData.rate ?? 1,
-    shopId: shopData.shopId || "",
-    description: shopData.description || "",
-    currencyId: shopData.currencyId || "",
-    currencyAbbreviation: shopData.currencyAbbreviation || "SAR",
+    logoUrl: shopData.logoUrl,
+    shopName: shopData.subdomainName,
+    backgroundUrl: shopData.backgroundUrl,
+    rate: shopData.rate,
+    shopId: shopData.shopId,
+    description: shopData.description,
+    currencyId: shopData.currencyId,
+    currencyAbbreviation: shopData.currencyAbbreviation,
   };
 }
-
