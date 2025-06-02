@@ -9,8 +9,8 @@ type HomeSchemaProps = {
 
 }
 function getServerSiteUrl() {
-  const host = "shawrma1.ordrat.com";
-  // const host = headers().get("host") || "localhost:3000";
+  // const host = "shawrma1.ordrat.com";
+  const host = headers().get("host") || "localhost:3000";
   const protocol = process.env.NODE_ENV === "production" ? "https" : "http";
   return `${host}`;
 }
