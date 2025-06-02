@@ -21,6 +21,7 @@ import { useTranslation } from '@/app/i18n/client';
 import axiosClient from '@/app/components/fetch/api';
 import toast from 'react-hot-toast';
 import { useIsMounted } from '@hooks/use-is-mounted';
+import sarIcon from '@public/assets/Saudi_Riyal_Symbol.svg.png'
 
 type FormValues = {
   couponCode: string;
@@ -199,17 +200,17 @@ const taxValue = Math.round((rawTaxValue + Number.EPSILON) * 100) / 100;
       <div className="mt-6 grid grid-cols-1 gap-4 @md:gap-6">
         <div className="flex items-center justify-between">
           {t('Subtotal')}
-          <span className="font-medium text-gray-1000">
+          <span className="font-medium text-gray-1000 flex items-center gap-1">
             {/* {abbreviation&&toCurrency( */}
             {/* // , lang as any,abbreviation)} */}
-            {total}{" "}{currencyAbbreviation}
+            {total}{" "}{currencyAbbreviation==='ر.س'? <Image src={sarIcon} alt="SAR" width={5} height={5}   style={{ width: '1rem', height: '1rem' }} /> :currencyAbbreviation}
             </span>
         </div>
         <div className="flex items-center justify-between">
           {t('Vat')}
-          <span className="font-medium text-gray-1000">
+          <span className="font-medium text-gray-1000 flex items-center gap-1">
             {/* {abbreviation&&toCurrency(taxValue, lang as any,abbreviation)} */}
-            {taxValue}{" "}{currencyAbbreviation}
+            {taxValue}{" "}{currencyAbbreviation==='ر.س'? <Image src={sarIcon} alt="SAR" width={5} height={5}   style={{ width: '1rem', height: '1rem' }} /> :currencyAbbreviation}
             
             </span>
           {/* <span className="font-medium text-gray-1000">{toCurrency(Tax, lang)}</span> */}
@@ -227,19 +228,19 @@ const taxValue = Math.round((rawTaxValue + Number.EPSILON) * 100) / 100;
         </div> */}
 
         {discount ?(
-          <div className="flex items-center justify-between text-green-600">
+          <div className="flex items-center justify-between gap-1 text-green-600">
             {t('Discount')}
-            <span>-{discount}{" "}{currencyAbbreviation}
+            <span className='flex items-center gap-1'>-{discount}{" "}{currencyAbbreviation==='ر.س'? <Image src={sarIcon} alt="SAR" width={5} height={5}   style={{ width: '1rem', height: '1rem' }} /> :currencyAbbreviation}
             {/* {abbreviation&&toCurrency(discount, lang as any,abbreviation)}
              */}
             </span>
           </div>
         ):''}
         <CheckCoupon lang={lang} />
-        <div className="mt-3 flex items-center justify-between border-t border-muted py-4 font-semibold text-gray-1000">
+        <div className="mt-3 flex items-center justify-between gap-1 border-t border-muted py-4 font-semibold text-gray-1000">
           {t('Total')}
-          <span className="font-medium text-gray-1000">
-          {finalTotal}{" "}{currencyAbbreviation}
+          <span className="font-medium text-gray-1000 flex items-center gap-1">
+          {finalTotal}{" "}{currencyAbbreviation==='ر.س'? <Image src={sarIcon} alt="SAR" width={5} height={5}   style={{ width: '1rem', height: '1rem' }} /> :currencyAbbreviation}
             
             
             {/* {abbreviation&&toCurrency(

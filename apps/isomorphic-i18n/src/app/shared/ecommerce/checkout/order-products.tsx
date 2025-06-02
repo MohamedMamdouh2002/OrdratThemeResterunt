@@ -8,6 +8,7 @@ import SimpleBar from '@ui/simplebar';
 import { Empty, Title } from 'rizzui';
 import cn from '@utils/class-names';
 import CustomImage from '@/app/components/ui/CustomImage';
+import sarIcon from '@public/assets/Saudi_Riyal_Symbol.svg.png'
 
 export default function OrderProducts({
   items,
@@ -23,12 +24,12 @@ export default function OrderProducts({
   items: CartItem[];
   className?: string;
   itemClassName?: string;
-  currencyAbbreviation: string;
+  currencyAbbreviation: any;
   showControls?: boolean;
   clearItemFromCart: (id: number | string) => void;
   addItemToCart: (item: CartItem, quantity: number) => void;
   removeItemFromCart: (id: number | string) => void;
-  lang?:string;
+  lang?: string;
 }) {
   // const abbreviation = useCurrencyAbbreviation({ lang } as any);
 
@@ -99,7 +100,7 @@ export default function OrderProducts({
               </div>
             </div>
             <div className="flex items-center gap-3 font-medium text-gray-700">
-              {item.price * item.quantity}{" "}{currencyAbbreviation}
+              {item.price * item.quantity}{" "}{currencyAbbreviation === 'ر.س' ? <Image src={sarIcon} alt="SAR" width={5} height={5} style={{ width: '1rem', height: '1rem' }} /> : currencyAbbreviation}
             </div>
           </div>
         ))}

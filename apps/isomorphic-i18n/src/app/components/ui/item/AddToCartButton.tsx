@@ -10,7 +10,7 @@ type Props = {
 	mainItem?: boolean;
 	className?: string;
 	action?: () => void;
-	price?: string;
+	price?: any;
 	oldPrice?: string;
 	lang?: string;
 	buttonType?: "submit" | "reset" | "button" | undefined;
@@ -44,7 +44,7 @@ function AddToCartButton({
 					{t('Additem')}
 					<Price
 						className="flex-col-reverse items-end"
-						price={price!}
+						price={price! as any}
 						PriceClassName="text-white"
 						oldPriceClassName="text-white/90"
 						oldPrice={oldPrice}

@@ -11,12 +11,13 @@ import potato from '@public/assets/شاورما-عراقي-لحمة-مع-بطا�
 import { Star, Flame } from 'lucide-react';
 import CustomImage from '../CustomImage';
 import { AnimatePresence } from 'framer-motion';
+import sarIcon from '@public/assets/Saudi_Riyal_Symbol.svg.png'
 
 type Props = Food & {
   lang: string;
   ProductData?: any
   FakeData?: any
-  currencyName?: string
+  currencyName?: any
   setCurrentItem: Dispatch<
     SetStateAction<{
       type?: string;
@@ -25,7 +26,7 @@ type Props = Food & {
   >;
 };
 
- function Card(data: Props) {
+function Card(data: Props) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [quantity, setQuantity] = useState(1);
   // const abbreviation = useCurrencyAbbreviation({ lang: data.lang });
@@ -69,12 +70,12 @@ type Props = Food & {
         <Text as="p" className="truncate">
           {data.lang === 'ar' ? data.descriptionAr : data.descriptionEn}
         </Text>
-        <div className="mt-2 flex items-center font-semibold text-mainColor">
+        <div className="mt-2 flex items-center font-semibold text-mainColor  gap-1">
           {/* {abbreviation && toCurrency(data.finalPrice, data.lang, abbreviation)} */}
           {data.finalPrice}{" "}{data.currencyName}
 
           {data.isDiscountActive === true && (
-            <del className="ps-1.5 text-[13px] font-normal text-gray-500">
+            <del className="ps-1.5 text-[13px] font-normal text-gray-500 flex items-center gap-1">
               {/* {abbreviation && toCurrency(data.price, data.lang, abbreviation)} */}
               {data.price}{" "}{data.currencyName}
             </del>
@@ -88,7 +89,7 @@ type Props = Food & {
             lang={data.lang}
             ProductData={data.ProductData}
             modalId={data.id}
-            currencyAbbreviation={data.currencyName}
+            currencyAbbreviation={data.currencyName === 'ر.س' ? <Image src={sarIcon} alt="SAR" width={30} height={30} /> : data.currencyName}
             FakeData={data.FakeData}
             currentModalProductId={currentModalProductId}
             setIsModalOpen={setIsModalOpen}

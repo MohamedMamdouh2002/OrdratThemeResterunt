@@ -6,6 +6,8 @@ import { useTranslation } from '@/app/i18n/client';
 import CustomToast from '../CustomToast';
 import { API_BASE_URL } from '@/config/base-url';
 import { useUserContext } from '../context/UserContext';
+import Image from 'next/image';
+import sarIcon from '@public/assets/Saudi_Riyal_Symbol.svg.png'
 
 interface CouponModalProps {
   lang: string;
@@ -127,10 +129,22 @@ const CouponModal: React.FC<CouponModalProps> = ({ lang, onClose }) => {
                 >
                   <div className="flex justify-between items-center mb-2 text-xs text-gray-600">
                     <span>{t('expire')}</span>
-                    <span>
+                    <span className='flex items-center gap-1'>
                       {t('discount')} 
-                      {c.discountType === 0 ? `${c.discountValue} %` :`   ${c.discountValue} ${currencyAbbreviation}`
-                      }
+                     <div className="flex items-center gap-1">
+  <span>
+    {c.discountType === 0
+      ? `${c.discountValue} %`
+      : `${c.discountValue}`
+    }
+  </span>
+  {c.discountType !== 0 && (
+    currencyAbbreviation === 'ر.س'
+      ? <Image src={sarIcon} alt="SAR" width={10} height={10} />
+      : <span>{currencyAbbreviation}</span>
+  )}
+</div>
+
                     </span>
                   </div>
                   <div className="text-center font-bold border border-dashed border-gray-400 py-2 px-4 rounded text-lg tracking-widest text-black">

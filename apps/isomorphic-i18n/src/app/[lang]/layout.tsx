@@ -15,6 +15,7 @@ import { CartProvider } from "@/store/quick-cart/cart.context";
 import { UserProvider } from "../components/context/UserContext";
 import logo from '@public/assets/orderLogo.svg'
 import { cookies } from "next/headers";
+import sarIcon from '@public/assets/Saudi_Riyal_Symbol.svg.png'
 
 import { MantineProvider } from "@mantine/core";
 
@@ -42,8 +43,8 @@ export async function generateStaticParams() {
 }
  
 function getServerSiteUrl() {
-  // const host = "theme.ordrat.com";
-    const host = headers().get("host") || "theme.ordrat.com";
+  const host = "shawrma1.ordrat.com";
+    // const host = headers().get("host") || "theme.ordrat.com";
   const protocol = process.env.NODE_ENV === "production" ? "https" : "http";
   return `${host}`;
 }
@@ -93,7 +94,7 @@ async function fetchShopData(shopId: string, lang: string) {
       applyFreeShppingOnTarget: shopData.applyFreeShppingOnTarget,
       freeShppingTarget: shopData.freeShppingTarget,
       currencyId: shopData.currencyId,
-      currencyAbbreviation: shopData.currencyAbbreviation,
+      currencyAbbreviation: shopData.currencyAbbreviation ==='ر.س'?<Image src={sarIcon} alt="SAR" width={30} height={30} />:'ر.س',
       languages: shopData.languages
     };
   } catch (error) {

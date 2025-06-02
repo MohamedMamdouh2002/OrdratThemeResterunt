@@ -11,6 +11,7 @@ import Card from '../ui/card/Card'
 import { AllCategories, Food, PaginatedAllCategories } from '@/types'
 import { Swiper as SwiperType } from 'swiper';
 import PrevArrow from '../PrevArrow'
+import sarIcon from '@public/assets/Saudi_Riyal_Symbol.svg.png'
 import NextArrow from '../NextArrow'
 import Link from 'next/link';
 import { useTranslation } from '@/app/i18n/client';
@@ -213,7 +214,7 @@ function Grills({ lang, shopId, currencyName, ProductData, HomeData, initialPage
                       >
                         {sec.products.map((prod: React.JSX.IntrinsicAttributes & Food & { setCurrentItem: React.Dispatch<React.SetStateAction<{ type?: string; id: string } | null>> }) => (
                           <SwiperSlide key={prod.id}>
-                            <SmallCard FakeData={fakeData} currencyName={currencyName} ProductData={home} lang={lang} {...prod} />
+                            <SmallCard FakeData={fakeData} currencyName={currencyName ==='ر.س'? <Image src={sarIcon} alt="SAR" width={20} height={20} /> :currencyName} ProductData={home} lang={lang} {...prod} />
                           </SwiperSlide>
                         ))}
                       </Swiper>
@@ -222,11 +223,11 @@ function Grills({ lang, shopId, currencyName, ProductData, HomeData, initialPage
                     sec?.products?.map((prod: React.JSX.IntrinsicAttributes & Food & { setCurrentItem: React.Dispatch<React.SetStateAction<{ type?: string; id: string } | null>> }) =>
                       sec.numberOfColumns === 1 ? (
                         <div key={prod.id}>
-                          <MediumCard FakeData={fakeData} currencyName={currencyName} ProductData={home} lang={lang} {...prod} />
+                          <MediumCard FakeData={fakeData} currencyName={currencyName ==='ر.س'? <Image src={sarIcon} alt="SAR" width={20} height={20} /> :currencyName} ProductData={home} lang={lang} {...prod} />
                           <hr className="mt-1 sm:hidden" />
                         </div>
                       ) : (
-                        <Card FakeData={fakeData} currencyName={currencyName} ProductData={home} lang={lang} key={prod.id} {...prod} />
+                        <Card FakeData={fakeData} currencyName={currencyName ==='ر.س'? <Image src={sarIcon} alt="SAR" width={20} height={20} /> :currencyName} ProductData={home} lang={lang} key={prod.id} {...prod} />
                       )
                     )
                   )}

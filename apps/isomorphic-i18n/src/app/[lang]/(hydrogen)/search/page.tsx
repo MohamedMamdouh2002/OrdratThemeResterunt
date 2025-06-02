@@ -4,6 +4,8 @@ import { API_BASE_URL } from '@/config/base-url';
 import { cookies } from 'next/headers';
 import { getServerShopId } from '@/app/components/ui/getServerShopId';
 import ServerHeaderData from '@/app/components/ServerHeader';
+import Image from 'next/image';
+import sarIcon from '@public/assets/Saudi_Riyal_Symbol.svg.png'
 
 export async function generateMetadata({ params }: { params: { lang: string } }) {
   const lang = params.lang;
@@ -51,5 +53,5 @@ export default async function Search({
   console.log('await response.json()',result);
   
 
-  return <Content lang={lang} currencyName={headerData.currencyAbbreviation} shopId={headerData.shopId} initialProducts={products} initialSearch={searchTerm} />;
+  return <Content lang={lang} currencyName={headerData.currencyAbbreviation==='ر.س'? <Image src={sarIcon} alt="SAR" width={5} height={5}   style={{ width: '1rem', height: '1rem' }} /> : headerData.currencyAbbreviation } shopId={headerData.shopId} initialProducts={products} initialSearch={searchTerm} />;
 }

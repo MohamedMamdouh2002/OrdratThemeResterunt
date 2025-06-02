@@ -6,6 +6,8 @@
   "sidebar-menu-apps": "Apps",
   "sidebar-menu-auth": "Auth",
   "sidebar-menu-clear": "Clear",
+  "error": "Please enter a valid number",
+
   "Home": "Home",
   "Categories": "Categories",
   "FAQ": "FAQ",

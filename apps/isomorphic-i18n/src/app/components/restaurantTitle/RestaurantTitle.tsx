@@ -19,6 +19,8 @@ import map from '@public/assets/map.png'
 import { IoMdClose } from 'react-icons/io'
 // import useCurrencyAbbreviation, { toCurrency } from '@utils/to-currency'
 import CustomImage from '../ui/CustomImage'
+import Skeleton from 'react-loading-skeleton'
+import sarIcon from '@public/assets/Saudi_Riyal_Symbol.svg.png'
 
 
 type Branchprops = {
@@ -53,32 +55,30 @@ function RestaurantTitle({
     branch: Branchprops[] | null;
     description: string | null;
     shopId: string | null;
-    currencyName: string ;
+    currencyName: string;
 }) {
     const { t, i18n } = useTranslation(lang!, 'nav');
     const [shopData, setShopData] = useState({
-  logoUrl: logoUrl || '',
-  shopName: shopName || '',
-  description: description || '',
+        logoUrl: logoUrl || '',
+        shopName: shopName || '',
+        description: description || '',
     });
     // const abbreviation = useCurrencyAbbreviation({ lang } as any);
     // console.log("logoUrl: ", logoUrl);
     useEffect(() => {
-  i18n.changeLanguage(lang);
-
-if (!shopId?.trim() ||!logoUrl?.trim() || !shopName?.trim() || !description?.trim()){
-    const storedLogo = localStorage.getItem("logoUrl");
-    const storedName = localStorage.getItem("subdomainName");
-    const storedBackground = localStorage.getItem("backgroundUrl");
-    const storedDescription = localStorage.getItem("description");
-
-    setShopData({
-      logoUrl: storedLogo || '',
-      shopName: storedName || '',
-      description: storedDescription || '',
-    });
-  }
-}, [lang]);
+        i18n.changeLanguage(lang);
+        if (!shopId?.trim() || !logoUrl?.trim() || !shopName?.trim() || !description?.trim()) {
+            const storedLogo = localStorage.getItem("logoUrl");
+            const storedName = localStorage.getItem("subdomainName");
+            const storedBackground = localStorage.getItem("backgroundUrl");
+            const storedDescription = localStorage.getItem("description");
+            setShopData({
+                logoUrl: storedLogo || '',
+                shopName: storedName || '',
+                description: storedDescription || '',
+            });
+        }
+    }, [lang]);
     const [modal, setModal] = useState(false);
     useEffect(() => {
         if (modal) {
@@ -137,13 +137,13 @@ if (!shopId?.trim() ||!logoUrl?.trim() || !shopName?.trim() || !description?.tri
     //     fetchOrders();
     // }, [lang]);
     return <>
-
         <div className={'flex lg:hidden -mt-24 rounded-xl flex-col  bg-slate-50 w-5/6 mx-auto z-10 text-black relative'}>
             <div className="flex items-start mt-6 justify-between">
                 <div className="flex gap-4 items-start">
                     {/* <Image src={logo} width={100} height={100} className='-mt-5 w-[80px] h-[80px] sm:w-[100px] sm:h-[100px]' alt='logo' /> */}
+          
                     {shopData.logoUrl ? (
-                        <div className="w-[180px] h-[80px] mt-5 ms-3  ">
+                        <div className="w-[100px] h-[80px] mt-5 ms-3  shrink-0">
                             <CustomImage
                                 src={logoUrl}
                                 width={100}
@@ -153,11 +153,15 @@ if (!shopId?.trim() ||!logoUrl?.trim() || !shopName?.trim() || !description?.tri
                             />
                         </div>
                     ) : (
-                        <div className="w-[100px] h-[100px] bg-gray-200 rounded-full"></div>
+                        <div className="w-[60px] h-[80px]  ms-3 rounded-lg overflow-hidden">
+                            <Skeleton width="100%" height="100%" />
+                        </div>
                     )}
                     <div className="">
-                        <h2 className='text-base'>{shopData.shopName}</h2>
-                        <h2 className='xs:text-sm text-xs font-normal truncate-text '>{shopData.description}</h2>
+                        <h2 className={`text-base `}>
+                            {shopData.shopName ? shopData.shopName : <Skeleton width={20} height={20} />}
+                        </h2>
+                        <h2 className='xs:text-sm text-xs font-normal truncate-text '>{shopData.description ? shopData.description : <Skeleton width={100} height={20} className='mt-3' />} </h2>
                         <div className={'flex items-center gap-1 text-sm'}>
                             <Star className="fill-[#f1d045] text-[#f1d045]" size={14} />
                             <span className="">{rate}</span>
@@ -198,27 +202,23 @@ if (!shopId?.trim() ||!logoUrl?.trim() || !shopName?.trim() || !description?.tri
                                 if (mainBranch.isFixedDelivery) {
                                     // return <span>{abbreviation && toCurrency(
                                     //     ?? 0, lang as any, abbreviation)}</span>;
-                                        {mainBranch.deliveryCharge}
+                                    { mainBranch.deliveryCharge }
                                 }
 
                                 return (
                                     <span>
                                         {/* {abbreviation && toCurrency(
                                             ?? 0, lang as any, abbreviation)} {lang === "ar" ? "/كيلو" : "/km"} */}
-                                            {mainBranch.deliveryPerKilo}{currencyName}
+                                        {mainBranch.deliveryPerKilo}{currencyName ==='ر.س'? <Image src={sarIcon} alt="SAR" width={30} height={30} /> : currencyName}
                                     </span>
                                 );
                             })()}
-
-
                         </span>
-
                     </div>
                     <div className="basis-1/3 flex flex-col items-center justify-center border-e px-2">
                         <strong className="text-stone-800 text-center font-light text-xs">
                             {t('delivery-Time')}
                         </strong>
-
                         {branch?.some(i => i.name === "Main Branch" || i.name === "الفرع الرئيسي") ? (
                             branch
                                 ?.filter(i => i.name === "Main Branch" || i.name === "الفرع الرئيسي")
@@ -244,8 +244,6 @@ if (!shopId?.trim() ||!logoUrl?.trim() || !shopName?.trim() || !description?.tri
                     </div>
                 </div>
             </div>
-
-
         </div>
         {coupon?.filter((i: any) => i.isBanner === true && i.isActive === true)
             .slice(-1)
@@ -268,7 +266,6 @@ if (!shopId?.trim() ||!logoUrl?.trim() || !shopName?.trim() || !description?.tri
                 </div>
             ))
         }
-
         {modal && (
             <div
                 onClick={() => setModal(false)}

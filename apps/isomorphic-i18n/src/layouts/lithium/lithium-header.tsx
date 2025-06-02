@@ -36,6 +36,7 @@ import { usePathname } from "next/navigation";
 import { useTranslation } from "@/app/i18n/client";
 import CustomImage from "@/app/components/ui/CustomImage";
 import { cookies } from "next/headers";
+import Skeleton from "react-loading-skeleton";
 
 function HeaderMenuRight() {
   return (
@@ -146,9 +147,13 @@ export default function Header({
               {logoUrl ? (
                 <CustomImage src={logoUrl} width={60} height={60} alt="logo" className="max-w-[60px]" />
               ) : (
-                <div className="w-[60px] h-[60px] bg-gray-200 rounded-full"></div>
+              <div className="w-[60px] h-[60px] rounded-3xl overflow-hidden">
+                <Skeleton  width="100%" height="100%" />
+              </div> 
               )}
-              <h2 className={`font-bold text-lg ${isStickyVisible ? `text-white` : `text-black`}`}>{shopName}</h2>
+              <h2 className={`font-bold text-lg ${isStickyVisible ? 'text-white' : 'text-black'}`}>
+                {shopName ? shopName : <Skeleton width={100} height={20} />}
+              </h2>
             </Link>
           </div>
           <div className="flex justify-center xl:ms-52">

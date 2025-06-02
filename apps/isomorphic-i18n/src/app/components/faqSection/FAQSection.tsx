@@ -228,7 +228,7 @@ function FAQSection({ lang , faqData }: { lang: string;faqData:FaqType[] }) {
               )
             ))}
             {/* Repeat other FAQ sections here similarly */}
-            <div className={`${style.FindMore} bg-mainColor`}>
+            {/* <div className={`${style.FindMore} bg-mainColor`}>
               <div className={style.FindMoreTopContainer}>
                 <div className={style.FindMoreTop}>
                   <Image src={Findmore} alt="Find more icon" />
@@ -250,7 +250,7 @@ function FAQSection({ lang , faqData }: { lang: string;faqData:FaqType[] }) {
                   </button>
                 </Link>
               </div>
-            </div>
+            </div> */}
           </div>
         }
       </div>

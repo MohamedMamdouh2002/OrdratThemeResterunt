@@ -9,6 +9,7 @@ import QuantityInput from '@/app/shared/ecommerce/cart/quantity-input';
 import { routes } from '@/config/routes';
 import photo from '@public/assets/شاورما-عربي-لحمة-768x768.png';
 import CustomImage from '@/app/components/ui/CustomImage';
+import sarIcon from '@public/assets/Saudi_Riyal_Symbol.svg.png'
 
 function parseProductData(productString: string) {
   const dataPairs = productString.split('&&');
@@ -102,16 +103,16 @@ const displayedTitle = truncateWords(fullTitle, 3);
           }
           <div className="">
 
-            <span className="inline-block text-sm font-semibold text-gray-1000 sm:font-medium md:text-base 3xl:text-lg">
+            <span className=" gap-1 flex items-center text-sm font-semibold text-gray-1000 sm:font-medium md:text-base 3xl:text-lg">
               {/* {abbreviation&&toCurrency(product.price,lang as any,abbreviation)} */}
-              {product?.price}{" "}{currencyAbbreviation}
+              {product?.price}{" "}{currencyAbbreviation==='ر.س'? <Image src={sarIcon} alt="SAR" width={5} height={5}   style={{ width: '1rem', height: '1rem' }} /> :currencyAbbreviation}
 
             </span>
             {product.isDiscountActive ===true?
               <li className={`flex items-center gap-3 text-gray-500`}>
                 {/* <span>Old Price :</span> */}
                 <del className="text-gray-1000 ">
-                  {product?.oldPrice}{" "}{currencyAbbreviation}
+                  {product?.oldPrice}{" "}{currencyAbbreviation==='ر.س'? <Image src={sarIcon} alt="SAR" width={5} height={5}   style={{ width: '1rem', height: '1rem' }} /> :currencyAbbreviation}
                   {/* {abbreviation&&toCurrency(
                      as any,lang as any,abbreviation)} */}
                   </del>

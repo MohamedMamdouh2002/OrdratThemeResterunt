@@ -35,6 +35,7 @@ import { useTranslation } from '@/app/i18n/client';
 import CustomImage from '../CustomImage';
 import { useTracking } from '../../context/TrackingContext';
 import CustomImg from '../CustomImg';
+import sarIcon from '@public/assets/Saudi_Riyal_Symbol.svg.png'
 
 
 function parseProductData(productString: string) {
@@ -669,18 +670,24 @@ function Modal({
                             size={36}
                           />
                           {prodId?.isDiscountActive &&
-                          <p
-                          className="bg-white rounded-xl py-2 px-3 absolute top-3 font-semibold end-2 hover:cursor-pointer"
-                          
-                          >
-                              {lang==='ar'?'خصم':'save'}{" "}
-
-                            {prodId.discountType ===0 ?
-                           ` ${prodId.discount} %`
-                           :
-                            `${prodId.discount} ${currencyAbbreviation}`
-                          }
+                         <p className="bg-white rounded-xl py-2 px-3 absolute top-3 font-semibold end-2 hover:cursor-pointer">
+                            <span className="flex items-center gap-1">
+                              {lang === 'ar' ? 'خصم' : 'save'}{' '}
+                              {prodId.discountType === 0 ? (
+                                `${prodId.discount} %`
+                              ) : (
+                                <>
+                                  <span>{prodId.discount}</span>
+                                  {currencyAbbreviation === 'ر.س' ? (
+                                    <Image src={sarIcon} alt="SAR" width={10} height={10} />
+                                  ) : (
+                                    <span>{currencyAbbreviation}</span>
+                                  )}
+                                </>
+                              )}
+                            </span>
                           </p>
+
                           }
                         </div>
                         <div className="px-4 pt-2 flex flex-col">
@@ -755,17 +762,21 @@ function Modal({
                                               className="w-20 h-20 object-cover"
                                             />
                                             <div className="">
-                                              <p>{choice.name}</p>
+                                            <p className='text-center'>{choice.name}</p>
                                               {/* {choice.price && <small>{abbreviation && toCurrency(\\ */}
-                                              {choice.price}{" "}{currencyAbbreviation}
-                                              {/* , lang, abbreviation)}</small>} */}
+                     <span className='flex items-center gap-1 justify-center'>
+
+                                        {choice.price}{" "}{currencyAbbreviation==='ر.س'? <Image src={sarIcon} alt="SAR" width={5} height={5}   style={{ width: '1rem', height: '1rem' }} /> :currencyAbbreviation}
+                                        </span>                                              {/* , lang, abbreviation)}</small>} */}
                                             </div>
                                           </>
                                         ) : (
                                           <div className="h-10">
-                                            <p>{choice.name}</p>
-                                            {choice.price}{" "}{currencyAbbreviation}
+                                            <p className='text-center'>{choice.name}</p>
+                     <span className='flex items-center gap-1 justify-center'>
 
+                                        {choice.price}{" "}{currencyAbbreviation==='ر.س'? <Image src={sarIcon} alt="SAR" width={5} height={5}   style={{ width: '1rem', height: '1rem' }} /> :currencyAbbreviation}
+                                        </span>
                                             {/* {choice.price && <small>{abbreviation && toCurrency(choice.price, lang, abbreviation)}</small>} */}
                                           </div>
 
@@ -992,17 +1003,17 @@ function Modal({
                                     alt={item.relatedProduct.name}
                                     className="w-40 h-20 object-cover"
                                   />
-                                  <p className="text-sm mb-1 font-medium truncate">
+                                  <p className="text-sm mb-1 font-medium text-center truncate">
                                     {item.relatedProduct.name}
                                   </p>
                                   <div className="flex flex-col">
-                                    <p className="text-[10px] text-mainColor">
-                                      {item.relatedProduct.finalPrice}{" "}{currencyAbbreviation}
+                                    <p className="text-[10px] text-mainColor flex  justify-center items-center gap-1">
+                                      {item.relatedProduct.finalPrice}{" "}{currencyAbbreviation==='ر.س'? <Image src={sarIcon} alt="SAR" className='w-5' /> :currencyAbbreviation}
                                       {/* {abbreviation && toCurrency(item.relatedProduct.price, lang, abbreviation)} */}
                                     </p>
                                     {item.relatedProduct.oldPrice && (
-                                      <del className="text-[10px]">
-                                        {item.relatedProduct.oldPrice}{" "}{currencyAbbreviation}
+                                      <del className="text-[10px] flex justify-center items-center gap-1">
+                                        {item.relatedProduct.oldPrice}{" "}{currencyAbbreviation==='ر.س'? <Image src={sarIcon} alt="SAR" width={12} height={12} className='w-5' /> :currencyAbbreviation}
                                         {/* {abbreviation && toCurrency(item.relatedProduct.oldPrice, lang, abbreviation)} */}
                                       </del>
                                     )}
@@ -1025,7 +1036,15 @@ function Modal({
                             trackAddToCart()
                           }
                           buttonType="submit"
-                          price={`${finalPrice} ${currencyAbbreviation}`}
+                          price={<div className={` items-center gap-1 ${lang === 'ar' ? 'flex' : 'flex'}`} dir={lang === 'ar' ? 'rtl' : 'ltr'}>
+  <span>{finalPrice}</span>
+  {currencyAbbreviation === 'ر.س' ? (
+    <Image src={sarIcon} alt="SAR" width={16} height={16} />
+  ) : (
+    <span>{currencyAbbreviation}</span>
+  )}
+</div>
+                              }
                           // oldPrice={` ${finalOldPrice}` ? `${finalOldPrice} ${currencyAbbreviation}`:''}
                           // oldPrice={finalOldPrice ? abbreviation && toCurrency(finalOldPrice, lang, abbreviation) : ''}
                           className={`${!prodId.hasStock || (prodId.stockNumber - totalSoldQuantity > 0 && prodId.stockNumber - totalSoldQuantity - quantity >= 0) ? '' : 'cursor-no-drop bg-slate-400'}`}
@@ -1081,17 +1100,24 @@ function Modal({
                         />
                       </div>
                         {prodId.isDiscountActive===true &&
-                         <p
-                         className="bg-white rounded-xl py-2 px-3 absolute top-3 font-semibold end-2 hover:cursor-pointer"
-                            
-                            >
-                              {lang==='ar'?'خصم':'save'}{" "}
-                            {prodId.discountType ===0 ?
-                           ` ${prodId.discount} %`
-                           :
-                           `${prodId.discount} ${currencyAbbreviation}`
-                          }
-                          </p>
+                        <p className="bg-white rounded-xl py-2 px-3 absolute top-3 font-semibold end-2 hover:cursor-pointer">
+  <span className="flex items-center gap-1">
+    {lang === 'ar' ? 'خصم' : 'save'}{' '}
+    {prodId.discountType === 0 ? (
+      `${prodId.discount} %`
+    ) : (
+      <>
+        <span>{prodId.discount}</span>
+        {currencyAbbreviation === 'ر.س' ? (
+          <Image src={sarIcon} alt="SAR" width={16} height={16} />
+        ) : (
+          <span>{currencyAbbreviation}</span>
+        )}
+      </>
+    )}
+  </span>
+</p>
+
                         }
                           </>
                         :
@@ -1171,16 +1197,21 @@ function Modal({
                                           className="w-20 h-20 object-cover"
                                         />
                                         <div className="">
-                                          <p>{choice.name}</p>
-                                          {choice.price}{" "}{currencyAbbreviation}
+                                          <p className='text-center'>{choice.name}</p>
+                                      <span className='flex items-center gap-1 justify-center'>
 
+                                        {choice.price}{" "}{currencyAbbreviation==='ر.س'? <Image src={sarIcon} alt="SAR" width={5} height={5}   style={{ width: '1rem', height: '1rem' }} /> :currencyAbbreviation}
+                                        </span>
                                           {/* {choice.price && <small>{abbreviation && toCurrency(choice.price, lang, abbreviation)}</small>} */}
                                         </div>
                                       </>
                                     ) : (
                                       <div className="h-10">
-                                        <p>{choice.name}</p>
-                                        {choice.price}{" "}{currencyAbbreviation}
+                                        <p className='text-center'>{choice.name}</p>
+                                        <span className='flex items-center gap-1 justify-center'>
+
+                                        {choice.price}{" "}{currencyAbbreviation==='ر.س'? <Image src={sarIcon} alt="SAR" width={5} height={5}   style={{ width: '1rem', height: '1rem' }} /> :currencyAbbreviation}
+                                        </span>
 
                                         {/* {choice.price && <small>{abbreviation && toCurrency(choice.price, lang, abbreviation)}</small>} */}
                                       </div>
@@ -1397,18 +1428,18 @@ function Modal({
                                   alt={item.relatedProduct.name}
                                   className="w-40 h-20 object-cover"
                                 />
-                                <p className="text-sm mb-1 font-medium truncate">
+                                <p className="text-sm mb-1 font-medium text-center truncate">
                                   {item.relatedProduct.name}
                                 </p>
                                 <div className="flex flex-col">
-                                  <p className="text-[10px] text-mainColor">
-                                    {item.relatedProduct.finalPrice}{" "}{currencyAbbreviation}
+                                  <p className="text-[10px] text-mainColor flex items-center justify-center gap-1">
+                                    {item.relatedProduct.finalPrice}{" "}{currencyAbbreviation==='ر.س'? <Image src={sarIcon} alt="SAR" width={10} height={10} /> :currencyAbbreviation}
 
                                     {/* {abbreviation && toCurrency(item.relatedProduct.price, lang, abbreviation)} */}
                                   </p>
                                   {item.relatedProduct.oldPrice && (
-                                    <del className="text-[10px]">
-                                      {item.relatedProduct.oldPrice}{" "}{currencyAbbreviation}
+                                    <del className="text-[10px] flex items-center justify-center gap-1">
+                                      {item.relatedProduct.oldPrice}{" "}{currencyAbbreviation==='ر.س'? <Image src={sarIcon} alt="SAR" width={10} height={10} /> :currencyAbbreviation}
 
                                       {/* {abbreviation && toCurrency(item.relatedProduct.oldPrice, lang, abbreviation)} */}
                                     </del>
@@ -1442,7 +1473,16 @@ function Modal({
                       <ItemPrice
                         type={type}
                         buttonType="submit"
-                        price={`${finalPrice} ${currencyAbbreviation}`}
+                        price={<div className={` items-center gap-1 ${lang === 'ar' ? 'flex' : 'flex'}`} dir={lang === 'ar' ? 'rtl' : 'ltr'}>
+  <span>{finalPrice}</span>
+  {currencyAbbreviation === 'ر.س' ? (
+    <Image src={sarIcon} alt="SAR" width={16} height={16} />
+  ) : (
+    <span>{currencyAbbreviation}</span>
+  )}
+</div>
+
+                              }
                         // oldPrice={` ${finalOldPrice}` ? `${finalOldPrice} ${currencyAbbreviation}`:''}
                         // price={abbreviation && toCurrency(finalPrice, lang, abbreviation)}
                         // oldPrice={finalOldPrice ? abbreviation && toCurrency(finalOldPrice, lang, abbreviation) : ''}

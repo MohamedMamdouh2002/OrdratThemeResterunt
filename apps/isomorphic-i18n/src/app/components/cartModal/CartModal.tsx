@@ -16,6 +16,8 @@ import { IoMdClose } from "react-icons/io";
 import CouponModal from '../modalCoupon/ModalCoupon';
 import { MdLocalOffer } from "react-icons/md";
 import { IoIosArrowForward } from "react-icons/io";
+import sarIcon from '@public/assets/Saudi_Riyal_Symbol.svg.png'
+
 
 const ProgressBar = ({ totalPrice, freeShippingThreshold }: { totalPrice: number; freeShippingThreshold: number; }) => {
     const [progress, setProgress] = useState(0);
@@ -57,15 +59,18 @@ const FreeShippingMessage = ({ totalPrice, freeShippingThreshold, lang }: { tota
         <div className="max-w-[550px] mx-auto text-center text-sm sm:text-base leading-snug font-normal my-2 sm:my-4">
             {remainingAmount > 0 ? (
                 <>
+                <div className="flex items-center gap-1 justify-center">
+
                     {t('spend')} {" "}
-                    <span className="text-red-500 font-bold">
-                        {remainingAmount.toLocaleString()}{" "}{currencyAbbreviation}
+                    <span className="text-red-500 font-bold flex items-center gap-1">
+                        {remainingAmount.toLocaleString()}{" "}{currencyAbbreviation==='ر.س'? <Image src={sarIcon} alt="SAR" width={15} height={15} /> :currencyAbbreviation}
           {/* {abbreviation && toCurrency(
           , lang, abbreviation)} */}
 
                         {/* {remainingAmount.toLocaleString()} <span>{t('currency')}</span> */}
                     </span>{" "}
                     {t('more_to_reach')} <strong>{t('free_shipping')}</strong>
+          </div>
                 </>
             ) : (
                 <span className="text-green-600 font-bold">{t('congrats_free_shipping')}</span>
@@ -333,9 +338,9 @@ function CartModal({ lang }: { lang?: string }) {
                                 className="bg-mainColor text-white rounded-lg text-center text-sm sm:text-base font-medium w-11/12 mx-auto flex justify-between items-center py-2 mt-1 px-4"
                             >
                                 <span>{t('order-cart')}</span>
-                                <span className='bg-white py-1 px-3 text-mainColor rounded-md'>
+                                <span className='bg-white py-1 px-3 text-mainColor rounded-md flex items-center gap-1'>
                                      {/* {abbreviation && toCurrency( */}
-                                    {totalPrice}{" "}{currencyAbbreviation}
+                                    {totalPrice}{" "}{currencyAbbreviation==='ر.س'? <Image src={sarIcon} alt="SAR" width={15} height={15} /> :currencyAbbreviation}
                                     {/* // , lang as any, abbreviation)} */}
                                 </span>
                             </Link>

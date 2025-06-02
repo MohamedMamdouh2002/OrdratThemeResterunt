@@ -9,12 +9,12 @@ import photo from '@public/assets/شاورما-عربي-لحمة-768x768.png'
 import hamburger from '@public/assets/hamburger.png'
 import potato from '@public/assets/شاورما-عراقي-لحمة-مع-بطاطا.png'
 import { AnimatePresence } from 'framer-motion';
-import ServerHeaderData from '../../ServerHeader';
+import sarIcon from '@public/assets/Saudi_Riyal_Symbol.svg.png'
 type Props = Food & {
   lang: string;
   ProductData?: any
   FakeData?: any
-  currencyName?:string
+  currencyName?:any
   setCurrentItem: Dispatch<
     SetStateAction<{
       type?: string;
@@ -61,12 +61,12 @@ type Props = Food & {
             </div>
             <TextTruncate text={data.lang === 'ar' ? data.descriptionAr : data.descriptionEn} limit={10} />
             <div className="mt-2 flex items-center font-semibold text-mainColor absolute bottom-2">
-              <span>
+              <span className='flex items-center gap-1'>
               {data.finalPrice}{" "}{data.currencyName}
                 {/* {abbreviation && toCurrency(data.finalPrice, data.lang, abbreviation)} */}
               </span>
               {data.isDiscountActive ===true  && (
-                <del className="ps-1.5 text-[13px] font-normal text-gray-500">
+                <del className="ps-1.5 text-[13px] font-normal text-gray-500 flex items-center gap-1">
                 {data.price}{" "}{data.currencyName}
                  
                   {/* {abbreviation && toCurrency(data.price, data.lang, abbreviation)} */}
@@ -92,7 +92,7 @@ type Props = Food & {
             lang={data.lang}
             ProductData={data.ProductData}
             FakeData={data.FakeData}
-            currencyAbbreviation={data.currencyName}
+            currencyAbbreviation={data.currencyName ==='ر.س'? <Image src={sarIcon} alt="SAR" width={30} height={30} /> :data.currencyName}
             modalId={data.id}
             // نمرر أيضًا currentModalProductId للسماح للمودال بتحديث البيانات داخليًا
             currentModalProductId={currentModalProductId}

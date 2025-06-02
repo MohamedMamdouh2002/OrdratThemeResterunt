@@ -9,12 +9,12 @@ import Modal from '../modal/Modal';
 import CustomImage from '../CustomImage';
 import { AnimatePresence } from 'framer-motion';
 import ServerHeaderData from '../../ServerHeader';
-
+import sarIcon from '@public/assets/Saudi_Riyal_Symbol.svg.png'
 type Props = Food & {
   lang: string;
   ProductData?: any
   FakeData?: any
-currencyName:string
+currencyName:any
   setCurrentItem: Dispatch<
     SetStateAction<{
       type?: string;
@@ -80,7 +80,7 @@ function SmallCard(data: Props) {
           </Text>
           <div className="mt-2 flex flex-col items-start font-semibold text-mainColor">
             <div className='text-[12px] sm:pt-0 pt-0.5 font-normal sm:text-[13px]'>
-              <span>
+              <span className='flex items-center gap-1'>
                 {/* {abbreviation && toCurrency(data.finalPrice, data.lang, abbreviation)} */}
                 {data.finalPrice}{" "}{data.currencyName}
 
@@ -88,7 +88,7 @@ function SmallCard(data: Props) {
             </div>
             {data.isDiscountActive ===true &&
               <div>
-              <del className="text-[12px] sm:text-[13px] font-normal text-gray-500">
+              <del className="text-[12px] sm:text-[13px] font-normal text-gray-500 flex items-center gap-1">
                   {/* {abbreviation && toCurrency(
                     data.lang, abbreviation)} */}
                 {data.price}{" "}{data?.currencyName as any}
@@ -107,7 +107,7 @@ function SmallCard(data: Props) {
             lang={data.lang}
             ProductData={data.ProductData}
             modalId={data.id}
-            currencyAbbreviation={data.currencyName}
+            currencyAbbreviation={data.currencyName ==='ر.س'? <Image src={sarIcon} alt="SAR" width={30} height={30} /> :data.currencyName}
             FakeData={data.FakeData}
             currentModalProductId={currentModalProductId}
             setIsModalOpen={setIsModalOpen}

@@ -27,11 +27,12 @@ export function TrackingProvider({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const { shopId } = useUserContext();
+  
   useEffect(() => {
     async function fetchLocation() {
       try {
         const response = await fetch('/api/location');
-
+        
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);
         }
@@ -45,9 +46,9 @@ export function TrackingProvider({ children }: { children: React.ReactNode }) {
     }
     fetchLocation();
   }, []);
-
+  
   const deviceType = /mobile/i.test(navigator.userAgent)
-    ? 'Mobile'
+  ? 'Mobile'
     : /tablet/i.test(navigator.userAgent)
       ? 'Tablet'
       : 'Desktop';
@@ -57,10 +58,10 @@ export function TrackingProvider({ children }: { children: React.ReactNode }) {
         const timestampKey = 'new1ssa_timestamp';
         const now = Date.now();
         const twoHours = 2 * 60 * 60 * 1000;
-      
+        
         const storedTime = localStorage.getItem(timestampKey);
         const storedId = localStorage.getItem(sessionKey);
-      
+        
         if (!storedId || !storedTime || now - Number(storedTime) > twoHours) {
           const newSessionId = Math.random().toString(36).substring(2, 15);
           localStorage.setItem(sessionKey, newSessionId);
@@ -80,13 +81,16 @@ export function TrackingProvider({ children }: { children: React.ReactNode }) {
     if ( !sessionId || !location) return;
     const checkoutPageVisited = pathname?.includes('/checkout');
     const completedOrder = pathname?.includes('/thank-you');
-
+    
     console.log('📤 Sending tracking for:', {
       addToCartCount,
       checkoutPageVisited,
       completedOrder,
       pathname,
     });
+    const phoneNumber=localStorage.getItem('phoneNumber');
+  const rawTotal = localStorage.getItem('total');
+  const orderCost = rawTotal && !isNaN(Number(rawTotal)) ? Number(rawTotal) : null;
 
     fetch('https://testapi.ordrat.com/api/Analytics/track', {
       method: 'POST',
@@ -97,6 +101,8 @@ export function TrackingProvider({ children }: { children: React.ReactNode }) {
         ipAddress: location?.ip,
         deviceType,
         checkoutPageVisited,
+        phoneNumber:phoneNumber ,
+        orderCost,
         completedOrder,
         country: location?.country?.names?.en,
         addToCartCount,

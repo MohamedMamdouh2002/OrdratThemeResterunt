@@ -7,8 +7,8 @@ import cn from '@utils/class-names';
 type Props = {
 	type?: string;
 	action?: () => void;
-	price: string;
-	oldPrice?: string;
+	price: any;
+	oldPrice?: any;
 	className?: string;
 	buttonType?: "submit" | "reset" | "button" | undefined;
 };
@@ -21,7 +21,7 @@ function ItemPrice({ type, action, price, oldPrice, className, buttonType }: Pro
 				mainItem={true}
 				action={action}
 				className={`w-full py-3 ${className}`}
-				price={price}
+				price={price as any}
 				oldPrice={oldPrice}
 				buttonType={buttonType}
 			/>

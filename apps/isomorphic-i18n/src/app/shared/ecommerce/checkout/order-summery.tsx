@@ -12,6 +12,9 @@ import { useTranslation } from '@/app/i18n/client';
 import { useEffect, useState } from 'react';
 import { useUserContext } from '@/app/components/context/UserContext';
 import axiosClient from '@/app/components/fetch/api';
+import sarIcon from '@public/assets/Saudi_Riyal_Symbol.svg.png'
+import Image from 'next/image';
+
 type Branchprops = {
   name: string;
   addressText: string;
@@ -95,7 +98,11 @@ export default function OrderSummery({
   // const totalPricewithDiscount = totalWithFees-discount
   useEffect(() => {
     i18n.changeLanguage(lang);
+    
   }, [lang, i18n]);
+  useEffect(() => {
+    localStorage.setItem('total',finalTotal as any)    
+  }, []);
 
   // ببعت القيم الي فيها لل checkout عشان ابعتها في ال api
   useEffect(() => {
@@ -156,23 +163,23 @@ export default function OrderSummery({
             addItemToCart={addItemToCart}
             removeItemFromCart={removeItemFromCart}
             clearItemFromCart={clearItemFromCart}
-            currencyAbbreviation={currencyAbbreviation as string}
+            currencyAbbreviation={currencyAbbreviation==='ر.س'? <Image src={sarIcon} alt="SAR" width={5} height={5}   style={{ width: '1rem', height: '1rem' }} /> :currencyAbbreviation as any}
             items={items}
             className="mb-5 border-b border-muted pb-5"
             lang={lang}
           />
           <div className="mb-4 flex items-center justify-between last:mb-0">
             {t('Subtotal')}
-            <Text as="span" className="font-medium text-gray-900">
+            <Text as="span" className="font-medium text-gray-900 flex items-center gap-1">
               {/* {subtotal} */}
               {/* {abbreviation&&toCurrency(total, lang as any,abbreviation)} */}
-              {total}{" "}{currencyAbbreviation}
+              {total}{" "}{currencyAbbreviation==='ر.س'? <Image src={sarIcon} alt="SAR" width={5} height={5}   style={{ width: '1rem', height: '1rem' }} /> :currencyAbbreviation}
             </Text>
           </div>
           <div className="mb-4 flex items-center justify-between last:mb-0">
             {t('Vat')}
-            <Text as="span" className="font-medium text-gray-900">
-              {taxValue}{" "}{currencyAbbreviation}
+            <Text as="span" className="font-medium text-gray-900 flex items-center gap-1">
+              {taxValue}{" "}{currencyAbbreviation==='ر.س'? <Image src={sarIcon} alt="SAR" width={5} height={5}   style={{ width: '1rem', height: '1rem' }} /> :currencyAbbreviation}
 
               {/* {abbreviation&&toCurrency(taxValue, lang as any,abbreviation)} */}
             </Text>
@@ -187,16 +194,16 @@ export default function OrderSummery({
                 (i) => i.name
               );
               if (mainBranch?.isFixedDelivery) {
-                return <span>
-                      {shippingFees.toFixed(2)} {currencyAbbreviation}
+                return <span className='flex items-center gap-1'>
+                      {shippingFees.toFixed(2)} {currencyAbbreviation==='ر.س'? <Image src={sarIcon} alt="SAR" width={5} height={5}   style={{ width: '1rem', height: '1rem' }} /> :currencyAbbreviation}
 
                   {/* {parseFloat(mainBranch?.deliveryCharge?.toString() || '0').toFixed(2)}    {currencyAbbreviation} */}
                   </span>;
               }
               else {
-                return <span style={{ textDecoration: isFreeShipping ? 'line-through' : 'none' }}>
+                return <span className='flex items-center gap-1' style={{ textDecoration: isFreeShipping ? 'line-through' : 'none' }}>
                   {/* {abbreviation&&toCurrency(fees, lang as any,abbreviation)} */}
-                  {parseFloat(fees?.toString() || '0').toFixed(2)}{" "}{currencyAbbreviation}
+                  {parseFloat(fees?.toString() || '0').toFixed(2)}{" "}{currencyAbbreviation==='ر.س'? <Image src={sarIcon} alt="SAR" width={5} height={5}   style={{ width: '1rem', height: '1rem' }} /> :currencyAbbreviation}
                 </span>;
               }
             })()}
@@ -206,7 +213,7 @@ export default function OrderSummery({
           {discount > 0 && (
             <div className="flex mb-4 items-center justify-between text-green-600">
               {t('Discount')}
-              <span>-{discount}{" "}{currencyAbbreviation}
+              <span className='flex items-center gap-1'>-{discount}{" "}{currencyAbbreviation==='ر.س'? <Image src={sarIcon} alt="SAR" width={5} height={5}   style={{ width: '1rem', height: '1rem' }} /> :currencyAbbreviation}
                 {/* {abbreviation&&toCurrency(discount, lang as any,abbreviation)} */}
               </span>
             </div>
@@ -214,8 +221,8 @@ export default function OrderSummery({
           <div className="flex items-center justify-between border-t border-muted py-4 text-base font-bold text-gray-1000">
             {t('Total')}
             {/* <Text>{totalPrice}</Text> */}
-            <Text>
-              {finalTotal}{" "}{currencyAbbreviation}
+            <Text className='flex items-center gap-1'>
+              {finalTotal}{" "}{currencyAbbreviation==='ر.س'? <Image src={sarIcon} alt="SAR" width={5} height={5}   style={{ width: '1rem', height: '1rem' }} /> :currencyAbbreviation}
               {/* {abbreviation&&toCurrency(finalTotal, lang as any,abbreviation)}
             */}
             </Text>

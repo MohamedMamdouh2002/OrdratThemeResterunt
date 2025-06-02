@@ -3,7 +3,7 @@ import React from 'react';
 
 type Props = {
 	oldPrice?: string;
-	price: string;
+	price: any;
 	className?: string;
 	PriceClassName?: string;
 	oldPriceClassName?: string;
