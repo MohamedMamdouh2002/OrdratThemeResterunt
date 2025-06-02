@@ -14,9 +14,9 @@ function Price({ price, oldPrice, className, PriceClassName, oldPriceClassName }
 		<div className={cn('flex', className)}>
 			<bdi
 				className={cn(
-					'',
+					' bg-white px-2 py-1 rounded-md ',
 					{
-						'text-red-400': oldPrice
+						'text-red-400 ': oldPrice
 					},
 					PriceClassName
 				)}
@@ -24,7 +24,7 @@ function Price({ price, oldPrice, className, PriceClassName, oldPriceClassName }
 				{price}
 			</bdi>
 			{oldPrice && (
-				<span className={cn('text-stone-600 line-through text-xs', oldPriceClassName)}>
+				<span className={cn(' line-through text-xs  bg-white text-mainColor rounded-md ', oldPriceClassName)}>
 					{oldPrice}
 				</span>
 			)}

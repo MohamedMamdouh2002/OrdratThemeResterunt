@@ -111,7 +111,7 @@ const displayedTitle = truncateWords(fullTitle, 3);
             {product.isDiscountActive ===true?
               <li className={`flex items-center gap-3 text-gray-500`}>
                 {/* <span>Old Price :</span> */}
-                <del className="text-gray-1000 ">
+                <del className="text-gray-1000 flex items-center gap-1">
                   {product?.oldPrice}{" "}{currencyAbbreviation==='ر.س'? <Image src={sarIcon} alt="SAR" width={5} height={5}   style={{ width: '1rem', height: '1rem' }} /> :currencyAbbreviation}
                   {/* {abbreviation&&toCurrency(
                      as any,lang as any,abbreviation)} */}

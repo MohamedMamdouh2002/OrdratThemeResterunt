@@ -40,12 +40,12 @@ function AddToCartButton({
 			)}
 		>
 			{mainItem ? (
-				<div className="w-full px-2 font-normal flex items-center justify-between">
+				<div className="w-full px-2 font-normal flex items-center justify-between ">
 					{t('Additem')}
 					<Price
 						className="flex-col-reverse items-end"
 						price={price! as any}
-						PriceClassName="text-white"
+						PriceClassName="text-mainColor"
 						oldPriceClassName="text-white/90"
 						oldPrice={oldPrice}
 					/>
