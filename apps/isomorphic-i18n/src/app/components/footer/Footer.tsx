@@ -32,9 +32,9 @@ type mediaProps = {
 
 type Props = {
   lang: string; 
-  shopId: string; 
+  shopIdserver: string; 
 };
-function Footer({ lang ,shopId}: Props) {
+function Footer({ lang ,shopIdserver}: Props) {
   const { t, i18n } = useTranslation(lang!, 'nav');
   const token = typeof window !== 'undefined' ? localStorage.getItem('accessToken') : null;
   const [hasAccount, setHasAccount] = useState(false);
@@ -42,6 +42,8 @@ function Footer({ lang ,shopId}: Props) {
   const [currentModal, setCurrentModal] = useState<'login' | 'register' | 'resetPassword'>('login');
   const [loginModal, setLoginModal] = useState(false);
   const [logoUrl, setLogoUrl] = useState<string | null>(null);
+    const { shopId  } = useUserContext();
+  
   // const [contact, setContact] = useState<any>({
   //   facebookLink: "",
   //   instagramLink: "",
@@ -59,7 +61,7 @@ function Footer({ lang ,shopId}: Props) {
   useEffect(() => {
     const fetchContact = async () => {
       try {
-        const response = await fetch(`${API_BASE_URL}/api/ShopContactInfo/GetByShopId/${shopId}`, {
+        const response = await fetch(`${API_BASE_URL}/api/ShopContactInfo/GetByShopId/${shopIdserver||shopId}`, {
           headers: { 'Accept-Language': lang },
         });
         if (!response.ok) throw new Error('Failed to fetch contact');

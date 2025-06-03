@@ -57,7 +57,6 @@ function RestaurantTitle({
 }) {
     const { t, i18n } = useTranslation(lang!, 'nav');
     const [rate, setrate] = useState<any | null>(null);
-
     const [shopData, setShopData] = useState({
         logoUrl: logoUrl || '',
         shopName: shopName || '',

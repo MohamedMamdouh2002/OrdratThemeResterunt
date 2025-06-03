@@ -50,8 +50,8 @@ export default async function FileDashboardPage({
           shopName={headerData.shopName}
           backgroundUrl={headerData.backgroundUrl} />
         <MainSlider banner={banner} />
-        <Grills lang={lang} HomeData={ProductData} shopId={headerData.shopId as string} currencyName={headerData.currencyAbbreviation} initialPage={page} pageSize={pageSize} />
-        <Footer lang={lang} shopId={headerData.shopId as string} />
+        <Grills lang={lang} HomeData={ProductData} shopIdserver={headerData.shopId as string} currencyName={headerData.currencyAbbreviation} initialPage={page} pageSize={pageSize} />
+        <Footer lang={lang} shopIdserver={headerData.shopId as string} />
       </div>
     </>
   );

@@ -18,7 +18,6 @@ import { useTranslation } from '@/app/i18n/client';
 import { EmptyProductBoxIcon } from 'rizzui';
 import CustomImage from '../ui/CustomImage';
 import { Loader } from 'lucide-react';
-import { shopId } from '@/config/shopId';
 
 type Props = { data?: PaginatedAllCategories; initialCategory?: string };
 type FakeData = {
@@ -30,8 +29,8 @@ type FakeData = {
   minimumFakeSoldNumber: number;
   lastSoldNumberInHours: number;
 };
-function Grills({ lang, shopId, currencyName, ProductData, HomeData, initialPage = 1, pageSize = 40 }: { lang: string; ProductData?: any; HomeData?: any; currencyName: string; initialPage?: number; pageSize?: number; shopId?: string }) {
-  const { GetHome } = useUserContext();
+function Grills({ lang, shopIdserver, currencyName, ProductData, HomeData, initialPage = 1, pageSize = 40 }: { lang: string; ProductData?: any; HomeData?: any; currencyName: string; initialPage?: number; pageSize?: number; shopIdserver?: string }) {
+  const { GetHome,shopId } = useUserContext();
 
   const { t } = useTranslation(lang!, 'home');
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -47,7 +46,7 @@ function Grills({ lang, shopId, currencyName, ProductData, HomeData, initialPage
 
   useEffect(() => {
     const fetchPaginatedData = async () => {
-      if (loading || !hasMore || page === initialPage) return; // 🛑 تجاهل الصفحة الأولى لأنك جايبها من السيرفر
+      if (loading || !hasMore || page === initialPage) return;
 
       setLoading(true);
 
@@ -105,7 +104,7 @@ function Grills({ lang, shopId, currencyName, ProductData, HomeData, initialPage
   useEffect(() => {
     const fetchFakeData = async () => {
       try {
-        const response = await fetch(`https://testapi.ordrat.com/api/FakeData/GetFakeDataByShopId/${shopId}`);
+        const response = await fetch(`https://testapi.ordrat.com/api/FakeData/GetFakeDataByShopId/${shopIdserver||shopId}`);
         if (!response.ok) throw new Error('Failed to fetch fake data');
 
         const result: FakeData = await response.json();
