@@ -31,7 +31,7 @@ type FakeData = {
 };
 function Grills({ lang, shopIdserver, currencyName, ProductData, HomeData, initialPage = 1, pageSize = 40 }: { lang: string; ProductData?: any; HomeData?: any; currencyName: string; initialPage?: number; pageSize?: number; shopIdserver?: string }) {
   const { GetHome,shopId } = useUserContext();
-
+  const [finalCurrencyName, setFinalCurrencyName] = useState<string>(currencyName);
   const { t } = useTranslation(lang!, 'home');
   const [currentSlide, setCurrentSlide] = useState(0);
   const swiperRefs = useRef<{ [key: string]: SwiperType | null }>({});
@@ -43,7 +43,19 @@ function Grills({ lang, shopIdserver, currencyName, ProductData, HomeData, initi
   const [home, setHome] = useState(HomeData?.entities as any ?? []);
   const [page, setPage] = useState(HomeData?.nextPage as any ?? 2);
   const [hasMore, setHasMore] = useState(HomeData?.nextPage as any ? true : false);
+useEffect(() => {
+  const localCurrency = localStorage.getItem('currencyAbbreviation');
 
+  // لو القيمة من السيرفر موجودة وتختلف عن المحلي، خزّنها واستخدمها
+  if (currencyName && currencyName !== localCurrency) {
+    localStorage.setItem('currencyAbbreviation', currencyName);
+    setFinalCurrencyName(currencyName);
+  }
+  // لو السيرفر جاي فاضي أو نفس القيمة، خليك على اللي في الكلاينت
+  else if (!currencyName && localCurrency) {
+    setFinalCurrencyName(localCurrency);
+  }
+}, [currencyName]);
   useEffect(() => {
     const fetchPaginatedData = async () => {
       if (loading || !hasMore || page === initialPage) return;
@@ -213,7 +225,7 @@ function Grills({ lang, shopIdserver, currencyName, ProductData, HomeData, initi
                       >
                         {sec.products.map((prod: React.JSX.IntrinsicAttributes & Food & { setCurrentItem: React.Dispatch<React.SetStateAction<{ type?: string; id: string } | null>> }) => (
                           <SwiperSlide key={prod.id}>
-                            <SmallCard FakeData={fakeData} currencyName={currencyName ==='ر.س'? <Image src={sarIcon} alt="SAR" width={15} height={15} /> :currencyName} ProductData={home} lang={lang} {...prod} />
+                            <SmallCard FakeData={fakeData} currencyName={finalCurrencyName  ==='ر.س'? <Image src={sarIcon} alt="SAR" width={15} height={15} /> :finalCurrencyName} ProductData={home} lang={lang} {...prod} />
                           </SwiperSlide>
                         ))}
                       </Swiper>
@@ -222,11 +234,11 @@ function Grills({ lang, shopIdserver, currencyName, ProductData, HomeData, initi
                     sec?.products?.map((prod: React.JSX.IntrinsicAttributes & Food & { setCurrentItem: React.Dispatch<React.SetStateAction<{ type?: string; id: string } | null>> }) =>
                       sec.numberOfColumns === 1 ? (
                         <div key={prod.id}>
-                          <MediumCard FakeData={fakeData} currencyName={currencyName ==='ر.س'? <Image src={sarIcon} alt="SAR" width={15} height={15} /> :currencyName} ProductData={home} lang={lang} {...prod} />
+                          <MediumCard FakeData={fakeData} currencyName={finalCurrencyName  ==='ر.س'? <Image src={sarIcon} alt="SAR" width={15} height={15} /> :finalCurrencyName} ProductData={home} lang={lang} {...prod} />
                           <hr className="mt-1 sm:hidden" />
                         </div>
                       ) : (
-                        <Card FakeData={fakeData} currencyName={currencyName ==='ر.س'? <Image src={sarIcon} alt="SAR" width={15} height={15} /> :currencyName} ProductData={home} lang={lang} key={prod.id} {...prod} />
+                        <Card FakeData={fakeData} currencyName={finalCurrencyName  ==='ر.س'? <Image src={sarIcon} alt="SAR" width={15} height={15} /> :finalCurrencyName} ProductData={home} lang={lang} key={prod.id} {...prod} />
                       )
                     )
                   )}

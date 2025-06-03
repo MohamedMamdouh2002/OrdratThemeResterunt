@@ -61,10 +61,12 @@ function RestaurantTitle({
         logoUrl: logoUrl || '',
         shopName: shopName || '',
         description: description || '',
+        currencyName: currencyName || '',
+
     });
     // const abbreviation = useCurrencyAbbreviation({ lang } as any);
     // console.log("logoUrl: ", logoUrl);
-    useEffect(() => {
+useEffect(() => {
   i18n.changeLanguage(lang);
 
   const isValidServerData =
@@ -78,23 +80,26 @@ function RestaurantTitle({
       logoUrl: logoUrl!,
       shopName: shopName!,
       description: description!,
+      currencyName: currencyName || '',
     });
 
-    // يمكنك حفظها في localStorage لتحديث النسخة المحلية
     localStorage.setItem('logoUrl', logoUrl!);
     localStorage.setItem('subdomainName', shopName!);
     localStorage.setItem('backgroundUrl', background || '');
     localStorage.setItem('description', description!);
+    localStorage.setItem('currencyAbbreviation', currencyName!);
   } else {
     const storedLogo = localStorage.getItem('logoUrl');
     const storedName = localStorage.getItem('subdomainName');
     const storedBackground = localStorage.getItem('backgroundUrl');
     const storedDescription = localStorage.getItem('description');
+    const currencyAbbreviation = localStorage.getItem('currencyAbbreviation');
 
     setShopData({
       logoUrl: storedLogo || '',
       shopName: storedName || '',
       description: storedDescription || '',
+      currencyName: currencyAbbreviation || '',
     });
   }
 
@@ -238,7 +243,7 @@ function RestaurantTitle({
                                     <span className='flex items-center gap-1'>
                                         {/* {abbreviation && toCurrency(
                                             ?? 0, lang as any, abbreviation)} {lang === "ar" ? "/كيلو" : "/km"} */}
-                                        {mainBranch.deliveryPerKilo}{currencyName === 'ر.س' ? <Image src={sarIcon} alt="SAR" width={10} height={10} /> : currencyName}
+                                        {mainBranch.deliveryPerKilo}{shopData.currencyName=== 'ر.س' ? <Image src={sarIcon} alt="SAR" width={10} height={10} /> : shopData.currencyName}
                                     </span>
                                 );
                             })()}
