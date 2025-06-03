@@ -27,7 +27,7 @@ export default async function LithiumLayout({
           <CartModal lang={lang} />
           {children}
         </div>
-        {(pathname !== '/' && pathname !== '/ar' && pathname !== '/en') && <Footer  shopId={headerData.shopId} lang={lang!} />}
+        {(pathname !== '/' && pathname !== '/ar' && pathname !== '/en') && <Footer  shopIdserver={headerData.shopId} lang={lang!} />}
       </div>
     </main>
   );
