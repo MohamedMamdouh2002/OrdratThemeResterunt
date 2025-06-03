@@ -36,50 +36,52 @@ type Branchprops = {
 }
 function RestaurantTitle({
     lang,
+    shopId,
+    logoUrl,
+    shopName,
+    currencyName,
+    background,
     coupon,
     branch,
-
+    description
 }: {
     lang?: string;
-  
+    logoUrl: string | null;
+    shopName: string | null;
+    background: string | null;
     coupon: any | null;
     branch: Branchprops[] | null;
-
+    description: string | null;
+    shopId: string | null;
+    currencyName: string;
 }) {
     const { t, i18n } = useTranslation(lang!, 'nav');
     const [rate, setrate] = useState<any | null>(null);
-const [shopData, setShopData] = useState({
-  logoUrl: '',
-  shopName: '',
-  description: '',
-  backgroundUrl: '',
-  currencyAbbreviation: '',
-});
 
-
+    const [shopData, setShopData] = useState({
+        logoUrl: logoUrl || '',
+        shopName: shopName || '',
+        description: description || '',
+    });
     // const abbreviation = useCurrencyAbbreviation({ lang } as any);
     // console.log("logoUrl: ", logoUrl);
     useEffect(() => {
-  i18n.changeLanguage(lang);
+        i18n.changeLanguage(lang);
+        const storedRate = localStorage.getItem("rate");
+        setrate(storedRate ? Number(storedRate) : 0); // ✅ هنا
+        if (!shopId?.trim() || !logoUrl?.trim() || !shopName?.trim() || !description?.trim()) {
+            const storedLogo = localStorage.getItem("logoUrl");
+            const storedName = localStorage.getItem("subdomainName");
+            const storedBackground = localStorage.getItem("backgroundUrl");
+            const storedDescription = localStorage.getItem("description");
 
-  const storedRate = localStorage.getItem('rate');
-  setrate(storedRate ? Number(storedRate) : 0);
-
-  const storedLogo = localStorage.getItem('logoUrl');
-  const storedName = localStorage.getItem('subdomainName');
-  const storedDescription = localStorage.getItem('description');
-  const storedBackground = localStorage.getItem('backgroundUrl');
-  const storedCurrency = localStorage.getItem('currencyAbbreviation');
-
-  setShopData({
-    logoUrl: storedLogo || '',
-    shopName: storedName || '',
-    description: storedDescription || '',
-    backgroundUrl: storedBackground || '',
-    currencyAbbreviation: storedCurrency || '',
-  });
-}, [lang]);
-
+            setShopData({
+                logoUrl: storedLogo || '',
+                shopName: storedName || '',
+                description: storedDescription || '',
+            });
+        }
+    }, [lang]);
     const [modal, setModal] = useState(false);
     useEffect(() => {
         if (modal) {
@@ -146,7 +148,7 @@ const [shopData, setShopData] = useState({
                     {shopData.logoUrl ? (
                         <div className="w-[100px] h-[80px] mt-5 ms-3  shrink-0">
                             <CustomImage
-                                src={shopData.logoUrl}
+                                src={logoUrl}
                                 width={100}
                                 height={100}
                                 className="-mt-5 w-full h-full"
@@ -216,7 +218,7 @@ const [shopData, setShopData] = useState({
                                     <span className='flex items-center gap-1'>
                                         {/* {abbreviation && toCurrency(
                                             ?? 0, lang as any, abbreviation)} {lang === "ar" ? "/كيلو" : "/km"} */}
-                                        {mainBranch.deliveryPerKilo}{shopData.currencyAbbreviation === 'ر.س' ? <Image src={sarIcon} alt="SAR" width={10} height={10} /> : shopData.currencyAbbreviation}
+                                        {mainBranch.deliveryPerKilo}{currencyName === 'ر.س' ? <Image src={sarIcon} alt="SAR" width={10} height={10} /> : currencyName}
                                     </span>
                                 );
                             })()}
@@ -295,7 +297,7 @@ const [shopData, setShopData] = useState({
                         <h4 className='text-black font-medium mt-4 mb-2 text-sm'>{t('aboutShop')}</h4>
                         <div className="p-3 rounded-lg text-black bg-[#F2F4F7]">
                             <p>
-                                {shopData.description}
+                                {description}
                             </p>
                         </div>
                         {branch?.filter((i) => i.name === "Main Branch" || i.name === "الفرع الرئيسي")

@@ -35,17 +35,21 @@ export default async function FileDashboardPage({
     <>
       <div className="relative">
         <ScrollToTop />
-        {/* <AutoRefreshOnFallback isFallback={headerData.isFallback} />       */}
+        <AutoRefreshOnFallback isFallback={headerData.isFallback} />      
         <HomeSchema
           lang={lang!}
           logoUrl={headerData.logoUrl}
           shopName={headerData.shopName}
           description={headerData.description}
         />
-        <RestaurantTitle  lang={lang} 
+        <RestaurantTitle currencyName={headerData.currencyAbbreviation} lang={lang} logoUrl={headerData.logoUrl} shopId={headerData.shopId}
+          shopName={headerData.shopName}
+          background={headerData.backgroundUrl}  description={headerData.description}
           coupon={coupons} branch={branches} />
         <NavMobile lang={lang!} HomeData={ProductData} />
-        <HeaderData  lang={lang}  />
+        <HeaderData  lang={lang} logoUrl={headerData.logoUrl} shopId={headerData.shopId} description={headerData.description}
+          shopName={headerData.shopName}
+          backgroundUrl={headerData.backgroundUrl} />
         <MainSlider banner={banner} />
         <Grills lang={lang} HomeData={ProductData} shopId={headerData.shopId as string} currencyName={headerData.currencyAbbreviation} initialPage={page} pageSize={pageSize} />
         <Footer lang={lang} shopId={headerData.shopId as string} />
