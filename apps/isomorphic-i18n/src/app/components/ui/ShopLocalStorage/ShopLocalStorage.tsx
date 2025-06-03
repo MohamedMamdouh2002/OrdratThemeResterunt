@@ -4,8 +4,8 @@ import { useEffect } from "react";
 import { useUserContext } from "../../context/UserContext";
 import Cookies from 'js-cookie';
 
-export default function ShopLocalStorage({ backgroud, languages,currencyAbbreviation,vat, currencyId, vatType, rate, freeShppingTarget, showAllCouponsInSideBar, applyFreeShppingOnTarget, subdomainName, description, logoUrl, branchZones, shopId }: {
-  backgroud: string; currencyId: string; vatType: number;languages:number; rate: any, vat: number; subdomainName: string; description: string; logoUrl: string; showAllCouponsInSideBar: boolean; applyFreeShppingOnTarget: boolean; currencyAbbreviation:string; freeShppingTarget: number; branchZones: { lat: number; lng: number; zoonRadius: number }[]; shopId: string;
+export default function ShopLocalStorage({ backgroud, languages, currencyAbbreviation, vat, currencyId, vatType, rate, freeShppingTarget, showAllCouponsInSideBar, applyFreeShppingOnTarget, subdomainName, description, logoUrl, branchZones, shopId }: {
+  backgroud: string; currencyId: string; vatType: number; languages: number; rate: any, vat: number; subdomainName: string; description: string; logoUrl: string; showAllCouponsInSideBar: boolean; applyFreeShppingOnTarget: boolean; currencyAbbreviation: string; freeShppingTarget: number; branchZones: { lat: number; lng: number; zoonRadius: number }[]; shopId: string;
 }) {
   const { setBranchZones, setshopId } = useUserContext();
 

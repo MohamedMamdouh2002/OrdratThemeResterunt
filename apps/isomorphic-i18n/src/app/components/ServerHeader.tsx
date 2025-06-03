@@ -36,7 +36,7 @@ async function fetchShopData(shopId: string, lang: string) {
           Accept: "*/*",
           "Accept-Language": lang,
         },
-  next: { revalidate: 5},
+        next: { revalidate: 5 },
       }
     );
 
@@ -105,7 +105,7 @@ export default async function ServerHeaderData(lang: string = "en") {
     description: shopData.description || "",
     currencyId: shopData.currencyId || "",
     currencyAbbreviation: shopData.currencyAbbreviation || "",
-    isFallback: false, // ✅
+    isFallback: false,
   };
 }
 

@@ -25,7 +25,6 @@ function HeaderData({ lang, logoUrl, shopName, backgroundUrl, shopId, descriptio
   useEffect(() => {
     i18n.changeLanguage(lang);
 
-    // فقط لو البيانات ناقصة
 if (!shopId?.trim() ||!logoUrl?.trim() || !shopName?.trim() || !description?.trim() || !backgroundUrl?.trim()){
       const storedLogo = localStorage.getItem("logoUrl");
       const storedName = localStorage.getItem("subdomainName");

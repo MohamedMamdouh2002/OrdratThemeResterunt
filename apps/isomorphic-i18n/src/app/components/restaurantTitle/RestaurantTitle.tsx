@@ -66,22 +66,43 @@ function RestaurantTitle({
     // const abbreviation = useCurrencyAbbreviation({ lang } as any);
     // console.log("logoUrl: ", logoUrl);
     useEffect(() => {
-        i18n.changeLanguage(lang);
-        const storedRate = localStorage.getItem("rate");
-        setrate(storedRate ? Number(storedRate) : 0); // ✅ هنا
-        if (!shopId?.trim() || !logoUrl?.trim() || !shopName?.trim() || !description?.trim()) {
-            const storedLogo = localStorage.getItem("logoUrl");
-            const storedName = localStorage.getItem("subdomainName");
-            const storedBackground = localStorage.getItem("backgroundUrl");
-            const storedDescription = localStorage.getItem("description");
+  i18n.changeLanguage(lang);
 
-            setShopData({
-                logoUrl: storedLogo || '',
-                shopName: storedName || '',
-                description: storedDescription || '',
-            });
-        }
-    }, [lang]);
+  const isValidServerData =
+    shopId?.trim() &&
+    logoUrl?.trim() &&
+    shopName?.trim() &&
+    description?.trim();
+
+  if (isValidServerData) {
+    setShopData({
+      logoUrl: logoUrl!,
+      shopName: shopName!,
+      description: description!,
+    });
+
+    // يمكنك حفظها في localStorage لتحديث النسخة المحلية
+    localStorage.setItem('logoUrl', logoUrl!);
+    localStorage.setItem('subdomainName', shopName!);
+    localStorage.setItem('backgroundUrl', background || '');
+    localStorage.setItem('description', description!);
+  } else {
+    const storedLogo = localStorage.getItem('logoUrl');
+    const storedName = localStorage.getItem('subdomainName');
+    const storedBackground = localStorage.getItem('backgroundUrl');
+    const storedDescription = localStorage.getItem('description');
+
+    setShopData({
+      logoUrl: storedLogo || '',
+      shopName: storedName || '',
+      description: storedDescription || '',
+    });
+  }
+
+  const storedRate = localStorage.getItem("rate");
+  setrate(storedRate ? Number(storedRate) : 0);
+}, [lang, shopId, logoUrl, shopName, description]);
+
     const [modal, setModal] = useState(false);
     useEffect(() => {
         if (modal) {
@@ -148,7 +169,7 @@ function RestaurantTitle({
                     {shopData.logoUrl ? (
                         <div className="w-[100px] h-[80px] mt-5 ms-3  shrink-0">
                             <CustomImage
-                                src={logoUrl}
+                                src={shopData.logoUrl}
                                 width={100}
                                 height={100}
                                 className="-mt-5 w-full h-full"

@@ -240,10 +240,10 @@ export default function AddressModal({
 													))}
 													</RadioGroup>
 												</div>
-												<div className="grid sm:grid-cols-2 grid-cols-1 gap-x-3  me-1 md:me-0">
-													<Text name="aptNo" type='number' label={t('apt-lable')} placeholder={t('apt-lable')} required={true} />
-													<Text name="floor" type='number' label={t('floor-lable')} placeholder={t('floor-lable')} required={true}/>
-													<Text name="street" label={t('street-lable')} placeholder={t('street-lable')} required={true} />
+												<div className="grid sm:grid-cols-2 grid-cols-1 sm:gap-x-3 gap-3  me-1 md:me-0">
+													<Text name="aptNo" type="text" label={t('apt-lable')} placeholder={t('apt-lable')} required />
+													<Text name="floor" type="text" label={t('floor-lable')} placeholder={t('floor-lable')} required />
+													<Text name="street" type="text" label={t('street-lable')} placeholder={t('street-lable')} required />
 													<Phone disabled={true} name="phoneNumber" label={t('phoneNumber-lable')} placeholder={t('phoneNumber-lable')} required={true} />
 													<div className="col-span-full">
 														<Text
