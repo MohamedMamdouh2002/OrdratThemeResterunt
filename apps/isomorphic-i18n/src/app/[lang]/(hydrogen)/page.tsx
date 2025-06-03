@@ -35,7 +35,6 @@ export default async function FileDashboardPage({
     <>
       <div className="relative">
         <ScrollToTop />
-        <AutoRefreshOnFallback isFallback={headerData.isFallback} />      
         <HomeSchema
           lang={lang!}
           logoUrl={headerData.logoUrl}
