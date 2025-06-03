@@ -7,7 +7,7 @@ function ClientFooter({lang,shopId}:{lang:string;shopId:string}) {
         const pathname = usePathname();
     
   return <>
-      {(pathname !== '/' && pathname !== '/ar' && pathname !== '/en') && <Footer shopId={shopId} lang={lang!} />}
+      {(pathname !== '/' && pathname !== '/ar' && pathname !== '/en') && <Footer shopIdserver={shopId} lang={lang!} />}
   </>
 
 }
