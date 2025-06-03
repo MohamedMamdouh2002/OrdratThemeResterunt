@@ -24,7 +24,7 @@ export default function AddressModal({
 	address?: Partial<any>;
 	lang?:string;
 }) {
-	const [schema, initialValues] = useAddressValidation();
+	const [schema, initialValues] = useAddressValidation({lang} as any);
 	const { updateAddresses, setUpdateAddresses, branchZones } = useUserContext();
 	const { t } = useTranslation(lang!, 'profile');
 

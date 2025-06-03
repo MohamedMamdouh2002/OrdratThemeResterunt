@@ -110,7 +110,7 @@ function Navbar({ className, lang }: { className?: string, lang?: string }) {
         if (description) {
 
             setDescription(description)
-            setrate(rate)
+setrate(rate ? Number(rate) : 0);
         }
     }, [lang, i18n]);
 
@@ -165,10 +165,17 @@ function Navbar({ className, lang }: { className?: string, lang?: string }) {
                     <div className="flex items-center gap-5 justify-end w-full col-span-3 relative">
                         <div className={'flex items-center gap-1 text-sm'}>
                             <Star className="fill-[#f1d045] text-[#f1d045]" size={14} />
-                            <span className="">{rate}</span>
-                            <Link href={`/${lang!}/reviews`} className="underline font-light">
-                                (<bdi>{t('showRate')}</bdi>)
-                            </Link>
+                            {rate === 0 ? (
+                                <span>{lang === 'ar' ? 'لا يوجد تقييم' : 'No Rating'}</span>
+                                ) : (
+                                <>
+                                    <span>{rate}</span>
+                                    <Link href={`/${lang}/reviews`} className="underline font-light">
+                                    (<bdi>{t('showRate')}</bdi>)
+                                    </Link>
+                                </>
+                                )}
+
                         </div>
                         <div className="relative">
                             <Info

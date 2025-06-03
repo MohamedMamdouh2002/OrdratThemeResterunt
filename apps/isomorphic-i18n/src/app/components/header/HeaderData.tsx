@@ -5,20 +5,14 @@ import Link from 'next/link'
 import CustomImage from '../ui/CustomImage'
 import { useTranslation } from '@/app/i18n/client'
 
-function HeaderData({ lang, logoUrl, shopName, backgroundUrl, shopId, description }: {
-  lang?: string
-  logoUrl: string;
-  shopName: string;
-  description: string;
-  backgroundUrl: string;
-  shopId: string;
-}) {
-  const [shopData, setShopData] = useState({
-    logoUrl: logoUrl || '',
-    shopName: shopName || '',
-    description: description || '',
-    backgroundUrl: backgroundUrl || ''
-  });
+function HeaderData({ lang, }: {lang?: string}) {
+ const [shopData, setShopData] = useState({
+  logoUrl: '',
+  shopName: '',
+  description: '',
+  backgroundUrl: ''
+});
+
 
   const { t, i18n } = useTranslation(lang!, 'home');
 
@@ -26,20 +20,19 @@ function HeaderData({ lang, logoUrl, shopName, backgroundUrl, shopId, descriptio
     i18n.changeLanguage(lang);
 
     // فقط لو البيانات ناقصة
-if (!shopId?.trim() ||!logoUrl?.trim() || !shopName?.trim() || !description?.trim() || !backgroundUrl?.trim()){
       const storedLogo = localStorage.getItem("logoUrl");
       const storedName = localStorage.getItem("subdomainName");
       const storedBackground = localStorage.getItem("backgroundUrl");
       const storedDescription = localStorage.getItem("description");
 
       setShopData({
-        logoUrl: storedLogo || logoUrl || '',
-        shopName: storedName || shopName || '',
-        description: storedDescription || description || '',
-        backgroundUrl: storedBackground || backgroundUrl || ''
+        logoUrl: storedLogo  || '',
+        shopName: storedName  || '',
+        description: storedDescription  || '',
+        backgroundUrl: storedBackground || ''
       });
-    }
-  }, [lang, i18n, logoUrl, shopName, backgroundUrl, description]);
+    
+  }, [lang, i18n]);
 
   return (
     <div

@@ -36,49 +36,50 @@ type Branchprops = {
 }
 function RestaurantTitle({
     lang,
-    shopId,
-    logoUrl,
-    shopName,
-    currencyName,
-    rate,
-    background,
     coupon,
     branch,
-    description
+
 }: {
     lang?: string;
-    logoUrl: string | null;
-    shopName: string | null;
-    rate: string | null;
-    background: string | null;
+  
     coupon: any | null;
     branch: Branchprops[] | null;
-    description: string | null;
-    shopId: string | null;
-    currencyName: string;
+
 }) {
     const { t, i18n } = useTranslation(lang!, 'nav');
-    const [shopData, setShopData] = useState({
-        logoUrl: logoUrl || '',
-        shopName: shopName || '',
-        description: description || '',
-    });
+    const [rate, setrate] = useState<any | null>(null);
+const [shopData, setShopData] = useState({
+  logoUrl: '',
+  shopName: '',
+  description: '',
+  backgroundUrl: '',
+  currencyAbbreviation: '',
+});
+
+
     // const abbreviation = useCurrencyAbbreviation({ lang } as any);
     // console.log("logoUrl: ", logoUrl);
     useEffect(() => {
-        i18n.changeLanguage(lang);
-        if (!shopId?.trim() || !logoUrl?.trim() || !shopName?.trim() || !description?.trim()) {
-            const storedLogo = localStorage.getItem("logoUrl");
-            const storedName = localStorage.getItem("subdomainName");
-            const storedBackground = localStorage.getItem("backgroundUrl");
-            const storedDescription = localStorage.getItem("description");
-            setShopData({
-                logoUrl: storedLogo || '',
-                shopName: storedName || '',
-                description: storedDescription || '',
-            });
-        }
-    }, [lang]);
+  i18n.changeLanguage(lang);
+
+  const storedRate = localStorage.getItem('rate');
+  setrate(storedRate ? Number(storedRate) : 0);
+
+  const storedLogo = localStorage.getItem('logoUrl');
+  const storedName = localStorage.getItem('subdomainName');
+  const storedDescription = localStorage.getItem('description');
+  const storedBackground = localStorage.getItem('backgroundUrl');
+  const storedCurrency = localStorage.getItem('currencyAbbreviation');
+
+  setShopData({
+    logoUrl: storedLogo || '',
+    shopName: storedName || '',
+    description: storedDescription || '',
+    backgroundUrl: storedBackground || '',
+    currencyAbbreviation: storedCurrency || '',
+  });
+}, [lang]);
+
     const [modal, setModal] = useState(false);
     useEffect(() => {
         if (modal) {
@@ -141,11 +142,11 @@ function RestaurantTitle({
             <div className="flex items-start mt-6 justify-between">
                 <div className="flex gap-4 items-start">
                     {/* <Image src={logo} width={100} height={100} className='-mt-5 w-[80px] h-[80px] sm:w-[100px] sm:h-[100px]' alt='logo' /> */}
-          
+
                     {shopData.logoUrl ? (
                         <div className="w-[100px] h-[80px] mt-5 ms-3  shrink-0">
                             <CustomImage
-                                src={logoUrl}
+                                src={shopData.logoUrl}
                                 width={100}
                                 height={100}
                                 className="-mt-5 w-full h-full"
@@ -164,12 +165,18 @@ function RestaurantTitle({
                         <h2 className='xs:text-sm text-xs font-normal truncate-text '>{shopData.description ? shopData.description : <Skeleton width={100} height={20} className='mt-3' />} </h2>
                         <div className={'flex items-center gap-1 text-sm'}>
                             <Star className="fill-[#f1d045] text-[#f1d045]" size={14} />
-                            <span className="">{rate}</span>
-                            <Link href={`/${lang!}/reviews`} className="underline font-light">
-                                (<bdi>{t('showRate')}</bdi> )
-                                {/* {t('ratings')}) */}
-                            </Link>
+                            {rate === 0 ? (
+                                <span>{lang === 'ar' ? 'لا يوجد تقييم' : 'No Rating'}</span>
+                            ) : (
+                                <>
+                                    <span>{rate}</span>
+                                    <Link href={`/${lang}/reviews`} className="underline font-light">
+                                        (<bdi>{t('showRate')}</bdi>)
+                                    </Link>
+                                </>
+                            )}
                         </div>
+
                     </div>
                 </div>
                 <div className="flex gap-3 me-5">
@@ -206,10 +213,10 @@ function RestaurantTitle({
                                 }
 
                                 return (
-                                    <span>
+                                    <span className='flex items-center gap-1'>
                                         {/* {abbreviation && toCurrency(
                                             ?? 0, lang as any, abbreviation)} {lang === "ar" ? "/كيلو" : "/km"} */}
-                                        {mainBranch.deliveryPerKilo}{currencyName ==='ر.س'? <Image src={sarIcon} alt="SAR" width={30} height={30} /> : currencyName}
+                                        {mainBranch.deliveryPerKilo}{shopData.currencyAbbreviation === 'ر.س' ? <Image src={sarIcon} alt="SAR" width={10} height={10} /> : shopData.currencyAbbreviation}
                                     </span>
                                 );
                             })()}
@@ -235,9 +242,9 @@ function RestaurantTitle({
                     </div>
                     <div className="basis-1/3 flex flex-col items-center justify-center ms-1">
                         <strong className="font-light text-stone-800 text-center text-xs ">
-                            {lang === 'ar' ? 'التوصيل بواسطة' : 'delivery By'}
+                            {lang === 'ar' ? 'توصيل بواسطة' : 'delivery By'}
                         </strong>
-                        <span className="text-sm font-light text-center mt-2">{t('Restaurant')}</span>
+                        <span className="text-sm font-light text-center mt-2">{lang === 'ar' ? 'المتجر' : 'Store'}</span>
                         <span className="flex items-center gap-1">
                             {/* <Info className="text-stone-700" size={14} /> */}
                         </span>
@@ -288,7 +295,7 @@ function RestaurantTitle({
                         <h4 className='text-black font-medium mt-4 mb-2 text-sm'>{t('aboutShop')}</h4>
                         <div className="p-3 rounded-lg text-black bg-[#F2F4F7]">
                             <p>
-                                {description}
+                                {shopData.description}
                             </p>
                         </div>
                         {branch?.filter((i) => i.name === "Main Branch" || i.name === "الفرع الرئيسي")

@@ -989,7 +989,7 @@ function Modal({
                                   onClick={() => {
                                     setIsModalOpen(false);
                                     setTimeout(() => {
-                                      setCurrentModalProductId(null); // reset
+                                      setCurrentModalProductId(null);
                                       setTimeout(() => {
                                         setCurrentModalProductId(item.relatedProductId);
                                         setIsModalOpen(true);
@@ -1007,12 +1007,12 @@ function Modal({
                                     {item.relatedProduct.name}
                                   </p>
                                   <div className="flex flex-col">
-                                    <p className="text-[10px] text-mainColor flex  justify-center items-center gap-1">
-                                      {item.relatedProduct.finalPrice}{" "}{currencyAbbreviation==='ر.س'? <Image src={sarIcon} alt="SAR" className='w-5' /> :currencyAbbreviation}
+                                    <p className="text-[14px] text-mainColor flex  justify-center items-center gap-1">
+                                      {item.relatedProduct.finalPrice}{" "}{currencyAbbreviation==='ر.س'? <Image src={sarIcon} alt="SAR" width={12} height={12}  className='w-5' /> :currencyAbbreviation}
                                       {/* {abbreviation && toCurrency(item.relatedProduct.price, lang, abbreviation)} */}
                                     </p>
                                     {item.relatedProduct.oldPrice && (
-                                      <del className="text-[10px] flex justify-center items-center gap-1">
+                                      <del className="text-[14px] flex justify-center items-center gap-1">
                                         {item.relatedProduct.oldPrice}{" "}{currencyAbbreviation==='ر.س'? <Image src={sarIcon} alt="SAR" width={12} height={12} className='w-5' /> :currencyAbbreviation}
                                         {/* {abbreviation && toCurrency(item.relatedProduct.oldPrice, lang, abbreviation)} */}
                                       </del>
@@ -1039,7 +1039,7 @@ function Modal({
                           price={<div className={` items-center gap-1 ${lang === 'ar' ? 'flex' : 'flex'}`} dir={lang === 'ar' ? 'rtl' : 'ltr'}>
   <span>{finalPrice}</span>
   {currencyAbbreviation === 'ر.س' ? (
-    <Image src={sarIcon} alt="SAR" width={16} height={16} />
+    <Image src={sarIcon} alt="SAR" width={15} height={15} />
   ) : (
     <span>{currencyAbbreviation}</span>
   )}
@@ -1109,7 +1109,7 @@ function Modal({
       <>
         <span>{prodId.discount}</span>
         {currencyAbbreviation === 'ر.س' ? (
-          <Image src={sarIcon} alt="SAR" width={16} height={16} />
+          <Image src={sarIcon} alt="SAR" width={15} height={15} />
         ) : (
           <span>{currencyAbbreviation}</span>
         )}
@@ -1432,13 +1432,13 @@ function Modal({
                                   {item.relatedProduct.name}
                                 </p>
                                 <div className="flex flex-col">
-                                  <p className="text-[10px] text-mainColor flex items-center justify-center gap-1">
+                                  <p className="text-[14px] text-mainColor flex items-center justify-center gap-1">
                                     {item.relatedProduct.finalPrice}{" "}{currencyAbbreviation==='ر.س'? <Image src={sarIcon} alt="SAR" width={10} height={10} /> :currencyAbbreviation}
 
                                     {/* {abbreviation && toCurrency(item.relatedProduct.price, lang, abbreviation)} */}
                                   </p>
                                   {item.relatedProduct.oldPrice && (
-                                    <del className="text-[10px] flex items-center justify-center gap-1">
+                                    <del className="text-[14px] flex items-center justify-center gap-1">
                                       {item.relatedProduct.oldPrice}{" "}{currencyAbbreviation==='ر.س'? <Image src={sarIcon} alt="SAR" width={10} height={10} /> :currencyAbbreviation}
 
                                       {/* {abbreviation && toCurrency(item.relatedProduct.oldPrice, lang, abbreviation)} */}
@@ -1476,7 +1476,7 @@ function Modal({
                         price={<div className={` items-center gap-1 ${lang === 'ar' ? 'flex' : 'flex'}`} dir={lang === 'ar' ? 'rtl' : 'ltr'}>
   <span>{finalPrice}</span>
   {currencyAbbreviation === 'ر.س' ? (
-    <Image src={sarIcon} alt="SAR" width={16} height={16} />
+    <Image src={sarIcon} alt="SAR" width={15} height={15} />
   ) : (
     <span>{currencyAbbreviation}</span>
   )}

@@ -2,15 +2,15 @@ import { SessionContext } from '@/utils/fetch/contexts';
 import { useContext } from 'react';
 import { isValidPhoneNumber } from 'react-phone-number-input';
 import * as yup from 'yup';
-const useAddressValidation = () => {
+const useAddressValidation = ({lang}:{lang:string}) => {
 	const { session } = useContext(SessionContext);
 	const AdressValidation = yup.object({
-		lat: yup.number().required('latRequired'),
-		lng: yup.number().required('longRequired'),
-		type: yup.string().required('typeRequired'),
-		aptNo: yup.number().required('aptNoRequired'),
-		floor: yup.string().required('floorRequired'),
-		street: yup.string().required('streetRequired'),
+		lat: yup.number().required(),
+		lng: yup.number().required(lang==='ar'?'هذا الحقل مطلوب':'This field is required'),
+		type: yup.string().required(lang==='ar'?'هذا الحقل مطلوب':'This field is required'),
+		aptNo: yup.number().required(lang==='ar'?'هذا الحقل مطلوب':'This field is required'),
+		floor: yup.string().required(lang==='ar'?'هذا الحقل مطلوب':'This field is required'),
+		street: yup.string().required(lang==='ar'?'هذا الحقل مطلوب':'This field is required'),
 		additionalDirections: yup.string().optional(),
 		// phoneNumber: yup
 		// 	.string()

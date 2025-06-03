@@ -2,8 +2,8 @@ import { cookies, headers } from 'next/headers';
 import { NextResponse } from 'next/server';
 
 function getServerSiteUrl() {
-  // const host = "shawrma1.ordrat.com";
-    const host = headers().get("host") || "theme.ordrat.com";
+  const host = "shawrma1.ordrat.com";
+  // const host = headers().get("host") || "theme.ordrat.com";
   const protocol = process.env.NODE_ENV === "production" ? "https" : "http";
   return `${host}`;
 }
@@ -17,7 +17,7 @@ async function fetchSubdomain(subdomain: string) {
           Accept: "*/*",
           "Accept-Language": "en",
         },
-  next: { revalidate: 5},
+        next: { revalidate: 5 },
       }
     );
     if (!res.ok) throw new Error("Failed to fetch subdomain");
@@ -38,7 +38,7 @@ async function fetchShopData(shopId: string, lang: string) {
           Accept: "*/*",
           "Accept-Language": lang,
         },
-  next: { revalidate: 5},
+        next: { revalidate: 5 },
       }
     );
     if (!res.ok) throw new Error("Failed to fetch shop details");
@@ -69,15 +69,13 @@ async function fetchShopData(shopId: string, lang: string) {
 export async function loadShopAndSetCookies(lang: string) {
   const siteUrl = getServerSiteUrl();
   const shopSubdomain = await fetchSubdomain(siteUrl);
-  
+
   if (!shopSubdomain || !shopSubdomain.id) {
     throw new Error('Shop not found for this subdomain');
   }
-  
+
   const shopData = await fetchShopData(shopSubdomain.id, lang);
-  
   const cookieStore = cookies();
-  
   cookieStore.set('shopId', shopSubdomain.id, { path: '/' });
   cookieStore.set('currencyId', shopData.currencyId, { path: '/' });
   cookieStore.set('description', shopData.description, { path: '/' });
@@ -85,6 +83,5 @@ export async function loadShopAndSetCookies(lang: string) {
   cookieStore.set('rate', shopData.rate, { path: '/' });
   cookieStore.set('subdomainName', shopData.subdomainName, { path: '/' });
   cookieStore.set('logoUrl', shopData.logoUrl, { path: '/' });
-
   return { shopId: shopSubdomain, shopData };
 }
