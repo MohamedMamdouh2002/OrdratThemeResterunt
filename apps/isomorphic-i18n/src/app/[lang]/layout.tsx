@@ -43,8 +43,8 @@ export async function generateStaticParams() {
 }
  
 function getServerSiteUrl() {
-  const host = "theme.ordrat.com";
-    // const host = headers().get("host") || "theme.ordrat.com";
+  // const host = "theme.ordrat.com";
+    const host = headers().get("host") || "theme.ordrat.com";
   const protocol = process.env.NODE_ENV === "production" ? "https" : "http";
   return `${host}`;
 }
