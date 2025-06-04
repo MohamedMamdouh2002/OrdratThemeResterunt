@@ -36,7 +36,7 @@ type Branchprops = {
 }
 function RestaurantTitle({
     lang,
-    shopId,
+    shopIdserver,
     logoUrl,
     shopName,
     currencyName,
@@ -52,14 +52,14 @@ function RestaurantTitle({
     coupon: any | null;
     branch: Branchprops[] | null;
     description: string | null;
-    shopId: string | null;
+    shopIdserver: string | null;
     currencyName: string;
 }) {
     const { t, i18n } = useTranslation(lang!, 'nav');
     const [rate, setrate] = useState<any | null>(null);
     const [branches, setBranches] = useState<Branchprops[]>(branch ?? []);
     const [coupons, setCoupons] = useState<any[]>(coupon ?? []);
-
+    const {shopId}=useUserContext()
     const [shopData, setShopData] = useState({
         logoUrl: logoUrl || '',
         shopName: shopName || '',
@@ -112,42 +112,42 @@ function RestaurantTitle({
 
     const [modal, setModal] = useState(false);
     useEffect(() => {
-  // Fallback fetch for branches
-  if (!branch || branch.length === 0) {
-    fetch(`${API_BASE_URL}/api/Branch/GetByShopId/${shopId}`, {
-      headers: {
-        'Accept-Language': lang!,
-      }
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        if (data) {
-          setBranches(data); // محتاج تعمل useState للـ branch
+        // Fallback fetch for branches
+        if (!branch || branch.length === 0) {
+            fetch(`${API_BASE_URL}/api/Branch/GetByShopId/${shopIdserver||shopId}`, {
+                headers: {
+                    'Accept-Language': lang!,
+                }
+            })
+                .then((res) => res.json())
+                .then((data) => {
+                    if (data) {
+                        setBranches(data); // محتاج تعمل useState للـ branch
+                    }
+                })
+                .catch((error) => {
+                    console.error("Error fetching branches from client:", error);
+                });
+        } else {
+            setBranches(branch);
         }
-      })
-      .catch((error) => {
-        console.error("Error fetching branches from client:", error);
-      });
-  } else {
-    setBranches(branch);
-  }
 
-  // Fallback fetch for coupons
-  if (!coupon || coupon.length === 0) {
-    fetch(`${API_BASE_URL}/api/Coupon/GetAll/${shopId}?PageNumber=1&PageSize=500`)
-      .then((res) => res.json())
-      .then((data) => {
-        if (data?.entities) {
-          setCoupons(data.entities); // محتاج تعمل useState للـ coupon
+        // Fallback fetch for coupons
+        if (!coupon || coupon.length === 0) {
+            fetch(`${API_BASE_URL}/api/Coupon/GetAll/${shopIdserver||shopId}?PageNumber=1&PageSize=500`)
+                .then((res) => res.json())
+                .then((data) => {
+                    if (data?.entities) {
+                        setCoupons(data.entities);
+                    }
+                })
+                .catch((error) => {
+                    console.error("Error fetching coupons from client:", error);
+                });
+        } else {
+            setCoupons(coupon);
         }
-      })
-      .catch((error) => {
-        console.error("Error fetching coupons from client:", error);
-      });
-  } else {
-    setCoupons(coupon);
-  }
-}, [shopId, lang]);
+    }, [shopId, lang]);
 
     useEffect(() => {
         if (modal) {

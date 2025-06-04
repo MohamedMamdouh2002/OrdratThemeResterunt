@@ -41,7 +41,7 @@ export default async function FileDashboardPage({
           shopName={headerData.shopName}
           description={headerData.description}
         />
-        <RestaurantTitle currencyName={headerData.currencyAbbreviation} lang={lang} logoUrl={headerData.logoUrl} shopId={headerData.shopId}
+        <RestaurantTitle currencyName={headerData.currencyAbbreviation} lang={lang} logoUrl={headerData.logoUrl} shopIdserver={headerData.shopId}
           shopName={headerData.shopName}
           background={headerData.backgroundUrl}  description={headerData.description}
           coupon={coupons} branch={branches} />
