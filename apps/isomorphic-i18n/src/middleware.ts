@@ -26,6 +26,7 @@ export const config = {
     "/file-manager",
     "/invoice/:path*",
     "/forms/profile-settings/:path*",
+    "/manifest.json",
     "/((?!api|_next/static|_next/image|assets|favicon.ico|sw.js).*)",
   ],
 };
@@ -114,12 +115,18 @@ async function fetchShopData(shopId: string, lang: string) {
   }
 }
   function getServerSiteUrl() {
-    const host = "theme.ordrat.com";
-    // const host = headers().get("host") || "localhost:3000";
+    // const host = "theme.ordrat.com";
+    const host = headers().get("host") || "localhost:3000";
     const protocol = process.env.NODE_ENV === "production" ? "https" : "http";
     return `${host}`;
   }
+ if (req.nextUrl.pathname === '/manifest.json') {
+    const url = req.nextUrl.clone();
+    url.pathname = '/api/manifest';
+    return NextResponse.rewrite(url);
+  }
 
+ 
   const realPath = getServerSiteUrl();
 
   const shopId = await fetchSubdomain(realPath);

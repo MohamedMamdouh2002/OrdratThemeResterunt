@@ -364,6 +364,7 @@ export default async function RootLayout({
       suppressHydrationWarning
     >
       <head>
+        <link rel="manifest" href="/manifest" />
         <link rel="icon" href={shopData.logoUrl} type="image/x-icon" />
         {lang === 'ar' ? <><link rel="canonical" href={realPath} />
           <link rel="alternate" hrefLang="ar" href={`${realPath}/ar`} />
