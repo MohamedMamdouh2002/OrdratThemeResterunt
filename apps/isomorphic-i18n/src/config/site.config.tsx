@@ -33,7 +33,7 @@ export const metaObject = (
   return {
     title: title ? `${title}` : siteConfig.title,
     description,
-    manifest: '/manifest.json',
+    manifest: "/manifest.json",
     openGraph: openGraph ?? {
       title: title ? `${title} ` : title,
       description,
