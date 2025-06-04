@@ -29,9 +29,9 @@ type FakeData = {
   minimumFakeSoldNumber: number;
   lastSoldNumberInHours: number;
 };
-function Grills({ lang, shopIdserver, currencyName, ProductData, HomeData, initialPage = 1, pageSize = 40 }: { lang: string; ProductData?: any; HomeData?: any; currencyName: string; initialPage?: number; pageSize?: number; shopIdserver?: string }) {
+function Grills({ lang, shopIdserver,  ProductData, HomeData, initialPage = 1, pageSize = 40 }: { lang: string; ProductData?: any; HomeData?: any; currencyName: string; initialPage?: number; pageSize?: number; shopIdserver?: string }) {
   const { GetHome,shopId } = useUserContext();
-  const [finalCurrencyName, setFinalCurrencyName] = useState<string>(currencyName);
+  const [finalCurrencyName, setFinalCurrencyName] = useState<string>('');
   const { t } = useTranslation(lang!, 'home');
   const [currentSlide, setCurrentSlide] = useState(0);
   const swiperRefs = useRef<{ [key: string]: SwiperType | null }>({});
@@ -46,16 +46,9 @@ function Grills({ lang, shopIdserver, currencyName, ProductData, HomeData, initi
 useEffect(() => {
   const localCurrency = localStorage.getItem('currencyAbbreviation');
 
-  // لو القيمة من السيرفر موجودة وتختلف عن المحلي، خزّنها واستخدمها
-  if (currencyName && currencyName !== localCurrency) {
-    localStorage.setItem('currencyAbbreviation', currencyName);
-    setFinalCurrencyName(currencyName);
-  }
-  // لو السيرفر جاي فاضي أو نفس القيمة، خليك على اللي في الكلاينت
-  else if (!currencyName && localCurrency) {
-    setFinalCurrencyName(localCurrency);
-  }
-}, [currencyName]);
+
+    setFinalCurrencyName(localCurrency as string);
+}, [finalCurrencyName]);
   useEffect(() => {
     const fetchPaginatedData = async () => {
       if (loading || !hasMore || page === initialPage) return;
