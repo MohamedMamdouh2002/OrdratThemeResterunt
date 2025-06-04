@@ -26,6 +26,14 @@ type Branchprops = {
   isFixedDelivery: boolean;
   deliveryTime: string;
 }
+type Gateway = {
+  id: string;
+  gatewayName: string;
+  gatewayDescription: string;
+  isEnabled: boolean;
+  priority: number;
+};
+
 export default function OrderSummery({
   isLoading,
   className,
@@ -51,8 +59,10 @@ export default function OrderSummery({
   const params = useParams();
   // const abbreviation = useCurrencyAbbreviation({ lang } as any);
   const currencyAbbreviation = localStorage.getItem('currencyAbbreviation')
+  const [selectedId, setSelectedId] = useState<string | null>(null);
 
   const [response, setResponse] = useState<Branchprops[]>([]);
+  const [pay, setPay] = useState<Gateway[]>([]);
 
   const { items, total, addItemToCart, removeItemFromCart, clearItemFromCart } =
     useCart();
@@ -98,10 +108,10 @@ export default function OrderSummery({
   // const totalPricewithDiscount = totalWithFees-discount
   useEffect(() => {
     i18n.changeLanguage(lang);
-    
+
   }, [lang, i18n]);
   useEffect(() => {
-    localStorage.setItem('total',finalTotal as any)    
+    localStorage.setItem('total', finalTotal as any)
   }, []);
 
   // ببعت القيم الي فيها لل checkout عشان ابعتها في ال api
@@ -135,6 +145,23 @@ export default function OrderSummery({
 
     fetchOrders();
   }, [lang]);
+
+  useEffect(() => {
+    const fetchGateways = async () => {
+      try {
+        const response = await axiosClient.get(`/api/ShopPaymentGateway/GetByShopId/${shopId}`, {
+          headers: {
+            'Accept-Language': lang,
+          },
+        });
+        setPay(response.data);
+      } catch (error) {
+        console.error('Error fetching payment gateways:', error);
+      }
+    };
+
+    fetchGateways();
+  }, [lang, shopId]);
   return (
     <div
       className={cn(
@@ -163,7 +190,7 @@ export default function OrderSummery({
             addItemToCart={addItemToCart}
             removeItemFromCart={removeItemFromCart}
             clearItemFromCart={clearItemFromCart}
-            currencyAbbreviation={currencyAbbreviation==='ر.س'? <Image src={sarIcon} alt="SAR" width={5} height={5}   style={{ width: '1rem', height: '1rem' }} /> :currencyAbbreviation as any}
+            currencyAbbreviation={currencyAbbreviation === 'ر.س' ? <Image src={sarIcon} alt="SAR" width={5} height={5} style={{ width: '1rem', height: '1rem' }} /> : currencyAbbreviation as any}
             items={items}
             className="mb-5 border-b border-muted pb-5"
             lang={lang}
@@ -173,13 +200,13 @@ export default function OrderSummery({
             <Text as="span" className="font-medium text-gray-900 flex items-center gap-1">
               {/* {subtotal} */}
               {/* {abbreviation&&toCurrency(total, lang as any,abbreviation)} */}
-              {total}{" "}{currencyAbbreviation==='ر.س'? <Image src={sarIcon} alt="SAR" width={5} height={5}   style={{ width: '1rem', height: '1rem' }} /> :currencyAbbreviation}
+              {total}{" "}{currencyAbbreviation === 'ر.س' ? <Image src={sarIcon} alt="SAR" width={5} height={5} style={{ width: '1rem', height: '1rem' }} /> : currencyAbbreviation}
             </Text>
           </div>
           <div className="mb-4 flex items-center justify-between last:mb-0">
             {t('Vat')}
             <Text as="span" className="font-medium text-gray-900 flex items-center gap-1">
-              {taxValue}{" "}{currencyAbbreviation==='ر.س'? <Image src={sarIcon} alt="SAR" width={5} height={5}   style={{ width: '1rem', height: '1rem' }} /> :currencyAbbreviation}
+              {taxValue}{" "}{currencyAbbreviation === 'ر.س' ? <Image src={sarIcon} alt="SAR" width={5} height={5} style={{ width: '1rem', height: '1rem' }} /> : currencyAbbreviation}
 
               {/* {abbreviation&&toCurrency(taxValue, lang as any,abbreviation)} */}
             </Text>
@@ -195,15 +222,15 @@ export default function OrderSummery({
               );
               if (mainBranch?.isFixedDelivery) {
                 return <span className='flex items-center gap-1'>
-                      {shippingFees.toFixed(2)} {currencyAbbreviation==='ر.س'? <Image src={sarIcon} alt="SAR" width={5} height={5}   style={{ width: '1rem', height: '1rem' }} /> :currencyAbbreviation}
+                  {shippingFees.toFixed(2)} {currencyAbbreviation === 'ر.س' ? <Image src={sarIcon} alt="SAR" width={5} height={5} style={{ width: '1rem', height: '1rem' }} /> : currencyAbbreviation}
 
                   {/* {parseFloat(mainBranch?.deliveryCharge?.toString() || '0').toFixed(2)}    {currencyAbbreviation} */}
-                  </span>;
+                </span>;
               }
               else {
                 return <span className='flex items-center gap-1' style={{ textDecoration: isFreeShipping ? 'line-through' : 'none' }}>
                   {/* {abbreviation&&toCurrency(fees, lang as any,abbreviation)} */}
-                  {parseFloat(fees?.toString() || '0').toFixed(2)}{" "}{currencyAbbreviation==='ر.س'? <Image src={sarIcon} alt="SAR" width={5} height={5}   style={{ width: '1rem', height: '1rem' }} /> :currencyAbbreviation}
+                  {parseFloat(fees?.toString() || '0').toFixed(2)}{" "}{currencyAbbreviation === 'ر.س' ? <Image src={sarIcon} alt="SAR" width={5} height={5} style={{ width: '1rem', height: '1rem' }} /> : currencyAbbreviation}
                 </span>;
               }
             })()}
@@ -213,7 +240,7 @@ export default function OrderSummery({
           {discount > 0 && (
             <div className="flex mb-4 items-center justify-between text-green-600">
               {t('Discount')}
-              <span className='flex items-center gap-1'>-{discount}{" "}{currencyAbbreviation==='ر.س'? <Image src={sarIcon} alt="SAR" width={5} height={5}   style={{ width: '1rem', height: '1rem' }} /> :currencyAbbreviation}
+              <span className='flex items-center gap-1'>-{discount}{" "}{currencyAbbreviation === 'ر.س' ? <Image src={sarIcon} alt="SAR" width={5} height={5} style={{ width: '1rem', height: '1rem' }} /> : currencyAbbreviation}
                 {/* {abbreviation&&toCurrency(discount, lang as any,abbreviation)} */}
               </span>
             </div>
@@ -222,10 +249,28 @@ export default function OrderSummery({
             {t('Total')}
             {/* <Text>{totalPrice}</Text> */}
             <Text className='flex items-center gap-1'>
-              {finalTotal}{" "}{currencyAbbreviation==='ر.س'? <Image src={sarIcon} alt="SAR" width={5} height={5}   style={{ width: '1rem', height: '1rem' }} /> :currencyAbbreviation}
+              {finalTotal}{" "}{currencyAbbreviation === 'ر.س' ? <Image src={sarIcon} alt="SAR" width={5} height={5} style={{ width: '1rem', height: '1rem' }} /> : currencyAbbreviation}
               {/* {abbreviation&&toCurrency(finalTotal, lang as any,abbreviation)}
             */}
             </Text>
+          </div>
+          <div className="space-y-4">
+            {pay.map((gateway) => (
+              <label
+                key={gateway.id}
+                className="flex items-center gap-2 cursor-pointer p-3 border rounded-md hover:bg-gray-50"
+              >
+                <input
+                  type="radio"
+                  name="paymentMethod"
+                  value={gateway.id}
+                  checked={selectedId === gateway.id}
+                  onChange={() => setSelectedId(gateway.id)}
+                  className="accent-primary"
+                />
+                <span className="text-sm font-medium">{gateway.gatewayName}</span>
+              </label>
+            ))}
           </div>
 
           {items.length ? (

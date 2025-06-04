@@ -57,6 +57,9 @@ function RestaurantTitle({
 }) {
     const { t, i18n } = useTranslation(lang!, 'nav');
     const [rate, setrate] = useState<any | null>(null);
+    const [branches, setBranches] = useState<Branchprops[]>(branch ?? []);
+    const [coupons, setCoupons] = useState<any[]>(coupon ?? []);
+
     const [shopData, setShopData] = useState({
         logoUrl: logoUrl || '',
         shopName: shopName || '',
@@ -66,48 +69,86 @@ function RestaurantTitle({
     });
     // const abbreviation = useCurrencyAbbreviation({ lang } as any);
     // console.log("logoUrl: ", logoUrl);
-useEffect(() => {
-  i18n.changeLanguage(lang);
+    useEffect(() => {
+        i18n.changeLanguage(lang);
 
-  const isValidServerData =
-    shopId?.trim() &&
-    logoUrl?.trim() &&
-    shopName?.trim() &&
-    description?.trim();
+        const isValidServerData =
+            shopId?.trim() &&
+            logoUrl?.trim() &&
+            shopName?.trim() &&
+            description?.trim();
 
-  if (isValidServerData) {
-    setShopData({
-      logoUrl: logoUrl!,
-      shopName: shopName!,
-      description: description!,
-      currencyName: currencyName || '',
-    });
+        if (isValidServerData) {
+            setShopData({
+                logoUrl: logoUrl!,
+                shopName: shopName!,
+                description: description!,
+                currencyName: currencyName || '',
+            });
 
-    localStorage.setItem('logoUrl', logoUrl!);
-    localStorage.setItem('subdomainName', shopName!);
-    localStorage.setItem('backgroundUrl', background || '');
-    localStorage.setItem('description', description!);
-    localStorage.setItem('currencyAbbreviation', currencyName!);
-  } else {
-    const storedLogo = localStorage.getItem('logoUrl');
-    const storedName = localStorage.getItem('subdomainName');
-    const storedBackground = localStorage.getItem('backgroundUrl');
-    const storedDescription = localStorage.getItem('description');
-    const currencyAbbreviation = localStorage.getItem('currencyAbbreviation');
+            localStorage.setItem('logoUrl', logoUrl!);
+            localStorage.setItem('subdomainName', shopName!);
+            localStorage.setItem('backgroundUrl', background || '');
+            localStorage.setItem('description', description!);
+            localStorage.setItem('currencyAbbreviation', currencyName!);
+        } else {
+            const storedLogo = localStorage.getItem('logoUrl');
+            const storedName = localStorage.getItem('subdomainName');
+            const storedBackground = localStorage.getItem('backgroundUrl');
+            const storedDescription = localStorage.getItem('description');
+            const currencyAbbreviation = localStorage.getItem('currencyAbbreviation');
 
-    setShopData({
-      logoUrl: storedLogo || '',
-      shopName: storedName || '',
-      description: storedDescription || '',
-      currencyName: currencyAbbreviation || '',
-    });
-  }
+            setShopData({
+                logoUrl: storedLogo || '',
+                shopName: storedName || '',
+                description: storedDescription || '',
+                currencyName: currencyAbbreviation || '',
+            });
+        }
 
-  const storedRate = localStorage.getItem("rate");
-  setrate(storedRate ? Number(storedRate) : 0);
-}, [lang, shopId, logoUrl, shopName, description]);
+        const storedRate = localStorage.getItem("rate");
+        setrate(storedRate ? Number(storedRate) : 0);
+    }, [lang, shopId, logoUrl, shopName, description]);
 
     const [modal, setModal] = useState(false);
+    useEffect(() => {
+  // Fallback fetch for branches
+  if (!branch || branch.length === 0) {
+    fetch(`${API_BASE_URL}/api/Branch/GetByShopId/${shopId}`, {
+      headers: {
+        'Accept-Language': lang!,
+      }
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data) {
+          setBranches(data); // محتاج تعمل useState للـ branch
+        }
+      })
+      .catch((error) => {
+        console.error("Error fetching branches from client:", error);
+      });
+  } else {
+    setBranches(branch);
+  }
+
+  // Fallback fetch for coupons
+  if (!coupon || coupon.length === 0) {
+    fetch(`${API_BASE_URL}/api/Coupon/GetAll/${shopId}?PageNumber=1&PageSize=500`)
+      .then((res) => res.json())
+      .then((data) => {
+        if (data?.entities) {
+          setCoupons(data.entities); // محتاج تعمل useState للـ coupon
+        }
+      })
+      .catch((error) => {
+        console.error("Error fetching coupons from client:", error);
+      });
+  } else {
+    setCoupons(coupon);
+  }
+}, [shopId, lang]);
+
     useEffect(() => {
         if (modal) {
             document.documentElement.style.overflow = 'hidden';
@@ -222,7 +263,7 @@ useEffect(() => {
                         <span className="text-sm font-light text-center mt-2">
 
                             {(() => {
-                                const mainBranch = branch?.find(
+                                const mainBranch = branches?.find(
                                     (i) => i.name === "Main Branch" || i.name === "الفرع الرئيسي"
                                 );
 
@@ -243,7 +284,7 @@ useEffect(() => {
                                     <span className='flex items-center gap-1'>
                                         {/* {abbreviation && toCurrency(
                                             ?? 0, lang as any, abbreviation)} {lang === "ar" ? "/كيلو" : "/km"} */}
-                                        {mainBranch.deliveryPerKilo}{shopData.currencyName=== 'ر.س' ? <Image src={sarIcon} alt="SAR" width={10} height={10} /> : shopData.currencyName}
+                                        {mainBranch.deliveryPerKilo}{shopData.currencyName === 'ر.س' ? <Image src={sarIcon} alt="SAR" width={10} height={10} /> : shopData.currencyName}
                                     </span>
                                 );
                             })()}
@@ -253,7 +294,7 @@ useEffect(() => {
                         <strong className="text-stone-800 text-center font-light text-xs">
                             {t('delivery-Time')}
                         </strong>
-                        {branch?.some(i => i.name === "Main Branch" || i.name === "الفرع الرئيسي") ? (
+                        {branches?.some(i => i.name === "Main Branch" || i.name === "الفرع الرئيسي") ? (
                             branch
                                 ?.filter(i => i.name === "Main Branch" || i.name === "الفرع الرئيسي")
                                 .map((i, index) => (
@@ -279,7 +320,7 @@ useEffect(() => {
                 </div>
             </div>
         </div>
-        {coupon?.filter((i: any) => i.isBanner === true && i.isActive === true)
+        {coupons?.filter((i: any) => i.isBanner === true && i.isActive === true)
             .slice(-1)
             .map((banner: any) => (
                 <div
@@ -322,7 +363,7 @@ useEffect(() => {
                         <h4 className='text-black font-medium mt-4 mb-2 text-sm'>{t('aboutShop')}</h4>
                         <div className="p-3 rounded-lg text-black bg-[#F2F4F7]">
                             <p>
-                                {description}
+                                {shopData.description}
                             </p>
                         </div>
                         {branch?.filter((i) => i.name === "Main Branch" || i.name === "الفرع الرئيسي")
@@ -338,7 +379,6 @@ useEffect(() => {
                                     hour = hour % 12 || 12;
                                     return `${hour}:${minute} ${period}`;
                                 };
-
                                 return (
                                     <div key={index}>
                                         <h4 className='text-black font-medium mt-4 mb-2 text-sm'>{t('TimeShop')}</h4>
@@ -366,7 +406,7 @@ useEffect(() => {
                         <div className="text-[#212121] mt-5 space-y-4 mb-2">
                             <h2 className="text-black font-medium mt-4 mb-2 text-sm">{lang === 'ar' ? 'الفروع' : 'Branches'}</h2>
                             <div className="grid grid-cols-2 gap-4 w-full">
-                                {branch?.map((i, index) => (
+                                {branches?.map((i, index) => (
                                     <div key={index} className="flex flex-col items-center bg-white p-4 rounded-lg shadow-md w-full">
                                         <Image src={map} className="w-10" alt={i.name} />
                                         <span className="text-sm font-medium text-[#212121] mt-2">{i.name}</span>

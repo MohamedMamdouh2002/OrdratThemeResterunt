@@ -338,7 +338,7 @@ export default function CheckoutPageWrapper({
     setLoading(true);
     try {
       const formData = new FormData();
-      formData.append('paymentmethod', '0');
+      formData.append('paymentmethod', '2');
       formData.append('OrderType', '2');
       formData.append('TotalPrice', "0");
       formData.append('ShippingFees', String(summary?.delivery || 0));
@@ -421,14 +421,14 @@ export default function CheckoutPageWrapper({
         setDiscountType(0);
         const orderId = response.data.id;
         const orderNumber = response.data.orderNumber;
-
+        const payUrl = response.data.payUrl;
+        router.push(payUrl)
         if (orderNumber) {
           localStorage.setItem('orderNumber', orderNumber.toString());
-        }     
+        }
         if (orderId) {
           localStorage.setItem('orderId', orderId.toString());
         }    
-        router.push(`/${lang}/thank-you`);
       } else {
         console.error('Error creating order:', response.data);
         toast.error(<Text as="b">Failed to place order. Please try again.</Text>);
