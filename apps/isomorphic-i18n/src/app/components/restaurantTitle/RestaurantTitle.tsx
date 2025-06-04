@@ -83,14 +83,16 @@ function RestaurantTitle({
                 logoUrl: logoUrl!,
                 shopName: shopName!,
                 description: description!,
-                currencyName: currencyName || '',
+                currencyName: currencyName || localStorage.getItem('currencyAbbreviation') || '',
             });
 
             localStorage.setItem('logoUrl', logoUrl!);
             localStorage.setItem('subdomainName', shopName!);
             localStorage.setItem('backgroundUrl', background || '');
             localStorage.setItem('description', description!);
-            localStorage.setItem('currencyAbbreviation', currencyName!);
+             if (currencyName?.trim()) {
+                localStorage.setItem('currencyAbbreviation', currencyName);
+            }
         } else {
             const storedLogo = localStorage.getItem('logoUrl');
             const storedName = localStorage.getItem('subdomainName');
