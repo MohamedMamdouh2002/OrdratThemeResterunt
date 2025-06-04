@@ -42,8 +42,6 @@ export default function OrderSummery({
   lang,
   branchId,
   isButtonDisabled,
-  setPaymentError,
-  paymentError,
   setSelectedId,
   selectedId,
   onSummaryCalculated,
@@ -55,8 +53,6 @@ export default function OrderSummery({
   lang?: string;
   fees: number;
   isButtonDisabled?: boolean;
-    setPaymentError?:any,
-  paymentError?:any,
     setSelectedId?:any,
   selectedId?:any,
   onSummaryCalculated?: (summary: {

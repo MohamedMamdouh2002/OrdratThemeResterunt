@@ -111,14 +111,14 @@ export default function CheckoutPageWrapper({
   const { items, total, addItemToCart, removeItemFromCart, clearItemFromCart } =
     useCart();
   const [response, setResponse] = useState<Branchprops[]>([]);
-const [paymentError, setPaymentError] = useState<string | null>(null);
 
   const { price: totalPrice } = usePrice({
     amount: total,
   });
   // console.log("total: ",total);
-    const [selectedId, setSelectedId] = useState<string | null>(null);
-  
+  const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [pay, setPay] = useState<Gateway[]>([]);
+
   const [loginModal, setLoginModal] = useState(false);
   const [currentModal, setCurrentModal] = useState<'login' | 'register' | 'resetPassword'>('login');
   const accessToken = localStorage.getItem('accessToken');
@@ -137,12 +137,11 @@ const [paymentError, setPaymentError] = useState<string | null>(null);
   const [addresses, setAddresses] = useState<Address[]>([]);
   const [isAddressApiLoading, setIsAddressApiLoading] = useState(false);
   const { updateAddresses, setUpdateAddresses, branchZones } = useUserContext();
-  const [pay, setPay] = useState<Gateway[]>([]);
 
   //summary بجيبها من ال ordersummary
   const [summary, setSummary] = useState<{
     finalTotal: number;
-    tax: number;  
+    tax: number;
     delivery: number;
     discount: number;
   } | null>(null);
@@ -215,12 +214,11 @@ const [paymentError, setPaymentError] = useState<string | null>(null);
 
     fetchOrders();
   }, [lang]);
-  //حساب سعر التوصيل
   async function fetchDeliveryCharge(shopId: string, addressId: string) {
     try {
       const response = await fetch(
         `https://testapi.ordrat.com/api/Order/GetDeliveryCharge/${shopId}/${addressId}`,
-        { 
+        {
           method: 'GET',
           headers: {
             Accept: '*/*',
@@ -327,25 +325,25 @@ const [paymentError, setPaymentError] = useState<string | null>(null);
       );
       return distance <= zone.radius;
     });
-  
+
     setLocationOutOfZone(!isInsideAnyZone);
   }, [userLocation, zones]);
-  
+
   function getDistanceFromLatLonInMeters(lat1: number, lon1: number, lat2: number, lon2: number) {
     const R = 6371e3; // Earth radius in meters
     const toRad = (x: number) => (x * Math.PI) / 180;
-  
+
     const dLat = toRad(lat2 - lat1);
     const dLon = toRad(lon2 - lon1);
     const a =
       Math.sin(dLat / 2) * Math.sin(dLat / 2) +
       Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) *
       Math.sin(dLon / 2) * Math.sin(dLon / 2);
-  
+
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
     return R * c;
   }
-  
+
   useEffect(() => {
     const fetchGateways = async () => {
       try {
@@ -366,16 +364,9 @@ const [paymentError, setPaymentError] = useState<string | null>(null);
 
   const onSubmit: SubmitHandler<MadeOrderInput> = async (data) => {
     setLoading(true);
-    if (!selectedId) {
-    setPaymentError(lang === 'ar' ? 'يجب اختيار وسيلة دفع' : 'Please select a payment method');
-    return;
-  }
-
-  // لو كل شيء تمام امسح الخطأ
-  setPaymentError(null);
     try {
       const selectedGateway = pay.find((g) => g.id === selectedId);
-const paymentMethod = selectedGateway?.paymentMethod;
+      const paymentMethod = selectedGateway?.paymentMethod;
 
       const formData = new FormData();
       formData.append('paymentmethod', paymentMethod?.toString() || '0');
@@ -412,10 +403,10 @@ const paymentMethod = selectedGateway?.paymentMethod;
       }
       // formData.append('ShopId', shopId);
       const now = new Date();
-      const formattedDate = now.toISOString().slice(0, 19).replace('T', ' '); 
-      
+      const formattedDate = now.toISOString().slice(0, 19).replace('T', ' ');
+
       formData.append('CreatedAt', formattedDate);
-      
+
       items.forEach((item, index) => {
         const realProductData = parseProductData(item.id as string)
         formData.append(`Items[${index}].quantity`, item.quantity.toString());
@@ -454,7 +445,7 @@ const paymentMethod = selectedGateway?.paymentMethod;
         // Clear the cart items
         items.forEach(item => clearItemFromCart(item.id));
         // Display success toast
-        toast.success(<Text as="b">{lang==='ar'?'تم الطلب بنجاح':'Order placed successfully!'}</Text>);
+        toast.success(<Text as="b">{lang === 'ar' ? 'تم الطلب بنجاح' : 'Order placed successfully!'}</Text>);
         setOrderNote("");
         setCopone("");
         setDiscountValue(0);
@@ -468,30 +459,30 @@ const paymentMethod = selectedGateway?.paymentMethod;
         }
         if (orderId) {
           localStorage.setItem('orderId', orderId.toString());
-        }    
+        }
       } else {
         console.error('Error creating order:', response.data);
         toast.error(<Text as="b">Failed to place order. Please try again.</Text>);
       }
     } catch (error: any) {
-  const serverMessage = error?.response?.data?.message;
+      const serverMessage = error?.response?.data?.message;
 
-  if (serverMessage === "Insufficient stock for product no data. Available: 0, Requested: 1") {
-    toast.error(
-      <Text as="b">
-        {lang === 'ar' ? 'الكمية المطلوبة غير متوفرة في المخزون' : 'Insufficient stock for the requested product.'}
-      </Text>
-    );
-  } else {
-    toast.error(
-      <Text as="b">
-        {serverMessage || (lang === 'ar' ? 'حدث خطأ أثناء تنفيذ الطلب' : 'An error occurred. Please try again later.')}
-      </Text>
-    );
-  }
+      if (serverMessage === "Insufficient stock for product no data. Available: 0, Requested: 1") {
+        toast.error(
+          <Text as="b">
+            {lang === 'ar' ? 'الكمية المطلوبة غير متوفرة في المخزون' : 'Insufficient stock for the requested product.'}
+          </Text>
+        );
+      } else {
+        toast.error(
+          <Text as="b">
+            {serverMessage || (lang === 'ar' ? 'حدث خطأ أثناء تنفيذ الطلب' : 'An error occurred. Please try again later.')}
+          </Text>
+        );
+      }
 
-  console.error('Error during order submission:', error);
-} finally {
+      console.error('Error during order submission:', error);
+    } finally {
       setLoading(false);
     }
   };
@@ -499,7 +490,7 @@ const paymentMethod = selectedGateway?.paymentMethod;
   const isButtonDisabled = !selectedAddressId || !localStorage.getItem('accessToken') || total === 0 || locationOutOfZone;
 
   const toggleLoginModal = () => {
-    setLoginModal(true); 
+    setLoginModal(true);
   };
   const handleAddNewAddress = () => {
     const phoneNumber = localStorage.getItem('phoneNumber');
@@ -685,10 +676,9 @@ const paymentMethod = selectedGateway?.paymentMethod;
             </div>
 
             <OrderSummery lang={lang} isLoading={isLoading} isButtonDisabled={isButtonDisabled} onSummaryCalculated={(summary: any) => setSummary(summary)} fees={deliveryBerKelo}
-            setPaymentError={setPaymentError}
-            paymentError={paymentError}
-            setSelectedId={setSelectedId}
-            selectedId={selectedId}
+
+              setSelectedId={setSelectedId}
+              selectedId={selectedId}
             />
           </div>
         </form>

@@ -14,6 +14,7 @@ export const siteConfig = {
   description: ``,
   logo: ``,
   logoAr: ``,
+  manifest:'',
   icon: ``,
   mode: MODE.LIGHT,
   layout: LAYOUT_OPTIONS.LITHIUM,
@@ -22,15 +23,17 @@ export const siteConfig = {
 
 export const metaObject = (
   title?: string,
-  lang: string = 'en', 
+  lang: string = 'en',
   openGraph?: OpenGraph,
   description: string = siteConfig.description
+  
 ): Metadata => {
   const logoUrl = lang === 'ar' ? siteConfig.logoAr : siteConfig.logo;
 
   return {
     title: title ? `${title}` : siteConfig.title,
     description,
+    manifest: '/manifest.json',
     openGraph: openGraph ?? {
       title: title ? `${title} ` : title,
       description,

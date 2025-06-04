@@ -7,6 +7,8 @@ import dynamic from 'next/dynamic';
 const CartModal = dynamic(() => import('@/app/components/cartModal/CartModal'), { 
   ssr: false 
 });
+
+
 export default async function DefaultLayout({
   children,
   params: { lang },

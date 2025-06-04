@@ -6,6 +6,8 @@ import "./[lang]/globals.css";
 export const metadata = {
   title: siteConfig.title,
   description: siteConfig.description,
+  manifest: "/manifest.json",
+
 };
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {

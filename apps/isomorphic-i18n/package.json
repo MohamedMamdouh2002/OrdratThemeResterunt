@@ -9,7 +9,6 @@
     "start": "next start -p 3001",
     "clean": "rm -rf node_modules .next .cache .turbo",
     "update-geoip": "tsx scripts/update-geoip.ts"
-
   },
   "dependencies": {
     "@dnd-kit/core": "^6.1.0",
@@ -74,6 +73,7 @@
     "next": "14.2.3",
     "next-auth": "^4.24.7",
     "next-intl": "^3.19.4",
+    "next-pwa": "^5.6.0",
     "next-themes": "^0.3.0",
     "nextjs-toploader": "^1.6.12",
     "nodemailer": "^6.9.13",

@@ -26,9 +26,8 @@ export default async function FileDashboardPage({
   if (!headerData.shopId) {
   console.warn("shopId not found, fallback layout will be used");
 }
-
   const coupons = await getCoupons();
-  
+ 
   const branches = await getBranches(lang);
 
   return (

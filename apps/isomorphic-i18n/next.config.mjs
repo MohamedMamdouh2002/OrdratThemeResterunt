@@ -1,9 +1,12 @@
-/** @type {import('next').NextConfig} */
+import nextPwa from 'next-pwa'
+const withPWA = nextPwa({
+  dest: 'public',
+  register: true,
+  skipWaiting: true,
+})
 
 const nextConfig = {
   images: {
-
-    
     domains: [
       'ordratuserbucket.s3.eu-north-1.amazonaws.com',
       'cdn.ordrat.com',
@@ -60,7 +63,7 @@ const nextConfig = {
     return [
       {
         source: '/',
-        destination: '/ar', 
+        destination: '/ar',
       },
       {
         source: "/sitemap.xml",
@@ -76,9 +79,9 @@ const nextConfig = {
       },
     ];
   },
+
   async redirects() {
     return [
-      // لو languageOption = "0" عربي
       {
         source: '/ar/:path*',
         has: [
@@ -91,7 +94,6 @@ const nextConfig = {
         destination: '/en/:path*',
         permanent: false,
       },
-      // لو languageOption = "1" انجليزي 
       {
         source: '/en/:path*',
         has: [
@@ -104,11 +106,11 @@ const nextConfig = {
         destination: '/ar/:path*',
         permanent: false,
       },
-    ]
+    ];
   },
 
   reactStrictMode: true,
   transpilePackages: ["@isomorphic/core"],
 };
 
-export default nextConfig;
+export default withPWA(nextConfig)

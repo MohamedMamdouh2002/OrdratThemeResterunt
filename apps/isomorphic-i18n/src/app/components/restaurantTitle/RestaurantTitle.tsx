@@ -120,19 +120,32 @@ function RestaurantTitle({
 
     const [modal, setModal] = useState(false);
     useEffect(() => {
-        // Fallback fetch for branches
-  const shouldFetch = !branch?.length || JSON.stringify(branch) !== JSON.stringify(branches);
+  const serverBranchInvalid = !Array.isArray(branch) || branch.length === 0;
+  const clientBranchDifferent =
+    JSON.stringify(branch) !== JSON.stringify(branches);
 
-  if (shouldFetch && shopId) {
+  if (serverBranchInvalid || clientBranchDifferent) {
     fetch(`${API_BASE_URL}/api/Branch/GetByShopId/${shopId}`, {
-      headers: { 'Accept-Language': lang! },
+      headers: {
+        'Accept-Language': lang!,
+      },
     })
       .then((res) => res.json())
-      .then((data) => setBranches(data))
-      .catch(console.error);
+      .then((data) => {
+        if (Array.isArray(data)) {
+          setBranches(data); // استخدم داتا الكلاينت
+        }
+      })
+      .catch((error) => {
+        console.error("Error fetching branches from client:", error);
+      });
   } else {
-    setBranches(branch ?? []);
+    setBranches(branch ?? []); // السيرفر صحيح، خليه هو
   }
+}, [branch, shopId, lang]);
+
+    useEffect(() => {
+    
 
         // Fallback fetch for coupons
         if (!coupon || coupon.length === 0) {
@@ -297,7 +310,7 @@ function RestaurantTitle({
                             {t('delivery-Time')}
                         </strong>
                         {branches?.some(i => i.name === "Main Branch" || i.name === "الفرع الرئيسي") ? (
-                            branch
+                            branches
                                 ?.filter(i => i.name === "Main Branch" || i.name === "الفرع الرئيسي")
                                 .map((i, index) => {
                                     const [days, hours, minutes, seconds] = i.deliveryTime.split(':').map(Number);
@@ -310,7 +323,7 @@ function RestaurantTitle({
                                         } else if (minutes > 0) {
                                             return `${minutes} ${lang === 'ar' ? 'دقيقة' : 'minute'}`;
                                         } else {
-                                            return lang === 'ar' ? 'الآن' : 'Now';
+                                            return lang === 'ar' ? 'غير محدد' : 'undefined';
                                         }
                                     };
 
@@ -427,7 +440,7 @@ function RestaurantTitle({
                                                     } else if (minutes > 0) {
                                                         return `${minutes} ${lang === 'ar' ? 'دقيقة' : 'minute'}`;
                                                     } else {
-                                                        return lang === 'ar' ? 'الآن' : 'Now';
+                                            return lang === 'ar' ? 'غير محدد' : 'undefined';
                                                     }
                                                 })()}
                                             </p>

@@ -4,7 +4,7 @@ import CheckoutPageWrapper from '@/app/shared/ecommerce/checkout';
 import { metaObject } from '@/config/site.config';
 
 export async function generateMetadata({ params }: { params: { lang: string } }) {
-  const lang = params.lang; 
+  const lang = params.lang;
   return {
     ...metaObject(
       lang === 'ar' ? 'الدفع | خطوات آمنة لإتمام الطلب' : 'Checkout | Secure Steps to Complete Your Order',
