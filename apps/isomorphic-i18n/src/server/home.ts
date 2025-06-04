@@ -65,7 +65,7 @@ export async function GetBannerData(lang: string) {
   export async function getBranches(lang: string) {
     try {
       // const shopId = cookieStore.get('shopId')?.value ?? '952E762C-010D-4E2B-8035-26668D99E23E';
-      const shopId = await getServerShopId(lang) ?? '952E762C-010D-4E2B-8035-26668D99E23E';
+      const shopId = await getServerShopId(lang);
       const res = await fetch(`${API_BASE_URL}/api/Branch/GetByShopId/${shopId}`, {
         headers: {
           'Accept-Language': lang,
