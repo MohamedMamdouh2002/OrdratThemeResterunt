@@ -79,20 +79,26 @@ function RestaurantTitle({
             description?.trim();
 
         if (isValidServerData) {
+            const currencyAbbreviationFromStorage = localStorage.getItem('currencyAbbreviation');
+
+    const finalCurrency = currencyName?.trim()
+        ? currencyName
+        : currencyAbbreviationFromStorage || '';
+
             setShopData({
                 logoUrl: logoUrl!,
                 shopName: shopName!,
                 description: description!,
-                currencyName: currencyName || localStorage.getItem('currencyAbbreviation') || '',
+        currencyName: finalCurrency,
             });
 
             localStorage.setItem('logoUrl', logoUrl!);
             localStorage.setItem('subdomainName', shopName!);
             localStorage.setItem('backgroundUrl', background || '');
             localStorage.setItem('description', description!);
-             if (currencyName?.trim()) {
-                localStorage.setItem('currencyAbbreviation', currencyName);
-            }
+              if (currencyName?.trim()) {
+        localStorage.setItem('currencyAbbreviation', currencyName);
+    }
         } else {
             const storedLogo = localStorage.getItem('logoUrl');
             const storedName = localStorage.getItem('subdomainName');
@@ -116,7 +122,7 @@ function RestaurantTitle({
     useEffect(() => {
         // Fallback fetch for branches
         if (!branch || branch.length === 0) {
-            fetch(`${API_BASE_URL}/api/Branch/GetByShopId/${shopIdserver||shopId}`, {
+            fetch(`${API_BASE_URL}/api/Branch/GetByShopId/${shopId}`, {
                 headers: {
                     'Accept-Language': lang!,
                 }
@@ -124,7 +130,7 @@ function RestaurantTitle({
                 .then((res) => res.json())
                 .then((data) => {
                     if (data) {
-                        setBranches(data); // محتاج تعمل useState للـ branch
+                        setBranches(data);
                     }
                 })
                 .catch((error) => {
@@ -136,7 +142,7 @@ function RestaurantTitle({
 
         // Fallback fetch for coupons
         if (!coupon || coupon.length === 0) {
-            fetch(`${API_BASE_URL}/api/Coupon/GetAll/${shopIdserver||shopId}?PageNumber=1&PageSize=500`)
+            fetch(`${API_BASE_URL}/api/Coupon/GetAll/${shopId}?PageNumber=1&PageSize=500`)
                 .then((res) => res.json())
                 .then((data) => {
                     if (data?.entities) {
