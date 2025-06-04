@@ -73,7 +73,7 @@ function RestaurantTitle({
         i18n.changeLanguage(lang);
 
         const isValidServerData =
-            shopId?.trim() &&
+            shopIdserver?.trim() &&
             logoUrl?.trim() &&
             shopName?.trim() &&
             description?.trim();
@@ -116,7 +116,7 @@ function RestaurantTitle({
 
         const storedRate = localStorage.getItem("rate");
         setrate(storedRate ? Number(storedRate) : 0);
-    }, [lang, shopId, logoUrl, shopName, description]);
+    }, [lang, shopIdserver, logoUrl, shopName, description]);
 
     const [modal, setModal] = useState(false);
     useEffect(() => {
