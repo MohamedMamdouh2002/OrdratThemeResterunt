@@ -86,6 +86,17 @@ type Branchprops = {
   isFixedDelivery: boolean;
   deliveryTime: string;
 }
+
+type Gateway = {
+  id: string;
+  gatewayName: string;
+  gatewayDescription: string;
+  isEnabled: boolean;
+  priority: number;
+  gatewayUrl: any;
+  paymentMethod: number;
+};
+
 // main order form component for create and update order
 export default function CheckoutPageWrapper({
   className,
@@ -100,11 +111,14 @@ export default function CheckoutPageWrapper({
   const { items, total, addItemToCart, removeItemFromCart, clearItemFromCart } =
     useCart();
   const [response, setResponse] = useState<Branchprops[]>([]);
+const [paymentError, setPaymentError] = useState<string | null>(null);
 
   const { price: totalPrice } = usePrice({
     amount: total,
   });
   // console.log("total: ",total);
+    const [selectedId, setSelectedId] = useState<string | null>(null);
+  
   const [loginModal, setLoginModal] = useState(false);
   const [currentModal, setCurrentModal] = useState<'login' | 'register' | 'resetPassword'>('login');
   const accessToken = localStorage.getItem('accessToken');
@@ -123,11 +137,12 @@ export default function CheckoutPageWrapper({
   const [addresses, setAddresses] = useState<Address[]>([]);
   const [isAddressApiLoading, setIsAddressApiLoading] = useState(false);
   const { updateAddresses, setUpdateAddresses, branchZones } = useUserContext();
+  const [pay, setPay] = useState<Gateway[]>([]);
 
   //summary بجيبها من ال ordersummary
   const [summary, setSummary] = useState<{
     finalTotal: number;
-    tax: number;
+    tax: number;  
     delivery: number;
     discount: number;
   } | null>(null);
@@ -331,14 +346,39 @@ export default function CheckoutPageWrapper({
     return R * c;
   }
   
+  useEffect(() => {
+    const fetchGateways = async () => {
+      try {
+        const response = await axiosClient.get(`/api/ShopPaymentGateway/GetByShopId/${shopId}`, {
+          headers: {
+            'Accept-Language': lang,
+          },
+        });
+        setPay(response.data);
+      } catch (error) {
+        console.error('Error fetching payment gateways:', error);
+      }
+    };
 
+    fetchGateways();
+  }, [lang, shopId]);
   console.log("errors: ", methods.formState.errors);
 
   const onSubmit: SubmitHandler<MadeOrderInput> = async (data) => {
     setLoading(true);
+    if (!selectedId) {
+    setPaymentError(lang === 'ar' ? 'يجب اختيار وسيلة دفع' : 'Please select a payment method');
+    return;
+  }
+
+  // لو كل شيء تمام امسح الخطأ
+  setPaymentError(null);
     try {
+      const selectedGateway = pay.find((g) => g.id === selectedId);
+const paymentMethod = selectedGateway?.paymentMethod;
+
       const formData = new FormData();
-      formData.append('paymentmethod', '2');
+      formData.append('paymentmethod', paymentMethod?.toString() || '0');
       formData.append('OrderType', '2');
       formData.append('TotalPrice', "0");
       formData.append('ShippingFees', String(summary?.delivery || 0));
@@ -645,6 +685,10 @@ export default function CheckoutPageWrapper({
             </div>
 
             <OrderSummery lang={lang} isLoading={isLoading} isButtonDisabled={isButtonDisabled} onSummaryCalculated={(summary: any) => setSummary(summary)} fees={deliveryBerKelo}
+            setPaymentError={setPaymentError}
+            paymentError={paymentError}
+            setSelectedId={setSelectedId}
+            selectedId={selectedId}
             />
           </div>
         </form>

@@ -59,7 +59,7 @@ function RestaurantTitle({
     const [rate, setrate] = useState<any | null>(null);
     const [branches, setBranches] = useState<Branchprops[]>(branch ?? []);
     const [coupons, setCoupons] = useState<any[]>(coupon ?? []);
-    const {shopId}=useUserContext()
+    const { shopId } = useUserContext()
     const [shopData, setShopData] = useState({
         logoUrl: logoUrl || '',
         shopName: shopName || '',
@@ -81,24 +81,24 @@ function RestaurantTitle({
         if (isValidServerData) {
             const currencyAbbreviationFromStorage = localStorage.getItem('currencyAbbreviation');
 
-    const finalCurrency = currencyName?.trim()
-        ? currencyName
-        : currencyAbbreviationFromStorage || '';
+            const finalCurrency = currencyName?.trim()
+                ? currencyName
+                : currencyAbbreviationFromStorage || '';
 
             setShopData({
                 logoUrl: logoUrl!,
                 shopName: shopName!,
                 description: description!,
-        currencyName: finalCurrency,
+                currencyName: finalCurrency,
             });
 
             localStorage.setItem('logoUrl', logoUrl!);
             localStorage.setItem('subdomainName', shopName!);
             localStorage.setItem('backgroundUrl', background || '');
             localStorage.setItem('description', description!);
-              if (currencyName?.trim()) {
-        localStorage.setItem('currencyAbbreviation', currencyName);
-    }
+            if (currencyName?.trim()) {
+                localStorage.setItem('currencyAbbreviation', currencyName);
+            }
         } else {
             const storedLogo = localStorage.getItem('logoUrl');
             const storedName = localStorage.getItem('subdomainName');
@@ -305,11 +305,28 @@ function RestaurantTitle({
                         {branches?.some(i => i.name === "Main Branch" || i.name === "الفرع الرئيسي") ? (
                             branch
                                 ?.filter(i => i.name === "Main Branch" || i.name === "الفرع الرئيسي")
-                                .map((i, index) => (
-                                    <p key={index} className="text-sm mt-2 text-black">
-                                        {i.deliveryTime}
-                                    </p>
-                                ))
+                               .map((i, index) => {
+  const [days, hours, minutes, seconds] = i.deliveryTime.split(':').map(Number);
+
+  const renderDeliveryTime = () => {
+    if (days > 0) {
+      return `${days} ${lang === 'ar' ? (days === 1 ? 'يوم' : 'أيام') : (days === 1 ? 'day' : 'days')}`;
+    } else if (hours > 0) {
+      return `${hours} ${lang === 'ar' ? 'ساعة' : 'hour'}`;
+    } else if (minutes > 0) {
+      return `${minutes} ${lang === 'ar' ? 'دقيقة' : 'minute'}`;
+    } else {
+      return lang === 'ar' ? 'الآن' : 'Now';
+    }
+  };
+
+  return (
+    <p key={index} className="text-sm mt-2 text-black">
+      {renderDeliveryTime()}
+    </p>
+  );
+})
+
                         ) : (
                             <p className="text-sm mt-2 text-black">
                                 {lang === 'ar' ? '10 دقائق' : '10 minutes'}
@@ -374,7 +391,7 @@ function RestaurantTitle({
                                 {shopData.description}
                             </p>
                         </div>
-                        {branch?.filter((i) => i.name === "Main Branch" || i.name === "الفرع الرئيسي")
+                        {branches?.filter((i) => i.name === "Main Branch" || i.name === "الفرع الرئيسي")
                             .map((i, index) => {
                                 const formatTime = (time: any) => {
                                     if (!time) return "";
@@ -405,8 +422,21 @@ function RestaurantTitle({
                                         <h4 className='text-black font-medium mt-4 mb-2 text-sm'>{t('deliveryShop')}</h4>
                                         <div className="p-3 flex items-center justify-between rounded-lg text-black bg-[#F2F4F7]">
                                             <p>
-                                                {i.deliveryTime}
-                                            </p>
+    {(() => {
+      if (!i.deliveryTime) return lang === 'ar' ? 'غير متاح' : 'Not available';
+      const [days, hours, minutes] = i.deliveryTime.split(":").map(Number);
+
+      if (days > 0) {
+        return `${days} ${lang === 'ar' ? (days === 1 ? 'يوم' : 'أيام') : (days === 1 ? 'day' : 'days')}`;
+      } else if (hours > 0) {
+        return `${hours} ${lang === 'ar' ? 'ساعة' : 'hour'}`;
+      } else if (minutes > 0) {
+        return `${minutes} ${lang === 'ar' ? 'دقيقة' : 'minute'}`;
+      } else {
+        return lang === 'ar' ? 'الآن' : 'Now';
+      }
+    })()}
+  </p>
                                         </div>
                                     </div>
                                 );
@@ -433,7 +463,6 @@ function RestaurantTitle({
                         </div>
                     </div>
                     <div className="pe-5 pt-2">
-
                         <button onClick={() => setModal(false)}
                             className='w-full h-11 rounded-lg text-xl text-white bg-mainColor mt-auto'>
                             {t('done')}

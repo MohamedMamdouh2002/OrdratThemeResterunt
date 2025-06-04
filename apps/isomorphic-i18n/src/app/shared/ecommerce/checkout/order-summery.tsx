@@ -5,7 +5,7 @@ import { useParams } from 'next/navigation';
 import { routes } from '@/config/routes';
 import usePrice from '@hooks/use-price';
 import OrderProducts from './order-products';
-import { Button, Title, Text } from 'rizzui';
+import { Button, Title, Text, Radio } from 'rizzui';
 import cn from '@utils/class-names';
 import { useCart } from '@/store/quick-cart/cart.context';
 import { useTranslation } from '@/app/i18n/client';
@@ -32,6 +32,8 @@ type Gateway = {
   gatewayDescription: string;
   isEnabled: boolean;
   priority: number;
+  gatewayUrl: any;
+  paymentMethod: number;
 };
 
 export default function OrderSummery({
@@ -40,6 +42,10 @@ export default function OrderSummery({
   lang,
   branchId,
   isButtonDisabled,
+  setPaymentError,
+  paymentError,
+  setSelectedId,
+  selectedId,
   onSummaryCalculated,
   fees
 }: {
@@ -49,6 +55,10 @@ export default function OrderSummery({
   lang?: string;
   fees: number;
   isButtonDisabled?: boolean;
+    setPaymentError?:any,
+  paymentError?:any,
+    setSelectedId?:any,
+  selectedId?:any,
   onSummaryCalculated?: (summary: {
     finalTotal: number;
     tax: number;
@@ -59,7 +69,6 @@ export default function OrderSummery({
   const params = useParams();
   // const abbreviation = useCurrencyAbbreviation({ lang } as any);
   const currencyAbbreviation = localStorage.getItem('currencyAbbreviation')
-  const [selectedId, setSelectedId] = useState<string | null>(null);
 
   const [response, setResponse] = useState<Branchprops[]>([]);
   const [pay, setPay] = useState<Gateway[]>([]);
@@ -254,42 +263,70 @@ export default function OrderSummery({
             */}
             </Text>
           </div>
-          <div className="space-y-4">
-            {pay.map((gateway) => (
-              <label
-                key={gateway.id}
-                className="flex items-center gap-2 cursor-pointer p-3 border rounded-md hover:bg-gray-50"
-              >
-                <input
-                  type="radio"
-                  name="paymentMethod"
-                  value={gateway.id}
-                  checked={selectedId === gateway.id}
-                  onChange={() => setSelectedId(gateway.id)}
-                  className="accent-primary"
-                />
-                <span className="text-sm font-medium">{gateway.gatewayName}</span>
-              </label>
-            ))}
-          </div>
+          <div className="">
+                <p className='text-base font-medium mb-2'>{lang==='ar'?'اختار وسيلة الدفع':'Choose the payment method'}</p>
+         <div className="grid grid-cols-3 gap-4">
+  {pay.map((gateway) => {
+    const isSelected = selectedId === gateway.id;
 
-          {items.length ? (
-            <Button
-              type="submit"
-              isLoading={isLoading}
-              disabled={isButtonDisabled}
-              className={`mt-3 w-full text-base @md:h-12 ${isButtonDisabled ? "bg-gray-200 hover:bg-gray-200 text-gray-500 cursor-not-allowed" : "bg-mainColor hover:bg-mainColorHover"}`}
-            >
-              {params?.id ? `${t('Update-Order')}` : `${t('Place-Order')}`}
-            </Button>
-          ) : (
-            <Link href={`/${lang}`}>
-              <Button
-                as="span"
-                className="mt-3 w-full text-base @md:h-12 bg-mainColor hover:bg-mainColorHover"
-              >{lang === 'ar' ? 'العودة إلى المتجر' : 'Back to Store'}</Button>
-            </Link>
-          )}
+    return (
+     <div
+  key={gateway.id}
+  onClick={() => setSelectedId(gateway.id)}
+  className={`cursor-pointer p-4 rounded-xl border transition-all duration-200
+    ${isSelected ? 'border-primary shadow-md' : 'border-gray-200 hover:shadow-sm'}
+  `}
+>
+  <div className="flex flex-col items-center justify-center space-y-2 h-[80px]">
+    <div className="w-16 h-12 flex items-center justify-center">
+      <Image
+        src={gateway.gatewayUrl}
+        alt={gateway.gatewayName}
+        width={80}
+        height={80}
+        className="object-contain w-full h-full"
+      />
+    </div>
+    <span className="text-sm font-semibold text-center truncate w-full">
+      {gateway.gatewayName}
+    </span>
+  </div>
+</div>
+
+    );
+  })}
+</div>
+
+          </div>
+         {items.length > 0 ? (
+  selectedId ? (
+    <Button
+      type="submit"
+      isLoading={isLoading}
+      disabled={isButtonDisabled}
+      className={`mt-3 w-full text-base @md:h-12 ${isButtonDisabled ? "bg-gray-200 hover:bg-gray-200 text-gray-500 cursor-not-allowed" : "bg-mainColor hover:bg-mainColorHover"}`}
+    >
+      {params?.id ? `${t('Update-Order')}` : `${t('Place-Order')}`}
+    </Button>
+  ) : <Button
+      type="submit"
+      isLoading={isLoading}
+      disabled={isButtonDisabled}
+      className={"mt-3 w-full text-base @md:h-12 pointer-events-none  bg-gray-200 hover:bg-gray-200 text-gray-500 cursor-not-allowed"}
+    >
+      {t('Place-Order')}
+    </Button>
+) : (
+  <Link href={`/${lang}`}>
+    <Button
+      as="span"
+      className="mt-3 w-full text-base @md:h-12 bg-mainColor hover:bg-mainColorHover"
+    >
+      {lang === 'ar' ? 'العودة إلى المتجر' : 'Back to Store'}
+    </Button>
+  </Link>
+)}
+
         </div>
       </div>
     </div>

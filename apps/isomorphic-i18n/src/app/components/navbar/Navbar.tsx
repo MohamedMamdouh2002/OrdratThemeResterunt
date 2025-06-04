@@ -47,8 +47,8 @@ function Navbar({ className, lang }: { className?: string, lang?: string }) {
     }, []);
     useEffect(() => {
         // console.log('Current shopId:', shopId);
-      }, [shopId]);
-      
+    }, [shopId]);
+
     useEffect(() => {
         if (modal && isWideScreen) {
             document.documentElement.style.overflow = 'hidden';
@@ -65,42 +65,42 @@ function Navbar({ className, lang }: { className?: string, lang?: string }) {
 
     useEffect(() => {
         const fetchOrders = async () => {
-          try {
-            if (!shopId) return; 
-      
-            const response = await axiosClient.get(`/api/Branch/GetByShopId/${shopId}`, {
-              headers: {
-                'Accept-Language': lang,
-              },
-            });
-            setResponse(response.data);
-          } catch (error) {
-            console.error('Error fetching orders:', error);
-          }
+            try {
+                if (!shopId) return;
+
+                const response = await axiosClient.get(`/api/Branch/GetByShopId/${shopId}`, {
+                    headers: {
+                        'Accept-Language': lang,
+                    },
+                });
+                setResponse(response.data);
+            } catch (error) {
+                console.error('Error fetching orders:', error);
+            }
         };
-      
+
         fetchOrders();
-      }, [lang, shopId]); // 👈 خليه يراقب shopId كمان
-      
+    }, [lang, shopId]); // 👈 خليه يراقب shopId كمان
+
     useEffect(() => {
         async function fetchData() {
-          if (!shopId) return; // لو لسه مش موجود متعملش حاجة
-      
-          try {
-            const response = await fetch(`${API_BASE_URL}/api/Coupon/GetAll/${shopId}?PageNumber=1&PageSize=500`);
-            const data = await response.json();
-            console.log('dataCoupon/GetAll', data);
-            console.log('dataCoupon/GetAll111111', shopId);
-            
-            setCoupon(data.entities);
-          } catch (error) {
-            console.error("حدث خطأ أثناء جلب البيانات:", error);
-          }
+            if (!shopId) return; // لو لسه مش موجود متعملش حاجة
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/Coupon/GetAll/${shopId}?PageNumber=1&PageSize=500`);
+                const data = await response.json();
+                console.log('dataCoupon/GetAll', data);
+                console.log('dataCoupon/GetAll111111', shopId);
+
+                setCoupon(data.entities);
+            } catch (error) {
+                console.error("حدث خطأ أثناء جلب البيانات:", error);
+            }
         }
-      
+
         fetchData();
-      }, [shopId]); // 👈 حطينا shopId هنا ك dependency
-      
+    }, [shopId]); // 👈 حطينا shopId هنا ك dependency
+
 
     useEffect(() => {
         i18n.changeLanguage(lang);
@@ -110,7 +110,7 @@ function Navbar({ className, lang }: { className?: string, lang?: string }) {
         if (description) {
 
             setDescription(description)
-setrate(rate ? Number(rate) : 0);
+            setrate(rate ? Number(rate) : 0);
         }
     }, [lang, i18n]);
 
@@ -167,14 +167,14 @@ setrate(rate ? Number(rate) : 0);
                             <Star className="fill-[#f1d045] text-[#f1d045]" size={14} />
                             {rate === 0 ? (
                                 <span>{lang === 'ar' ? 'لا يوجد تقييم' : 'No Rating'}</span>
-                                ) : (
+                            ) : (
                                 <>
                                     <span>{rate}</span>
                                     <Link href={`/${lang}/reviews`} className="underline font-light">
-                                    (<bdi>{t('showRate')}</bdi>)
+                                        (<bdi>{t('showRate')}</bdi>)
                                     </Link>
                                 </>
-                                )}
+                            )}
 
                         </div>
                         <div className="relative">

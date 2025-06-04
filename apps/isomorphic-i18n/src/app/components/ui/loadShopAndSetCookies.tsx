@@ -2,7 +2,7 @@ import { cookies, headers } from 'next/headers';
 import { NextResponse } from 'next/server';
 
 function getServerSiteUrl() {
-  const host = "shawrma1.ordrat.com";
+  const host = "theme.ordrat.com";
   // const host = headers().get("host") || "theme.ordrat.com";
   const protocol = process.env.NODE_ENV === "production" ? "https" : "http";
   return `${host}`;
