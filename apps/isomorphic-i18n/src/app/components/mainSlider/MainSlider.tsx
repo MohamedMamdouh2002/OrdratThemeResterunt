@@ -72,9 +72,9 @@ function MainSlider({ banner }: MainSliderProps) {
         adaptiveHeight: true,
       };
   return <>
+        {banner && banner.map((photo:Banner) => (
 <div className="slider-container w-5/6 lg:w-[750px] cursor-grab border-none mt-10 mx-auto relative">
     <Slider {...settings}>
-        {banner&&banner.map((photo:Banner) => (
             <Link href={photo?.actionString as string} target='_blank' key={photo.id}>
                 <CustomImage 
                     width={800}
@@ -84,9 +84,9 @@ function MainSlider({ banner }: MainSliderProps) {
                     className='h-[150px] w-full sm:h-[300px] overflow-hidden image rounded-xl px-1 pointer-events-none' 
                 />
             </Link>
-        ))}
     </Slider>
 </div>
+        ))}
 
   </>
 }

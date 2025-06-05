@@ -1,11 +1,11 @@
-import nextPwa from 'next-pwa'
+import nextPwa from 'next-pwa';
+
 const withPWA = nextPwa({
   dest: 'public',
   register: true,
   skipWaiting: true,
-    disable: process.env.NODE_ENV === 'development',
-
-})
+    disable: false,
+});
 
 const nextConfig = {
   images: {
@@ -15,48 +15,48 @@ const nextConfig = {
     ],
     remotePatterns: [
       {
-        protocol: "https",
-        hostname: "randomuser.me",
-        pathname: "/api/portraits/**",
+        protocol: 'https',
+        hostname: 'randomuser.me',
+        pathname: '/api/portraits/**',
       },
       {
-        protocol: "https",
-        hostname: "cloudflare-ipfs.com",
-        pathname: "/ipfs/**",
+        protocol: 'https',
+        hostname: 'cloudflare-ipfs.com',
+        pathname: '/ipfs/**',
       },
       {
-        protocol: "https",
-        hostname: "avatars.githubusercontent.com",
-        pathname: "/u/**",
+        protocol: 'https',
+        hostname: 'avatars.githubusercontent.com',
+        pathname: '/u/**',
       },
       {
-        protocol: "https",
-        hostname: "picsum.photos",
+        protocol: 'https',
+        hostname: 'picsum.photos',
       },
       {
-        protocol: "https",
-        hostname: "flagcdn.com",
+        protocol: 'https',
+        hostname: 'flagcdn.com',
       },
       {
-        protocol: "https",
-        hostname: "utfs.io",
+        protocol: 'https',
+        hostname: 'utfs.io',
       },
       {
-        protocol: "https",
-        hostname: "images.unsplash.com",
+        protocol: 'https',
+        hostname: 'images.unsplash.com',
       },
       {
-        protocol: "https",
-        hostname: "s3.amazonaws.com",
-        pathname: "/redqteam.com/isomorphic-furyroad/public/**",
+        protocol: 'https',
+        hostname: 's3.amazonaws.com',
+        pathname: '/redqteam.com/isomorphic-furyroad/public/**',
       },
       {
-        protocol: "https",
-        hostname: "isomorphic-furyroad.s3.amazonaws.com",
+        protocol: 'https',
+        hostname: 'isomorphic-furyroad.s3.amazonaws.com',
       },
       {
-        protocol: "https",
-        hostname: "isomorphic-furyroad.vercel.app",
+        protocol: 'https',
+        hostname: 'isomorphic-furyroad.vercel.app',
       },
     ],
   },
@@ -68,8 +68,12 @@ const nextConfig = {
         destination: '/ar',
       },
       {
-        source: "/sitemap.xml",
-        destination: "/api/sitemap.xml",
+          source: '/manifest.json',
+      destination: '/api/manifest',
+      },
+      {
+        source: '/sitemap.xml',
+        destination: '/api/sitemap.xml',
       },
       {
         source: '/post-sitemap.xml',
@@ -112,7 +116,7 @@ const nextConfig = {
   },
 
   reactStrictMode: true,
-  transpilePackages: ["@isomorphic/core"],
+  transpilePackages: ['@isomorphic/core'],
 };
 
-export default withPWA(nextConfig)
+export default withPWA(nextConfig);

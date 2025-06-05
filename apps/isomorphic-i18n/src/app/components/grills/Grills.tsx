@@ -29,8 +29,8 @@ type FakeData = {
   minimumFakeSoldNumber: number;
   lastSoldNumberInHours: number;
 };
-function Grills({ lang, shopIdserver,  ProductData, HomeData, initialPage = 1, pageSize = 40 }: { lang: string; ProductData?: any; HomeData?: any; currencyName: string; initialPage?: number; pageSize?: number; shopIdserver?: string }) {
-  const { GetHome,shopId } = useUserContext();
+function Grills({ lang, shopIdserver, ProductData, HomeData, initialPage = 1, pageSize = 40 }: { lang: string; ProductData?: any; HomeData?: any; currencyName: string; initialPage?: number; pageSize?: number; shopIdserver?: string }) {
+  const { GetHome, shopId } = useUserContext();
   const [finalCurrencyName, setFinalCurrencyName] = useState<string>('');
   const { t } = useTranslation(lang!, 'home');
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -43,12 +43,12 @@ function Grills({ lang, shopIdserver,  ProductData, HomeData, initialPage = 1, p
   const [home, setHome] = useState(HomeData?.entities as any ?? []);
   const [page, setPage] = useState(HomeData?.nextPage as any ?? 2);
   const [hasMore, setHasMore] = useState(HomeData?.nextPage as any ? true : false);
-useEffect(() => {
-  const localCurrency = localStorage.getItem('currencyAbbreviation');
+  useEffect(() => {
+    const localCurrency = localStorage.getItem('currencyAbbreviation');
 
 
     setFinalCurrencyName(localCurrency as string);
-}, [finalCurrencyName]);
+  }, [finalCurrencyName]);
   useEffect(() => {
     const fetchPaginatedData = async () => {
       if (loading || !hasMore || page === initialPage) return;
@@ -109,11 +109,11 @@ useEffect(() => {
   useEffect(() => {
     const fetchFakeData = async () => {
       try {
-        const response = await fetch(`https://testapi.ordrat.com/api/FakeData/GetFakeDataByShopId/${shopIdserver||shopId}`);
+        const response = await fetch(`https://testapi.ordrat.com/api/FakeData/GetFakeDataByShopId/${shopIdserver || shopId}`);
         if (!response.ok) throw new Error('Failed to fetch fake data');
 
         const result: FakeData = await response.json();
-        setFakeData(result); 
+        setFakeData(result);
       } catch (error) {
         console.error('Error fetching fake data:', error);
       }
@@ -135,7 +135,7 @@ useEffect(() => {
           ?.filter((sec: any) => sec.isActive)
           .sort((a: any, b: any) => a.priority - b.priority)
           .map((sec: any) => (
-            <div key={sec.id} id={sec.id} className="w-5/6 sm:w-[90%] mx-auto mt-20">
+            <div key={sec.id} id={sec.id} className="w-5/6 sm:w-[90%] mx-auto mt-12">
               <div className="flex justify-between items-center">
                 <Title title={sec.name} />
                 {sec.hasMoreProducts &&
@@ -218,7 +218,7 @@ useEffect(() => {
                       >
                         {sec.products.map((prod: React.JSX.IntrinsicAttributes & Food & { setCurrentItem: React.Dispatch<React.SetStateAction<{ type?: string; id: string } | null>> }) => (
                           <SwiperSlide key={prod.id}>
-                            <SmallCard FakeData={fakeData} currencyName={finalCurrencyName  ==='ر.س'? <Image src={sarIcon} alt="SAR" width={15} height={15} /> :finalCurrencyName} ProductData={home} lang={lang} {...prod} />
+                            <SmallCard FakeData={fakeData} currencyName={finalCurrencyName === 'ر.س' ? <Image src={sarIcon} alt="SAR" width={15} height={15} /> : finalCurrencyName} ProductData={home} lang={lang} {...prod} />
                           </SwiperSlide>
                         ))}
                       </Swiper>
@@ -227,11 +227,11 @@ useEffect(() => {
                     sec?.products?.map((prod: React.JSX.IntrinsicAttributes & Food & { setCurrentItem: React.Dispatch<React.SetStateAction<{ type?: string; id: string } | null>> }) =>
                       sec.numberOfColumns === 1 ? (
                         <div key={prod.id}>
-                          <MediumCard FakeData={fakeData} currencyName={finalCurrencyName  ==='ر.س'? <Image src={sarIcon} alt="SAR" width={15} height={15} /> :finalCurrencyName} ProductData={home} lang={lang} {...prod} />
+                          <MediumCard FakeData={fakeData} currencyName={finalCurrencyName === 'ر.س' ? <Image src={sarIcon} alt="SAR" width={15} height={15} /> : finalCurrencyName} ProductData={home} lang={lang} {...prod} />
                           <hr className="mt-1 sm:hidden" />
                         </div>
                       ) : (
-                        <Card FakeData={fakeData} currencyName={finalCurrencyName  ==='ر.س'? <Image src={sarIcon} alt="SAR" width={15} height={15} /> :finalCurrencyName} ProductData={home} lang={lang} key={prod.id} {...prod} />
+                        <Card FakeData={fakeData} currencyName={finalCurrencyName === 'ر.س' ? <Image src={sarIcon} alt="SAR" width={15} height={15} /> : finalCurrencyName} ProductData={home} lang={lang} key={prod.id} {...prod} />
                       )
                     )
                   )}

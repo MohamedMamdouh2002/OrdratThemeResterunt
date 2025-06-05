@@ -43,8 +43,8 @@ export async function generateStaticParams() {
 }
  
 function getServerSiteUrl() {
-  // const host = "eldahan.ordrat.com";
-    const host = headers().get("host") || "theme.ordrat.com";
+  const host = "theme.ordrat.com";
+    // const host = headers().get("host") || "theme.ordrat.com";
   const protocol = process.env.NODE_ENV === "production" ? "https" : "http";
   return `${host}`;
 }
@@ -364,7 +364,7 @@ export default async function RootLayout({
       suppressHydrationWarning
     >
       <head>
-        <link rel="manifest" href={`/${lang}/manifest`} />
+        <link rel="manifest" href={`/api/manifest?lang=${lang}&subdomain=${shopData.nameAr}`} />
         <link rel="icon" href={shopData.logoUrl} type="image/x-icon" />
         {lang === 'ar' ? <><link rel="canonical" href={realPath} />
           <link rel="alternate" hrefLang="ar" href={`${realPath}/ar`} />
